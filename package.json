@@ -1,0 +1,31 @@
+{
+  "name": "material-motion",
+  "version": "0.0.0",
+  "description": "Makes it easy to create rich, interactive motion.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:material-motion/material-motion-js.git"
+  },
+  "keywords": [
+    "odeon",
+    "material",
+    "gestures",
+    "motion",
+    "interactive",
+    "animation",
+    "tweens",
+    "transitions",
+    "springs",
+    "physics"
+  ],
+  "author": "The Material Motion Authors (see AUTHORS and CONTRIBUTORS)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/material-motion/material-motion-js/issues/"
+  },
+  "homepage": "https://github.com/material-motion/material-motion-js/#readme"
+}
