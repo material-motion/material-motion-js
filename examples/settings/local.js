@@ -16,3 +16,25 @@
  *  @flow
  */
 
+import Ambidex from 'ambidex';
+import commonSettings from './common';
+
+var {
+  recursiveCloneWithDefaults
+} = Ambidex.addons.utilities;
+
+export default recursiveCloneWithDefaults(
+  {
+    HOST: 'localhost',
+    PORT: '8080',
+
+    ENABLE_HOT_MODULE_REPLACEMENT: true,
+    ENABLE_SOURCE_MAPS: true,
+    WEBPACK_PORT: '8081',
+
+    CUSTOM_SETTINGS: {
+    }
+  },
+
+  commonSettings
+);

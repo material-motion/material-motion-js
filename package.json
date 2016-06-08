@@ -1,14 +1,21 @@
 {
-  "name": "material-motion",
+  "name": "material-motion-experiments",
   "version": "0.0.0",
   "description": "Makes it easy to create rich, interactive motion.",
   "main": "src/index.js",
   "scripts": {
+    "start": "node --stack-trace-limit=1000 ./examples/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "ambidex": "0.2.0-beta.12",
+    "react": "^15",
+    "react-dom": "^15",
+    "react-router": "^2.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:material-motion/material-motion-js.git"
+    "url": "git+ssh://git@github.com:material-motion/material-motion-experiments-js.git"
   },
   "keywords": [
     "odeon",
@@ -25,7 +32,7 @@
   "author": "The Material Motion Authors (see AUTHORS and CONTRIBUTORS)",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/material-motion/material-motion-js/issues/"
+    "url": "https://github.com/material-motion/material-motion-experiments-js/issues/"
   },
-  "homepage": "https://github.com/material-motion/material-motion-js/#readme"
+  "homepage": "https://github.com/material-motion/material-motion-experiments-js/#readme"
 }

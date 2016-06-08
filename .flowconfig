@@ -1,0 +1,15 @@
+# Until https://github.com/facebook/flow/issues/869 is resolved, the recommended
+# practice is to explicitly ignore problematic modules.  =\
+[ignore]
+.*/node_modules/react-motion/.*
+.*/node_modules/fbjs/.*
+.*/node_modules/nsp/.*
+.*/node_modules/jsonlint/.*
+
+[include]
+./src
+./examples
+
+[libs]
+
+[options]

@@ -16,3 +16,33 @@
  *  @flow
  */
 
+import React from 'react';
+
+import {
+  IndexRoute,
+  Route,
+  Redirect,
+} from 'react-router';
+
+import {
+  ExpressionsDemo,
+} from './expressions/components';
+
+export default (
+  <Route>
+    <Route
+      path = 'material-motion-experiments'
+    >
+      <Route
+        path = 'expressions'
+        component = { ExpressionsDemo }
+      />
+    </Route>
+
+    <Redirect
+      from = '**'
+      to = 'material-motion-experiments/expressions/'
+    />
+  </Route>
+);
+

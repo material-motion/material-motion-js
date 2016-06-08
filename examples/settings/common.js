@@ -16,3 +16,20 @@
  *  @flow
  */
 
+export default {
+  NAME: 'Material Motion Experiments',
+  SHORT_NAME: 'material-motion-experiments',
+  FAV_ICON_URL: '/material-motion-experiments/static/images/odeon-favicon.png',
+
+  TITLE_SEPARATOR: ' - ',
+
+  FILESYSTEM_PATHS: {
+    BASE: __dirname + '/../',
+    ROUTES: 'routes.jsx',
+    BUNDLES: '../bundles/',
+  },
+
+  CUSTOM_SETTINGS: {
+    STATIC_URL: '/material-motion-experiments/static/',
+  }
+};
