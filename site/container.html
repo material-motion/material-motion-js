@@ -1,0 +1,107 @@
+<!doctype html>
+<!--
+  Copyright 2016 The Material Motion Authors. All Rights Reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License"); you may not
+  use this file except in compliance with the License. You may obtain a copy of
+  the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+  License for the specific language governing permissions and limitations under
+  the License.
+-->
+<!--
+  Eventually, we'll probably want a separate repo for project-wide marketing +
+  documentation.  We may also want to use something like hypernova to do server-
+  side rendering, titling, and proper HTTP response codes.
+
+  For now, presume everything with a trailing slash is a valid HTML request and
+  delegate content creation and navigation to React.
+-->
+<html>
+  <head>
+    <title>
+      Material Motion JS Examples
+    </title>
+
+    <meta
+      name = "viewport"
+      content = "
+        width=device-width,
+        minimum-scale=1.0,
+        initial-scale=1.0,
+        user-scalable=yes
+      "
+    />
+
+    <link
+      rel = "icon"
+      href = "/static/images/odeon-favicon.png"
+    />
+
+    <style>
+      @import url('https://fonts.googleapis.com/css?family=Roboto:500,500italic,400,400italic,300,300italic|Roboto+Condensed:400');
+
+      body {
+        font-family: 'Roboto', sans-serif;
+      }
+
+      /*  Sets all block level elements (https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements#Elements)
+       *  to the React Native defaults (https://github.com/facebook/css-layout/blob/ecc61dae85407148c3fb0077e16bb718592e4e8d/README.md#default-values)
+       */
+
+      * {
+        position: relative;
+        box-sizing: border-box;
+        border: 0 solid black;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      address,
+      article,
+      aside,
+      blockquote,
+      dd,
+      div,
+      dl,
+      fieldset,
+      figcaption,
+      figure,
+      footer,
+      form,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      header,
+      hgroup,
+      li,
+      main,
+      nav,
+      noscript,
+      ol,
+      output,
+      p,
+      section,
+      ul {
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        align-items: stretch;
+      }
+    </style>
+  </head>
+  <body>
+    <div id = "container"></div>
+  </body>
+  <script src = "{{ DIST_JS_PATH }}material-motion.js"></script>
+  <script src = "{{ STATIC_JS_PATH }}examples.js"></script>
+</html>

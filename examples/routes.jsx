@@ -19,7 +19,6 @@
 import React from 'react';
 
 import {
-  IndexRoute,
   Route,
   Redirect,
 } from 'react-router';
@@ -31,17 +30,13 @@ import {
 export default (
   <Route>
     <Route
-      path = 'material-motion-experiments'
-    >
-      <Route
-        path = 'expressions'
-        component = { ExpressionsDemo }
-      />
-    </Route>
+      path = 'expressions'
+      component = { ExpressionsDemo }
+    />
 
     <Redirect
       from = '**'
-      to = 'material-motion-experiments/expressions/'
+      to = 'expressions/'
     />
   </Route>
 );

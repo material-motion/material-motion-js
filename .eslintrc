@@ -1,0 +1,68 @@
+{
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "parser": "babel-eslint",
+  "extends": "google",
+  "globals": {
+    "NODE_ENV": true
+  },
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+    //  Likely coming to the next version of the Style Guide, but it hasn't been
+    //  finalized yet.
+    "no-var": "error",
+    "template-curly-spacing": [
+      "warn",
+      "always"
+    ],
+    "comma-dangle": [
+      "warn",
+      "always-multiline"
+    ],
+    "arrow-parens": "off",
+
+    //  React-specific
+    "react/jsx-uses-react": "warn",
+    "react/jsx-uses-vars": "warn",
+    "react/jsx-no-bind": "warn",
+    "react/jsx-first-prop-new-line": "warn",
+    "react/jsx-max-props-per-line": "warn",
+    "react/react-in-jsx-scope": "error",
+    "react/wrap-multilines": "error",
+    "react/require-render-return": "error",
+    "react/jsx-no-duplicate-props": "error",
+    "react/jsx-pascal-case": "error",
+    "react/jsx-space-before-closing": [
+      "error",
+      "always"
+    ],
+    "react/jsx-equals-spacing": [
+      "error",
+      "always"
+    ],
+    "react/jsx-curly-spacing": [
+      "error",
+      "always"
+    ],
+
+    //  This is just me being stubborn because ternaries at the end of a line
+    //  are impossible to read.  I should probably conform eventually.
+    "operator-linebreak": [
+      "error",
+      "after",
+      {
+        "overrides": {
+          "?": "before",
+          ":": "before"
+        }
+      }
+    ],
+
+    //  ESLint will get mad at Immutable if you leave this on.
+    "new-cap": "off"
+  }
+}

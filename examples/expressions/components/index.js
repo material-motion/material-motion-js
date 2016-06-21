@@ -16,4 +16,4 @@
  *  @flow
  */
 
-export { default as ExpressionsDemo }  from './ExpressionsDemo';
+export {default as ExpressionsDemo} from './ExpressionsDemo';

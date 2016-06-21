@@ -1,0 +1,13 @@
+{
+  "plugins": [
+    "syntax-trailing-function-commas",
+    "transform-class-properties",
+    "transform-object-rest-spread",
+    "react-hot-loader/babel",
+  ],
+
+  "presets": [
+    "es2015",
+    "react",
+  ]
+}

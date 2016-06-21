@@ -4,30 +4,43 @@
   "description": "Makes it easy to create rich, interactive motion.",
   "main": "src/index.js",
   "scripts": {
-    "start": "node --stack-trace-limit=1000 ./examples/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "trap 'kill %1' SIGINT; dev_appserver.py ./site/ & node --stack-trace-limit=1000 ./examples/devServer.js",
+    "lint": "./node_modules/.bin/eslint .",
+    "flow": "./node_modules/.bin/flow; test $? -eq 0 -o $? -eq 2",
+    "test": "npm run lint; npm run flow; echo \"\n\n\nUnit tests not yet implemented.\" && exit 1",
+    "build": "./node_modules/.bin/webpack",
+    "clean": "rm ./dist/*; rm ./site/static/examples.js"
+  },
+  "dependencies": {
+    "immutable": "3.8.1"
   },
   "devDependencies": {
-    "ambidex": "0.2.0-beta.12",
-    "react": "^15",
-    "react-dom": "^15",
-    "react-router": "^2.0.0"
+    "babel-eslint": "6.0.4",
+    "eslint": "2.7.0",
+    "eslint-config-google": "0.5.0",
+    "eslint-plugin-react": "1.1.1",
+    "react": "15",
+    "react-dom": "15",
+    "react-hot-loader": "3.0.0-beta.2",
+    "react-router": "2.0.0",
+    "webpack": "2.1.0-beta.4",
+    "webpack-dev-server": "2.1.0-beta.0"
   },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com:material-motion/material-motion-experiments-js.git"
   },
   "keywords": [
-    "odeon",
-    "material",
-    "gestures",
-    "motion",
-    "interactive",
     "animation",
-    "tweens",
-    "transitions",
+    "gestures",
+    "interactive",
+    "material",
+    "motion",
+    "odeon",
+    "physics",
     "springs",
-    "physics"
+    "transitions",
+    "tweens"
   ],
   "author": "The Material Motion Authors (see AUTHORS and CONTRIBUTORS)",
   "license": "Apache-2.0",
