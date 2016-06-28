@@ -39,7 +39,7 @@ const commonSettings = {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        include: (filePath) => !filePath.includes("node_modules"),
+        include: (filePath) => !filePath.includes('node_modules'),
       },
     ],
   },
