@@ -2,3 +2,8 @@
 node_modules
 npm-debug.log
 *.pyc
+
+# removing these until we have put more thought into how we want to
+# package/distribute
+dist/*
+site/static/*.js

@@ -1,13 +1,14 @@
 {
   "plugins": [
     "syntax-trailing-function-commas",
+    "transform-decorators-legacy",
     "transform-class-properties",
     "transform-object-rest-spread",
     "react-hot-loader/babel",
   ],
 
   "presets": [
-    "es2015",
+    "es2015-native-modules",
     "react",
   ]
 }

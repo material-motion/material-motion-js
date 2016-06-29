@@ -16,42 +16,4 @@
  *  @flow
  */
 
-// TODO(appsforartists):
-// - figure out the right way to organize/package this
-
-export {
-  CSSEasing,
-  MaterialMotionEasing,
-} from './easing';
-
-export {
-  move,
-  moveFrom,
-  moveTo,
-  moveBy,
-  rotate,
-  rotateFrom,
-  rotateTo,
-  rotateBy,
-  scale,
-  scaleFrom,
-  scaleTo,
-  scaleBy,
-  scaleIn,
-  scaleOut,
-  identityScale,
-  fade,
-  fadeFrom,
-  fadeTo,
-  fadeBy,
-  fadeIn,
-  fadeOut,
-} from './expressions/tween';
-
-export {
-  default as MaterialMotionFamilies,
-} from './families';
-
-export {
-  TweenPerformerWeb,
-} from './performers';
+export {default as TweenPerformerWeb} from './TweenPerformerWeb';

@@ -24,15 +24,15 @@ const WebpackDevServer = require('webpack-dev-server');
 
 const settings = require('../webpack.config');
 
-//  Node doesn't support { ...rest } = thing, so this in its own expression
+// Node doesn't support { ...rest } = thing, so this in its own expression
 const {
   HOST,
   PORT,
 } = settings;
 
-//  Webpack is a pain-in-the-ass to configure correctly, so we follow the
-//  example of the great Dan Abramov:
-//  https://github.com/gaearon/react-hot-boilerplate/blob/f134ff335d26f1b0369e65a9309b4ec1a38a2581/server.js
+// Webpack is a pain-in-the-ass to configure correctly, so we follow the
+// example of the great Dan Abramov:
+// https://github.com/gaearon/react-hot-boilerplate/blob/f134ff335d26f1b0369e65a9309b4ec1a38a2581/server.js
 
 module.exports = new WebpackDevServer(
   Webpack(settings),

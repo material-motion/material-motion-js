@@ -29,7 +29,7 @@ import {
 } from 'react-hot-loader';
 
 const redraw = function() {
-  //  ReactRouter will throw during HMR unless you wrap it in a component
+  // ReactRouter will throw during HMR unless you wrap it in a component
   let App = () => (
     <Router
       routes = { require('./routes').default }
