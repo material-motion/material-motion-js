@@ -19,3 +19,7 @@ SDK](https://cloud.google.com/appengine/downloads) installed and on your `PATH`.
 - `npm run build`: Bundles `src` and `examples` in `dist` and `site`,
   respectively.
 - `npm run clean`: Removes JavaScript bundles from `dist` and `site`.
+
+## License ##
+
+[Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
