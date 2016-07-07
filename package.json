@@ -8,8 +8,9 @@
     "lint": "./node_modules/.bin/eslint .",
     "flow": "./node_modules/.bin/flow; test $? -eq 0 -o $? -eq 2",
     "test": "npm run lint; npm run flow; echo \"\n\n\nUnit tests not yet implemented.\" && exit 1",
-    "build": "./node_modules/.bin/webpack",
-    "clean": "rm ./dist/*; rm ./site/static/examples.js"
+    "clean": "rm ./dist/*; rm ./site/static/examples.js",
+    "build": "npm run clean; ./node_modules/.bin/webpack",
+    "deploy-site": "npm run build; appcfg.py update ./site/"
   },
   "dependencies": {
     "immutable": "3.8.1"

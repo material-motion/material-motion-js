@@ -19,6 +19,8 @@ SDK](https://cloud.google.com/appengine/downloads) installed and on your `PATH`.
 - `npm run build`: Bundles `src` and `examples` in `dist` and `site`,
   respectively.
 - `npm run clean`: Removes JavaScript bundles from `dist` and `site`.
+- `npm run deploy-site`: Updates the [demo
+  site](https://material-motion.appspot.com/).
 
 ## License ##
 
