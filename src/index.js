@@ -16,7 +16,10 @@
  *  @flow
  */
 
-// TODO(appsforartists):
+// TODO(
+//   https://github.com/material-motion/material-motion-experiments-js/issues/3
+//   https://github.com/material-motion/material-motion-experiments-js/issues/7
+// ):
 // - figure out the right way to organize/package this
 
 export {
@@ -48,9 +51,8 @@ export {
   fadeOut,
 } from './expressions/tween';
 
-export {
-  default as MaterialMotionFamilies,
-} from './families';
+export {default as MaterialMotionFamilies} from './families';
+export {default as Scheduler} from './Scheduler';
 
 export {
   TweenPerformerWeb,

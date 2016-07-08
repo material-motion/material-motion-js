@@ -26,6 +26,8 @@
 
 import React from 'react';
 
+import Scheduler from '../../../src/Scheduler';
+
 import {
   move,
   scale,
@@ -41,10 +43,6 @@ import {
   MaterialMotionEasing,
 } from '../../../src/easing';
 
-import {
-  TweenPerformerWeb,
-} from '../../../src/performers';
-
 const circleRadius = 100;
 const circleDiameter = circleRadius * 2;
 const shadowForElevation = {
@@ -59,6 +57,7 @@ const shadowForElevation = {
 export default React.createClass(
   {
     webComponentsRef: null,
+    scheduler: null,
 
     getInitialState() {
       return {
@@ -85,6 +84,10 @@ export default React.createClass(
         ],
         buttonIsDown: false,
       };
+    },
+
+    componentWillMount() {
+      this.scheduler = new Scheduler();
     },
 
     render() {
@@ -221,9 +224,13 @@ export default React.createClass(
 
       const test = tests[testIndex];
 
-      new TweenPerformerWeb(
-        this.webComponentsRef,
-        test.plan
+      this.scheduler.commit(
+        [
+          {
+            target: this.webComponentsRef,
+            plan: test.plan,
+          },
+        ]
       );
     },
 

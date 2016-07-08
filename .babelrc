@@ -2,6 +2,7 @@
   "plugins": [
     "syntax-trailing-function-commas",
     "transform-decorators-legacy",
+    "transform-function-bind",
     "transform-class-properties",
     "transform-object-rest-spread",
     "react-hot-loader/babel",

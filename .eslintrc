@@ -9,10 +9,11 @@
     "NODE_ENV": true
   },
   "plugins": [
-    "react",
-    "flowtype",
     "flow-vars",
-    "header"
+    "flowtype",
+    "header",
+    "import",
+    "react",
   ],
   "rules": {
     "header/header": [
@@ -53,6 +54,8 @@
     "arrow-parens": "off",
 
     //  Flow-specific
+    "no-duplicate-imports": "off",
+    "import/no-duplicates": "error",
     "flow-vars/define-flow-type": "warn",
     "flow-vars/use-flow-type": "warn",
     "flowtype/space-before-type-colon": "error",
@@ -62,7 +65,7 @@
     ],
     "flowtype/type-id-match": [
       "error",
-      "^([A-Z0-9]+[a-z0-9]*)+T$",
+      "^([A-Za-z]+[a-z0-9]*)+[TI]$",
     ],
 
     //  React-specific

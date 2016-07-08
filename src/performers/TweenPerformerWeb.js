@@ -16,30 +16,38 @@
  *  @flow
  */
 
+import Scheduler from '../Scheduler';
+
 import {
   TweenProperty,
 } from '../expressions/tween';
 
-/* eslint-disable no-duplicate-imports */
-//
-// eslint chokes on `import type`
-// https://github.com/gajus/eslint-plugin-flowtype/issues/25
 import type {
-  Point2DT,
-} from '../expressions/tween';
-/* eslint-enable no-duplicate-imports */
+  PlanT,
+} from '../Plan';
 
-// TODO(appsforartists): Add support for Element.prototype.animate to Flow
-// https://github.com/facebook/flow/blob/master/lib/dom.js
-// https://github.com/facebook/flow/blob/master/lib/cssom.js
+import type {
+  PlanAndTargetT,
+} from '../Performer';
+
+import type {
+  PlanValueT,
+} from '../expressions/tween';
+
+export type PlanAndTargetElementT = PlanAndTargetT&{
+  target:Element,
+}
+
+// TODO(https://github.com/material-motion/material-motion-experiments-js/issues/8):
+// Add support for Element.prototype.animate to Flow
 
 export default class TweenPerformerWeb {
-  static canHandle(target:mixed, plan) {
+  static canHandle({target, plan}:PlanAndTargetT) {
     // It may be interesting to have a debug mode where this logs the tests
     // and whether they pass/fail.
 
-    // // TODO(appsforartists): get a plan spec by its family name and assert
-    // // its validity
+    // // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/3):
+    // // get a plan spec by its family name and assert its validity
     // console.assert(
     //  plan.isValid(),
     //  'TweenPerformerWeb received an invalid Plan.',
@@ -56,21 +64,29 @@ export default class TweenPerformerWeb {
 
   target:Element;
 
-  constructor(target:Element, plan) {
+  constructor({target, plan}:PlanAndTargetElementT) {
     this.target = target;
 
     if (plan)
       this.addPlan(plan);
   }
 
-  addPlan(plan) {
+  addPlan(plan:PlanT) {
     console.assert(
       TweenPerformerWeb.canHandle(
-        this.target,
-        plan
+        {
+          target: this.target,
+          plan,
+        }
       ),
       `TweenPerformerWeb doesn't know how to handle this Plan.`,
       plan
+    );
+
+    console.log(
+      `TweenPerformerWeb doesn't yet handle multiple simultaeneous`,
+      `plans, so we log them here so you can see we've received them.`,
+      plan.toJS()
     );
 
     this.target.animate(
@@ -78,6 +94,8 @@ export default class TweenPerformerWeb {
     );
   }
 }
+
+Scheduler.registerPerformer(TweenPerformerWeb);
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Element/animate
 function animateArgsForPlanAndTarget(plan, target) {
@@ -89,6 +107,7 @@ function animateArgsForPlanAndTarget(plan, target) {
     fill: 'both',
   };
 
+  // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/10):
   // I'm being super naïve here because I'm not entirely sure what the
   // difference should be between to and by.  `from` and `to` are absolute
   // terms, but absolute relative to which coordinate space?  Are they relative
@@ -96,7 +115,6 @@ function animateArgsForPlanAndTarget(plan, target) {
   // document?  Does the answer differ for moves versus fade, scales, or
   // rotations?  If it's absolute to the document, and we receive a fadeIn, how
   // do we handle cases where an ancestor has a translucent opacity?
-  //  // TODO(appsforartists): solve this.
 
   let planProperty = plan.get('property');
   let start, end;
@@ -129,7 +147,7 @@ function animateArgsForPlanAndTarget(plan, target) {
 
     let from = planProperty === TweenProperty.OPACITY
       ? parseFloat(startValue)
-      : getValuesFromTransform(planProperty, startValue);
+      : getValueFromTransform(planProperty, startValue);
 
     end = getFrameFromPlan(
       plan.set(
@@ -157,8 +175,7 @@ function introspectCurrentFrameForTarget(plan, target) {
     plan.get('property')
   );
 
-  // TODO(appsforartists):
-  // - Figure out how to introspect a transform's {x, y} from an element
+  // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/9):
   // - Add unit tests for all these little helper functions
   // - Make sure {x: 10, y: 10} + {x: 48} = {x: 58, y: 10}
 
@@ -183,9 +200,6 @@ function getFrameFromPlan(plan, frameName) {
     plan.get(frameName)
   );
 
-  if (value.constructor === Number)
-    value = value.toFixed(3);
-
   return {
     [key]: value,
   };
@@ -197,7 +211,7 @@ function getCSSKey(planProperty) {
     : 'transform';
 }
 
-function getCSSPair(planProperty, value:number|Point2DT):[string, string] {
+function getCSSPair(planProperty:string, value:PlanValueT):[string, string] {
   let cssKey = getCSSKey(planProperty);
   let cssValue;
 
@@ -286,7 +300,7 @@ function getArgumentsFromTransform(methodName, transform) {
   return result;
 }
 
-function getValuesFromTransform(methodName, transform):number|Point2DT {
+function getValueFromTransform(methodName:string, transform:string):PlanValueT {
   const transformArguments = getArgumentsFromTransform(
     methodName,
     transform
@@ -298,7 +312,7 @@ function getValuesFromTransform(methodName, transform):number|Point2DT {
 
       console.assert(
         ['', 'deg', 'px'].includes(unit),
-        `getValuesFromTransform doesn't support ${ unit }`
+        `getValueFromTransform doesn't support ${ unit }`
       );
 
       return parseFloat(value);
@@ -326,7 +340,11 @@ function getValuesFromTransform(methodName, transform):number|Point2DT {
   }
 }
 
-function addValues(start, end):number|Point2DT {
+// Would like to assert that start, end, and result are all the same type, but
+// Flow doesn't seem to support that yet
+//
+// https://flowtype.org/docs/functions.html#overloading
+function addValues(start:PlanValueT, end:PlanValueT):PlanValueT {
   console.assert(
     start.constructor === end.constructor,
     `Cannot add values of differing shapes`, start, end
@@ -348,7 +366,7 @@ function addValues(start, end):number|Point2DT {
   }
 }
 
-function subtractValues(start, end):number|Point2DT {
+function subtractValues(start:PlanValueT, end:PlanValueT):PlanValueT {
   console.assert(
     start.constructor === end.constructor,
     `Cannot subtract values of differing shapes`, start, end

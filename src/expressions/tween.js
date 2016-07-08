@@ -19,6 +19,8 @@
 // Goal: write the simplest possible thing-that-works to learn Expressions and
 // build abstractions as useful from there.
 
+// TODO(https://github.com/material-motion/material-motion-experiments-js/issues/2):
+// implement Plans as POJOs and remove Immutable dependency
 import {
   List as ImmutableList,
   Map as ImmutableMap,
@@ -30,24 +32,22 @@ import {
   MaterialMotionEasing,
 } from '../easing';
 
-/* eslint-disable no-duplicate-imports */
-//
-// eslint chokes on `import type`
-// https://github.com/gajus/eslint-plugin-flowtype/issues/25
 import type {
   CubicBezierArgsT,
 } from '../easing';
-/* eslint-enable no-duplicate-imports */
 
 import {
   startTermLog,
   logTerm,
 } from './utilities';
 
-type Point2DT = {
-  x?:number,
-  y?:number
+export type Point2DT = {
+  x:number,
+}|{
+  y:number,
 };
+
+export type PlanValueT = Point2DT|number;
 
 export const TweenProperty = {
   TRANSLATION: 'translate',
@@ -109,8 +109,6 @@ export class Tween<T> {
 
   @logTerm
   by(location:T):Tween<T> {
-    // TODO(appsforartists):
-    // - If `by` calls compound, this should take that into consideration
     return new this.constructor(
       this.plan.set('by', location)
     );
@@ -120,7 +118,7 @@ export class Tween<T> {
     return this.log.join('.');
   }
 
-  // TODO(appsforartists):
+  // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/3):
   // - Move this out of the expression to somewhere where it can test arbitrary
   // plans
   isValid():boolean {
