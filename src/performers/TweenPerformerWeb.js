@@ -34,9 +34,9 @@ import type {
   PlanValueT,
 } from '../expressions/tween';
 
-export type PlanAndTargetElementT = PlanAndTargetT&{
+export type PlanAndTargetElementT = {
   target:Element,
-}
+}&PlanAndTargetT
 
 // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/8):
 // Add support for Element.prototype.animate to Flow
