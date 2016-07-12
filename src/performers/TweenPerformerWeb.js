@@ -62,10 +62,10 @@ export default class TweenPerformerWeb {
     );
   }
 
-  target:Element;
+  _target:Element;
 
   constructor({target, plan}:PlanAndTargetElementT) {
-    this.target = target;
+    this._target = target;
 
     if (plan)
       this.addPlan(plan);
@@ -75,7 +75,7 @@ export default class TweenPerformerWeb {
     console.assert(
       TweenPerformerWeb.canHandle(
         {
-          target: this.target,
+          target: this._target,
           plan,
         }
       ),
@@ -89,8 +89,8 @@ export default class TweenPerformerWeb {
       plan.toJS()
     );
 
-    this.target.animate(
-      ...animateArgsForPlanAndTarget(plan, this.target)
+    this._target.animate(
+      ...animateArgsForPlanAndTarget(plan, this._target)
     );
   }
 }
