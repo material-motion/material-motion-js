@@ -1,6 +1,11 @@
 {
-  "phabricator.uri" : "http://codereview.cc/",
-  "arc.land.onto.default" : "develop",
-  "arc.feature.start.default": "origin/develop",
-  "git.default-relative-commit" : "origin/develop"
+  "load": [
+    ".arc-hooks/post-diff/arc-hook-github-issues",
+    "third_party/arc-hook-conphig",
+    "third_party/arc-proselint"
+  ],
+  "arcanist_configuration": "HookConphig",
+  "phabricator.uri": "http://codereview.cc/",
+  "arc.land.onto.default": "develop",
+  "arc.feature.start.default": "origin/develop"
 }

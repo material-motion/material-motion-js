@@ -1,0 +1,9 @@
+[submodule "third_party/arc-proselint"]
+	path = third_party/arc-proselint
+	url = https://github.com/google/arc-proselint.git
+[submodule "third_party/arc-hook-conphig"]
+	path = third_party/arc-hook-conphig
+	url = https://github.com/material-foundation/arc-hook-conphig.git
+[submodule ".arc-hooks/post-diff/arc-hook-github-issues"]
+	path = .arc-hooks/post-diff/arc-hook-github-issues
+	url = https://github.com/material-foundation/arc-hook-github-issues.git
