@@ -16,6 +16,18 @@
  *  @flow
  */
 
+import {distinctUntilChanged} from 'rxjs-es/operator/distinctUntilChanged';
+import {first} from 'rxjs-es/operator/first';
+import {fromEvent as observableFromEvent} from 'rxjs-es/observable/fromEvent';
+import {mapTo} from 'rxjs-es/operator/mapTo';
+import {map} from 'rxjs-es/operator/map';
+import {mergeMap as flatMap} from 'rxjs-es/operator/mergeMap';
+import {merge} from 'rxjs-es/operator/merge';
+import {Observable} from 'rxjs-es/Observable';
+import {raceStatic as raceObservables} from 'rxjs-es/operator/race';
+import {scan} from 'rxjs-es/operator/scan';
+import {Subject} from 'rxjs-es/Subject';
+
 import Scheduler from '../Scheduler';
 
 import {
@@ -36,13 +48,13 @@ import type {
 
 export type PlanAndTargetElementT = {
   target:Element,
-}&PlanAndTargetT
+}&PlanAndTargetT;
 
 // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/8):
 // Add support for Element.prototype.animate to Flow
 
 export default class TweenPerformerWeb {
-  static canHandle({target, plan}:PlanAndTargetT) {
+  static canHandle({target, plan}:PlanAndTargetT):boolean {
     // It may be interesting to have a debug mode where this logs the tests
     // and whether they pass/fail.
 
@@ -63,15 +75,56 @@ export default class TweenPerformerWeb {
   }
 
   _target:Element;
+  _playerStream:Subject = new Subject();
+
+  // _activePlayerCountStream keeps a running tally of the active players by
+  // incrementing 1 for every new player and decrementing 1 for every completed
+  // player.
+  //
+  // We're presuming that players start playing immediately and only finish
+  // once.  So long as nobody calls player.{reverse,pause,play,finish,cancel},
+  // this presumption should hold.
+  _activePlayerCountStream:Observable = this._playerStream::mapTo(
+    1
+  )::merge(
+    this._playerStream::flatMap(
+      player => raceObservables(
+        observableFromEvent(player, 'finish'),
+        observableFromEvent(player, 'cancel'),
+      )::first()::mapTo(
+        -1
+      )
+    )
+  )::scan(
+    (currentValue, nextValue) => currentValue + nextValue
+  );
+
+  _isActiveStream:Observable = this._activePlayerCountStream::map(
+    incompletePlayerCount => incompletePlayerCount >= 1
+  )::distinctUntilChanged();
+
+  get isActiveStream():Observable {
+    return this._isActiveStream;
+  }
+
+  get isActive():boolean {
+    return this._isActive;
+  }
 
   constructor({target, plan}:PlanAndTargetElementT) {
     this._target = target;
+
+    this._isActiveSubscription = this._isActiveStream.subscribe(
+      isActive => {
+        this._isActive = isActive;
+      }
+    );
 
     if (plan)
       this.addPlan(plan);
   }
 
-  addPlan(plan:PlanT) {
+  addPlan(plan:PlanT):void {
     console.assert(
       TweenPerformerWeb.canHandle(
         {
@@ -84,14 +137,20 @@ export default class TweenPerformerWeb {
     );
 
     console.log(
-      `TweenPerformerWeb doesn't yet handle multiple simultaeneous`,
+      `TweenPerformerWeb doesn't yet handle multiple simultaneous`,
       `plans, so we log them here so you can see we've received them.`,
       plan.toJS()
     );
 
-    this._target.animate(
+    const player = this._target.animate(
       ...animateArgsForPlanAndTarget(plan, this._target)
     );
+
+    this._playerStream.next(player);
+  }
+
+  dispose():void {
+    this._isActiveSubscription.unsubscribe();
   }
 }
 
