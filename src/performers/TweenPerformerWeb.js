@@ -16,19 +16,19 @@
  *  @flow
  */
 
-import {distinctUntilChanged} from 'rxjs-es/operator/distinctUntilChanged';
 import {first} from 'rxjs-es/operator/first';
 import {fromEvent as observableFromEvent} from 'rxjs-es/observable/fromEvent';
-import {mapTo} from 'rxjs-es/operator/mapTo';
-import {map} from 'rxjs-es/operator/map';
 import {mergeMap as flatMap} from 'rxjs-es/operator/mergeMap';
-import {merge} from 'rxjs-es/operator/merge';
 import {Observable} from 'rxjs-es/Observable';
 import {raceStatic as raceObservables} from 'rxjs-es/operator/race';
-import {scan} from 'rxjs-es/operator/scan';
+import {startWith} from 'rxjs-es/operator/startWith';
 import {Subject} from 'rxjs-es/Subject';
 
 import Scheduler from '../Scheduler';
+
+import {
+  areStreamsBalanced,
+} from '../observables';
 
 import {
   TweenProperty,
@@ -77,46 +77,35 @@ export default class TweenPerformerWeb {
   _target:Element;
   _playerStream:Subject = new Subject();
 
-  // _activePlayerCountStream keeps a running tally of the active players by
-  // incrementing 1 for every new player and decrementing 1 for every completed
-  // player.
+  // Track whether we've received a completion event for every player.
   //
   // We're presuming that players start playing immediately and only finish
   // once.  So long as nobody calls player.{reverse,pause,play,finish,cancel},
   // this presumption should hold.
-  _activePlayerCountStream:Observable = this._playerStream::mapTo(
-    1
-  )::merge(
+  _isIdleStream:Observable = areStreamsBalanced(
+    this._playerStream,
     this._playerStream::flatMap(
       player => raceObservables(
         observableFromEvent(player, 'finish'),
         observableFromEvent(player, 'cancel'),
-      )::first()::mapTo(
-        -1
-      )
+      )::first()
     )
-  )::scan(
-    (currentValue, nextValue) => currentValue + nextValue
-  );
+  )::startWith(true);
 
-  _isActiveStream:Observable = this._activePlayerCountStream::map(
-    incompletePlayerCount => incompletePlayerCount >= 1
-  )::distinctUntilChanged();
-
-  get isActiveStream():Observable {
-    return this._isActiveStream;
+  get isIdleStream():Observable {
+    return this._isIdleStream;
   }
 
-  get isActive():boolean {
-    return this._isActive;
+  get isIdle():boolean {
+    return this._isIdle;
   }
 
   constructor({target, plan}:PlanAndTargetElementT) {
     this._target = target;
 
-    this._isActiveSubscription = this._isActiveStream.subscribe(
-      isActive => {
-        this._isActive = isActive;
+    this._isIdleSubscription = this._isIdleStream.subscribe(
+      isIdle => {
+        this._isIdle = isIdle;
       }
     );
 
@@ -150,7 +139,7 @@ export default class TweenPerformerWeb {
   }
 
   dispose():void {
-    this._isActiveSubscription.unsubscribe();
+    this._isIdleSubscription.unsubscribe();
   }
 }
 
