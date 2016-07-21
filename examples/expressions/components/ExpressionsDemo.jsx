@@ -83,26 +83,37 @@ export default React.createClass(
           fade().from(1).by(-.5),
         ],
         buttonIsDown: false,
+        schedulerIsIdle: null,
       };
     },
 
     componentWillMount() {
       this.scheduler = new Scheduler();
+      this.scheduler.isIdleStream.subscribe(
+        schedulerIsIdle => {
+          this.setState(
+            {
+              schedulerIsIdle,
+            }
+          );
+        }
+      );
     },
 
     render() {
       const {
         tests,
         buttonIsDown,
+        schedulerIsIdle,
       } = this.state;
 
       return (
         <div
-            style = {
-              {
-                margin: 16,
-              }
+          style = {
+            {
+              margin: 16,
             }
+          }
         >
           <div
             style = {
@@ -164,6 +175,7 @@ export default React.createClass(
               onChange = { this.onSelectChange }
               style = {
                 {
+                  fontFamily: 'Inconsolata',
                   height: 56,
                   fontSize: 16,
                   marginBottom: 16,
@@ -211,6 +223,16 @@ export default React.createClass(
             >
               Animate!
             </button>
+            <pre
+              style = {
+                {
+                  alignSelf: 'center',
+                  marginTop: 16,
+                }
+              }
+            >
+              scheduler.isIdle: { String(schedulerIsIdle) }
+            </pre>
           </div>
         </div>
       );

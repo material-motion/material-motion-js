@@ -18,11 +18,20 @@
 
 // RxJS exports each method separately to support tree shaking, but doesn't
 // export defaults
-import {from as observableFrom} from 'rxjs-es/observable/from';
+import {distinctUntilChanged} from 'rxjs-es/operator/distinctUntilChanged';
 import {find} from 'rxjs-es/operator/find';
-import {mergeMap as flatMap} from 'rxjs-es/operator/mergeMap';
+import {from as observableFrom} from 'rxjs-es/observable/from';
 import {groupBy} from 'rxjs-es/operator/groupBy';
 import {map} from 'rxjs-es/operator/map';
+import {mergeMap as flatMap} from 'rxjs-es/operator/mergeMap';
+import {partition} from 'rxjs-es/operator/partition';
+import {Subject} from 'rxjs-es/Subject';
+import {skipWhile} from 'rxjs-es/operator/skipWhile';
+import {startWith} from 'rxjs-es/operator/startWith';
+
+import {
+  areStreamsBalanced,
+} from './observables';
 
 import type {
   PerformerI,
@@ -39,7 +48,7 @@ export default class Scheduler {
     ];
   }
 
-  _performers:Array<PerformerI> = [];
+  _performerStream:Subject<PerformerI> = new Subject();
 
   // RxJS's groupBy uses a Map under-the-hood to do comparisons (rather than
   // letting you specify your own).  Hence, for two keys to be equivalent, they
@@ -49,6 +58,36 @@ export default class Scheduler {
   // make sure for any pair this Scheduler knows about, it returns the same key.
   _targetAndPerformerSelector = makeCompoundKeySelector('Performer', 'target');
 
+  _isIdleStream:Observable = areStreamsBalanced(
+    ...(
+      this._performerStream::flatMap(
+        performer => performer.isIdleStream::distinctUntilChanged()::skipWhile(
+          performerIsIdle => performerIsIdle === true
+        )
+      )::partition(
+        value => value === true
+      )
+    )
+  )::distinctUntilChanged()::startWith(true);
+
+  get isIdleStream():Observable {
+    return this._isIdleStream;
+  }
+
+  get isIdle():boolean {
+    return this._isIdle;
+  }
+
+  constructor() {
+    // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/46/):
+    // Either implement dispose or kill `isIdle` and just use `isIdleStream`
+    this._isIdleSubscription = this._isIdleStream.subscribe(
+      isIdle => {
+        this._isIdle = isIdle;
+      }
+    );
+  }
+
   // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/11):
   // Use a Subject to compose each performer's active streams and deduce if
   // we're still active
@@ -56,7 +95,7 @@ export default class Scheduler {
   // Trying my hand at implementing this with Observables, both to keep the
   // overall library size down and because Observables will probably be a good
   // solution for things like maintaining and notifying subscribers of changes
-  // to isActive.
+  // to isIdle.
   //
   // This could likely be written in an easier-to-follow (and perhaps easier-to-
   // maintain) way with something like Immutable or lodash.
@@ -68,7 +107,7 @@ export default class Scheduler {
     //
     // That doesn't matter here (since `commit` doesn't return anything), but
     // it's good to understand.
-    const performerStream = observableFrom(
+    observableFrom(
       plansAndTargets
 
     // This following block returns a new stream of 1 item for each
@@ -105,16 +144,17 @@ export default class Scheduler {
 
         return performer;
       }
-    );
+    ).subscribe(
+      performer => {
+        // In the interests of doing the simplest-thing-that-works, I'm just
+        // subscribing to the pipeline I already have and forwarding the
+        // performers to _performerStream so isIdleStream can use them.
+        //
+        // Next on my list is refactoring this whole method.
+        // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/41)
 
-    // Streams are cold unless you subscribe to them, so we collect and hold a
-    // reference to each performer here, both to pull values through the stream
-    // and to keep the performers from being garbage collected.
-    //
-    // As the capabilities of Scheduler grow, what should actually happen to our
-    // flow (and how to ideally pull data through it) should become more clear.
-    performerStream.subscribe(
-      performer => this._performers.push(performer)
+        this._performerStream.next(performer);
+      }
     );
   }
 }
