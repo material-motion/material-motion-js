@@ -83,17 +83,17 @@ export default React.createClass(
           fade().from(1).by(-.5),
         ],
         buttonIsDown: false,
-        schedulerIsIdle: null,
+        schedulerIsAtRest: null,
       };
     },
 
     componentWillMount() {
       this.scheduler = new Scheduler();
-      this.scheduler.isIdleStream.subscribe(
-        schedulerIsIdle => {
+      this.scheduler.isAtRestStream.subscribe(
+        schedulerIsAtRest => {
           this.setState(
             {
-              schedulerIsIdle,
+              schedulerIsAtRest,
             }
           );
         }
@@ -104,7 +104,7 @@ export default React.createClass(
       const {
         tests,
         buttonIsDown,
-        schedulerIsIdle,
+        schedulerIsAtRest,
       } = this.state;
 
       return (
@@ -231,7 +231,7 @@ export default React.createClass(
                 }
               }
             >
-              scheduler.isIdle: { String(schedulerIsIdle) }
+              scheduler.isAtRest: { String(schedulerIsAtRest) }
             </pre>
           </div>
         </div>

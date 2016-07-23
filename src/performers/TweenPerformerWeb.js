@@ -82,7 +82,7 @@ export default class TweenPerformerWeb {
   // We're presuming that players start playing immediately and only finish
   // once.  So long as nobody calls player.{reverse,pause,play,finish,cancel},
   // this presumption should hold.
-  _isIdleStream:Observable = areStreamsBalanced(
+  _isAtRestStream:Observable = areStreamsBalanced(
     this._playerStream,
     this._playerStream::flatMap(
       player => raceObservables(
@@ -92,20 +92,20 @@ export default class TweenPerformerWeb {
     )
   )::startWith(true);
 
-  get isIdleStream():Observable {
-    return this._isIdleStream;
+  get isAtRestStream():Observable {
+    return this._isAtRestStream;
   }
 
-  get isIdle():boolean {
-    return this._isIdle;
+  get isAtRest():boolean {
+    return this._isAtRest;
   }
 
   constructor({target, plan}:PlanAndTargetElementT) {
     this._target = target;
 
-    this._isIdleSubscription = this._isIdleStream.subscribe(
-      isIdle => {
-        this._isIdle = isIdle;
+    this._isAtRestSubscription = this._isAtRestStream.subscribe(
+      isAtRest => {
+        this._isAtRest = isAtRest;
       }
     );
 
@@ -139,7 +139,7 @@ export default class TweenPerformerWeb {
   }
 
   dispose():void {
-    this._isIdleSubscription.unsubscribe();
+    this._isAtRestSubscription.unsubscribe();
   }
 }
 

@@ -58,11 +58,12 @@ export default class Scheduler {
   // make sure for any pair this Scheduler knows about, it returns the same key.
   _targetAndPerformerSelector = makeCompoundKeySelector('Performer', 'target');
 
-  _isIdleStream:Observable = areStreamsBalanced(
+  _isAtRestStream:Observable = areStreamsBalanced(
     ...(
       this._performerStream::flatMap(
-        performer => performer.isIdleStream::distinctUntilChanged()::skipWhile(
-          performerIsIdle => performerIsIdle === true
+          performer => performer.isAtRestStream::distinctUntilChanged(
+        )::skipWhile(
+          performerIsAtRest => performerIsAtRest === true
         )
       )::partition(
         value => value === true
@@ -70,20 +71,20 @@ export default class Scheduler {
     )
   )::distinctUntilChanged()::startWith(true);
 
-  get isIdleStream():Observable {
-    return this._isIdleStream;
+  get isAtRestStream():Observable {
+    return this._isAtRestStream;
   }
 
-  get isIdle():boolean {
-    return this._isIdle;
+  get isAtRest():boolean {
+    return this._isAtRest;
   }
 
   constructor() {
     // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/46/):
-    // Either implement dispose or kill `isIdle` and just use `isIdleStream`
-    this._isIdleSubscription = this._isIdleStream.subscribe(
-      isIdle => {
-        this._isIdle = isIdle;
+    // Either implement dispose or kill `isAtRest` and just use `isAtRestStream`
+    this._isAtRestSubscription = this._isAtRestStream.subscribe(
+      isAtRest => {
+        this._isAtRest = isAtRest;
       }
     );
   }
@@ -95,7 +96,7 @@ export default class Scheduler {
   // Trying my hand at implementing this with Observables, both to keep the
   // overall library size down and because Observables will probably be a good
   // solution for things like maintaining and notifying subscribers of changes
-  // to isIdle.
+  // to isAtRest.
   //
   // This could likely be written in an easier-to-follow (and perhaps easier-to-
   // maintain) way with something like Immutable or lodash.
@@ -148,7 +149,7 @@ export default class Scheduler {
       performer => {
         // In the interests of doing the simplest-thing-that-works, I'm just
         // subscribing to the pipeline I already have and forwarding the
-        // performers to _performerStream so isIdleStream can use them.
+        // performers to _performerStream so isAtRestStream can use them.
         //
         // Next on my list is refactoring this whole method.
         // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/41)
