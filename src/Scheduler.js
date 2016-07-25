@@ -24,7 +24,9 @@ import {from as observableFrom} from 'rxjs-es/observable/from';
 import {groupBy} from 'rxjs-es/operator/groupBy';
 import {map} from 'rxjs-es/operator/map';
 import {mergeMap as flatMap} from 'rxjs-es/operator/mergeMap';
+import {Observable} from 'rxjs-es/Observable';
 import {partition} from 'rxjs-es/operator/partition';
+import {share} from 'rxjs-es/operator/share';
 import {Subject} from 'rxjs-es/Subject';
 import {skipWhile} from 'rxjs-es/operator/skipWhile';
 import {startWith} from 'rxjs-es/operator/startWith';
@@ -48,18 +50,64 @@ export default class Scheduler {
     ];
   }
 
-  _performerStream:Subject<PerformerI> = new Subject();
-
   // RxJS's groupBy uses a Map under-the-hood to do comparisons (rather than
   // letting you specify your own).  Hence, for two keys to be equivalent, they
-  // have to share the same reference (e.g. it doesn't check deep equality).
+  // have to share the same reference; it doesn't check deep equality.
   //
   // Therefore, we store a selector of all known Performer:target pairs here, to
   // make sure for any pair this Scheduler knows about, it returns the same key.
-  _targetAndPerformerSelector = makeCompoundKeySelector('Performer', 'target');
+  // We can ensure old performers are GCed by resetting this selector (thus
+  // clearing its state).
+  _targetAndPerformerSelector = makePerformerTargetSelector();
 
+  _plansAndTargetsStream:Subject<PerformerI> = new Subject();
+  _performerStream:Observable<PerformerI> = this._plansAndTargetsStream::flatMap(
+    // Find the first Performer that can handle each {plan, target} and add it
+    // to the pair.
+    planAndTarget => observableFrom(Scheduler.performerRegistry)::find(
+      Performer => Performer.canHandle(planAndTarget)
+    )::map(
+      Performer => ({...planAndTarget, Performer})
+    )
+
+  // Then, turn the stream of {plan, target, Performer} into streams of
+  // {Performer, target}: [...plans]
+  )::groupBy(
+    this._targetAndPerformerSelector,
+    planTargetAndPerformer => planTargetAndPerformer.plan
+
+  // and make a new performer for every {Performer, target}
+  )::map(
+    plansStreamByTargetAndPerformer => {
+      const {
+        target,
+        Performer,
+      } = plansStreamByTargetAndPerformer.key;
+
+      const performer = new Performer({target});
+
+      // Finally, add every plan on this stream to the performer we just made
+      plansStreamByTargetAndPerformer.subscribe(
+        plan => {
+          performer.addPlan(plan);
+        }
+      );
+
+      return performer;
+    }
+
+  // Every time we pull a plan through this stream, it makes a new performer.
+  // Therefore, we're using `share` to ensure we only pull each one through
+  // once.
+  )::share();
+
+  // If we get an equal number of false and trues on each
+  // performer.isAtRestStream, every performer has come to rest; therefore, the
+  // scheduler is at rest.
   _isAtRestStream:Observable = areStreamsBalanced(
     ...(
+      // Make sure we don't double-count, even if a performer sends more events
+      // than it should.
       this._performerStream::flatMap(
           performer => performer.isAtRestStream::distinctUntilChanged(
         )::skipWhile(
@@ -89,74 +137,10 @@ export default class Scheduler {
     );
   }
 
-  // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/11):
-  // Use a Subject to compose each performer's active streams and deduce if
-  // we're still active
-
-  // Trying my hand at implementing this with Observables, both to keep the
-  // overall library size down and because Observables will probably be a good
-  // solution for things like maintaining and notifying subscribers of changes
-  // to isAtRest.
-  //
-  // This could likely be written in an easier-to-follow (and perhaps easier-to-
-  // maintain) way with something like Immutable or lodash.
   commit(plansAndTargets:Iterable<PlanAndTargetT>) {
-    // Observable streams are like async code in that the infect everything they
-    // touch.  Even if you know the Observable will resolve synchronously, I
-    // don't know of a way to marshall a result back from an Rx stream back to
-    // the caller (like Immutable's collection.toJS())
-    //
-    // That doesn't matter here (since `commit` doesn't return anything), but
-    // it's good to understand.
-    observableFrom(
-      plansAndTargets
-
-    // This following block returns a new stream of 1 item for each
-    // PlanAndTargetT - the first Performer that says it knows how to handle
-    // that PlanAndTargetT.  If we used `map` here, we'd have a two-dimensional
-    // stream (a stream of 1-item streams).  Instead, we use `flatMap`, which
-    // takes the values emitted by the inner streams and publishes them on the
-    // main stream.
-    )::flatMap(
-      planAndTarget => observableFrom(Scheduler.performerRegistry)::find(
-        Performer => Performer.canHandle(planAndTarget)
-      )::map(
-        Performer => ({...planAndTarget, Performer})
-      )
-
-    // Now take the stream of {plan, target, Performer} and turn it into streams
-    // of {Performer, target}: [...plans]
-    )::groupBy(
-      this._targetAndPerformerSelector,
-      planTargetAndPerformer => planTargetAndPerformer.plan
-    )::map(
-      plansStreamByTargetAndPerformer => {
-        const {
-          target,
-          Performer,
-        } = plansStreamByTargetAndPerformer.key;
-
-        const performer = new Performer({target});
-
-        // add every plan on this stream to the performer we just made
-        plansStreamByTargetAndPerformer.subscribe(
-          plan => performer.addPlan(plan)
-        );
-
-        return performer;
-      }
-    ).subscribe(
-      performer => {
-        // In the interests of doing the simplest-thing-that-works, I'm just
-        // subscribing to the pipeline I already have and forwarding the
-        // performers to _performerStream so isAtRestStream can use them.
-        //
-        // Next on my list is refactoring this whole method.
-        // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/41)
-
-        this._performerStream.next(performer);
-      }
-    );
+    for (const planAndTarget of plansAndTargets) {
+      this._plansAndTargetsStream.next(planAndTarget);
+    }
   }
 }
 
@@ -190,4 +174,8 @@ function makeCompoundKeySelector(key1, key2) {
       return result;
     }
   };
+}
+
+function makePerformerTargetSelector() {
+  return makeCompoundKeySelector('Performer', 'target');
 }
