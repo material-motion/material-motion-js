@@ -27,6 +27,8 @@ import {
   ExpressionsDemo,
 } from './expressions/components';
 
+import * as MaterialMotion from '../src';
+
 export default (
   <Route>
     <Route

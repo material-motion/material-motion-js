@@ -22,11 +22,6 @@ handlers:
 # static_files is working as expected, but static_dir isn't.  We should
 # understand why.
 
-- url: /dist/(.*\.js)
-  mime_type: text/javascript
-  static_files: ../dist/\1
-  upload: ../dist/(.*\.js)
-
 - url: /static/(.*)
   static_files: static/\1
   upload: static/(.*)

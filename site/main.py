@@ -41,15 +41,7 @@ class ContainerServer(webapp2.RequestHandler):
     self.response.write(
       template.render(
         {
-          # webpack-dev-server will only serve from one path, even if it can build
-          # to many.  The compiled material-motion.js is in dist to make it easy
-          # for consumers to find.  To avoid cluttering that folder, the other JS
-          # files are in static.
-          #
-          # Therefore, we have two constants, one for DIST and one for STATIC.
-          # https://github.com/webpack/webpack-dev-server/issues/150
-          "STATIC_JS_PATH": 'http://localhost:8081/' if IS_LOCAL else '/static/',
-          "DIST_JS_PATH": 'http://localhost:8081/' if IS_LOCAL else '/dist/',
+          "JS_PATH": 'http://localhost:8081/' if IS_LOCAL else '/static/',
         }
       )
     )

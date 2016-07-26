@@ -19,6 +19,7 @@
 // RxJS exports each method separately to support tree shaking, but doesn't
 // export defaults
 import {distinctUntilChanged} from 'rxjs-es/operator/distinctUntilChanged';
+import {_do as tap} from 'rxjs-es/operator/do';
 import {find} from 'rxjs-es/operator/find';
 import {from as observableFrom} from 'rxjs-es/observable/from';
 import {groupBy} from 'rxjs-es/operator/groupBy';
@@ -66,6 +67,21 @@ export default class Scheduler {
     // to the pair.
     planAndTarget => observableFrom(Scheduler.performerRegistry)::find(
       Performer => Performer.canHandle(planAndTarget)
+    )::tap(
+      Performer => {
+        console.assert(
+          Performer !== undefined,
+          planAndTarget.plan,
+          `Material Motion could not find a Performer class to handle this plan.  ` +
+          (
+            Scheduler.performerRegistry.length === 0
+              ? `To ensure all the default Performers are available, add this line to your application:\n\n` +
+                `    import * as MaterialMotion from "material-motion-experiments";`
+              : `If you are using a custom Performer, ensure that you've registered it with the Scheduler:\n\n` +
+                `    Scheduler.registerPerformer(MyCustomerPerformerClass)`
+          )
+        )
+      }
     )::map(
       Performer => ({...planAndTarget, Performer})
     )

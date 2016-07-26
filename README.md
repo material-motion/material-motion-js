@@ -18,6 +18,17 @@ Motion Starmap](https://material-motion.gitbooks.io/material-motion-starmap/cont
   user trust in the overall system: “should I enter my password in a glitchy
   app?”
 
+## Usage ##
+
+Material Motion needs some
+[Performers](https://material-motion.gitbooks.io/material-motion-starmap/content/specifications/runtime/performer.html)
+to do the actual animating.  You can install the default set by adding this line
+to the imports in your primary JavaScript file:
+
+```javascript
+import * as MaterialMotion from "material-motion-experiments";
+```
+
 ## Setup ##
 
 As with any modern JavaScript library, you can install the dependencies using
