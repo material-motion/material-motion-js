@@ -22,6 +22,7 @@ import {map} from 'rxjs-es/operator/map';
 import {merge} from 'rxjs-es/operator/merge';
 import {Observable} from 'rxjs-es/Observable';
 import {scan} from 'rxjs-es/operator/scan';
+import {Subject} from 'rxjs-es/Subject';
 
 export function areStreamsBalanced(
   incrementStream:Observable<mixed>,
@@ -34,4 +35,34 @@ export function areStreamsBalanced(
   )::map(
     count => count === 0
   )::distinctUntilChanged();
+}
+
+export class TimeStream extends Subject {
+  _nextFrameQueued:boolean = false;
+
+  _subscribe(observer):void {
+    const subscription = super._subscribe(observer);
+
+    // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/50)
+    // Make sure observer.next is called exactly once for each observer on this
+    // frame
+    if (!this._nextFrameQueued) {
+      this._queueNextFrame();
+      this._nextFrameQueued = true;
+    }
+
+    return subscription;
+  }
+
+  _queueNextFrame(timestamp:number = performance.now()):void {
+    super.next(timestamp);
+
+    if (this.observers && this.observers.length) {
+      requestAnimationFrame(::this._queueNextFrame);
+      this._nextFrameQueued = true;
+
+    } else {
+      this._nextFrameQueued = false;
+    }
+  }
 }

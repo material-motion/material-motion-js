@@ -23,14 +23,18 @@ import {
   Redirect,
 } from 'react-router';
 
-import {
-  ExpressionsDemo,
-} from './expressions/components';
+import CustomPerformerDemo from './custom-performer/components/CustomPerformerDemo';
+import ExpressionsDemo from './expressions/components/ExpressionsDemo';
 
 import * as MaterialMotion from '../src';
 
 export default (
   <Route>
+    <Route
+      path = 'custom-performer'
+      component = { CustomPerformerDemo }
+    />
+
     <Route
       path = 'expressions'
       component = { ExpressionsDemo }
