@@ -24,8 +24,6 @@ const Webpack = require('webpack');
 const path = require('path');
 
 const commonSettings = {
-  devtool: 'eval',
-
   resolve: {
     extensions: [
       '',
@@ -118,6 +116,8 @@ if (global.USE_HMR) {
       }
     )
   ).set(
+    'devtool', 'cheap-module-eval-source-map'
+  ).set(
     'plugins',
     [
       new Webpack.HotModuleReplacementPlugin(),
@@ -147,6 +147,8 @@ if (global.USE_HMR) {
     ).update(
       'output',
       output => output.merge(bundle.output)
+    ).set(
+      'devtool', 'source-map'
     ).set(
       'plugins',
       [
