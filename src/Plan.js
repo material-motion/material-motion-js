@@ -17,5 +17,5 @@
  */
 
 export type PlanT = {
-  family:string|Symbol,
+  familyName:string|Symbol,
 };

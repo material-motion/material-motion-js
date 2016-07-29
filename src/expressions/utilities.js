@@ -16,10 +16,6 @@
  *  @flow
  */
 
-import {
-  List as ImmutableList,
-} from 'immutable';
-
 type DescriptorT = {
   value:any,
   configurable: bool,
@@ -44,7 +40,7 @@ export function logTerm(target:Object, name:string, descriptor:DescriptorT) {
     initializer: function() {
       return function(...args:Array<any>) {
         const result = descriptor.value.apply(this, args);
-        result.log = this.log.push(`${ name }(${ stringifyArgs(args) })`);
+        result.log = [...this.log, `${ name }(${ stringifyArgs(args) })`];
         return result;
       };
     },
@@ -69,9 +65,7 @@ export function startTermLog(root:Function) {
     root.name,
     function(...args:Array<any>) {
       const expression = root(...args);
-      expression.log = ImmutableList(
-        [`${ root.name }(${ stringifyArgs(args) })`]
-      );
+      expression.log = [`${ root.name }(${ stringifyArgs(args) })`];
       return expression;
     }
   );

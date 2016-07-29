@@ -80,7 +80,7 @@ export default class Scheduler {
               : `If you are using a custom Performer, ensure that you've registered it with the Scheduler:\n\n` +
                 `    Scheduler.registerPerformer(MyCustomerPerformerClass)`
           )
-        )
+        );
       }
     )::map(
       Performer => ({...planAndTarget, Performer})

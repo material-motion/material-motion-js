@@ -19,14 +19,16 @@
 // Goal: write the simplest possible thing-that-works to learn Expressions and
 // build abstractions as useful from there.
 
-// TODO(https://github.com/material-motion/material-motion-experiments-js/issues/2):
-// implement Plans as POJOs and remove Immutable dependency
 import {
-  List as ImmutableList,
-  Map as ImmutableMap,
-} from 'immutable';
+  TweenFamilyName,
+  TweenProperty,
+} from '../families/TweenFamily';
 
-import MaterialMotionFamilies from '../families';
+import type {
+  Point2DT,
+  TweenPlanBaseT,
+  TweenPlanT,
+} from '../families/TweenFamily';
 
 import {
   MaterialMotionEasing,
@@ -41,45 +43,38 @@ import {
   logTerm,
 } from './utilities';
 
-export type Point2DT = {
-  x:number,
-}|{
-  y:number,
-};
-
-export type PlanValueT = Point2DT|number;
-
-export const TweenProperty = {
-  TRANSLATION: 'translate',
-  ROTATION: 'rotate',
-  SCALE: 'scale',
-  OPACITY: 'opacity',
-};
-
 export class Tween<T> {
-  plan:ImmutableMap = ImmutableMap(
-    {
-      family: MaterialMotionFamilies.TWEENS,
-      easing: MaterialMotionEasing.STANDARD,
-      duration: .3,
+  plan:TweenPlanBaseT = {
+    familyName: TweenFamilyName,
+    easing: MaterialMotionEasing.STANDARD,
+    duration: .3,
+  };
+
+  log:string[] = [];
+
+  // Not sure what the right type is for partialPlan.  $Shape<TweenPlanT> seems
+  // correct, but that makes Flow angry about all the methods.
+  constructor(partialPlan:mixed) {
+    if (partialPlan) {
+      this.plan = {
+        ...this.plan,
+        ...partialPlan,
+      };
     }
-  );
-
-  log:ImmutableList = ImmutableList();
-
-  constructor(plan) {
-    if (plan)
-      this.plan = this.plan.merge(plan);
   }
 
   @logTerm
   with(easing:CubicBezierArgsT):Tween<T> {
+    // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/38):
     // When Tween is extended to support springs, make sure to delete `easing`
     // and `duration` if you receive spring params, and the spring params if
     // you receive an easing curve.
 
     return new this.constructor(
-      this.plan.set('easing', easing)
+      {
+        ...this.plan,
+        easing,
+      }
     );
   }
 
@@ -89,28 +84,40 @@ export class Tween<T> {
     // this is called.
 
     return new this.constructor(
-      this.plan.set('duration', duration)
+      {
+        ...this.plan,
+        duration,
+      }
     );
   }
 
   @logTerm
   from(location:T):Tween<T> {
     return new this.constructor(
-      this.plan.set('from', location)
+      {
+        ...this.plan,
+        from: location,
+      }
     );
   }
 
   @logTerm
   to(location:T):Tween<T> {
     return new this.constructor(
-      this.plan.set('to', location)
+      {
+        ...this.plan,
+        to: location,
+      }
     );
   }
 
   @logTerm
   by(location:T):Tween<T> {
     return new this.constructor(
-      this.plan.set('by', location)
+      {
+        ...this.plan,
+        by: location,
+      }
     );
   }
 
@@ -118,31 +125,31 @@ export class Tween<T> {
     return this.log.join('.');
   }
 
-  // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/3):
+  // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/52):
   // - Move this out of the expression to somewhere where it can test arbitrary
   // plans
   isValid():boolean {
     return (
-      this.plan.has('property') &&
+      this.plan.property !== undefined &&
       (
         (
-          this.plan.has('from') &&
-          this.plan.has('to') &&
-          !this.plan.has('by')
+          this.plan.from !== undefined &&
+          this.plan.to !== undefined &&
+          !(this.plan.by !== undefined)
         ) ||
         (
-          this.plan.has('from') &&
-          !this.plan.has('to') &&
-          this.plan.has('by')
+          this.plan.from !== undefined &&
+          !(this.plan.to !== undefined) &&
+          this.plan.by !== undefined
         ) ||
         (
-          !this.plan.has('from') &&
-          this.plan.has('to') &&
-          this.plan.has('by')
+          !(this.plan.from !== undefined) &&
+          this.plan.to !== undefined &&
+          this.plan.by !== undefined
         )
       ) && (
-        this.plan.has('duration') &&
-        this.plan.has('easing')
+        this.plan.duration !== undefined &&
+        this.plan.easing !== undefined
       )
     );
   }

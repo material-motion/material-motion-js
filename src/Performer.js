@@ -25,7 +25,6 @@ export type PlanAndTargetT = {
   target:mixed
 };
 
-
 // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/1)
 // No idea if this is the right syntax
 interface PerformerInstancesI {

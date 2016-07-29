@@ -16,8 +16,5 @@
  *  @flow
  */
 
-const MaterialMotionFamilies = {
-  TWEENS: 'material-motion-tween-family',
-};
-
-export default MaterialMotionFamilies;
+// TODO(https://github.com/material-motion/material-motion-experiments-js/issues/54):
+export * from './TweenFamily';

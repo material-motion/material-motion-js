@@ -16,13 +16,15 @@
  *  @flow
  */
 
-export type CubicBezierArgsT = {
-  [key:string]: [number, number, number, number]
+export type CubicBezierArgsT = [number, number, number, number];
+
+type EasingEnumT = {
+  [key:string]: CubicBezierArgsT
 };
 
 // https://www.w3.org/TR/css3-transitions/
 
-export const CSSEasing:CubicBezierArgsT = {
+export const CSSEasing:EasingEnumT = {
   EASE: [.25, .1, .25, 1],
   LINEAR: [0, 0, 1, 1],
   EASE_IN: [.42, 0, 1, 1],
@@ -32,7 +34,7 @@ export const CSSEasing:CubicBezierArgsT = {
 
 // https://material.google.com/motion/duration-easing.html#duration-easing-natural-easing-curves
 
-export const MaterialMotionEasing:CubicBezierArgsT = {
+export const MaterialMotionEasing:EasingEnumT = {
   STANDARD: [.4, 0, .2, 1],
   ACCELERATION: [.4, 0, 1, 1],
   DECELERATION: [0, 0, .2, 1],

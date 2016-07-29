@@ -16,4 +16,5 @@
  *  @flow
  */
 
-export {default as tween} from './tween';
+// TODO(https://github.com/material-motion/material-motion-experiments-js/issues/54)
+export * from './tween';

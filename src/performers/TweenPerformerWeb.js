@@ -32,7 +32,7 @@ import {
 
 import {
   TweenProperty,
-} from '../expressions/tween';
+} from '../families/TweenFamily';
 
 import type {
   PlanT,
@@ -43,8 +43,9 @@ import type {
 } from '../Performer';
 
 import type {
-  PlanValueT,
-} from '../expressions/tween';
+  TweenPlanT,
+  TweenPlanValueT,
+} from '../families/TweenFamily';
 
 export type PlanAndTargetElementT = {
   target:Element,
@@ -58,7 +59,7 @@ export default class TweenPerformerWeb {
     // It may be interesting to have a debug mode where this logs the tests
     // and whether they pass/fail.
 
-    // // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/3):
+    // // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/52):
     // // get a plan spec by its family name and assert its validity
     // console.assert(
     //  plan.isValid(),
@@ -69,8 +70,12 @@ export default class TweenPerformerWeb {
     return (
       target.animate &&
       target instanceof Element &&
-      plan.has('duration') &&
-      plan.has('easing')
+
+      // A valid tween plan could use a spring or a bezier interpolator.
+      // After confirming that this is a valid TweenFamily plan, check that it
+      // has the requisite bezier parameters:
+      plan.duration > 0 &&
+      plan.easing && plan.easing.length === 4
     );
   }
 
@@ -128,7 +133,7 @@ export default class TweenPerformerWeb {
     console.log(
       `TweenPerformerWeb doesn't yet handle multiple simultaneous`,
       `plans, so we log them here so you can see we've received them.`,
-      plan.toJS()
+      plan
     );
 
     const player = this._target.animate(
@@ -146,11 +151,11 @@ export default class TweenPerformerWeb {
 Scheduler.registerPerformer(TweenPerformerWeb);
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Element/animate
-function animateArgsForPlanAndTarget(plan, target) {
+function animateArgsForPlanAndTarget(plan:TweenPlanT, target:Element) {
   // https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API/Animation_timing_options
   const options = {
-    duration: plan.get('duration') * 1000,
-    easing: `cubic-bezier(${ plan.get('easing').join(', ') })`,
+    duration: plan.duration * 1000,
+    easing: `cubic-bezier(${ plan.easing.join(', ') })`,
     composite: 'accumulate',
     fill: 'both',
   };
@@ -164,21 +169,22 @@ function animateArgsForPlanAndTarget(plan, target) {
   // rotations?  If it's absolute to the document, and we receive a fadeIn, how
   // do we handle cases where an ancestor has a translucent opacity?
 
-  let planProperty = plan.get('property');
+  let planProperty = plan.property;
   let start, end;
 
-  if (plan.has('from')) {
+  if (plan.from !== undefined) {
     start = getFrameFromPlan(plan, 'from');
 
-  } else if (plan.has('to') && plan.has('by')) {
+  } else if (plan.to !== undefined && plan.by !== undefined) {
     start = getFrameFromPlan(
-      plan.set(
-        'from',
-        subtractValues(
-          plan.get('by'),
-          plan.get('to')
-        )
-      ).delete('by'),
+      {
+        ...plan,
+        by: 0,
+        from: subtractValues(
+          plan.by,
+          plan.to
+        ),
+      },
       'from'
     );
 
@@ -186,10 +192,10 @@ function animateArgsForPlanAndTarget(plan, target) {
     start = introspectCurrentFrameForTarget(plan, target);
   }
 
-  if (plan.has('to')) {
+  if (plan.to !== undefined) {
     end = getFrameFromPlan(plan, 'to');
 
-  } else if (plan.has('by')) {
+  } else if (plan.by !== undefined) {
     const cssKey = getCSSKey(planProperty);
     const startValue = start[cssKey];
 
@@ -198,10 +204,11 @@ function animateArgsForPlanAndTarget(plan, target) {
       : getValueFromTransform(planProperty, startValue);
 
     end = getFrameFromPlan(
-      plan.set(
-        'to',
-        addValues(from, plan.get('by'))
-      ).delete('by'),
+      {
+        ...plan,
+        by: 0,
+        to: addValues(from, plan.by),
+      },
       'to'
     );
 
@@ -218,10 +225,8 @@ function animateArgsForPlanAndTarget(plan, target) {
   ];
 }
 
-function introspectCurrentFrameForTarget(plan, target) {
-  const key = getCSSKey(
-    plan.get('property')
-  );
+function introspectCurrentFrameForTarget(plan:TweenPlanT, target:Element) {
+  const key = getCSSKey(plan.property);
 
   // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/9):
   // - Add unit tests for all these little helper functions
@@ -239,13 +244,13 @@ function introspectCurrentFrameForTarget(plan, target) {
   };
 }
 
-function getFrameFromPlan(plan, frameName) {
+function getFrameFromPlan(plan:TweenPlanT, frameName) {
   let [
     key,
     value,
   ] = getCSSPair(
-    plan.get('property'),
-    plan.get(frameName)
+    plan.property,
+    plan[frameName]
   );
 
   return {
@@ -253,13 +258,13 @@ function getFrameFromPlan(plan, frameName) {
   };
 }
 
-function getCSSKey(planProperty) {
+function getCSSKey(planProperty:$Enum<typeof TweenProperty>) {
   return planProperty === TweenProperty.OPACITY
     ? 'opacity'
     : 'transform';
 }
 
-function getCSSPair(planProperty:string, value:PlanValueT):[string, string] {
+function getCSSPair(planProperty:string, value:TweenPlanValueT):[string, string] {
   let cssKey = getCSSKey(planProperty);
   let cssValue;
 
@@ -348,7 +353,7 @@ function getArgumentsFromTransform(methodName, transform) {
   return result;
 }
 
-function getValueFromTransform(methodName:string, transform:string):PlanValueT {
+function getValueFromTransform(methodName:string, transform:string):TweenPlanValueT {
   const transformArguments = getArgumentsFromTransform(
     methodName,
     transform
@@ -392,7 +397,7 @@ function getValueFromTransform(methodName:string, transform:string):PlanValueT {
 // Flow doesn't seem to support that yet
 //
 // https://flowtype.org/docs/functions.html#overloading
-function addValues(start:PlanValueT, end:PlanValueT):PlanValueT {
+function addValues(start:TweenPlanValueT, end:TweenPlanValueT):TweenPlanValueT {
   console.assert(
     start.constructor === end.constructor,
     `Cannot add values of differing shapes`, start, end
@@ -414,7 +419,7 @@ function addValues(start:PlanValueT, end:PlanValueT):PlanValueT {
   }
 }
 
-function subtractValues(start:PlanValueT, end:PlanValueT):PlanValueT {
+function subtractValues(start:TweenPlanValueT, end:TweenPlanValueT):TweenPlanValueT {
   console.assert(
     start.constructor === end.constructor,
     `Cannot subtract values of differing shapes`, start, end
