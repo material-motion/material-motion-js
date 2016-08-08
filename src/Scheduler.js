@@ -36,21 +36,16 @@ import {
   areStreamsBalanced,
 } from './observables';
 
+import {
+  findPerformerFactory,
+} from './performerFactoryRegistry';
+
 import type {
   PerformerI,
   PlanAndTargetT,
 } from './Performer';
 
 export default class Scheduler {
-  static performerRegistry:Class<PerformerI>[] = [];
-
-  static registerPerformer(Performer:Class<PerformerI>) {
-    Scheduler.performerRegistry = [
-      ...Scheduler.performerRegistry,
-      Performer,
-    ];
-  }
-
   // RxJS's groupBy uses a Map under-the-hood to do comparisons (rather than
   // letting you specify your own).  Hence, for two keys to be equivalent, they
   // have to share the same reference; it doesn't check deep equality.
@@ -59,51 +54,35 @@ export default class Scheduler {
   // make sure for any pair this Scheduler knows about, it returns the same key.
   // We can ensure old performers are GCed by resetting this selector (thus
   // clearing its state).
-  _targetAndPerformerSelector = makePerformerTargetSelector();
+  _performerFactoryAndTargetSelector = makePerformerFactoryAndTargetSelector();
 
   _plansAndTargetsStream:Subject<PerformerI> = new Subject();
-  _performerStream:Observable<PerformerI> = this._plansAndTargetsStream::flatMap(
-    // Find the first Performer that can handle each {plan, target} and add it
-    // to the pair.
-    planAndTarget => observableFrom(Scheduler.performerRegistry)::find(
-      Performer => Performer.canHandle(planAndTarget)
-    )::tap(
-      Performer => {
-        console.assert(
-          Performer !== undefined,
-          planAndTarget.plan,
-          `Material Motion could not find a Performer class to handle this plan.  ` +
-          (
-            Scheduler.performerRegistry.length === 0
-              ? `To ensure all the default Performers are available, add this line to your application:\n\n` +
-                `    import * as MaterialMotion from "material-motion-experiments";`
-              : `If you are using a custom Performer, ensure that you've registered it with the Scheduler:\n\n` +
-                `    Scheduler.registerPerformer(MyCustomerPerformerClass)`
-          )
-        );
+  _performerStream:Observable<PerformerI> = this._plansAndTargetsStream::map(
+    planAndTarget => (
+      {
+        ...planAndTarget,
+        performerFactory: findPerformerFactory(planAndTarget)
       }
-    )::map(
-      Performer => ({...planAndTarget, Performer})
     )
 
-  // Then, turn the stream of {plan, target, Performer} into streams of
-  // {Performer, target}: [...plans]
+  // Then, turn the stream of {plan, target, performerFactory} into streams of
+  // {performerFactory, target}: [...plans]
   )::groupBy(
-    this._targetAndPerformerSelector,
-    planTargetAndPerformer => planTargetAndPerformer.plan
+    this._performerFactoryAndTargetSelector,
+    planTargetAndPerformerFactory => planTargetAndPerformerFactory.plan
 
-  // and make a new performer for every {Performer, target}
+  // and make a new performer for every {performerFactory, target}
   )::map(
-    plansStreamByTargetAndPerformer => {
+    plansStreamByPerformerFactoryAndTarget => {
       const {
+        performerFactory,
         target,
-        Performer,
-      } = plansStreamByTargetAndPerformer.key;
+      } = plansStreamByPerformerFactoryAndTarget.key;
 
-      const performer = new Performer({target});
+      const performer = performerFactory({target});
 
       // Finally, add every plan on this stream to the performer we just made
-      plansStreamByTargetAndPerformer.subscribe(
+      plansStreamByPerformerFactoryAndTarget.subscribe(
         plan => {
           performer.addPlan(plan);
         }
@@ -192,6 +171,6 @@ function makeCompoundKeySelector(key1, key2) {
   };
 }
 
-function makePerformerTargetSelector() {
-  return makeCompoundKeySelector('Performer', 'target');
+function makePerformerFactoryAndTargetSelector() {
+  return makeCompoundKeySelector('performerFactory', 'target');
 }

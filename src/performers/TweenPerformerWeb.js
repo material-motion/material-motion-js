@@ -24,7 +24,9 @@ import {raceStatic as raceObservables} from 'rxjs-es/operator/race';
 import {startWith} from 'rxjs-es/operator/startWith';
 import {Subject} from 'rxjs-es/Subject';
 
-import Scheduler from '../Scheduler';
+import {
+  registerPerformerFactory,
+} from '../performerFactoryRegistry';
 
 import {
   areStreamsBalanced,
@@ -54,31 +56,37 @@ export type PlanAndTargetElementT = {
 // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/8):
 // Add support for Element.prototype.animate to Flow
 
-export default class TweenPerformerWeb {
-  static canHandle({target, plan}:PlanAndTargetT):boolean {
-    // It may be interesting to have a debug mode where this logs the tests
-    // and whether they pass/fail.
+export default function tweenPerformerWebFactory(targetAndPlan:PlanAndTargetElementT) {
+  return new TweenPerformerWeb(targetAndPlan);
+}
 
-    // // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/52):
-    // // get a plan spec by its family name and assert its validity
-    // console.assert(
-    //  plan.isValid(),
-    //  'TweenPerformerWeb received an invalid Plan.',
-    //  plan
-    // );
+tweenPerformerWebFactory.canHandle = function ({target, plan}:PlanAndTargetT):boolean {
+  // It may be interesting to have a debug mode where this logs the tests
+  // and whether they pass/fail.
 
-    return (
-      target.animate &&
-      target instanceof Element &&
+  // // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/52):
+  // // get a plan spec by its family name and assert its validity
+  // console.assert(
+  //  plan.isValid(),
+  //  'TweenPerformerWeb received an invalid Plan.',
+  //  plan
+  // );
 
-      // A valid tween plan could use a spring or a bezier interpolator.
-      // After confirming that this is a valid TweenFamily plan, check that it
-      // has the requisite bezier parameters:
-      plan.duration > 0 &&
-      plan.easing && plan.easing.length === 4
-    );
-  }
+  return (
+    target.animate &&
+    target instanceof Element &&
 
+    // A valid tween plan could use a spring or a bezier interpolator.
+    // After confirming that this is a valid TweenFamily plan, check that it
+    // has the requisite bezier parameters:
+    plan.duration > 0 &&
+    plan.easing && plan.easing.length === 4
+  );
+};
+
+registerPerformerFactory(tweenPerformerWebFactory);
+
+class TweenPerformerWeb {
   _target:Element;
   _playerStream:Subject = new Subject();
 
@@ -120,7 +128,7 @@ export default class TweenPerformerWeb {
 
   addPlan(plan:PlanT):void {
     console.assert(
-      TweenPerformerWeb.canHandle(
+      tweenPerformerWebFactory.canHandle(
         {
           target: this._target,
           plan,
@@ -147,8 +155,6 @@ export default class TweenPerformerWeb {
     this._isAtRestSubscription.unsubscribe();
   }
 }
-
-Scheduler.registerPerformer(TweenPerformerWeb);
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Element/animate
 function animateArgsForPlanAndTarget(plan:TweenPlanT, target:Element) {
