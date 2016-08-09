@@ -24,6 +24,7 @@ import {
 } from 'react-router';
 
 import CustomPerformerDemo from './custom-performer/components/CustomPerformerDemo';
+import DraggableDemo from './draggable/components/DraggableDemo';
 import ExpressionsDemo from './expressions/components/ExpressionsDemo';
 
 import * as MaterialMotion from '../src';
@@ -33,6 +34,11 @@ export default (
     <Route
       path = 'custom-performer'
       component = { CustomPerformerDemo }
+    />
+
+    <Route
+      path = 'draggable'
+      component = { DraggableDemo }
     />
 
     <Route

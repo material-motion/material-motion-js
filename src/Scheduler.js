@@ -79,6 +79,14 @@ export default class Scheduler {
 
       const performer = performerFactory({target});
 
+      if (performer.planAndTargetStream) {
+        performer.planAndTargetStream.subscribe(
+          planAndTarget => {
+            this._planAndTargetStream.next(planAndTarget);
+          }
+        );
+      }
+
       // Finally, add every plan on this stream to the performer we just made
       plansStreamByPerformerFactoryAndTarget.subscribe(
         plan => {
