@@ -19,9 +19,7 @@
 // RxJS exports each method separately to support tree shaking, but doesn't
 // export defaults
 import {distinctUntilChanged} from 'rxjs-es/operator/distinctUntilChanged';
-import {_do as tap} from 'rxjs-es/operator/do';
-import {find} from 'rxjs-es/operator/find';
-import {from as observableFrom} from 'rxjs-es/observable/from';
+import {filter} from 'rxjs-es/operator/filter';
 import {groupBy} from 'rxjs-es/operator/groupBy';
 import {map} from 'rxjs-es/operator/map';
 import {mergeMap as flatMap} from 'rxjs-es/operator/mergeMap';
@@ -101,9 +99,13 @@ export default class Scheduler {
   // scheduler is at rest.
   _isAtRestStream:Observable = areStreamsBalanced(
     ...(
+      // Performers that work synchronously won't have an isAtRestStream
+      this._performerStream::filter(
+        performer => performer.isAtRestStream
+
       // Make sure we don't double-count, even if a performer sends more events
       // than it should.
-      this._performerStream::flatMap(
+      )::flatMap(
           performer => performer.isAtRestStream::distinctUntilChanged(
         )::skipWhile(
           performerIsAtRest => performerIsAtRest === true
