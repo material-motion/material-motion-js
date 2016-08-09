@@ -25,14 +25,14 @@
 // There's still plenty of thinking to do to decide what a functional Performer
 // would be and how concepts like isAtRest fit in.
 
-let performerFactoryRegistry = [];
+let performerFactoryRegistry = new Set();
 
 export function registerPerformerFactory(performerFactory) {
-  performerFactoryRegistry.push(performerFactory);
+  performerFactoryRegistry.add(performerFactory);
 }
 
 export function findPerformerFactory(planAndTarget) {
-  if (performerFactoryRegistry.length === 0) {
+  if (performerFactoryRegistry.size === 0) {
     throw new Error(
 `Your performerFactory registry is empty!
 To ensure all the default Performers are available, add this line to your application:
@@ -42,7 +42,7 @@ To ensure all the default Performers are available, add this line to your applic
     );
   }
 
-  for (performerFactory of performerFactoryRegistry) {
+  for (let performerFactory of performerFactoryRegistry) {
     if (performerFactory.canHandle(planAndTarget)) {
       return performerFactory;
     }
@@ -64,7 +64,7 @@ If you are using a custom Performer, ensure that you've registered its factory:
 
 export function resetRegistry(newRegistry) {
   if (newRegistry) {
-    performerFactoryRegistry = newRegistry;
+    performerFactoryRegistry = new Set(newRegistry);
 
   } else {
     throw new Error(`No default registry is defined`);
