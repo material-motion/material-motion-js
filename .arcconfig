@@ -1,8 +1,8 @@
 {
   "load": [
-    ".arc-hooks/post-diff/arc-hook-github-issues",
-    "third_party/arc-hook-conphig",
-    "third_party/arc-proselint"
+    "material-arc-tools/third_party/arc-hook-github-issues",
+    "material-arc-tools/third_party/arc-hook-conphig",
+    "material-arc-tools/third_party/arc-proselint"
   ],
   "arcanist_configuration": "HookConphig",
   "phabricator.uri": "http://codereview.cc/",
