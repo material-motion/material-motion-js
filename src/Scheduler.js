@@ -56,12 +56,12 @@ export default class Scheduler {
   // clearing its state).
   _performerFactoryAndTargetSelector = makePerformerFactoryAndTargetSelector();
 
-  _plansAndTargetsStream:Subject<PerformerI> = new Subject();
-  _performerStream:Observable<PerformerI> = this._plansAndTargetsStream::map(
+  _planAndTargetStream:Subject<PerformerI> = new Subject();
+  _performerStream:Observable<PerformerI> = this._planAndTargetStream::map(
     planAndTarget => (
       {
         ...planAndTarget,
-        performerFactory: findPerformerFactory(planAndTarget)
+        performerFactory: findPerformerFactory(planAndTarget),
       }
     )
 
@@ -134,7 +134,7 @@ export default class Scheduler {
 
   commit(plansAndTargets:Iterable<PlanAndTargetT>) {
     for (const planAndTarget of plansAndTargets) {
-      this._plansAndTargetsStream.next(planAndTarget);
+      this._planAndTargetStream.next(planAndTarget);
     }
   }
 }
