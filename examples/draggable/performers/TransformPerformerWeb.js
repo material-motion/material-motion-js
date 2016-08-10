@@ -18,6 +18,8 @@
 
 // TODO: types
 
+import {observableOf} from 'rxjs-es/observable/of';
+
 import {
   registerPerformerFactory,
 } from '../../../src/performerFactoryRegistry';
@@ -72,5 +74,9 @@ class TransformPerformerWeb {
 
     this._target.style.left = plan.x + 'px';
     this._target.style.top = plan.y + 'px';
+
+    // It's a sync performer, so it's at rest by the time it returns
+    // https://github.com/material-motion/material-motion-experiments-js/issues/61
+    return observableOf(true);
   }
 }

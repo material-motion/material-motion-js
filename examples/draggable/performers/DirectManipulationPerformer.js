@@ -123,8 +123,13 @@ class DirectManipulationPerformer {
             );
 
             // Manually forwarding dragStream's isAtRest for a quick prototype.
+            // and returning it to represent this plan's isAtRestStream
+            //
+            // https://github.com/material-motion/material-motion-experiments-js/issues/61
+            //
             // Can evolve as needed if this becomes more than a quick prototype.
             this._isAtRestStream.next(dragDelta.isAtRest);
+            return this._isAtRestStream;
           }
         );
         break;
