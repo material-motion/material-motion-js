@@ -20,12 +20,11 @@
 // export defaults
 import {distinctUntilChanged} from 'rxjs-es/operator/distinctUntilChanged';
 import {filter} from 'rxjs-es/operator/filter';
-import {groupBy} from 'rxjs-es/operator/groupBy';
 import {map} from 'rxjs-es/operator/map';
 import {mergeMap as flatMap} from 'rxjs-es/operator/mergeMap';
 import {Observable} from 'rxjs-es/Observable';
+import {from as observableFrom} from 'rxjs-es/observable/from';
 import {partition} from 'rxjs-es/operator/partition';
-import {share} from 'rxjs-es/operator/share';
 import {Subject} from 'rxjs-es/Subject';
 import {skipWhile} from 'rxjs-es/operator/skipWhile';
 import {startWith} from 'rxjs-es/operator/startWith';
@@ -54,53 +53,7 @@ export default class Scheduler {
   // clearing its state).
   _performerFactoryAndTargetSelector = makePerformerFactoryAndTargetSelector();
 
-  _planAndTargetStream:Subject<PerformerI> = new Subject();
-  _performerStream:Observable<PerformerI> = this._planAndTargetStream::map(
-    planAndTarget => (
-      {
-        ...planAndTarget,
-        performerFactory: findPerformerFactory(planAndTarget),
-      }
-    )
-
-  // Then, turn the stream of {plan, target, performerFactory} into streams of
-  // {performerFactory, target}: [...plans]
-  )::groupBy(
-    this._performerFactoryAndTargetSelector,
-    planTargetAndPerformerFactory => planTargetAndPerformerFactory.plan
-
-  // and make a new performer for every {performerFactory, target}
-  )::map(
-    plansStreamByPerformerFactoryAndTarget => {
-      const {
-        performerFactory,
-        target,
-      } = plansStreamByPerformerFactoryAndTarget.key;
-
-      const performer = performerFactory({target});
-
-      if (performer.planAndTargetStream) {
-        performer.planAndTargetStream.subscribe(
-          planAndTarget => {
-            this._planAndTargetStream.next(planAndTarget);
-          }
-        );
-      }
-
-      // Finally, add every plan on this stream to the performer we just made
-      plansStreamByPerformerFactoryAndTarget.subscribe(
-        plan => {
-          performer.addPlan(plan);
-        }
-      );
-
-      return performer;
-    }
-
-  // Every time we pull a plan through this stream, it makes a new performer.
-  // Therefore, we're using `share` to ensure we only pull each one through
-  // once.
-  )::share();
+  _performerStream:Subject<PerformerI> = new Subject();
 
   // If we get an equal number of false and trues on each
   // performer.isAtRestStream, every performer has come to rest; therefore, the
@@ -124,6 +77,8 @@ export default class Scheduler {
     )
   )::distinctUntilChanged()::startWith(true);
 
+  _performerMap:Map = new Map();
+
   get isAtRestStream():Observable {
     return this._isAtRestStream;
   }
@@ -142,10 +97,32 @@ export default class Scheduler {
     );
   }
 
-  commit(plansAndTargets:Iterable<PlanAndTargetT>) {
-    for (const planAndTarget of plansAndTargets) {
-      this._planAndTargetStream.next(planAndTarget);
-    }
+  commit(plansAndTargets:Iterable<PlanAndTargetT>):Observable<Observable<boolean>> {
+    const isAtRestMetastream = observableFrom(plansAndTargets)::map(
+      planAndTarget => {
+        const performerFactory = findPerformerFactory(planAndTarget);
+        const performerMapKey = this._performerFactoryAndTargetSelector(
+          {
+            performerFactory,
+            ...planAndTarget,
+          }
+        );
+
+        let performer = this._performerMap.get(performerMapKey);
+
+        if (!performer) {
+          performer = performerFactory({target: planAndTarget.target});
+          this._performerStream.next(performer);
+        }
+
+        return performer.addPlan(planAndTarget.plan);
+      }
+    );
+
+    // Streams are lazy, so you have to subscribe to cause it to do work.
+    isAtRestMetastream.subscribe();
+
+    return isAtRestMetastream;
   }
 }
 
