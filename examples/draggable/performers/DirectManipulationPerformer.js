@@ -17,9 +17,12 @@
  */
 
 // TODO: types
+import {distinctUntilChanged} from 'rxjs-es/operator/distinctUntilChanged';
+import {map} from 'rxjs-es/operator/map';
+import {pluck} from 'rxjs-es/operator/pluck';
 import {Subject} from 'rxjs-es/Subject';
 
-import dragStream from '../gestureStreamFactories/dragStream';
+import streamOfDragsOn from '../gestureStreamFactories/dragStream';
 
 import {
   registerPerformerFactory,
@@ -51,15 +54,10 @@ directManipulationPerformerFactory.canHandle = function({target, plan}) {
 registerPerformerFactory(directManipulationPerformerFactory);
 
 class DirectManipulationPerformer {
-  _planAndTargetStream = new Subject();
   _isAtRestStream = new Subject();
 
-  get planAndTargetStream() {
-    return this._planAndTargetStream;
-  }
-
   get isAtRestStream() {
-    return this._isAtRestStream;
+    return this._isAtRestStream::distinctUntilChanged();
   }
 
   get isAtRest() {
@@ -81,7 +79,7 @@ class DirectManipulationPerformer {
       this.addPlan(plan);
   }
 
-  addPlan(plan) {
+  addPlan({plan, dispatchPlans}) {
     console.assert(
       directManipulationPerformerFactory.canHandle(
         {
@@ -109,9 +107,11 @@ class DirectManipulationPerformer {
         // to work.  Yes, this is incredibly gross.
         this._target.style.touchAction = 'none';
 
-        dragStream(this._target).subscribe(
-          dragDelta => {
-            this._planAndTargetStream.next(
+        const dragStream = streamOfDragsOn(this._target);
+
+        dispatchPlans(
+          dragStream::map(
+            dragDelta => (
               {
                 target: this._target,
                 plan: {
@@ -120,19 +120,11 @@ class DirectManipulationPerformer {
                   y: dragDelta.y,
                 },
               }
-            );
-
-            // Manually forwarding dragStream's isAtRest for a quick prototype.
-            // and returning it to represent this plan's isAtRestStream
-            //
-            // https://github.com/material-motion/material-motion-experiments-js/issues/61
-            //
-            // Can evolve as needed if this becomes more than a quick prototype.
-            this._isAtRestStream.next(dragDelta.isAtRest);
-            return this._isAtRestStream;
-          }
+            )
+          )
         );
-        break;
+
+        return dragStream::pluck('isAtRest');
     }
   }
 }

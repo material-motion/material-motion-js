@@ -115,7 +115,12 @@ export default class Scheduler {
           this._performerStream.next(performer);
         }
 
-        return performer.addPlan(planAndTarget.plan);
+        return performer.addPlan(
+          {
+            plan: planAndTarget.plan,
+            dispatchPlans: ::this.commit,
+          }
+        );
       }
     );
 

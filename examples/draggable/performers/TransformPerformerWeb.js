@@ -18,7 +18,7 @@
 
 // TODO: types
 
-import {observableOf} from 'rxjs-es/observable/of';
+import {of as observableOf} from 'rxjs-es/observable/of';
 
 import {
   registerPerformerFactory,
@@ -60,7 +60,7 @@ class TransformPerformerWeb {
       this.addPlan(plan);
   }
 
-  addPlan(plan) {
+  addPlan({plan}) {
     console.assert(
       transformPerformerWebFactory.canHandle(
         {
