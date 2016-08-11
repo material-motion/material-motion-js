@@ -126,7 +126,7 @@ class TweenPerformerWeb {
       this.addPlan(plan);
   }
 
-  addPlan({plan:PlanT}):void {
+  addPlan(plan:PlanT):void {
     console.assert(
       tweenPerformerWebFactory.canHandle(
         {

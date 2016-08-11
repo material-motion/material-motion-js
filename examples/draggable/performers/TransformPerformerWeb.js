@@ -60,7 +60,7 @@ class TransformPerformerWeb {
       this.addPlan(plan);
   }
 
-  addPlan({plan}) {
+  addPlan(plan) {
     console.assert(
       transformPerformerWebFactory.canHandle(
         {

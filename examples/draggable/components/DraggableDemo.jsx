@@ -27,6 +27,7 @@ import React from 'react';
 // that importing has side effects.
 
 import DirectManipulationPerformer from '../performers/DirectManipulationPerformer';
+import ThrowablePerformer from '../performers/ThrowablePerformer';
 import TransformPerformerWeb from '../performers/TransformPerformerWeb';
 
 
@@ -50,8 +51,7 @@ export default React.createClass(
           {
             target: this.imageRef,
             plan: {
-              familyName: 'material-motion-direct-manipulation-family',
-              type: 'draggable',
+              familyName: 'material-motion-throwable-family',
             },
           },
         ]

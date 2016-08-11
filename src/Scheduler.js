@@ -97,7 +97,7 @@ export default class Scheduler {
     );
   }
 
-  commit(plansAndTargets:Iterable<PlanAndTargetT>):Observable<Observable<boolean>> {
+  commit(plansAndTargets:Iterable<PlanAndTargetT>, dispatchPlans = ::this.commit):Observable<Observable<boolean>> {
     const isAtRestMetastream = observableFrom(plansAndTargets)::map(
       planAndTarget => {
         const performerFactory = findPerformerFactory(planAndTarget);
@@ -115,12 +115,7 @@ export default class Scheduler {
           this._performerStream.next(performer);
         }
 
-        return performer.addPlan(
-          {
-            plan: planAndTarget.plan,
-            dispatchPlans: ::this.commit,
-          }
-        );
+        return performer.addPlan(planAndTarget.plan, dispatchPlans);
       }
     );
 

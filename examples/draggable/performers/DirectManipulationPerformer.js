@@ -79,7 +79,7 @@ class DirectManipulationPerformer {
       this.addPlan(plan);
   }
 
-  addPlan({plan, dispatchPlans}) {
+  addPlan(plan, dispatchPlans) {
     console.assert(
       directManipulationPerformerFactory.canHandle(
         {
