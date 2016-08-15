@@ -39,6 +39,7 @@ module.exports = new WebpackDevServer(
   {
     publicPath: settings.output.publicPath,
     hot: true,
+    quiet: true, // lets WebpackDashboard do its thing
     historyApiFallback: true,
   }
 ).listen(

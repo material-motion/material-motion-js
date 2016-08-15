@@ -37,6 +37,7 @@
     "react-hot-loader": "3.0.0-beta.2",
     "react-router": "2.0.0",
     "webpack": "2.1.0-beta.4",
+    "webpack-dashboard": "0.0.1",
     "webpack-dev-server": "2.1.0-beta.0"
   },
   "repository": {

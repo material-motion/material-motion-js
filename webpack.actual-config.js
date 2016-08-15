@@ -87,6 +87,14 @@ if (global.USE_HMR) {
   //
   //  https://github.com/webpack/webpack-dev-server/issues/150
 
+  // Makes the Webpack output readable (and makes it easy to see the
+  // bundle-size-impact of each dependency), but also makes startup time jump
+  // from 8s to 24s
+  const WebpackDashboard = require('webpack-dashboard');
+  const WebpackDashboardPlugin = require('webpack-dashboard/Plugin');
+
+  const dashboard = new WebpackDashboard();
+
   const HOST = 'localhost';
   const PORT = 8081;
 
@@ -114,7 +122,7 @@ if (global.USE_HMR) {
 
     plugins: [
       new Webpack.HotModuleReplacementPlugin(),
-
+      new WebpackDashboardPlugin(dashboard.setData),
       new Webpack.DefinePlugin(
         {
           'process.env': {
