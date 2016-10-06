@@ -54,7 +54,7 @@ describe('Scheduler.addPlan',
         );
 
         planWithSpies = {
-          _performerType: PerformerSpy,
+          _PerformerType: PerformerSpy,
         }
       }
     );
@@ -89,11 +89,11 @@ describe('Scheduler.addPlan',
       }
     );
 
-    it(`should create a performer from plan._performerType`,
+    it(`should create a performer from plan._PerformerType`,
       () => {
         scheduler.addPlan({ plan: planWithSpies, target });
 
-        expect(planWithSpies._performerType).to.be.calledWithNew;
+        expect(planWithSpies._PerformerType).to.be.calledWithNew;
       }
     );
 
@@ -105,10 +105,10 @@ describe('Scheduler.addPlan',
       }
     );
 
-    it(`should recycle performers for the same plan._performerType and target`,
+    it(`should recycle performers for the same plan._PerformerType and target`,
       () => {
         const otherPlanSamePerformerType = {
-          _performerType: PerformerSpy,
+          _PerformerType: PerformerSpy,
         };
 
         scheduler.addPlan({ plan: planWithSpies, target });
