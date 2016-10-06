@@ -5,6 +5,6 @@ npm-debug.log
 
 # removing these until we have put more thought into how we want to
 # package/distribute
-dist/*
+**/dist/*
 site/static/*.js
 *.js.map
