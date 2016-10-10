@@ -5,11 +5,24 @@
   "main": "dist/index.js",
   "types": "src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "$(npm bin)/karma start"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
+    "chai": "3.5.0",
+    "karma": "1.3.0",
+    "karma-chrome-launcher": "2.0.0",
+    "karma-firefox-launcher": "1.0.0",
+    "karma-mocha": "1.2.0",
+    "karma-safari-launcher": "1.0.0",
+    "karma-webpack": "1.8.0",
+    "lerna": "2.0.0-beta.30",
+    "mocha": "3.1.1",
+    "mocha-sugar-free": "1.3.1",
+    "ts-loader": "0.9.0",
+    "tsickle": "0.2.0",
+    "typescript": "2.0.3",
+    "webpack": "2.1.0-beta.25"
   },
   "repository": {
     "type": "git",
