@@ -20,16 +20,17 @@ module.exports = function(config) {
       '**/*.js': ['webpack'],
     },
     webpack: {
+      devtool: 'eval',
+      resolve: {
+        extensions: ['.js', '.ts'],
+      },
       module: {
         loaders: [
           {
-            test: /\.tsx?$/, loader: 'ts-loader',
+            test: /\.tsx?$/, loader: 'ts-loader?transpileOnly=true',
           },
         ],
       },
-    },
-    ts: {
-      noResolve: true,
     },
     mime: {
       'text/x-typescript': ['ts', 'tsx'],
