@@ -105,6 +105,18 @@ describe('Scheduler.addPlan',
       }
     );
 
+    it(`should recycle performers for the same plan._performerType and target`,
+      () => {
+        const otherPlanSamePerformerType = {
+          _performerType: PerformerSpy,
+        };
+
+        scheduler.addPlan({ plan: planWithSpies, target });
+        scheduler.addPlan({ plan: otherPlanSamePerformerType, target });
+        expect(PerformerSpy).to.have.been.calledOnce;
+      }
+    );
+
     it(`should create new performers for each target`,
       () => {
         scheduler.addPlan({ plan: planWithSpies, target });
