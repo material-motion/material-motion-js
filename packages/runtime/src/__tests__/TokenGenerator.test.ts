@@ -32,11 +32,21 @@ describe('TokenGenerator',
   () => {
     let tokenGenerator;
 
-    it(`should require a callback`,
+    it(`should require arguments`,
       () => {
         expect(
           () => {
             new TokenGenerator();
+          }
+        ).to.throw();
+      }
+    );
+
+    it(`should require an onTokenCountChange listener`,
+      () => {
+        expect(
+          () => {
+            new TokenGenerator({});
           }
         ).to.throw(`onTokenCountChange`);
       }

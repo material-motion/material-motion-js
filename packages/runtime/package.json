@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "types": "src/index.ts",
   "scripts": {
+    "build": "$(npm bin)/tsickle",
     "test": "$(npm bin)/karma start"
   },
   "dependencies": {},

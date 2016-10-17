@@ -14,11 +14,21 @@
  *  under the License.
  */
 
+interface Token {
+  terminate(): void;
+}
+
+type TokenCountChangeListener = (kwargs: { count: number }) => void;
+
+interface TokenGeneratorArgs {
+  onTokenCountChange: TokenCountChangeListener;
+}
+
 export default class TokenGenerator {
   protected _tokenCount = 0;
-  protected _onTokenCountChange;
+  protected _onTokenCountChange: TokenCountChangeListener;
 
-  constructor({ onTokenCountChange }:{ onTokenCountChange:(_:{ count:number })=>void } = {}) {
+  constructor({ onTokenCountChange }: TokenGeneratorArgs) {
     if (!onTokenCountChange) {
       throw new Error(`TokenGenerator requires an onTokenCountChange listener to be passed in`);
     }
@@ -31,7 +41,7 @@ export default class TokenGenerator {
    *
    *  Call the returned terminate function when the task is complete.
    */
-  generateToken():{ terminate:()=>void } {
+  generateToken(): Token {
     let terminated = false;
     this._updateTokenCount(+1);
 
@@ -48,7 +58,7 @@ export default class TokenGenerator {
     }
   }
 
-  _updateTokenCount(delta:number):void {
+  _updateTokenCount(delta: number): void {
     this._tokenCount += delta;
     this._onTokenCountChange({ count: this._tokenCount });
   }

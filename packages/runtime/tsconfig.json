@@ -1,4 +1,6 @@
 {
+  "include": ["./src/**/*"],
+  "exclude": ["**/*.test.*"],
   "compilerOptions": {
     "lib": [
       "es2015",
@@ -10,6 +12,7 @@
     "noImplicitThis": true,
     "outDir": "dist",
     "sourceMap": true,
+    "strictNullChecks": true,
     "target": "es6"
   }
 }

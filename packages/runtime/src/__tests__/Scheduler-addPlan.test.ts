@@ -65,7 +65,7 @@ describe('Scheduler.addPlan',
           () => {
             scheduler.addPlan();
           }
-        ).to.throw(`Scheduler.addPlan requires`);
+        ).to.throw();
       }
     );
 
