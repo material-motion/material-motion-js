@@ -14,32 +14,48 @@
  *  under the License.
  */
 
-interface Plan {
-  _PerformerType:PerformerConstructor;
+import TokenGenerator from './TokenGenerator';
+
+export interface Plan {
+  _PerformerType: PerformingConstructor;
 }
 
-interface Target {
+export interface Target {
 
 }
+
 // TODO(https://github.com/material-motion/material-motion-experiments-js/issues/70):
 // Add `declare` keyword to avoid mangling on the public API surface
-interface PlanAndTarget {
-  plan:Plan,
-  target:Target,
+export interface PlanAndTarget {
+  plan: Plan;
+  target: Target;
 }
 
-interface PerformerConstructor {
-  new (_:{ target:Target });
+export interface Performing {
+  addPlan(kwargs: {
+    plan: Plan
+  }): void;
 }
 
-interface Performer {
-  addPlan(_:{ plan:Plan });
+export interface PerformingArgs {
+  target: Target;
 }
 
-export {
-  Performer,
-  PerformerConstructor,
-  Plan,
-  PlanAndTarget,
-  Target,
-};
+export interface PerformingConstructor {
+  new (kwargs: PerformingArgs): Performing;
+}
+
+export interface ContinuousPerforming extends Performing {
+}
+
+export interface ContinuousPerformingArgs {
+  isActiveTokenGenerator: TokenGenerator;
+}
+
+export interface ContinuousPerformingConstructor extends PerformingConstructor {
+  new (kwargs: ContinuousPerformingArgs & PerformingArgs): ContinuousPerforming;
+}
+
+export interface PerformingWithAllFeaturesConstructor extends PerformingConstructor {
+  new (kwargs: ContinuousPerformingArgs & PerformingArgs): Performing;
+}

@@ -14,11 +14,13 @@
  *  under the License.
  */
 
+import TokenGenerator from './TokenGenerator';
 import makeCompoundKeySelector from './internal/makeCompoundKeySelector';
 
 import {
-  Performer,
-  PerformerConstructor,
+  Performing,
+  PerformingConstructor,
+  PerformingWithAllFeaturesConstructor,
   PlanAndTarget,
 } from './types';
 
@@ -28,13 +30,24 @@ import {
  */
 export default class Scheduler {
   _performerMapSelector = makeCompoundKeySelector('PerformerType', 'target');
-  _performerMap:Map<any, Performer> = new Map();
+  _performerMap: Map<any, Performing> = new Map();
+
+  _isActive: boolean = false;
+  _isActiveTokenGenerator: TokenGenerator = new TokenGenerator(
+    {
+      onTokenCountChange: this._onTokenCountChange
+    }
+   );
+
+  get isActive(): boolean {
+    return this._isActive;
+  }
 
   /**
    *  The Scheduler will ensure the given plan is immediately applied to the
    *  given target.
    */
-  addPlan({ plan, target }:PlanAndTarget = {}):void {
+  addPlan({ plan, target }: PlanAndTarget): void {
     if (!plan) {
       throw new Error(`Scheduler.addPlan requires a plan`);
     }
@@ -43,19 +56,37 @@ export default class Scheduler {
       throw new Error(`Scheduler.addPlan requires a target`);
     }
 
-    const PerformerType:PerformerConstructor = plan._PerformerType;
+    const isActiveTokenGenerator = this._isActiveTokenGenerator;
+    const PerformerType: PerformingConstructor = plan._PerformerType;
 
     const performerMapKey = this._performerMapSelector({ PerformerType, target });
-    let performer:Performer;
+    let performer: Performing;
 
     if (this._performerMap.has(performerMapKey)) {
-      performer = this._performerMap.get(performerMapKey);
+      performer = this._performerMap.get(performerMapKey) as Performing;
 
     } else {
-      performer = new PerformerType({ target });
+      // There are a bunch of optional features that a performer might support.
+      // We give them all the tools we have and let them decide whether or not
+      // they want to use them.
+      //
+      // To express this in TypeScript, we cast PerformerType to an imaginary
+      // constructor that supports every feature.  Of course, whatever
+      // performer we're actually instantiating will ignore any features it
+      // doesn't care about.  By telling TypeScript it could support all of
+      // them, it should ensure we get type errors if a feature isn't threaded
+      // through correctly.
+
+      const PerformerOfAllFeatures = PerformerType as PerformingWithAllFeaturesConstructor;
+      performer = new PerformerOfAllFeatures({ target, isActiveTokenGenerator });
+
       this._performerMap.set(performerMapKey, performer);
     }
 
     performer.addPlan({ plan });
+  }
+
+  _onTokenCountChange({ count }: { count: number }) {
+    this._isActive = count !== 0;
   }
 }
