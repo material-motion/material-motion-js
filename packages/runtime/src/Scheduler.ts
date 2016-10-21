@@ -24,6 +24,8 @@ import {
   PlanAndTarget,
 } from './types';
 
+type ActivityListener = (kwargs: { isActive: boolean }) => any;
+
 /**
  *  The Scheduler is responsible for fulfilling Plans by delegating them to the
  *  correct Performer.
@@ -31,14 +33,20 @@ import {
 export default class Scheduler {
   _performerMapSelector = makeCompoundKeySelector('PerformerType', 'target');
   _performerMap: Map<any, Performing> = new Map();
+  _activityListeners: Set<ActivityListener> = new Set();
 
   _isActive: boolean = false;
   _isActiveTokenGenerator: TokenGenerator = new TokenGenerator(
     {
-      onTokenCountChange: this._onTokenCountChange
+      // Using arrow function because TypeScript doesn't support bind
+      // https://github.com/Microsoft/TypeScript/issues/212/
+      onTokenCountChange: kwargs => this._onTokenCountChange(kwargs)
     }
    );
 
+  /**
+   *  If any of this scheduler's performers aren't at rest, this will be true.
+   */
   get isActive(): boolean {
     return this._isActive;
   }
@@ -86,7 +94,37 @@ export default class Scheduler {
     performer.addPlan({ plan });
   }
 
+  // For now, we're using add${ propertyName }Listener to handle observation:
+  // - It's simple to implement.
+  // - It's simple to deprecate/upgrade from.  When/if we have a more
+  //   comprehensive observation story, we just have these log a warning and
+  //   delegate to the new thing.
+  // - It's easy to attach to existing libraries, e.g. RxJS's fromEventPattern.
+
+  /**
+   *  Any function passed here will be called every time scheduler.isActive
+   *  changes.
+   */
+  addActivityListener({ listener }:{ listener: ActivityListener }) {
+    this._activityListeners.add(listener);
+  }
+
+  /**
+   *  Stops notifying the given listener of changes to scheduler.isActive.
+   */
+  removeActivityListener({ listener }:{ listener: ActivityListener }) {
+    this._activityListeners.delete(listener);
+  }
+
   _onTokenCountChange({ count }: { count: number }) {
+    const wasActive = this._isActive;
+
     this._isActive = count !== 0;
+
+    if (this._isActive !== wasActive) {
+      this._activityListeners.forEach(
+        listener => listener({ isActive: this._isActive })
+      );
+    }
   }
 }
