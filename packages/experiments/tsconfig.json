@@ -1,0 +1,23 @@
+{
+  "//": [
+    "This is a copy of material-motion-runtime's tsconfig.  Eventually,",
+    "we should consolidate them at the project root.",
+    "https://github.com/material-motion/material-motion-experiments-js/issues/70"
+  ],
+  "include": ["./src/**/*"],
+  "exclude": ["**/*.test.*"],
+  "compilerOptions": {
+    "lib": [
+      "es2015",
+      "dom"
+    ],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "outDir": "dist",
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "target": "es6"
+  }
+}
