@@ -1,48 +1,18 @@
 {
-  "name": "material-motion-experiments",
+  "name": "material-motion",
   "version": "0.0.0",
   "description": "Makes it easy to create rich, interactive motion.",
   "main": "src/index.js",
   "scripts": {
-    "start": "trap 'kill %1' SIGINT; dev_appserver.py ./site/ & node --stack-trace-limit=1000 ./examples/devServer.js",
-    "lint": "./node_modules/.bin/eslint .",
-    "flow": "./node_modules/.bin/flow; test $? -eq 0 -o $? -eq 2",
-    "test": "npm run lint; npm run flow; echo \"\n\n\nUnit tests not yet implemented.\" && exit 1",
-    "clean": "rm -f ./dist/*; rm -f ./site/static/examples.js; rm -f ./site/static/material-motion.js",
-    "build": "npm run clean; ./node_modules/.bin/webpack",
-    "deploy-site": "npm run build; cp ./dist/material-motion.js ./site/static/material-motion.js; appcfg.py update ./site/"
   },
   "dependencies": {
-    "rxjs-es": "5.0.0-beta.10"
   },
   "devDependencies": {
-    "babel-eslint": "6.0.4",
-    "babel-plugin-syntax-trailing-function-commas": "6.8.0",
-    "babel-plugin-transform-class-properties": "6.10.2",
-    "babel-plugin-transform-decorators-legacy": "1.3.4",
-    "babel-plugin-transform-function-bind": "6.8.0",
-    "babel-plugin-transform-object-rest-spread": "6.8.0",
-    "babel-preset-es2015-native-modules": "6.6.0",
-    "babel-preset-react": "6.11.1",
-    "babel-register": "6.9.0",
-    "eslint": "2.7.0",
-    "eslint-config-google": "0.5.0",
-    "eslint-plugin-flow-vars": "0.4.0",
-    "eslint-plugin-flowtype": "2.2.7",
-    "eslint-plugin-header": "0.1.0",
-    "eslint-plugin-import": "1.10.1",
-    "eslint-plugin-react": "1.1.1",
-    "react": "15",
-    "react-dom": "15",
-    "react-hot-loader": "3.0.0-beta.2",
-    "react-router": "2.0.0",
-    "webpack": "2.1.0-beta.4",
-    "webpack-dev-server": "2.1.0-beta.0",
     "lerna": "2.0.0-beta.30"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:material-motion/material-motion-experiments-js.git"
+    "url": "git+ssh://git@github.com:material-motion/material-motion-js.git"
   },
   "keywords": [
     "animation",
@@ -56,10 +26,10 @@
     "transitions",
     "tweens"
   ],
-  "author": "The Material Motion Authors (see AUTHORS and CONTRIBUTORS)",
+  "author": "The Material Motion Authors (see AUTHORS)",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/material-motion/material-motion-experiments-js/issues/"
+    "url": "https://github.com/material-motion/material-motion-js/issues/"
   },
-  "homepage": "https://github.com/material-motion/material-motion-experiments-js/#readme"
+  "homepage": "https://github.com/material-motion/material-motion-js/#readme"
 }
