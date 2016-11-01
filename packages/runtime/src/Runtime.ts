@@ -27,10 +27,10 @@ import {
 type ActivityListener = (kwargs: { isActive: boolean }) => any;
 
 /**
- *  The Scheduler is responsible for fulfilling Plans by delegating them to the
+ *  A runtime is responsible for fulfilling Plans by delegating them to the
  *  correct Performer.
  */
-export default class Scheduler {
+export default class Runtime {
   _performerMapSelector = makeCompoundKeySelector('PerformerType', 'target');
   _performerMap: Map<any, Performing> = new Map();
   _activityListeners: Set<ActivityListener> = new Set();
@@ -45,23 +45,23 @@ export default class Scheduler {
    );
 
   /**
-   *  If any of this scheduler's performers aren't at rest, this will be true.
+   *  If any of this runtime's performers aren't at rest, this will be true.
    */
   get isActive(): boolean {
     return this._isActive;
   }
 
   /**
-   *  The Scheduler will ensure the given plan is immediately applied to the
-   *  given target.
+   *  The runtime ensures the given plan is immediately applied to the given
+   *  target.
    */
   addPlan({ plan, target }: PlanAndTarget): void {
     if (!plan) {
-      throw new Error(`Scheduler.addPlan requires a plan`);
+      throw new Error(`runtime.addPlan requires a plan`);
     }
 
     if (!target) {
-      throw new Error(`Scheduler.addPlan requires a target`);
+      throw new Error(`runtime.addPlan requires a target`);
     }
 
     const isActiveTokenGenerator = this._isActiveTokenGenerator;
@@ -102,7 +102,7 @@ export default class Scheduler {
   // - It's easy to attach to existing libraries, e.g. RxJS's fromEventPattern.
 
   /**
-   *  Any function passed here will be called every time scheduler.isActive
+   *  Any function passed here will be called every time runtime.isActive
    *  changes.
    */
   addActivityListener({ listener }:{ listener: ActivityListener }) {
@@ -110,7 +110,7 @@ export default class Scheduler {
   }
 
   /**
-   *  Stops notifying the given listener of changes to scheduler.isActive.
+   *  Stops notifying the given listener of changes to runtime.isActive.
    */
   removeActivityListener({ listener }:{ listener: ActivityListener }) {
     this._activityListeners.delete(listener);

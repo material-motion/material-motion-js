@@ -26,7 +26,7 @@ import {
   spy,
 } from 'sinon';
 
-import Scheduler from '../Scheduler';
+import Runtime from '../Runtime';
 
 class ActivityTestingPerformer {
   tokens = [];
@@ -57,48 +57,48 @@ const endActivityPlan = {
   _PerformerType: ActivityTestingPerformer,
 };
 
-describe('Scheduler.addPlan',
+describe('runtime.addPlan',
   () => {
-    let scheduler;
+    let runtime;
     let target = {};
 
     beforeEach(
       () => {
-        scheduler = new Scheduler();
+        runtime = new Runtime();
       }
     );
 
     it(`should start at rest`,
       () => {
-        expect(scheduler.isActive).to.be.false;
+        expect(runtime.isActive).to.be.false;
       }
     );
 
     it(`should become active when a continuous performer is added`,
       () => {
-        scheduler.addPlan({ plan: startActivityPlan, target });
-        expect(scheduler.isActive).to.be.true;
+        runtime.addPlan({ plan: startActivityPlan, target });
+        expect(runtime.isActive).to.be.true;
       }
     );
 
     it(`should be active when some continuous performers have not completed`,
       () => {
-        scheduler.addPlan({ plan: startActivityPlan, target });
-        scheduler.addPlan({ plan: startActivityPlan, target });
-        scheduler.addPlan({ plan: endActivityPlan, target });
+        runtime.addPlan({ plan: startActivityPlan, target });
+        runtime.addPlan({ plan: startActivityPlan, target });
+        runtime.addPlan({ plan: endActivityPlan, target });
 
-        expect(scheduler.isActive).to.be.true;
+        expect(runtime.isActive).to.be.true;
       }
     );
 
     it(`should be at rest when all continuous performers have completed`,
       () => {
-        scheduler.addPlan({ plan: startActivityPlan, target });
-        scheduler.addPlan({ plan: startActivityPlan, target });
-        scheduler.addPlan({ plan: endActivityPlan, target });
-        scheduler.addPlan({ plan: endActivityPlan, target });
+        runtime.addPlan({ plan: startActivityPlan, target });
+        runtime.addPlan({ plan: startActivityPlan, target });
+        runtime.addPlan({ plan: endActivityPlan, target });
+        runtime.addPlan({ plan: endActivityPlan, target });
 
-        expect(scheduler.isActive).to.be.false;
+        expect(runtime.isActive).to.be.false;
       }
     );
 
@@ -107,10 +107,10 @@ describe('Scheduler.addPlan',
         const spy1 = spy();
         const spy2 = spy();
 
-        scheduler.addActivityListener({ listener: spy1 });
-        scheduler.addActivityListener({ listener: spy2 });
+        runtime.addActivityListener({ listener: spy1 });
+        runtime.addActivityListener({ listener: spy2 });
 
-        scheduler.addPlan({ plan: startActivityPlan, target });
+        runtime.addPlan({ plan: startActivityPlan, target });
 
         expect(spy1.lastCall.args[0].isActive).to.be.true;
         expect(spy2.lastCall.args[0].isActive).to.be.true;
@@ -122,14 +122,14 @@ describe('Scheduler.addPlan',
         const spy1 = spy();
         const spy2 = spy();
 
-        scheduler.addActivityListener({ listener: spy1 });
-        scheduler.addActivityListener({ listener: spy2 });
+        runtime.addActivityListener({ listener: spy1 });
+        runtime.addActivityListener({ listener: spy2 });
 
-        scheduler.addPlan({ plan: startActivityPlan, target });
+        runtime.addPlan({ plan: startActivityPlan, target });
 
-        scheduler.removeActivityListener({ listener: spy2 });
+        runtime.removeActivityListener({ listener: spy2 });
 
-        scheduler.addPlan({ plan: endActivityPlan, target });
+        runtime.addPlan({ plan: endActivityPlan, target });
 
         expect(spy1.lastCall.args[0].isActive).to.be.false;
         expect(spy2.lastCall.args[0].isActive).to.be.true;

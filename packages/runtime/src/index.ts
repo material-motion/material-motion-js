@@ -15,5 +15,5 @@
  */
 
 export * from './types';
-export * from './Scheduler';
-export { default as Scheduler } from './Scheduler';
+export * from './Runtime';
+export { default as Runtime } from './Runtime';

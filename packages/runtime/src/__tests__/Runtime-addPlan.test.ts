@@ -26,16 +26,16 @@ import {
   stub,
 } from 'sinon';
 
-import Scheduler from '../Scheduler';
+import Runtime from '../Runtime';
 
 // chai really doesn't like being imported as an ES2015 module; will be fixed in v4
 require('chai').use(
   require('sinon-chai')
 );
 
-describe('Scheduler.addPlan',
+describe('runtime.addPlan',
   () => {
-    let scheduler;
+    let runtime;
     let addPlanSpy;
     let PerformerSpy;
     let planWithSpies;
@@ -43,7 +43,7 @@ describe('Scheduler.addPlan',
 
     beforeEach(
       () => {
-        scheduler = new Scheduler();
+        runtime = new Runtime();
 
         addPlanSpy = stub();
 
@@ -63,7 +63,7 @@ describe('Scheduler.addPlan',
       () => {
         expect(
           () => {
-            scheduler.addPlan();
+            runtime.addPlan();
           }
         ).to.throw();
       }
@@ -73,7 +73,7 @@ describe('Scheduler.addPlan',
       () => {
         expect(
           () => {
-            scheduler.addPlan({ plan: planWithSpies });
+            runtime.addPlan({ plan: planWithSpies });
           }
         ).to.throw(`requires a target`);
       }
@@ -83,7 +83,7 @@ describe('Scheduler.addPlan',
       () => {
         expect(
           () => {
-            scheduler.addPlan({ target });
+            runtime.addPlan({ target });
           }
         ).to.throw(`requires a plan`);
       }
@@ -91,7 +91,7 @@ describe('Scheduler.addPlan',
 
     it(`should create a performer from plan._PerformerType`,
       () => {
-        scheduler.addPlan({ plan: planWithSpies, target });
+        runtime.addPlan({ plan: planWithSpies, target });
 
         expect(planWithSpies._PerformerType).to.be.calledWithNew;
       }
@@ -99,8 +99,8 @@ describe('Scheduler.addPlan',
 
     it(`should recycle performers for the same plan and target`,
       () => {
-        scheduler.addPlan({ plan: planWithSpies, target });
-        scheduler.addPlan({ plan: planWithSpies, target });
+        runtime.addPlan({ plan: planWithSpies, target });
+        runtime.addPlan({ plan: planWithSpies, target });
         expect(PerformerSpy).to.have.been.calledOnce;
       }
     );
@@ -111,24 +111,24 @@ describe('Scheduler.addPlan',
           _PerformerType: PerformerSpy,
         };
 
-        scheduler.addPlan({ plan: planWithSpies, target });
-        scheduler.addPlan({ plan: otherPlanSamePerformerType, target });
+        runtime.addPlan({ plan: planWithSpies, target });
+        runtime.addPlan({ plan: otherPlanSamePerformerType, target });
         expect(PerformerSpy).to.have.been.calledOnce;
       }
     );
 
     it(`should create new performers for each target`,
       () => {
-        scheduler.addPlan({ plan: planWithSpies, target });
-        scheduler.addPlan({ plan: planWithSpies, target: {} });
+        runtime.addPlan({ plan: planWithSpies, target });
+        runtime.addPlan({ plan: planWithSpies, target: {} });
         expect(PerformerSpy).to.have.been.calledTwice;
       }
     );
 
     it(`should call performer.addPlan for each plan`,
       () => {
-        scheduler.addPlan({ plan: planWithSpies, target });
-        scheduler.addPlan({ plan: planWithSpies, target });
+        runtime.addPlan({ plan: planWithSpies, target });
+        runtime.addPlan({ plan: planWithSpies, target });
         expect(addPlanSpy).to.have.been.calledTwice;
       }
     );
