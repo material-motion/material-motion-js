@@ -31,10 +31,12 @@ export interface PlanAndTarget {
   target: Target;
 }
 
+export interface PerformingAddPlanArgs {
+  plan: Plan;
+}
+
 export interface Performing {
-  addPlan(kwargs: {
-    plan: Plan
-  }): void;
+  addPlan(kwargs: PerformingAddPlanArgs): void;
 }
 
 export interface PerformingArgs {
