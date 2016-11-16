@@ -23,7 +23,7 @@ runtime.addPlan({
 });
 ```
 
-See also the [Runtime specification]([Runtime](https://material-motion.github.io/material-motion/starmap/specifications/runtime/Runtime/)) in [the Starmap](https://material-motion.github.io/material-motion/starmap/).
+See also the [Runtime specification](https://material-motion.github.io/material-motion/starmap/specifications/runtime/Runtime/) in [the Starmap](https://material-motion.github.io/material-motion/starmap/).
 
 ## API ##
 
