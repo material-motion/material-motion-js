@@ -1,2 +1,1 @@
-# Tells npm/yarn not to worry about .gitignore, which excludes dist.  We want
-# dist, so we have an empty .npmignore (to not exclude dist).
+__tests__
