@@ -1,12 +1,14 @@
 {
   "name": "material-motion-runtime",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "The core architecture for Material Motion.",
   "main": "dist/index.js",
   "types": "src/index.ts",
   "scripts": {
-    "build": "$(npm bin)/tsickle",
-    "test": "$(npm bin)/karma start"
+    "clean": "rm -rf dist",
+    "build": "$(npm bin)/tsc",
+    "test": "$(npm bin)/karma start",
+    "prepublish": "yarn run clean; yarn run build"
   },
   "dependencies": {},
   "devDependencies": {
@@ -29,7 +31,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:material-motion/material-motion-experiments-js.git"
+    "url": "git+ssh://git@github.com:material-motion/material-motion-js.git"
   },
   "keywords": [
     "animation",
@@ -49,7 +51,7 @@
   "author": "The Material Motion Authors (see AUTHORS)",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/material-motion/material-motion-experiments-js/issues/"
+    "url": "https://github.com/material-motion/material-motion-js/issues/"
   },
-  "homepage": "https://github.com/material-motion/material-motion-experiments-js/#readme"
+  "homepage": "https://github.com/material-motion/material-motion-js/tree/develop/packages/runtime/#readme"
 }
