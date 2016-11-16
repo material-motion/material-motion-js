@@ -18,7 +18,7 @@ import { Plan } from 'material-motion-runtime';
 
 import MapScrollPositionToCSSValuePerformer from './MapScrollPositionToCSSValuePerformer';
 
-interface MapScrollPositionToCSSValuePlanArgs {
+export interface MapScrollPositionToCSSValuePlanArgs {
   propertyName: string;
   valueTemplate: string;
   fromValue: number;

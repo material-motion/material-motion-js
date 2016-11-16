@@ -14,13 +14,13 @@
  *  under the License.
  */
 
-interface Token {
+export interface Token {
   terminate(): void;
 }
 
-type TokenCountChangeListener = (kwargs: { count: number }) => void;
+export type TokenCountChangeListener = (kwargs: { count: number }) => void;
 
-interface TokenGeneratorArgs {
+export interface TokenGeneratorArgs {
   onTokenCountChange: TokenCountChangeListener;
 }
 

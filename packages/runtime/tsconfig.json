@@ -2,6 +2,7 @@
   "include": ["./src/**/*"],
   "exclude": ["**/*.test.*"],
   "compilerOptions": {
+    "declaration": true,
     "lib": [
       "es2015",
       "dom"

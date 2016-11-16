@@ -24,7 +24,7 @@ import {
   PlanAndTarget,
 } from './types';
 
-type ActivityListener = (kwargs: { isActive: boolean }) => any;
+export type ActivityListener = (kwargs: { isActive: boolean }) => any;
 
 /**
  *  A runtime is responsible for fulfilling Plans by delegating them to the

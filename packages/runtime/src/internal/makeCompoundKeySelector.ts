@@ -14,7 +14,7 @@
  *  under the License.
  */
 
-type Dict = {
+export type Dict = {
   [index:string]: any,
 }
 
