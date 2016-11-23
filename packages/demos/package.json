@@ -1,0 +1,30 @@
+{
+  "name": "material-motion-demos",
+  "version": "0.0.0",
+  "scripts": {
+    "start": "node ./devServer.js",
+    "clean": "rm -rf ./site/dist/*; mkdir -p ./site/dist/",
+    "build": "yarn run clean; node ./build.js",
+    "deploy": "yarn run build; $( yarn bin )/firebase deploy"
+  },
+  "dependencies": {
+    "firebase-tools": "3.2.0",
+    "material-motion-runtime": "1.0.0",
+    "react": "15.4.1",
+    "react-dom": "15.4.1"
+  },
+  "devDependencies": {
+    "pundle-dev": "1.1.11",
+    "typescript-pundle": "1.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:material-motion/material-motion-js.git"
+  },
+  "author": "The Material Motion Authors (see AUTHORS)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/material-motion/material-motion-js/issues/"
+  },
+  "homepage": "https://github.com/material-motion/material-motion-js/#readme"
+}
