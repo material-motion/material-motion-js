@@ -31,6 +31,20 @@ export default class MapScrollPositionToCSSValuePerformer implements Performing 
   constructor({ target }:PerformingArgs) {
     this._target = target as HTMLElement;
 
+    // Should probably be smarter about when to set willChange,
+    // but it works for a demo
+    let willChange = this._target.style.willChange;
+
+    if (!willChange.includes('transform')) {
+      if (willChange) {
+        willChange += ', '
+      }
+
+      willChange += 'transform';
+
+      this._target.style.willChange = willChange;
+    }
+
     document.addEventListener('scroll', this._queueRedraw);
     document.addEventListener('resize', this._queueRedraw);
   }
