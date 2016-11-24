@@ -16,10 +16,59 @@
 
 import * as React from 'react';
 
+import Link from 'react-router/Link'
+import Match from 'react-router/Match'
+import Miss from 'react-router/Miss'
+import Router from 'react-router/BrowserRouter'
+
+import ParallaxClouds from './map-scroll-to-css/components/ParallaxClouds';
+
+// To add a new demo, import the correct component above and add it to the links
+// list below.  Everything else is automatic.
+const links = [
+  {
+    href: '/map-scroll-to-css/parallax/',
+    name: 'MapScrollPositionToCSSValue',
+    component: ParallaxClouds,
+  }
+]
+
+function Links() {
+  return (
+    <ul>
+      {
+        links.map(
+          link => (
+            <li key = { link.href }>
+              <Link to = { link.href } >
+                { link.name }
+              </Link>
+            </li>
+          )
+        )
+      }
+    </ul>
+  );
+}
+
 export default function() {
   return (
-    <div>
-      Hi from routes!
-    </div>
+    <Router>
+      <div>
+        {
+          links.map(
+            link => (
+              <Match
+                key = { link.href }
+                pattern = { link.href }
+                component = { link.component }
+              />
+            )
+          )
+        }
+
+        <Miss component = { Links } />
+      </div>
+    </Router>
   );
 }
