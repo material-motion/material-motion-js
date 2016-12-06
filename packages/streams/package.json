@@ -1,0 +1,71 @@
+{
+  "name": "material-motion-streams",
+  "version": "0.0.0",
+  "description": "A stream-powered implementation of Material Motion",
+  "main": "dist/index.js",
+  "types": "src/index.ts",
+  "scripts": {
+    "test": "$( yarn bin )/karma start",
+    "clean": "rm -rf ./dist/*; mkdir -p ./dist/",
+    "build": "yarn run clean; $( yarn bin )/tsc"
+  },
+  "dependencies": {
+    "indefinite-observable": "^0.2.0",
+    "tslib": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^3.4.34",
+    "@types/sinon": "^1.16.32",
+    "@types/sinon-chai": "^2.7.27",
+    "chai": "3.5.0",
+    "karma": "1.3.0",
+    "karma-chrome-launcher": "2.0.0",
+    "karma-firefox-launcher": "1.0.0",
+    "karma-mocha": "1.2.0",
+    "karma-safari-launcher": "1.0.0",
+    "karma-webpack": "1.8.0",
+    "mocha": "3.1.1",
+    "mocha-sugar-free": "1.3.1",
+    "sinon": "2.0.0-pre.3",
+    "sinon-chai": "2.8.0",
+    "ts-loader": "0.9.0",
+    "typescript": "2.1",
+    "webpack": "2.1.0-beta.25"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:material-motion/material-motion-js.git"
+  },
+  "keywords": [
+    "animated",
+    "animation",
+    "direct manipulation",
+    "drag",
+    "gestures",
+    "interactive",
+    "material",
+    "motion",
+    "move",
+    "multitouch",
+    "observables",
+    "odeon",
+    "pointer events",
+    "physics",
+    "pinch",
+    "rotate",
+    "scale",
+    "springs",
+    "streams",
+    "stretch",
+    "touch",
+    "transitions",
+    "tween",
+    "tweens"
+  ],
+  "author": "The Material Motion Authors (see AUTHORS)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/material-motion/material-motion-js/issues/"
+  },
+  "homepage": "https://github.com/material-motion/material-motion-js/tree/develop/packages/streams/#readme"
+}

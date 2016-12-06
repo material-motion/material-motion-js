@@ -16,8 +16,11 @@
  *  under the License.
  */
 
-const Path = require('path')
-const PundleDev = require('pundle-dev')
+const Path = require('path');
+const PundleDev = require('pundle-dev');
+const ts = require('typescript');
+
+const tsconfig = require('../../tsconfig.json');
 
 const server = new PundleDev({
   server: {
@@ -50,11 +53,14 @@ server.pundle.loadPlugins([
   [
     'typescript-pundle',
     {
+      extensions: ['.js', '.jsx', '.ts', '.tsx'],
       config: {
-        compilerOptions: {
-          jsx: 'react',
-          strictNullChecks: true,
-        }
+        compilerOptions: Object.assign(
+          tsconfig.compilerOptions,
+          {
+            jsx: 'react',
+          }
+        )
       }
     }
   ]
@@ -62,7 +68,7 @@ server.pundle.loadPlugins([
   () => {
     server.pundle.loadLoaders([
       {
-        extensions: ['.ts', '.tsx'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
         loader: require('pundle/lib/loaders/javascript').default
       },
     ])

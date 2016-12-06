@@ -22,9 +22,9 @@
 // Putting off consolidating the two into a shared config file until pundle@2
 // lands.
 
-const Path = require('path')
-const Pundle = require('pundle')
-const writeFileSync = require('fs').writeFileSync;
+const Path = require('path');
+const Pundle = require('pundle');
+const ts = require('typescript');
 
 const pundle = new Pundle({
   entry: [require.resolve('./src/mount.tsx')],
@@ -39,13 +39,16 @@ pundle.loadPlugins([
   [
     'typescript-pundle',
     {
-      config: {
-        compilerOptions: {
-          jsx: 'react',
-          strictNullChecks: true,
-        }
+      compilerOptions: {
+        jsx: 'react',
+        noImplicitAny: true,
+        noImplicitThis: true,
+        sourceMap: true,
+        strictNullChecks: true,
+        module: ts.ModuleKind.CommonJS,
+        target: ts.ScriptTarget.ES6,
       }
-    }
+    },
   ]
 ]).then(
   () => {

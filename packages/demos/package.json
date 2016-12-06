@@ -8,7 +8,6 @@
     "deploy": "yarn run build; $( yarn bin )/firebase deploy"
   },
   "dependencies": {
-    "firebase-tools": "3.2.0",
     "material-motion-runtime": "1.0.0",
     "react": "15.4.1",
     "react-dom": "15.4.1",
@@ -16,7 +15,10 @@
     "recompose": "0.20.2"
   },
   "devDependencies": {
+    "firebase-tools": "3.2.0",
     "pundle-dev": "1.1.11",
+    "tslib": "^1.2.0",
+    "typescript": "2.1",
     "typescript-pundle": "1.0.1"
   },
   "repository": {
