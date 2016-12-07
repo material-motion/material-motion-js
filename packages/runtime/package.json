@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "The core architecture for Material Motion.",
   "main": "dist/index.js",
-  "types": "src/index.ts",
+  "types": "dist/index.d.ts",
   "scripts": {
     "clean": "rm -rf dist",
     "build": "$(npm bin)/tsc",
