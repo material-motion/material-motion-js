@@ -1,19 +1,8 @@
 {
+  "extends": "../../tsconfig.json",
   "include": ["./src/**/*"],
   "exclude": ["**/*.test.*"],
   "compilerOptions": {
-    "declaration": true,
-    "lib": [
-      "es2015",
-      "dom"
-    ],
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "outDir": "dist",
-    "sourceMap": true,
-    "strictNullChecks": true,
-    "target": "es6"
+    "outDir": "dist"
   }
 }
