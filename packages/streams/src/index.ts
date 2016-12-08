@@ -14,6 +14,16 @@
  *  under the License.
  */
 
-export default function MotionProperty() {
+import {
+  Channel,
+  Observer,
+} from 'indefinite-observable';
 
+export enum MotionState{
+  atRest,
+  active,
+}
+
+export interface MotionObserver<T> extends Observer<T> {
+  state:Channel<MotionState>;
 }
