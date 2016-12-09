@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "lerna": "2.0.0-beta.30",
+  "version": "1.0.0",
+  "scripts": {
+    "bootstrap": "yarn; $( yarn bin )/lerna bootstrap"
+  },
+  "devDependencies": {
+    "lerna": "2.0.0-beta.30"
+  }
+}
