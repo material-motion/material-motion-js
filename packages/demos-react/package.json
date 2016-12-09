@@ -1,5 +1,5 @@
 {
-  "name": "material-motion-demos",
+  "name": "material-motion-demos-react",
   "version": "0.0.0",
   "scripts": {
     "start": "node ./devServer.js",
@@ -16,6 +16,7 @@
     "recompose": "0.20.2"
   },
   "devDependencies": {
+    "@types/react": "^0.14.54",
     "firebase-tools": "3.2.0",
     "pundle-dev": "1.1.11",
     "tslib": "^1.2.0",
