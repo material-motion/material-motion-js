@@ -17,7 +17,9 @@
   "devDependencies": {
     "@types/chai": "^3.4.34",
     "@types/sinon": "^1.16.32",
-    "@types/sinon-chai": "^2.7.27"
+    "@types/sinon-chai": "^2.7.27",
+    "tslint": "4.0.2",
+    "typescript": "2.1"
   },
   "repository": {
     "type": "git",

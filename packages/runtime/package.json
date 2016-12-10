@@ -6,13 +6,16 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "$( yarn bin )/tsc"
+    "build": "$( yarn bin )/tsc",
+    "prepublish": "yarn run clean; yarn run build"
   },
   "dependencies": {
     "tslib": "^1.2.0"
   },
   "devDependencies": {
-    "tsickle": "0.2.0"
+    "tsickle": "0.2.0",
+    "tslint": "4.0.2",
+    "typescript": "2.1"
   },
   "repository": {
     "type": "git",
