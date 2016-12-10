@@ -10,7 +10,7 @@ module.exports = function(config) {
       },
     },
     files: [
-      '**/src/**/__tests__/**',
+      'packages/*/src/**/__tests__/**',
     ],
     exclude: [
       '**/*.map',
