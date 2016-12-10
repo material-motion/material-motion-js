@@ -20,11 +20,17 @@ This repo houses all the packages that comprise the Material Motion implementati
 
 ## Contributing ##
 
-We use [lerna](https://lernajs.io/) to make it easier to work across packages.  Rather than running [`yarn`](https://yarnpkg.com/) (or `npm`) in the individual package folders, just use `lerna` from the root:
+Want to contribute?  Awesome - thanks for helping!
 
-- `lerna bootstrap` will install each packages dependencies, linking across between appropriately when they depend on one another.  This is similar to running `yarn install` in each package.
+To get started, just run these commands:
 
-- `lerna run test` will run the tests specified in each package's `package.json` file.
+```
+git clone git@github.com:material-motion/material-motion-js.git
+cd material-motion-js
+yarn run bootstrap
+```
+
+They will check out the repo, install the dependencies for each package, and link the packages to one another.  Then, find the package you want to work on in `packages` and start coding!
 
 ## License ##
 

@@ -13,13 +13,13 @@
     "react": "15.4.1",
     "react-dom": "15.4.1",
     "react-router": "4.0.0-alpha.6",
-    "recompose": "0.20.2"
+    "recompose": "0.20.2",
+    "tslib": "^1.2.0"
   },
   "devDependencies": {
     "@types/react": "^0.14.54",
     "firebase-tools": "3.2.0",
     "pundle-dev": "1.1.11",
-    "tslib": "^1.2.0",
     "tslint": "4.0.2",
     "typescript": "2.1",
     "typescript-pundle": "1.0.1"
