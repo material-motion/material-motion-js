@@ -21,8 +21,8 @@
     "firebase-tools": "3.2.0",
     "pundle-dev": "1.1.11",
     "tslint": "4.0.2",
-    "typescript-pundle": "1.0.1",
-    "typescript": "2.1"
+    "typescript": "2.1",
+    "typescript-pundle": "1.0.1"
   },
   "repository": {
     "type": "git",
