@@ -13,7 +13,6 @@
     "tslib": "^1.2.0"
   },
   "devDependencies": {
-    "tsickle": "0.2.0",
     "tslint": "4.0.2",
     "typescript": "2.1"
   },
