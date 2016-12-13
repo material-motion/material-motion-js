@@ -15,15 +15,16 @@
  */
 
 import {
-  Channel,
   Observer,
 } from 'indefinite-observable';
 
-export enum MotionState {
+export enum State {
   atRest,
   active,
 }
 
+export type StateChannel = (value: State) => void;
+
 export interface MotionObserver<T> extends Observer<T> {
-  state:Channel<MotionState>;
+  state:StateChannel;
 }
