@@ -14,5 +14,28 @@
  *  under the License.
  */
 
-export * from './MotionObservable';
-export { default as MotionObservable } from './MotionObservable';
+import {
+  IndefiniteObservable,
+  NextChannel,
+  Observer,
+  Subscription,
+} from 'indefinite-observable';
+
+export enum State {
+  atRest,
+  active,
+}
+
+export interface MotionObserver<T> extends Observer<T> {
+  state:StateChannel;
+}
+export type StateChannel = (value: State) => void;
+export type MotionObserverOrNext<T> = MotionObserver<T> | NextChannel<T>;
+
+export class MotionObservable<T> extends IndefiniteObservable<T> {
+
+}
+export interface MotionObservable<T> {
+  subscribe(observerOrNext: MotionObserverOrNext<T>): Subscription;
+}
+export default MotionObservable;
