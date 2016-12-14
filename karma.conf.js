@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const minimist = require('minimist');
 
 module.exports = function(config) {
@@ -54,7 +55,7 @@ module.exports = function(config) {
   const argv = minimist(process.argv);
   if (argv.only) {
     // Run tests for a specific package
-    if (!fs.existsSync(`./packages/${ argv.only }`)) {
+    if (!fs.existsSync(path.resolve(__dirname, `./packages/${ argv.only }`))) {
       throw new Error(`"${ argv.only }" package does not exist!`);
     }
     Object.assign(defaultConfig, {
