@@ -3,7 +3,7 @@ const minimist = require('minimist');
 
 module.exports = function(config) {
   // Default config for all packages
-  let opts = {
+  let defaultConfig = {
       basePath: '',
       frameworks: ['mocha'],
       browsers: ['Chrome', 'ChromeCanary', 'Safari', 'Firefox'],
@@ -34,6 +34,7 @@ module.exports = function(config) {
           ],
         },
       },
+      // Suppresses some console.log messages when bundle is built
       webpackMiddleware: {
         stats: {
           chunks: false,
@@ -53,22 +54,22 @@ module.exports = function(config) {
   const argv = minimist(process.argv);
   if (argv.only) {
     // Run tests for a specific package
-    if (!fs.existsSync(`./packages/${argv.only}`)) {
-      throw new Error(`"${argv.only}" package does not exist!`);
+    if (!fs.existsSync(`./packages/${ argv.only }`)) {
+      throw new Error(`"${ argv.only }" package does not exist!`);
     }
-    Object.assign(opts, {
-      files: [`packages/${argv.only}/src/**/__tests__/**`],
+    Object.assign(defaultConfig, {
+      files: [`packages/${ argv.only }/src/**/__tests__/**`],
     });
   } else if (argv.grep) {
     // Run tests for a subset of all packages by name
-    Object.assign(opts, {
-      files: [`packages/*${argv.grep}*/src/**/__tests__/**`],
+    Object.assign(defaultConfig, {
+      files: [`packages/*${ argv.grep }*/src/**/__tests__/**`],
     });
   } else if (!argv.only && !argv.grep) {
     // Run all tests
-    Object.assign(opts, {
+    Object.assign(defaultConfig, {
       files: ['packages/*/src/**/__tests__/**'],
     });
   }
-  config.set(opts);
+  config.set(defaultConfig);
 };
