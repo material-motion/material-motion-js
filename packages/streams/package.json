@@ -7,7 +7,8 @@
   "scripts": {
     "lint": "$( yarn bin )/tslint -c ../../tslint.json --project tsconfig.json",
     "clean": "rm -rf ./dist/*; mkdir -p ./dist/",
-    "build": "yarn run clean; $( yarn bin )/tsc"
+    "build": "yarn run clean; $( yarn bin )/tsc",
+    "test": "node ../../tools/test.js --only streams"
   },
   "dependencies": {
     "indefinite-observable": "0.3.0",
