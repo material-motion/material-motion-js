@@ -35,12 +35,11 @@ require('chai').use(
   require('sinon-chai')
 );
 
-describe('MotionObservable',
+describe('MotionObservable._map',
   () => {
     let next;
     let stream;
     let listener1;
-    let listener2;
     let disconnect;
 
     beforeEach(
@@ -56,8 +55,18 @@ describe('MotionObservable',
         );
 
         listener1 = stub();
-        listener2 = stub();
         disconnect = stub();
+      }
+    );
+
+    it('should transform the stream with the supplied predicate',
+      () => {
+        stream._map(
+          x => x + 40
+        ).subscribe(listener1);
+
+        next(2);
+        expect(listener1).to.have.been.calledWith(42);
       }
     );
   }

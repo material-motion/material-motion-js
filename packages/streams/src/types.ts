@@ -14,6 +14,21 @@
  *  under the License.
  */
 
-export * from './types';
-export * from './MotionObservable';
-export { default as MotionObservable } from './MotionObservable';
+import {
+  Disconnect,
+  NextChannel,
+  Observer,
+} from 'indefinite-observable';
+
+import {
+  State,
+} from './MotionObservable';
+
+export interface MotionObserver<T> extends Observer<T> {
+  state:StateChannel;
+}
+export type StateChannel = (value: State) => void;
+export type MotionObserverOrNext<T> = MotionObserver<T> | NextChannel<T>;
+
+export type MotionConnect<T> = (observer: MotionObserver<T>) => Disconnect;
+export type Operation<T, U> = (value: T, nextChannel: NextChannel<U>) => void;
