@@ -44,25 +44,25 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
   }
 
   /**
-   * Applies the predicate `transform` to every incoming value and synchronously
-   * passes the result to the observer.
+   * Applies `project` to every incoming value and synchronously passes the
+   * result to the observer.
    */
-  _map<U>(transform: (value: T) => U): MotionObservable<U> {
+  _map<U>(project: (value: T) => U): MotionObservable<U> {
     return this._nextOperator(
       (value: T, nextChannel: NextChannel<U>) => {
-        nextChannel(transform(value));
+        nextChannel(project(value));
       }
     );
   }
 
   /**
-   * Applies the predicate `test` to every incoming value and synchronously
-   * passes values that return `true` to the observer.
+   * Applies `predicate` to every incoming value and synchronously passes values
+   * that return `true` to the observer.
    */
-  _filter(test: (value: T) => boolean): MotionObservable<T> {
+  _filter(predicate: (value: T) => boolean): MotionObservable<T> {
     return this._nextOperator(
       (value: T, nextChannel: NextChannel<T>) => {
-        if (test(value)) {
+        if (predicate(value)) {
           nextChannel(value);
         }
       }
