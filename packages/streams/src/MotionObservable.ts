@@ -29,8 +29,8 @@ import {
 } from './types';
 
 export enum State {
-  AT_REST,
-  ACTIVE,
+  AT_REST = 0,
+  ACTIVE = 1,
 }
 
 /**
