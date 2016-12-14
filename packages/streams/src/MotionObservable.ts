@@ -56,6 +56,20 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
   }
 
   /**
+   * Applies the predicate `test` to every incoming value and synchronously
+   * passes values that return `true` to the observer.
+   */
+  _filter(test: (value: T) => boolean): MotionObservable<T> {
+    return this._nextOperator(
+      (value: T, nextChannel: NextChannel<T>) => {
+        if (test(value)) {
+          nextChannel(value);
+        }
+      }
+    );
+  }
+
+  /**
    * `_nextOperator` is sugar for creating an operator that reads and writes
    * from the `next` channel.  It encapsulates the stream creation and
    * subscription boilerplate required for most operators.
