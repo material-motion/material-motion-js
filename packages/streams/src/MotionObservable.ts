@@ -24,7 +24,7 @@ import {
   MotionConnect,
   MotionObserver,
   MotionObserverOrNext,
-  Operation,
+  NextOperation,
   StateChannel,
 } from './types';
 
@@ -78,7 +78,7 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
    * `next` channel, transform it, and use the supplied callback to dispatch
    * the result to the observer's `next` channel.
    */
-  _nextOperator<U>(operation: Operation<T, U>): MotionObservable<U> {
+  _nextOperator<U>(operation: NextOperation<T, U>): MotionObservable<U> {
     return new MotionObservable<U>(
       (observer: MotionObserver<U>) => {
         const subscription = this.subscribe({

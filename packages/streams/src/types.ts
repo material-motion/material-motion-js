@@ -31,4 +31,4 @@ export type StateChannel = (value: State) => void;
 export type MotionObserverOrNext<T> = MotionObserver<T> | NextChannel<T>;
 
 export type MotionConnect<T> = (observer: MotionObserver<T>) => Disconnect;
-export type Operation<T, U> = (value: T, nextChannel: NextChannel<U>) => void;
+export type NextOperation<T, U> = (value: T, nextChannel: NextChannel<U>) => void;
