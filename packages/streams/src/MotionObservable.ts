@@ -43,6 +43,23 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
     super(connect);
   }
 
+  subscribe(observerOrNext: MotionObserverOrNext<T>): Subscription {
+    // To make operators observer-agnostic, they should receive a state channel
+    // even if the underlying observer doesn't have one.
+    let observer: MotionObserver<T>;
+
+    if (typeof observerOrNext === 'function') {
+      observer = {
+        next: observerOrNext,
+        state() {}
+      };
+    } else {
+      observer = observerOrNext;
+    }
+
+    return super.subscribe(observer);
+  }
+
   /**
    * Applies `transform` to every incoming value and synchronously passes the
    * result to the observer.
@@ -90,10 +107,6 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
       }
     );
   }
-}
-
-export interface MotionObservable<T> {
-  subscribe(observerOrNext: MotionObserverOrNext<T>): Subscription;
 }
 
 export default MotionObservable;
