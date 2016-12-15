@@ -44,13 +44,13 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
   }
 
   /**
-   * Applies `project` to every incoming value and synchronously passes the
+   * Applies `transform` to every incoming value and synchronously passes the
    * result to the observer.
    */
-  _map<U>(project: (value: T) => U): MotionObservable<U> {
+  _map<U>(transform: (value: T) => U): MotionObservable<U> {
     return this._nextOperator(
       (value: T, nextChannel: NextChannel<U>) => {
-        nextChannel(project(value));
+        nextChannel(transform(value));
       }
     );
   }
