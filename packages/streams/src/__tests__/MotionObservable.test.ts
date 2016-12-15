@@ -49,15 +49,14 @@ describe('MotionObservable',
 
     beforeEach(
       () => {
+        // Reset these until the stream is subscribed to.
+        next = undefined;
+        state = undefined;
+
         stream = new MotionObservable(
           observer => {
-            next = (value) => {
-              observer.next(value);
-            }
-
-            state = (value) => {
-              observer.state(value);
-            }
+            next = observer.next;
+            state = observer.state;
 
             return disconnect;
           }
