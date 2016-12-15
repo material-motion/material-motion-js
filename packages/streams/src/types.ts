@@ -32,3 +32,14 @@ export type MotionObserverOrNext<T> = MotionObserver<T> | NextChannel<T>;
 
 export type MotionConnect<T> = (observer: MotionObserver<T>) => Disconnect;
 export type NextOperation<T, U> = (value: T, nextChannel: NextChannel<U>) => void;
+
+
+export type Read<T> = () => T;
+export interface ScopedReadable<T> {
+  read(): Read<T>;
+}
+
+export type Write<T> = (value: T) => void;
+export interface ScopedWritable<T> {
+  write: Write<T>;
+}
