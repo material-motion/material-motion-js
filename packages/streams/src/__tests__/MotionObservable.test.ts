@@ -108,5 +108,18 @@ describe('MotionObservable',
         expect(stateListener).to.have.been.calledWith(State.ACTIVE);
       }
     );
+
+    it(`should provide operators with a state channel even if the listener doesn't have one`,
+      () => {
+        new MotionObservable(
+          observer => {
+            expect(observer.state).to.exist;
+            observer.state(State.ACTIVE);
+
+            return disconnect;
+          }
+        ).subscribe(nextListener);
+      }
+    );
   }
 );
