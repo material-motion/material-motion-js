@@ -30,7 +30,7 @@ module.exports = function(config) {
         module: {
           loaders: [
             {
-              test: /\.tsx?$/, loader: 'ts-loader?transpileOnly=true',
+              test: /\.tsx?$/, loader: 'awesome-typescript-loader?transpileOnly=true',
             },
           ],
         },
