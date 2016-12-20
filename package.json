@@ -4,6 +4,8 @@
   "version": "1.0.0",
   "scripts": {
     "bootstrap": "yarn; $( yarn bin )/lerna bootstrap",
+    "build": "$( yarn bin )/lerna run build",
+    "lint": "$( yarn bin)/lerna run lint",
     "test": "$( yarn bin )/karma start"
   },
   "devDependencies": {

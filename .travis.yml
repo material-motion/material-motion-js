@@ -20,5 +20,6 @@ before_script:
 - yarn run bootstrap
 script:
 - yarn run test -- --single-run
+- yarn run build
 group: stable
 os: linux

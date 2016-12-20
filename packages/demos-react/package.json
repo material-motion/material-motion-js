@@ -4,7 +4,7 @@
   "scripts": {
     "start": "node ./devServer.js",
     "clean": "rm -rf ./site/dist/*; mkdir -p ./site/dist/",
-    "lint": "$( yarn bin )/tslint -c ../../tslint.json --project tsconfig.json",
+    "lint": "../../node_modules/.bin/tslint -c ../../tslint.json --project tsconfig.json",
     "build": "yarn run clean; node ./build.js",
     "deploy": "yarn run build; $( yarn bin )/firebase deploy"
   },

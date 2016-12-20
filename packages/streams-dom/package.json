@@ -5,17 +5,13 @@
   "main": "dist/index.js",
   "types": "src/index.ts",
   "scripts": {
-    "lint": "$( yarn bin )/tslint -c ../../tslint.json --project tsconfig.json",
+    "lint": "../../node_modules/.bin/tslint -c ../../tslint.json --project tsconfig.json",
     "test": "node ../../tools/test.js --only streams-dom",
     "clean": "rm -rf ./dist/*; mkdir -p ./dist/",
-    "build": "yarn run clean; $( yarn bin )/tsc"
+    "build": "yarn run clean; ../../node_modules/.bin/tsc"
   },
   "dependencies": {
     "tslib": "^1.2.0"
-  },
-  "devDependencies": {
-    "tslint": "4.0.2",
-    "typescript": "2.1"
   },
   "repository": {
     "type": "git",
