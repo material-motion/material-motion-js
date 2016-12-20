@@ -6,7 +6,8 @@
     "bootstrap": "yarn; $( yarn bin )/lerna bootstrap",
     "build": "$( yarn bin )/lerna run build",
     "lint": "$( yarn bin)/lerna run lint",
-    "test": "$( yarn bin )/karma start"
+    "test": "$( yarn bin )/karma start",
+    "ci": "yarn run lint; yarn run build; yarn run test -- --single-run"
   },
   "devDependencies": {
     "@types/chai": "^3.4.34",

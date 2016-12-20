@@ -37,5 +37,5 @@ export default function createMotionElementFromDOMNode(domNode: Element): Motion
       );
     },
 
-  }
+  };
 }

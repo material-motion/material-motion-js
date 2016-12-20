@@ -19,7 +19,6 @@ addons:
 before_script:
 - yarn run bootstrap
 script:
-- yarn run test -- --single-run
-- yarn run build
+- yarn run ci
 group: stable
 os: linux

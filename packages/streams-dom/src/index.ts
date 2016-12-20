@@ -14,7 +14,6 @@
  *  under the License.
  */
 
-export * from './types';
 export * from './createMotionElementFromDOMNode';
 export { default as createMotionElementFromDOMNode } from './createMotionElementFromDOMNode';
 

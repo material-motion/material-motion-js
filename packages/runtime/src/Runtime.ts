@@ -65,7 +65,7 @@ export default class Runtime {
     }
 
     const isActiveTokenGenerator = this._isActiveTokenGenerator;
-    const PerformerType: PerformingConstructor = plan._PerformerType;
+    const PerformerType: PerformingConstructor = plan._PerformerType; // tslint:disable-line
 
     const performerMapKey = this._performerMapSelector({ PerformerType, target });
     let performer: Performing;
@@ -85,7 +85,7 @@ export default class Runtime {
       // them, it should ensure we get type errors if a feature isn't threaded
       // through correctly.
 
-      const PerformerOfAllFeatures = PerformerType as PerformingWithAllFeaturesConstructor;
+      const PerformerOfAllFeatures = PerformerType as PerformingWithAllFeaturesConstructor;  // tslint:disable-line
       performer = new PerformerOfAllFeatures({ target, isActiveTokenGenerator });
 
       this._performerMap.set(performerMapKey, performer);

@@ -34,7 +34,7 @@ export default class ParallaxClouds extends React.Component {
   makeRefForLayer(i) {
     return (element) => {
       this._layers[i] = element;
-    }
+    };
   }
 
   // We have no props and no state, so no need to re-render

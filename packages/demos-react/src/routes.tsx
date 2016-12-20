@@ -16,10 +16,10 @@
 
 import * as React from 'react';
 
-import Link from 'react-router/Link'
-import Match from 'react-router/Match'
-import Miss from 'react-router/Miss'
-import Router from 'react-router/BrowserRouter'
+import Link from 'react-router/Link';
+import Match from 'react-router/Match';
+import Miss from 'react-router/Miss';
+import Router from 'react-router/BrowserRouter';
 
 import ParallaxClouds from './map-scroll-to-css/components/ParallaxClouds';
 
@@ -31,7 +31,7 @@ const links = [
     name: 'MapScrollPositionToCSSValue',
     component: ParallaxClouds,
   }
-]
+];
 
 function Links() {
   return (

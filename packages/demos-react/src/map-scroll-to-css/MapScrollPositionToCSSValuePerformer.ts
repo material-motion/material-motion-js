@@ -15,10 +15,10 @@
  */
 
 import {
-  Plan,
   Performing,
-  PerformingArgs,
   PerformingAddPlanArgs,
+  PerformingArgs,
+  Plan,
 } from 'material-motion-runtime';
 
 import MapScrollPositionToCSSValuePlan from './MapScrollPositionToCSSValuePlan';
@@ -37,7 +37,7 @@ export default class MapScrollPositionToCSSValuePerformer implements Performing 
 
     if (!willChange.includes('transform')) {
       if (willChange) {
-        willChange += ', '
+        willChange += ', ';
       }
 
       willChange += 'transform';

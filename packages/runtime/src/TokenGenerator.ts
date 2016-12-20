@@ -55,7 +55,7 @@ export default class TokenGenerator {
           this._updateTokenCount(-1);
         }
       }
-    }
+    };
   }
 
   _updateTokenCount(delta: number): void {

@@ -16,7 +16,7 @@
 
 export type Dict = {
   [index:string]: any,
-}
+};
 
 /**
  *  A compound key selector searches the object it receives for the values at
@@ -34,8 +34,9 @@ export default function makeCompoundKeySelector(key1:string, key2:string):(dict:
     const value1 = dict[key1];
     const value2 = dict[key2];
 
-    if (!keyMap.has(value1))
+    if (!keyMap.has(value1)) {
       keyMap.set(value1, new Map());
+    }
 
     const value1Map = keyMap.get(value1);
 
