@@ -18,6 +18,7 @@ import {
   MotionElement,
   MotionObservable,
   MotionObserver,
+  Point2D,
 } from 'material-motion-streams';
 
 export default function createMotionElementFromDOMNode(domNode: Element): MotionElement {
@@ -37,5 +38,23 @@ export default function createMotionElementFromDOMNode(domNode: Element): Motion
       );
     },
 
+    scrollPosition: {
+      read():Point2D {
+        return {
+          x: domNode.scrollLeft,
+          y: domNode.scrollTop,
+        }
+      },
+
+      write({ x, y }:Partial<Point2D>): void {
+        if (x !== undefined) {
+          domNode.scrollLeft = x;
+        }
+
+        if (y !== undefined) {
+          domNode.scrollTop = y;
+        }
+      },
+    }
   };
 }

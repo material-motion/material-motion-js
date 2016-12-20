@@ -35,9 +35,15 @@ export type MotionConnect<T> = (observer: MotionObserver<T>) => Disconnect;
 export type NextOperation<T, U> = (value: T, nextChannel: NextChannel<U>) => void;
 
 
+export type Point2D = {
+  x: number,
+  y: number,
+}
+
+
 export type Read<T> = () => T;
 export interface ScopedReadable<T> {
-  read(): Read<T>;
+  read: Read<T>;
 }
 
 export type Write<T> = (value: T) => void;
@@ -45,6 +51,8 @@ export interface ScopedWritable<T> {
   write: Write<T>;
 }
 
+
 export interface MotionElement {
+  readonly scrollPosition: ScopedReadable<Point2D> & ScopedWritable<Point2D>;
   getEvent$(type: string): MotionObservable<Event>;
 }
