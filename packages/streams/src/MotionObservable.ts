@@ -87,6 +87,36 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
   }
 
   /**
+   * Limits the number of dispatches to one per frame.
+   *
+   * When it receives a value, it waits until the next frame to dispatch it.  If
+   * more than one value is received whilst awaiting the frame, the most recent
+   * value is dispatched and the intermediaries are forgotten.
+   *
+   * Since no rendering will happen until `requestAnimationFrame` is called, it
+   * should be safe to `_debounce()` without missing a frame.
+   */
+  _debounce(): MotionObservable<T> {
+    let queuedFrameID: number;
+    let lastValue: T;
+
+    return this._nextOperator(
+      (value: T, nextChannel: NextChannel<T>) => {
+        lastValue = value;
+
+        if (!queuedFrameID) {
+          queuedFrameID = requestAnimationFrame(
+            () => {
+              nextChannel(lastValue);
+              queuedFrameID = 0;
+            }
+          );
+        }
+      }
+    );
+  }
+
+  /**
    * `_nextOperator` is sugar for creating an operator that reads and writes
    * from the `next` channel.  It encapsulates the stream creation and
    * subscription boilerplate required for most operators.
