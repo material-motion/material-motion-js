@@ -20,7 +20,7 @@ import {
   MotionObserver,
 } from 'material-motion-streams';
 
-export function createMotionElementFromDOMNode(domNode: Element): MotionElement {
+export default function createMotionElementFromDOMNode(domNode: Element): MotionElement {
   return {
     // This is a `MotionObservable` because that's where our operators live
     // right now.  Since it doesn't use `observer.state`, it could be replaced

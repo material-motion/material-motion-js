@@ -15,5 +15,6 @@
  */
 
 export * from './types';
-export * from './DOMMotionElement';
-export { default as DOMMotionElement } from './DOMMotionElement';
+export * from './createMotionElementFromDOMNode';
+export { default as createMotionElementFromDOMNode } from './createMotionElementFromDOMNode';
+

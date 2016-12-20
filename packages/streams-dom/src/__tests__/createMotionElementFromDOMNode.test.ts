@@ -26,9 +26,7 @@ import {
   stub,
 } from 'sinon';
 
-import {
-  createMotionElementFromDOMNode,
-} from '../DOMMotionElement';
+import createMotionElementFromDOMNode from '../createMotionElementFromDOMNode';
 
 declare function require(name: string);
 
@@ -37,7 +35,7 @@ require('chai').use(
   require('sinon-chai')
 );
 
-describe('DOMMotionElement',
+describe('createMotionElementFromDOMNode',
   () => {
     let domNode;
     let motionElement;
