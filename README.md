@@ -1,5 +1,8 @@
 # Material Motion for JavaScript #
 
+[![Build Status](https://travis-ci.org/material-motion/material-motion-js.svg?branch=develop)](https://travis-ci.org/material-motion/material-motion-js)
+[![codecov](https://codecov.io/gh/material-motion/material-motion-js/branch/develop/graph/badge.svg)](https://codecov.io/gh/material-motion/material-motion-js)
+
 This repo houses the JavaScript implementation of Material Motion.  For more information about the project as a whole, check [the Starmap](https://material-motion.github.io/material-motion/starmap/).
 
 ## High-level Goals ##
