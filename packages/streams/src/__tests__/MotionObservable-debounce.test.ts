@@ -35,7 +35,7 @@ require('chai').use(
   require('sinon-chai')
 );
 
-function waitOneFrame() {
+export function waitOneFrame() {
   return new Promise(
     resolve => requestAnimationFrame(resolve)
   );
