@@ -16,12 +16,12 @@
 
 import {
   Disconnect,
-  IndefiniteObservable,
   NextChannel,
   Observer,
 } from 'indefinite-observable';
 
 import {
+  MotionObservable,
   State,
 } from './MotionObservable';
 
