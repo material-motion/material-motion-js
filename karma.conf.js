@@ -9,7 +9,7 @@ module.exports = function(config) {
       frameworks: ['mocha'],
       browsers: process.env.TRAVIS
         ? ['Chrome', 'Firefox']
-        : ['Chrome', 'ChromeCanary', 'Safari', 'Firefox'],
+        : ['ChromeCanary'],
       reporters: ['progress'],
       client: {
         mocha: {
