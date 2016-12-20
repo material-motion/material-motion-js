@@ -46,5 +46,5 @@ export interface ScopedWritable<T> {
 }
 
 export interface MotionElement {
-  getEvent$(type: string): IndefiniteObservable<Event>;
+  getEvent$(type: string): MotionObservable<Event>;
 }

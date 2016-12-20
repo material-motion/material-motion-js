@@ -15,19 +15,19 @@
  */
 
 import {
-  IndefiniteObservable,
-  Observer,
-} from 'indefinite-observable';
-
-import {
   MotionElement,
+  MotionObservable,
+  MotionObserver,
 } from 'material-motion-streams';
 
 export function createMotionElementFromDOMNode(domNode: Element): MotionElement {
   return {
+    // This is a `MotionObservable` because that's where our operators live
+    // right now.  Since it doesn't use `observer.state`, it could be replaced
+    // with a simpler Observable if we had one.
     getEvent$(eventType: string) {
-      return new IndefiniteObservable(
-        (observer: Observer<UIEvent>) => {
+      return new MotionObservable(
+        (observer: MotionObserver<UIEvent>) => {
           domNode.addEventListener(eventType, observer.next);
 
           return () => {
