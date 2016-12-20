@@ -7,7 +7,9 @@ module.exports = function(config) {
   let defaultConfig = {
       basePath: '',
       frameworks: ['mocha'],
-      browsers: ['Chrome', 'ChromeCanary', 'Safari', 'Firefox'],
+      browsers: process.env.TRAVIS
+        ? ['Chrome', 'Firefox']
+        : ['Chrome', 'ChromeCanary', 'Safari', 'Firefox'],
       reporters: ['progress'],
       client: {
         mocha: {
