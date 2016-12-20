@@ -16,6 +16,7 @@
 
 import {
   Disconnect,
+  IndefiniteObservable,
   NextChannel,
   Observer,
 } from 'indefinite-observable';
@@ -42,4 +43,8 @@ export interface ScopedReadable<T> {
 export type Write<T> = (value: T) => void;
 export interface ScopedWritable<T> {
   write: Write<T>;
+}
+
+export interface MotionElement {
+  getEvent$(type: string): IndefiniteObservable<Event>;
 }

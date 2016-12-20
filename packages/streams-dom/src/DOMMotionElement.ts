@@ -19,30 +19,23 @@ import {
   Observer,
 } from 'indefinite-observable';
 
-export type DOMMotionElementArgs = {
-  domNode: Element,
-};
+import {
+  MotionElement,
+} from 'material-motion-streams';
 
-export class DOMMotionElement {
-  _domNode: Element;
+export function createMotionElementFromDOMNode(domNode: Element): MotionElement {
+  return {
+    getEvent$(eventType: string) {
+      return new IndefiniteObservable(
+        (observer: Observer<UIEvent>) => {
+          domNode.addEventListener(eventType, observer.next);
 
-  constructor({ domNode }: DOMMotionElementArgs) {
-    this._domNode = domNode;
-  }
-
-  getEvent$(eventType: string) {
-    return new IndefiniteObservable(
-      (observer: Observer<UIEvent>) => {
-        this._domNode.addEventListener(eventType, observer.next);
-
-        return () => {
-          this._domNode.removeEventListener(eventType, observer.next);
+          return () => {
+            domNode.removeEventListener(eventType, observer.next);
+          };
         }
-      }
-    )
-  }
-}
+      );
+    },
 
-export function createMotionElementFromDOMNode(domNode: Element): DOMMotionElement {
-  return new DOMMotionElement({ domNode });
+  }
 }
