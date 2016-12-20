@@ -13,7 +13,3 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  */
-
-export * from './types';
-export * from './DOMMotionElement';
-export { default as DOMMotionElement } from './DOMMotionElement';
