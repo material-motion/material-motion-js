@@ -35,7 +35,7 @@ require('chai').use(
   require('sinon-chai')
 );
 
-describe('createMotionElementFromDOMNode',
+describe('DOMMotionElement.getEvent$',
   () => {
     let domNode;
     let motionElement;
@@ -49,7 +49,7 @@ describe('createMotionElementFromDOMNode',
       }
     );
 
-    it('should forward events when subscribed to. ',
+    it('should forward events when subscribed to.',
       () => {
         motionElement.getEvent$('click').subscribe(listener);
 
