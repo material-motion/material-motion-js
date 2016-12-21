@@ -96,19 +96,19 @@ describe('scrollSource',
 
 class MockMotionElement {
   _lastPosition = {};
-  next = () => {};
+  _next = () => {};
 
   getEvent$() {
     return new MotionObservable(
       observer => {
-        this.next = observer.next
+        this._next = observer.next
       }
     );
   }
 
   scrollTo(position) {
     this._lastPosition = position;
-    this.next();
+    this._next();
   }
 
   scrollPosition = {
