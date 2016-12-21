@@ -43,7 +43,7 @@ export default function createMotionElementFromDOMNode(domNode: Element): Motion
         return {
           x: domNode.scrollLeft,
           y: domNode.scrollTop,
-        }
+        };
       },
 
       write({ x, y }:Partial<Point2D>): void {

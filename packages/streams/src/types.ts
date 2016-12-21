@@ -38,7 +38,7 @@ export type NextOperation<T, U> = (value: T, nextChannel: NextChannel<U>) => voi
 export type Point2D = {
   x: number,
   y: number,
-}
+};
 
 
 export type Read<T> = () => T;
