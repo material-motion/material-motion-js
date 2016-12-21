@@ -17,6 +17,8 @@
 import { expect } from 'chai';
 
 import {
+  after,
+  before,
   beforeEach,
   describe,
   it,
@@ -25,6 +27,10 @@ import {
 import {
   stub,
 } from 'sinon';
+
+import {
+  useMockedRAF,
+} from 'material-motion-testing-utils';
 
 declare function require(name: string);
 
@@ -36,62 +42,48 @@ require('chai').use(
 import MotionObservable from '../../MotionObservable';
 import scrollSource from '../scrollSource';
 
-// TODO: put this in a shared place.
-import {
-  waitOneFrame,
-} from '../../__tests__/MotionObservable-debounce.test';
-
 describe('scrollSource',
-  () => {
-    let mockMotionElement;
-    let listener;
+  useMockedRAF(
+    (mockRAF) => {
+      let mockMotionElement;
+      let listener;
 
-    beforeEach(
-      () => {
-        mockMotionElement = new MockMotionElement();
-        listener = stub();
-      }
-    );
+      beforeEach(
+        () => {
+          mockMotionElement = new MockMotionElement();
+          listener = stub();
+        }
+      );
 
-    it('should return the current scrollPosition as a Point2D.',
-      () => {
-        const scrollPosition$ = scrollSource(mockMotionElement);
-        scrollPosition$.subscribe(listener);
+      it('should return the current scrollPosition as a Point2D.',
+        () => {
+          const scrollPosition$ = scrollSource(mockMotionElement);
+          scrollPosition$.subscribe(listener);
 
-        const expectedScrollPositions = [
-          { x: 0, y: 0 },
-          { x: 10, y: 0 },
-          { x: 20, y: 0 },
-        ];
+          const expectedScrollPositions = [
+            { x: 0, y: 0 },
+            { x: 10, y: 0 },
+            { x: 20, y: 0 },
+          ];
 
-        // scrollSource is debounced, so we must wait a frame between each
-        // scroll
-        mockMotionElement.scrollTo(expectedScrollPositions[0]);
+          // scrollSource is debounced, so we must wait a frame between each
+          // scroll
+          expectedScrollPositions.forEach(
+            position => {
+              mockMotionElement.scrollTo(position);
+              mockRAF.step();
+            }
+          );
 
-        return waitOneFrame().then(
-          () => {
-            mockMotionElement.scrollTo(expectedScrollPositions[1]);
+          const results = listener.args.map(
+            args => args[0]
+          );
 
-            return waitOneFrame();
-          }
-        ).then(
-          () => {
-            mockMotionElement.scrollTo(expectedScrollPositions[2]);
-
-            return waitOneFrame();
-          }
-        ).then(
-          () => {
-            const results = listener.args.map(
-              args => args[0]
-            );
-
-            expect(results).to.deep.equal(expectedScrollPositions);
-          }
-        );
-      }
-    );
-  }
+          expect(results).to.deep.equal(expectedScrollPositions);
+        }
+      );
+    }
+  )
 );
 
 class MockMotionElement {

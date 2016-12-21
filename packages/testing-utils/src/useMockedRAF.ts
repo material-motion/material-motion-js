@@ -14,8 +14,38 @@
  *  under the License.
  */
 
-export * from './createMockObserver';
-export { default as createMockObserver } from './createMockObserver';
+import {
+  after,
+  before,
+} from 'mocha-sugar-free';
 
-export * from './useMockedRAF';
-export { default as useMockedRAF } from './useMockedRAF';
+import {
+  SinonStub,
+  stub,
+} from 'sinon';
+
+import * as createMockRAF from 'mock-raf';
+
+/**
+ * Replaces window.requestAnimationFrame with a mock for the duration of a mocha
+ * testing suite.
+ */
+export default function useMockedRAF(closure) {
+  return () => {
+    const mockRAF = createMockRAF();
+
+    before(
+      () => {
+        stub(window, 'requestAnimationFrame', mockRAF.raf);
+      }
+    );
+
+    after(
+      () => {
+        (window.requestAnimationFrame as SinonStub).restore();
+      }
+    );
+
+    return closure(mockRAF);
+  };
+};

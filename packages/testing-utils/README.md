@@ -5,16 +5,29 @@ Utilities for testing the Material Motion framework
 ## Usage ##
 
 ```javascript
+
 import {
   createMockObserver,
+  useMockedRAF,
 } from 'material-motion-testing-utils';
 
-const mockObserver = createMockObserver();
+declare('TestableThing',
+  useMockedRAF(
+    (mockRAF) => {
+      it('should do something with requestAnimationFrame',
+        () => {
+          const mockObserver = createMockObserver();
 
-const someStream = new MotionObservable(mockObserver);
-someStream.subscribe(someListener);
-mockObserver.next(5);
-expect(someListener).to.have.been.calledWith(5);
+          const someStream = new MotionObservable(mockObserver).debounce();
+          someStream.subscribe(someListener);
+
+          mockObserver.next(4);
+          mockObserver.next(5);
+          mockObserver.next(6);
+
+          mockRAF.step();
+
+          expect(someListener).to.have.been.calledWith(6);
 ```
 
 ## Installation ##

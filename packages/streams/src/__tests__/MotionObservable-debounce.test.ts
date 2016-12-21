@@ -17,6 +17,8 @@
 import { expect } from 'chai';
 
 import {
+  after,
+  before,
   beforeEach,
   describe,
   it,
@@ -35,71 +37,60 @@ require('chai').use(
 
 import {
   createMockObserver,
+  useMockedRAF,
 } from 'material-motion-testing-utils';
 
 import MotionObservable from '../MotionObservable';
 
-export function waitOneFrame() {
-  return new Promise(
-    resolve => requestAnimationFrame(resolve)
-  );
-}
-
 describe('MotionObservable._debounce',
-  () => {
-    let stream;
-    let mockObserver;
-    let listener1;
+  useMockedRAF(
+    (mockRAF) => {
+      let stream;
+      let mockObserver;
+      let listener1;
 
-    beforeEach(
-      () => {
-        mockObserver = createMockObserver();
-        stream = new MotionObservable(mockObserver.connect);
-        listener1 = stub();
-      }
-    );
+      beforeEach(
+        () => {
+          mockObserver = createMockObserver();
+          stream = new MotionObservable(mockObserver.connect);
+          listener1 = stub();
+        }
+      );
 
-    it('should send the most recent value to the observer at the beginning of each frame',
-      () => {
-        stream._debounce().subscribe(listener1);
+      it('should send the most recent value to the observer at the beginning of each frame',
+        () => {
+          stream._debounce().subscribe(listener1);
 
-        mockObserver.next(1);
-        mockObserver.next(2);
-        mockObserver.next(3);
+          mockObserver.next(1);
+          mockObserver.next(2);
+          mockObserver.next(3);
+          mockRAF.step();
 
-        return waitOneFrame().then(
-          () => {
-            expect(listener1).to.have.been.calledOnce;
-            expect(listener1).to.have.been.calledWith(3);
-          }
-        );
-      }
-    );
+          expect(listener1).to.have.been.calledOnce;
+          expect(listener1).to.have.been.calledWith(3);
+        }
+      );
 
-    it('should dispatch exactly once per frame',
-      () => {
-        stream._debounce().subscribe(listener1);
+      it('should dispatch exactly once per frame',
+        () => {
+          stream._debounce().subscribe(listener1);
 
-        mockObserver.next(1);
-        mockObserver.next(2);
-        mockObserver.next(3);
+          mockObserver.next(1);
+          mockObserver.next(2);
+          mockObserver.next(3);
 
-        return waitOneFrame().then(
-          () => {
-            mockObserver.next(4);
-            mockObserver.next(5);
-            mockObserver.next(6);
+          mockRAF.step();
 
-            return waitOneFrame();
-          }
-        ).then(
-          () => {
-            expect(listener1).to.have.been.calledTwice;
-            expect(listener1).to.have.been.calledWith(6);
-          }
-        );
-      }
-    );
-  }
+          mockObserver.next(4);
+          mockObserver.next(5);
+          mockObserver.next(6);
+
+          mockRAF.step();
+
+          expect(listener1).to.have.been.calledTwice;
+          expect(listener1).to.have.been.calledWith(6);
+        }
+      );
+    }
+  )
 );
-
