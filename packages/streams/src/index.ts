@@ -17,3 +17,5 @@
 export * from './types';
 export * from './MotionObservable';
 export { default as MotionObservable } from './MotionObservable';
+export * from './MotionRuntime';
+export { default as MotionRuntime } from './MotionRuntime';
