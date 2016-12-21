@@ -15,7 +15,7 @@
  */
 
 
-export function range({ start = 0, end = 1 }:{ start?: number, end?: number } = {}):number[] {
+export function range({ start = 0, end = 1 }: { start?: number, end?: number } = {}): Array<number> {
   const length = end - start;
   return Array(length + 1).fill().map((_, i) => start + i);
 }

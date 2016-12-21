@@ -1,6 +1,6 @@
 {
   "rules": {
-    "array-type": [true, "array-simple"],
+    "array-type": [true, "generic"],
     "class-name": true,
     "comment-format": [true, "check-space"],
     "curly": true,
