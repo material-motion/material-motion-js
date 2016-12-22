@@ -2,10 +2,11 @@
   "name": "material-motion-demos-react",
   "version": "0.0.0",
   "scripts": {
-    "start": "node ./devServer.js",
+    "pundle": "../../node_modules/.bin/pundle",
+    "start": "yarn run pundle -- --dev --dev-directory site",
     "clean": "rm -rf ./site/dist/*; mkdir -p ./site/dist/",
     "lint": "../../node_modules/.bin/tslint -c ../../tslint.json --project tsconfig.json",
-    "build": "yarn run clean; node ./build.js",
+    "build": "yarn run clean; yarn run pundle",
     "deploy": "yarn run build; $( yarn bin )/firebase deploy"
   },
   "dependencies": {
@@ -18,11 +19,7 @@
   },
   "devDependencies": {
     "@types/react": "^0.14.54",
-    "firebase-tools": "3.2.0",
-    "pundle-dev": "1.1.11",
-    "tslint": "4.0.2",
-    "typescript": "2.1",
-    "typescript-pundle": "1.0.1"
+    "firebase-tools": "3.2.0"
   },
   "repository": {
     "type": "git",
