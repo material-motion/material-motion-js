@@ -26,11 +26,6 @@ import {
   stub,
 } from 'sinon';
 
-import {
-  MotionObservable,
-  State,
-} from '../';
-
 declare function require(name: string);
 
 // chai really doesn't like being imported as an ES2015 module; will be fixed in v4
@@ -38,33 +33,29 @@ require('chai').use(
   require('sinon-chai')
 );
 
+import {
+  createMockObserver,
+} from 'material-motion-testing-utils';
+
+import {
+  MotionObservable,
+  State,
+} from '../';
+
 describe('MotionObservable',
   () => {
-    let next;
-    let state;
     let stream;
+    let mockObserver;
     let nextListener;
     let stateListener;
-    let disconnect;
 
     beforeEach(
       () => {
-        // Reset these until the stream is subscribed to.
-        next = undefined;
-        state = undefined;
-
-        stream = new MotionObservable(
-          observer => {
-            next = observer.next;
-            state = observer.state;
-
-            return disconnect;
-          }
-        );
+        mockObserver = createMockObserver();
+        stream = new MotionObservable(mockObserver.connect);
 
         nextListener = stub();
         stateListener = stub();
-        disconnect = stub();
       }
     );
 
@@ -75,7 +66,8 @@ describe('MotionObservable',
           state: stateListener,
         });
 
-        next(1);
+        mockObserver.next(1);
+
         expect(nextListener).to.have.been.calledWith(1);
         expect(stateListener).not.to.have.been.called;
       }
@@ -88,7 +80,8 @@ describe('MotionObservable',
           state: stateListener,
         });
 
-        state(State.ACTIVE);
+        mockObserver.state(State.ACTIVE);
+
         expect(nextListener).not.to.have.been.called;
         expect(stateListener).to.have.been.calledWith(State.ACTIVE);
       }
@@ -101,8 +94,9 @@ describe('MotionObservable',
           state: stateListener,
         });
 
-        next('hi');
-        state(State.ACTIVE);
+        mockObserver.next('hi');
+        mockObserver.state(State.ACTIVE);
+
         expect(nextListener).to.have.been.calledWith('hi');
         expect(stateListener).to.have.been.calledWith(State.ACTIVE);
       }
@@ -115,7 +109,7 @@ describe('MotionObservable',
             expect(observer.state).to.exist;
             observer.state(State.ACTIVE);
 
-            return disconnect;
+            return mockObserver.disconnect;
           }
         ).subscribe(nextListener);
       }

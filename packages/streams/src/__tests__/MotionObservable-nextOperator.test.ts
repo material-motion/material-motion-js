@@ -26,11 +26,6 @@ import {
   stub,
 } from 'sinon';
 
-import {
-  MotionObservable,
-  State,
-} from '../';
-
 declare function require(name: string);
 
 // chai really doesn't like being imported as an ES2015 module; will be fixed in v4
@@ -38,34 +33,29 @@ require('chai').use(
   require('sinon-chai')
 );
 
+import {
+  createMockObserver,
+} from 'material-motion-testing-utils';
+
+import {
+  MotionObservable,
+  State,
+} from '../';
+
 describe('MotionObservable._nextOperator',
   () => {
-    let next;
-    let state;
     let stream;
+    let mockObserver;
     let nextListener;
     let stateListener;
-    let disconnect;
 
     beforeEach(
       () => {
-        stream = new MotionObservable(
-          observer => {
-            next = (value) => {
-              observer.next(value);
-            }
-
-            state = (value) => {
-              observer.state(value);
-            }
-
-            return disconnect;
-          }
-        );
+        mockObserver = createMockObserver();
+        stream = new MotionObservable(mockObserver.connect);
 
         nextListener = stub();
         stateListener = stub();
-        disconnect = stub();
       }
     );
 
@@ -83,7 +73,7 @@ describe('MotionObservable._nextOperator',
 
         stream._nextOperator(makeValuesAsync).subscribe(nextListener);
 
-        next(1);
+        mockObserver.next(1);
 
         expect(nextListener).not.to.have.been.called;
         return waitAMoment.then(
@@ -103,9 +93,9 @@ describe('MotionObservable._nextOperator',
           state: stateListener,
         });
 
-        state(State.AT_REST);
-        next('hi');
-        state(State.ACTIVE);
+        mockObserver.state(State.AT_REST);
+        mockObserver.next('hi');
+        mockObserver.state(State.ACTIVE);
 
         expect(stateListener).to.have.been.calledWith(State.AT_REST);
         expect(nextListener).not.to.have.been.called;

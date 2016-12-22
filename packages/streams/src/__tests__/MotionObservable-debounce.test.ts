@@ -26,14 +26,18 @@ import {
   stub,
 } from 'sinon';
 
-import MotionObservable from '../MotionObservable';
-
 declare function require(name: string);
 
 // chai really doesn't like being imported as an ES2015 module; will be fixed in v4
 require('chai').use(
   require('sinon-chai')
 );
+
+import {
+  createMockObserver,
+} from 'material-motion-testing-utils';
+
+import MotionObservable from '../MotionObservable';
 
 export function waitOneFrame() {
   return new Promise(
@@ -43,25 +47,15 @@ export function waitOneFrame() {
 
 describe('MotionObservable._debounce',
   () => {
-    let next;
     let stream;
+    let mockObserver;
     let listener1;
-    let disconnect;
 
     beforeEach(
       () => {
-        stream = new MotionObservable(
-          observer => {
-            next = (value) => {
-              observer.next(value);
-            }
-
-            return disconnect;
-          }
-        );
-
+        mockObserver = createMockObserver();
+        stream = new MotionObservable(mockObserver.connect);
         listener1 = stub();
-        disconnect = stub();
       }
     );
 
@@ -69,9 +63,9 @@ describe('MotionObservable._debounce',
       () => {
         stream._debounce().subscribe(listener1);
 
-        next(1);
-        next(2);
-        next(3);
+        mockObserver.next(1);
+        mockObserver.next(2);
+        mockObserver.next(3);
 
         return waitOneFrame().then(
           () => {
@@ -86,15 +80,15 @@ describe('MotionObservable._debounce',
       () => {
         stream._debounce().subscribe(listener1);
 
-        next(1);
-        next(2);
-        next(3);
+        mockObserver.next(1);
+        mockObserver.next(2);
+        mockObserver.next(3);
 
         return waitOneFrame().then(
           () => {
-            next(4);
-            next(5);
-            next(6);
+            mockObserver.next(4);
+            mockObserver.next(5);
+            mockObserver.next(6);
 
             return waitOneFrame();
           }
