@@ -1,0 +1,39 @@
+{
+  "name": "material-motion-testing-utils",
+  "version": "0.0.0",
+  "description": "Utilities for testing the Material Motion framework",
+  "main": "dist/index.js",
+  "types": "src/index.ts",
+  "scripts": {
+    "clean": "rm -rf ./dist/*; mkdir -p ./dist/",
+    "build": "yarn run clean; ../../node_modules/.bin/tsc"
+  },
+  "peerDependencies": {
+    "sinon": "2.0.0-pre.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:material-motion/material-motion-js.git"
+  },
+  "keywords": [
+    "animation",
+    "gestures",
+    "interactive",
+    "material",
+    "motion",
+    "multitouch",
+    "observables",
+    "odeon",
+    "physics",
+    "springs",
+    "touch",
+    "transitions",
+    "tweens"
+  ],
+  "author": "The Material Motion Authors (see AUTHORS)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/material-motion/material-motion-js/issues/"
+  },
+  "homepage": "https://github.com/material-motion/material-motion-js/tree/develop/packages/testing-utils/#readme"
+}
