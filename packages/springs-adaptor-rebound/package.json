@@ -1,0 +1,46 @@
+{
+  "name": "material-motion-springs-adaptor-rebound",
+  "version": "0.0.0",
+  "description": "Creates Material Motion springs powered by Rebound",
+  "main": "dist/index.js",
+  "types": "src/index.ts",
+  "scripts": {
+    "lint": "$( yarn bin )/tslint -c ../../tslint.json --project tsconfig.json",
+    "test": "node ../../tools/test.js --only springs-adaptor-rebound",
+    "clean": "rm -rf ./dist/*; mkdir -p ./dist/",
+    "build": "yarn run clean; $( yarn bin )/tsc"
+  },
+  "dependencies": {
+    "tslib": "^1.2.0"
+  },
+  "devDependencies": {
+    "tslint": "4.0.2",
+    "typescript": "2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:material-motion/material-motion-js.git"
+  },
+  "keywords": [
+    "animation",
+    "gestures",
+    "interactive",
+    "material",
+    "motion",
+    "multitouch",
+    "observables",
+    "odeon",
+    "physics",
+    "rebound",
+    "springs",
+    "touch",
+    "transitions",
+    "tweens"
+  ],
+  "author": "The Material Motion Authors (see AUTHORS)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/material-motion/material-motion-js/issues/"
+  },
+  "homepage": "https://github.com/material-motion/material-motion-js/tree/develop/packages/springs-adaptor-rebound/#readme"
+}
