@@ -56,3 +56,12 @@ export interface MotionElement {
   readonly scrollPosition: ScopedReadable<Point2D> & ScopedWritable<Point2D>;
   getEvent$(type: string): MotionObservable<Event>;
 }
+
+export type SpringArgs<T> = {
+  destination: ScopedReadable<T>,
+  initialValue: ScopedReadable<T>,
+  initialVelocity: ScopedReadable<T>,
+  threshold: ScopedReadable<T>,
+  friction: ScopedReadable<number>,
+  tension: ScopedReadable<number>,
+};
