@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "description": "Utilities for testing the Material Motion framework",
   "main": "dist/index.js",
-  "types": "src/index.ts",
+  "types": "dist/index.d.ts",
+  "typescript:main": "src/index.ts",
   "scripts": {
     "clean": "rm -rf ./dist/*; mkdir -p ./dist/",
     "build": "yarn run clean; ../../node_modules/.bin/tsc"
