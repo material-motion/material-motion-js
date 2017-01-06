@@ -61,7 +61,7 @@ export type SpringArgs<T> = {
   destination: ScopedReadable<T>,
   initialValue: ScopedReadable<T>,
   initialVelocity: ScopedReadable<T>,
-  threshold: ScopedReadable<T>,
+  threshold: ScopedReadable<number>,
   friction: ScopedReadable<number>,
   tension: ScopedReadable<number>,
 };

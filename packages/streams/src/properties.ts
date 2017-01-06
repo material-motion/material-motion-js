@@ -14,11 +14,12 @@
  *  under the License.
  */
 
-export * from './types';
-export * from './properties';
+import {
+  ScopedReadable,
+} from './types';
 
-export * from './MotionObservable';
-export { default as MotionObservable } from './MotionObservable';
-
-export * from './MotionRuntime';
-export { default as MotionRuntime } from './MotionRuntime';
+export function constantProperty<T>(value: T): ScopedReadable<T> {
+  return {
+    read: () => value,
+  };
+};

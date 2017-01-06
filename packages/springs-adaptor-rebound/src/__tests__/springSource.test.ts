@@ -26,7 +26,19 @@ import {
   stub,
 } from 'sinon';
 
-import springSource from '../springSource';
+import {
+  SimulationLooper,
+} from 'rebound';
+
+import {
+  State,
+  constantProperty,
+} from 'material-motion-streams';
+
+import {
+  _springSystem,
+  springSource,
+} from '../springSource';
 
 declare function require(name: string);
 
@@ -35,15 +47,99 @@ require('chai').use(
   require('sinon-chai')
 );
 
+
 describe('springSource',
   () => {
+    let listener;
+
     beforeEach(
       () => {
+        _springSystem.setLooper(new SimulationLooper());
+        listener = stub();
       }
     );
 
-    it('',
+    it('transitions from initialValue to destination',
       () => {
+        springSource({
+          initialValue: constantProperty(2),
+          destination: constantProperty(3),
+        }).subscribe(listener);
+
+        expect(listener.firstCall).to.have.been.calledWith(2);
+        expect(listener.lastCall).to.have.been.calledWith(3);
+      }
+    );
+
+    it('starts at rest',
+      () => {
+        let firstAtRestTime;
+        let firstNextTime;
+
+        springSource({
+          initialValue: constantProperty(0),
+          destination: constantProperty(0),
+        }).subscribe({
+          next(value) {},
+          state: listener
+        });
+
+        expect(listener).to.have.been.calledOnce;
+        expect(listener).to.have.been.calledWith(State.AT_REST);
+      }
+    );
+
+    it('becomes active before dispatching new values',
+      () => {
+        let state;
+        let tested;
+
+        const spring = springSource({
+          initialValue: constantProperty(0),
+          destination: constantProperty(1),
+        });
+
+        const subscription = spring.subscribe({
+          next(value) {
+            if (value !== 0 && !tested) {
+              expect(state).to.equal(State.ACTIVE);
+              tested = true;
+            }
+          },
+
+          state(value) {
+            state = value;
+          }
+        });
+
+        expect(tested).to.equal(true);
+      }
+    );
+
+    it('comes to rest upon completion',
+      () => {
+        let next;
+        let tested;
+
+        const spring = springSource({
+          initialValue: constantProperty(0),
+          destination: constantProperty(1),
+        });
+
+        const subscription = spring.subscribe({
+          next(value) {
+            next = value;
+          },
+
+          state(value) {
+            if (next === 1 && !tested) {
+              expect(value).to.equal(State.AT_REST);
+              tested = true;
+            }
+          }
+        });
+
+        expect(tested).to.equal(true);
       }
     );
   }

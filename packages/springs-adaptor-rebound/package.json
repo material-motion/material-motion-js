@@ -12,6 +12,8 @@
     "build": "yarn run clean; $( yarn bin )/tsc"
   },
   "dependencies": {
+    "material-motion-streams": "0.0.0",
+    "rebound": "^0.0.13",
     "tslib": "^1.2.0"
   },
   "devDependencies": {

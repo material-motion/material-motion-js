@@ -14,6 +14,128 @@
  *  under the License.
  */
 
-export default function springSource() {
+import {
+  MotionObservable,
+  MotionObserver,
+  SpringArgs,
+  State,
+  constantProperty,
+} from 'material-motion-streams';
 
+import {
+  Listener,
+  SpringSystem,
+} from 'rebound';
+
+// Exported so we can switch out the timing loop in unit tests
+export let _springSystem = new SpringSystem();
+
+export type NumericDict = {
+  [key: string]: number,
+};
+
+// perhaps signature should be
+//
+// springSource(kwargs:{ initialValue: T, destination: T } & Partial<SpringArgs<T>>)
+//
+// and then destructured in the body:
+//
+// const { initialValue, … } = { ...springDefaults, ...kwargs }
+
+/**
+ * Creates a spring and returns a stream of its interpolated values.  The
+ * default spring has a tension of 342 and friction of 30.
+ *
+ * Currently only accepts numeric values for initialValue and destination, but
+ * will eventually accept a dictionary of string:number.  Each key:value pair in
+ * the dictionary will be represented by an independent spring.  If any of the
+ * springs emits a value, the latest values from each should be emitted, e.g.
+ * {x: 10, y: 43 }.
+ *
+ * Currently accepts ReadableProperty values for each argument.  Will eventually
+ * support ReactiveProperty arguments, at which point the spring will begin
+ * emitting new values whenever the destination changes.
+ */
+export function springSource<T extends number | NumericDict>({
+  initialValue,
+  destination,
+  // Set defaults for things that are consistent across springs types
+  //
+  // This might need to move into `connect` when these become reactive
+  // properties e.g.:
+  //
+  // tension: property.startWith(defaultTension).read()
+  initialVelocity,
+  threshold = constantProperty(Number.EPSILON),
+  tension = constantProperty(342),
+  friction = constantProperty(30),
+}: SpringArgs<T>) {
+  const firstInitialValue = initialValue.read();
+
+  if (isNumber(firstInitialValue)) {
+    // TypeScript doesn't seem to infer that if firstInitialValue is a number,
+    // then T must be a number, so we cast the args here.
+    return numericSpringSource({
+      initialValue,
+      destination,
+      initialVelocity,
+      threshold,
+      tension,
+      friction,
+    } as SpringArgs<number>);
+  } else {
+    throw new Error("springSource only supports numbers.");
+  }
+}
+export default springSource;
+
+function numericSpringSource({
+  destination,
+  initialValue,
+  initialVelocity = constantProperty(0),
+  threshold,
+  tension,
+  friction,
+}: SpringArgs<number>) {
+  return new MotionObservable(
+    (observer: MotionObserver<number>) => {
+      const spring = _springSystem.createSpringWithConfig({
+        tension: tension.read(),
+        friction: friction.read(),
+      });
+
+      const listener: Listener = {
+        onSpringUpdate() {
+          observer.next(spring.getCurrentValue());
+        },
+
+        onSpringActivate() {
+          observer.state(State.ACTIVE);
+        },
+
+        onSpringAtRest() {
+          observer.state(State.AT_REST);
+        },
+      };
+
+      observer.state(State.AT_REST);
+      spring.addListener(listener);
+
+      // Whenever the spring is subscribed to, it pulls its values from its
+      // parameters
+      spring.setCurrentValue(initialValue.read());
+      spring.setVelocity(initialVelocity.read());
+      spring.setEndValue(destination.read());
+      spring.setRestSpeedThreshold(threshold.read());
+
+      return function disconnect() {
+        spring.removeListener(listener);
+        spring.setAtRest();
+      };
+    }
+  );
+}
+
+function isNumber(value: any): value is number {
+  return typeof value === 'number';
 }
