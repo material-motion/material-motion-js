@@ -28,6 +28,7 @@ module.exports = function(config) {
         stats: 'errors-only',
         resolve: {
           extensions: ['.js', '.ts'],
+          mainFields: ['typescript:main', 'jsnext:main', 'main'],
         },
         module: {
           loaders: [
