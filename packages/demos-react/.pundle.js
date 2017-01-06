@@ -3,8 +3,6 @@ const tsConfig = require('./tsconfig');
 const mainTSConfig = require('../../tsconfig');
 
 module.exports = {
-  debug: true,
-  // ^ Setting this to true sets "process.env.NODE_ENV" to "development" in processed js, it's set to "production" otherwise
   entry: ['./src/mount.tsx'],
   output: {
     bundlePath: '/dist/bundle.js',
@@ -29,8 +27,12 @@ module.exports = {
     [
       require.resolve('pundle-preset-typescript'),
       {
+        resolver: {
+          packageMains: ['typescript:main', 'browser', 'main'],
+        },
         transformer: {
           extensions: ['js', 'jsx', 'ts', 'tsx'],
+          exclude: [],
           config: {
             compilerOptions: Object.assign(
               mainTSConfig.compilerOptions,
