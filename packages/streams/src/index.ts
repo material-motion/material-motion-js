@@ -17,6 +17,9 @@
 export * from './types';
 export * from './properties';
 
+export * from './IndefiniteSubject';
+export { default as IndefiniteSubject } from './IndefiniteSubject';
+
 export * from './MotionObservable';
 export { default as MotionObservable } from './MotionObservable';
 
