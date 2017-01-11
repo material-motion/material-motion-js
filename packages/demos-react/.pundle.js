@@ -5,9 +5,9 @@ const mainTSConfig = require('../../tsconfig');
 module.exports = {
   entry: ['./src/mount.tsx'],
   output: {
-    bundlePath: '/dist/bundle.js',
+    bundlePath: './site/dist/bundle.js',
     sourceMap: true,
-    sourceMapPath: '/dist/bundle.js.map',
+    sourceMapPath: './site/dist/bundle.js.map',
   },
   server: {
     port: 8080,
