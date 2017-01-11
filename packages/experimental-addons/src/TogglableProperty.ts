@@ -14,7 +14,50 @@
  *  under the License.
  */
 
-export function TogglableProperty() {
+import {
+  Observable,
+  Observer,
+} from 'indefinite-observable';
 
+import {
+  ReactiveProperty,
+  ScopedReadable,
+  ScopedWritable,
+} from 'material-motion-streams';
+
+export class TogglableProperty<T> implements Observable<T>, ScopedReadable<T>, ScopedWritable<T> {
+  _property = new ReactiveProperty<T>();
+  _isOn = false;
+  _onValue: T;
+  _offValue: T;
+
+  constructor({ onValue, offValue }: { onValue: T, offValue: T } = { onValue: true, offValue: false }) {
+    this._onValue = onValue;
+    this._offValue = offValue;
+  }
+
+  turnOn = (): void => {
+    this._isOn = true;
+    this._property.write(this._onValue);
+  }
+
+  turnOff = (): void => {
+    this._isOn = false;
+    this._property.write(this._offValue);
+  }
+
+  toggle = (): void => {
+    this._isOn = !this._isOn;
+
+    this._property.write(
+      this._isOn
+        ? this._onValue
+        : this._offValue
+    );
+  }
+
+  read = this._property.read;
+  write = this._property.write;
+  subscribe = this._property.subscribe;
 }
 export default TogglableProperty;

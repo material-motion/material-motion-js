@@ -23,6 +23,10 @@ import {
   curry,
 } from 'jsxstyle';
 
+import {
+  TogglableProperty,
+} from 'material-motion-experimental-addons';
+
 // How the contents of a bottom sheet transition between states vary from app-
 // to-app.  For instance, an app could choose any of these:
 //
@@ -46,13 +50,17 @@ import {
 // when the user crosses a threshold.
 
 class BottomSheetMain extends React.Component {
-  model = {
+  _isOpen = new TogglableProperty();
+
+  _model = {
     title: 'A really interesting talk',
     artist: 'Britta Holt',
     avatar: '/images/album-art.png',
   };
 
   render() {
+    this._isOpen.subscribe(console.log);
+
     return (
       <Col
         backgroundColor = '#ECECEC'
@@ -84,15 +92,17 @@ class BottomSheetMain extends React.Component {
             position = 'absolute'
             top = { 0 }
             zIndex = { -1 }
-            model = { this.model }
+            model = { this._model }
           />
 
           <CollapsedBottomSheetContents
-            model = { this.model }
+            model = { this._model }
             cursor = 'pointer'
+            onTap = { this._isOpen.toggle }
           />
           <ExpandedBottomSheetContents
-            model = { this.model }
+            model = { this._model }
+            onCloseTap = { this._isOpen.turnOff }
           />
         </Col>
       </Col>
@@ -200,14 +210,16 @@ function CollapsedBottomSheetContents({
   );
 }
 
-function ExpandedBottomSheetContents({ model }) {
+function ExpandedBottomSheetContents({ model, onCloseTap }) {
   return (
     <Col
       width = '100%'
       height = '100%'
       justifyContent = 'space-between'
     >
-      <BottomSheetAppBar />
+      <BottomSheetAppBar
+        onCloseTap = { onCloseTap }
+      />
 
       <PlaybackControls
         model = { model }
