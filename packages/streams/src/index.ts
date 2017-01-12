@@ -20,3 +20,5 @@ export * from './observables';
 
 export * from './MotionRuntime';
 export { default as MotionRuntime } from './MotionRuntime';
+
+export default undefined;
