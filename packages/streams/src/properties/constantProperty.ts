@@ -16,10 +16,11 @@
 
 import {
   ScopedReadable,
-} from './types';
+} from '../types';
 
 export function constantProperty<T>(value: T): ScopedReadable<T> {
   return {
     read: () => value,
   };
 };
+export default constantProperty;

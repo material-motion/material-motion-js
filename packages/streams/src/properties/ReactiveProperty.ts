@@ -22,12 +22,12 @@ import {
 
 import {
   IndefiniteSubject,
-} from './IndefiniteSubject';
+} from '../IndefiniteSubject';
 
 import {
   ScopedReadable,
   ScopedWritable,
-} from './types';
+} from '../types';
 
 export class ReactiveProperty<T> implements Observable<T>, ScopedReadable<T>, ScopedWritable<T> {
   // ReactiveProperty delegates all of its reactive functionality to an internal
