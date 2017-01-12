@@ -32,7 +32,7 @@ import {
 
 import {
   State,
-  constantProperty,
+  createProperty,
 } from 'material-motion-streams';
 
 import {
@@ -62,8 +62,8 @@ describe('springSource',
     it('transitions from initialValue to destination',
       () => {
         springSource({
-          initialValue: constantProperty(2),
-          destination: constantProperty(3),
+          initialValue: createProperty({ initialValue: 2 }),
+          destination: createProperty({ initialValue: 3 }),
         }).subscribe(listener);
 
         expect(listener.firstCall).to.have.been.calledWith(2);
@@ -77,8 +77,8 @@ describe('springSource',
         let firstNextTime;
 
         springSource({
-          initialValue: constantProperty(0),
-          destination: constantProperty(0),
+          initialValue: createProperty({ initialValue: 0 }),
+          destination: createProperty({ initialValue: 0 }),
         }).subscribe({
           next(value) {},
           state: listener
@@ -95,8 +95,8 @@ describe('springSource',
         let tested;
 
         const spring = springSource({
-          initialValue: constantProperty(0),
-          destination: constantProperty(1),
+          initialValue: createProperty({ initialValue: 0 }),
+          destination: createProperty({ initialValue: 1 }),
         });
 
         const subscription = spring.subscribe({
@@ -122,8 +122,8 @@ describe('springSource',
         let tested;
 
         const spring = springSource({
-          initialValue: constantProperty(0),
-          destination: constantProperty(1),
+          initialValue: createProperty({ initialValue: 0 }),
+          destination: createProperty({ initialValue: 1 }),
         });
 
         const subscription = spring.subscribe({

@@ -14,13 +14,15 @@
  *  under the License.
  */
 
-import {
-  ScopedReadable,
-} from '../types';
+import ReactiveProperty from './ReactiveProperty';
 
-export function constantProperty<T>(value: T): ScopedReadable<T> {
-  return {
-    read: () => value,
-  };
-};
-export default constantProperty;
+export function createProperty<T>({ initialValue }: { initialValue?: T} = {}): ReactiveProperty<T> {
+  const result = new ReactiveProperty<T>();
+
+  if (initialValue !== undefined) {
+    result.write(initialValue);
+  }
+
+  return result;
+}
+export default createProperty;

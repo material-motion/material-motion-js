@@ -17,7 +17,7 @@
 export * from './ReactiveProperty';
 export { default as ReactiveProperty } from './ReactiveProperty';
 
-export * from './constantProperty';
-export { default as constantProperty } from './constantProperty';
+export * from './createProperty';
+export { default as createProperty } from './createProperty';
 
 export default undefined;

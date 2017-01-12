@@ -19,7 +19,7 @@ import {
   MotionObserver,
   SpringArgs,
   State,
-  constantProperty,
+  createProperty,
 } from 'material-motion-streams';
 
 import {
@@ -66,9 +66,9 @@ export function springSource<T extends number | NumericDict>({
   //
   // tension: property.startWith(defaultTension).read()
   initialVelocity,
-  threshold = constantProperty(Number.EPSILON),
-  tension = constantProperty(342),
-  friction = constantProperty(30),
+  threshold = createProperty({ initialValue: Number.EPSILON }),
+  tension = createProperty({ initialValue: 342 }),
+  friction = createProperty({ initialValue: 30 }),
 }: SpringArgs<T>) {
   const firstInitialValue = initialValue.read();
 
@@ -92,7 +92,7 @@ export default springSource;
 function numericSpringSource({
   destination,
   initialValue,
-  initialVelocity = constantProperty(0),
+  initialVelocity = createProperty({ initialValue: 0 }),
   threshold,
   tension,
   friction,
