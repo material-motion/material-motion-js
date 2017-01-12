@@ -17,13 +17,14 @@
 import {
   Disconnect,
   NextChannel,
+  Observable,
   Observer,
 } from 'indefinite-observable';
 
 import {
   MotionObservable,
   State,
-} from './MotionObservable';
+} from './observables/MotionObservable';
 
 export interface MotionObserver<T> extends Observer<T> {
   state:StateChannel;

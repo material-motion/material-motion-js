@@ -21,7 +21,7 @@ import {
 
 import {
   MotionObservable,
-} from '../MotionObservable';
+} from '../observables/MotionObservable';
 
 /**
  * Returns a stream of scroll positions from the given `MotionElement`.
