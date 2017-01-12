@@ -22,7 +22,7 @@ import {
 
 import {
   IndefiniteSubject,
-} from '../IndefiniteSubject';
+} from '../observables/IndefiniteSubject';
 
 import {
   ScopedReadable,

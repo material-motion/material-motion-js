@@ -26,7 +26,7 @@ import {
   MotionObserverOrNext,
   NextOperation,
   StateChannel,
-} from './types';
+} from '../types';
 
 export enum State {
   AT_REST = 0,

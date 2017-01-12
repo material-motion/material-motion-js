@@ -39,7 +39,7 @@ require('chai').use(
   require('sinon-chai')
 );
 
-import MotionObservable from '../../MotionObservable';
+import MotionObservable from '../../observables/MotionObservable';
 import scrollSource from '../scrollSource';
 
 describe('scrollSource',

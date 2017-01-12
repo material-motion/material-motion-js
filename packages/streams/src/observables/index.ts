@@ -14,9 +14,8 @@
  *  under the License.
  */
 
-export * from './types';
-export * from './properties';
-export * from './observables';
+export * from './IndefiniteSubject';
+export { default as IndefiniteSubject } from './IndefiniteSubject';
 
-export * from './MotionRuntime';
-export { default as MotionRuntime } from './MotionRuntime';
+export * from './MotionObservable';
+export { default as MotionObservable } from './MotionObservable';

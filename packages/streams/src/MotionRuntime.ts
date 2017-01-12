@@ -21,7 +21,7 @@ import {
 import {
   MotionObservable,
   State,
-} from './MotionObservable';
+} from './observables/MotionObservable';
 
 import {
   MotionObserver,
