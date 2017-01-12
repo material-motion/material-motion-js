@@ -51,6 +51,7 @@ export interface ScopedWritable<T> {
   write: Write<T>;
 }
 
+export interface PropertyObservable<T> extends Observable<T>, ScopedReadable<T>, ScopedWritable<T> {}
 
 export interface MotionElement {
   readonly scrollPosition: ScopedReadable<Point2D> & ScopedWritable<Point2D>;
@@ -58,9 +59,9 @@ export interface MotionElement {
 }
 
 export type SpringArgs<T> = {
-  destination: ScopedReadable<T>,
-  initialValue: ScopedReadable<T>,
-  initialVelocity: ScopedReadable<T>,
+  destination: PropertyObservable<T>,
+  initialValue: PropertyObservable<T>,
+  initialVelocity: PropertyObservable<T>,
   threshold: ScopedReadable<number>,
   friction: ScopedReadable<number>,
   tension: ScopedReadable<number>,

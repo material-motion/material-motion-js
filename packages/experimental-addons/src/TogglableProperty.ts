@@ -20,12 +20,11 @@ import {
 } from 'indefinite-observable';
 
 import {
+  PropertyObservable,
   ReactiveProperty,
-  ScopedReadable,
-  ScopedWritable,
 } from 'material-motion-streams';
 
-export class TogglableProperty<T> implements Observable<T>, ScopedReadable<T>, ScopedWritable<T> {
+export class TogglableProperty<T> implements PropertyObservable<T> {
   _property = new ReactiveProperty<T>();
   _isOn = false;
   _onValue: T;
