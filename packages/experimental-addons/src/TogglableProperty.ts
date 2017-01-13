@@ -30,9 +30,15 @@ export class TogglableProperty<T> implements PropertyObservable<T> {
   _onValue: T;
   _offValue: T;
 
-  constructor({ onValue, offValue }: { onValue: T, offValue: T } = { onValue: true, offValue: false }) {
+  constructor({ onValue, offValue, initialValue }: { onValue: T, offValue: T, initialValue?: T } = { onValue: true, offValue: false }) {
     this._onValue = onValue;
     this._offValue = offValue;
+
+    if (initialValue === undefined) {
+      initialValue = this._offValue;
+    }
+
+    this._property.write(initialValue);
   }
 
   turnOn = (): void => {
