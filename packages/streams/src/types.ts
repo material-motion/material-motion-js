@@ -61,9 +61,26 @@ export interface MotionElement {
 
 export type SpringArgs<T> = {
   destination: PropertyObservable<T>,
-  friction: PropertyObservable<number>,
-  tension: ScopedReadable<number>,
-  initialValue: ScopedReadable<T>,
-  initialVelocity: ScopedReadable<T>,
-  threshold: ScopedReadable<number>,
+
+  /* When the destination changes, the spring will update its configuration from
+   * the properties given below.
+   *
+   * The spring's current value and configuration are state that would normally
+   * be managed by the spring itself.  However, an author may want to take
+   * control of that state (for instance, to ensure that it is updated if
+   * its affected externally, perhaps by a gesture).
+   *
+   * Therefore, we provide two ways for the spring to be configured:
+   *
+   *  - If we receive a raw primitive, we'll use it for the initial value and
+   *    the spring will manage that state.
+   *
+   *  - If we receive a readable or stream, we'll presume the author is managing
+   *    the value externally and check there for updates.
+   */
+  friction: PropertyObservable<number> | number,
+  tension: PropertyObservable<number> | number,
+  initialValue: ScopedReadable<T> | T,
+  initialVelocity: ScopedReadable<T> | T,
+  threshold: ScopedReadable<number> | number,
 };

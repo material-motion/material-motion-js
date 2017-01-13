@@ -17,6 +17,8 @@
 import {
   MotionObservable,
   MotionObserver,
+  PropertyObservable,
+  ScopedReadable,
   SpringArgs,
   State,
   createProperty,
@@ -30,60 +32,55 @@ import {
 // Exported so we can switch out the timing loop in unit tests
 export let _springSystem = new SpringSystem();
 
-export type NumericDict = {
-  [key: string]: number,
-};
-
-// perhaps signature should be
-//
-// springSource(kwargs:{ initialValue: T, destination: T } & Partial<SpringArgs<T>>)
-//
-// and then destructured in the body:
-//
-// const { initialValue, … } = { ...springDefaults, ...kwargs }
-
 /**
- * Creates a spring and returns a stream of its interpolated values.  The
- * default spring has a tension of 342 and friction of 30.
+ * Creates a spring and returns a stream of its interpolated values.
  *
- * Currently only accepts numeric values for initialValue and destination, but
- * will eventually accept a dictionary of string:number.  Each key:value pair in
- * the dictionary will be represented by an independent spring.  If any of the
- * springs emits a value, the latest values from each should be emitted, e.g.
- * {x: 10, y: 43 }.
+ * `destination`, `tension`, and `friction` will update the spring as soon as
+ * they change.
  *
- * Currently accepts ReadableProperty values for each argument.  Will eventually
- * support ReactiveProperty arguments, at which point the spring will begin
- * emitting new values whenever the destination changes.
+ * If `initialValue`, `initialVelocity`, or `threshold` have `read` methods,
+ * they will be used to update the spring whenever `destination` changes.
+ * Otherwise, they will only be used once, during spring creation.
+ *
+ * The values emitted will be the same type as the first value in the
+ * destination stream.
  */
 export function springSource<T extends number | NumericDict>({
-  initialValue,
   destination,
-  // Set defaults for things that are consistent across springs types
-  //
-  // This might need to move into `connect` when these become reactive
-  // properties e.g.:
-  //
-  // tension: property.startWith(defaultTension).read()
-  initialVelocity,
-  threshold = createProperty({ initialValue: Number.EPSILON }),
-  tension = createProperty({ initialValue: 342 }),
-  friction = createProperty({ initialValue: 30 }),
-}: SpringArgs<T>) {
-  const firstInitialValue = initialValue.read();
+  initialValue,
+  initialVelocity = 0,
+  threshold = Number,
+  tension = 342,
+  friction = 30,
+}: { destination: T } & Partial<SpringArgs<T>>) {
+  const firstDestination = destination.read();
 
-  if (isNumber(firstInitialValue)) {
-    // TypeScript doesn't seem to infer that if firstInitialValue is a number,
-    // then T must be a number, so we cast the args here.
+  if (isNumber(firstDestination)) {
     return numericSpringSource({
-      initialValue,
       destination,
+      initialValue: initialValue || 0,
       initialVelocity,
       threshold,
       tension,
       friction,
+
+    // TypeScript doesn't seem to infer that if firstDestination is a number,
+    // then T must be a number, so we cast the args here.
     } as SpringArgs<number>);
   } else {
+    /* Currently only accepts numeric values for initialValue and destination,
+     * but will eventually accept a dictionary of string:number.  Each key:value
+     * pair in the dictionary will be represented by an independent spring.  If
+     * any of the springs emits a value, the latest values from each should be
+     * emitted, e.g. {x: 10, y: 43 }.
+     *
+     * This will likely be achieved with something like:
+     *
+     *   combineLatest(x$, y$, z$).map([x, y, z] => ({ x, y, z })).debounce()
+     *
+     * Care will need to be taken to ensure that `state` is handled
+     * appropriately.
+     */
     throw new Error("springSource only supports numbers.");
   }
 }
@@ -91,8 +88,8 @@ export default springSource;
 
 function numericSpringSource({
   destination: destination$,
-  tension: tension$,
-  friction: friction$,
+  tension,
+  friction,
   initialValue,
   initialVelocity,
   threshold,
@@ -100,8 +97,8 @@ function numericSpringSource({
   return new MotionObservable(
     (observer: MotionObserver<number>) => {
       const spring = _springSystem.createSpringWithConfig({
-        tension: tension$.read(),
-        friction: friction$.read(),
+        tension: readValue(tension),
+        friction: readValue(friction),
       });
 
       const listener: Listener = {
@@ -121,53 +118,66 @@ function numericSpringSource({
       observer.state(State.AT_REST);
       spring.addListener(listener);
 
+      spring.setCurrentValue(readValue(initialValue));
+      spring.setVelocity(readValue(initialVelocity));
+
       destination$.subscribe(
         destination => {
-          // Any time the destination changes, we re-initialize the starting
-          // parameters.  This means initialValue needs to be backed by the same
-          // property that subscribe's to the spring.
-          //
-          // This is an optimization for elements that are draggable (and then
-          // spring to a location upon release), but is needlessly complicated
-          // for other cases.
-          //
-          // TODO: detect if a value is constant or readable, and only reset its
-          // values if it's readable
-          spring.setCurrentValue(initialValue.read());
-          spring.setRestSpeedThreshold(threshold.read());
-
-          // If we don't have an author-specified override, let Rebound handle
-          // tracking velocity
-          if (initialVelocity) {
-            spring.setVelocity(initialVelocity.read());
-          }
+          // initialValue, initialVelocity, and threshold may be maintained by
+          // either the author or the spring.  If the values are Readable, the
+          // state is being maintained externally and the spring will be updated
+          // here.  Otherwise, the spring will use its internal state.
+          callSpringMethodsWithReadableValues({
+            'setCurrentValue': initialValue,
+            'setVelocity': initialVelocity,
+            'setRestSpeedThreshold': threshold,
+          });
 
           spring.setEndValue(destination);
         }
       );
 
-      tension$.subscribe(
-        tension => {
-          spring.setSpringConfig({
-            tension,
-            friction: spring.getSpringConfig().friction,
-          });
-        }
-      );
+      if (isReadable(tension)) {
+        const tension$: PropertyObservable<number> = tension;
 
-      friction$.subscribe(
-        friction => {
-          spring.setSpringConfig({
-            tension: spring.getSpringConfig().tension,
-            friction,
-          });
-        }
-      );
+        tension$.subscribe(
+          tension => {
+            spring.setSpringConfig({
+              tension,
+              friction: spring.getSpringConfig().friction,
+            });
+          }
+        );
+      }
+
+      if (isReadable(friction)) {
+        const friction$: PropertyObservable<number> = friction;
+
+        friction$.subscribe(
+          friction => {
+            spring.setSpringConfig({
+              tension: spring.getSpringConfig().tension,
+              friction,
+            });
+          }
+        );
+      }
 
       return function disconnect() {
         spring.removeListener(listener);
         spring.setAtRest();
       };
+
+      function callSpringMethodsWithReadableValues(valuesByMethodName: {[methodName: string]: any }) {
+        Object.entries(valuesByMethodName).forEach(
+          ([ value, methodName ]) => {
+            if (isReadable(value)) {
+              const method = (spring as any)[methodName];
+              method(readValue(value));
+            }
+          }
+        );
+      }
     }
   );
 }
@@ -175,3 +185,17 @@ function numericSpringSource({
 function isNumber(value: any): value is number {
   return typeof value === 'number';
 }
+
+function isReadable<T>(value: T | ScopedReadable<T>): value is ScopedReadable<T> {
+  return (value as ScopedReadable<T>).read !== undefined;
+}
+
+function readValue<T>(readableOrPrimitive: T | ScopedReadable<T>): T {
+  return isReadable(readableOrPrimitive)
+    ? readableOrPrimitive.read()
+    : readableOrPrimitive;
+}
+
+export type NumericDict = {
+  [key: string]: number,
+};
