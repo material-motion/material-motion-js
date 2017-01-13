@@ -27,6 +27,14 @@ import {
   TogglableProperty,
 } from 'material-motion-experimental-addons';
 
+import {
+  springSource,
+} from 'material-motion-springs-adaptor-rebound';
+
+import {
+  createProperty,
+} from 'material-motion-streams';
+
 // How the contents of a bottom sheet transition between states vary from app-
 // to-app.  For instance, an app could choose any of these:
 //
@@ -50,7 +58,24 @@ import {
 // when the user crosses a threshold.
 
 class BottomSheetMain extends React.Component {
-  _isOpen = new TogglableProperty();
+  _isOpen = new TogglableProperty({
+    onValue: 0,
+    // TODO: make these reactive based on viewport size
+    offValue: 300,
+  });
+
+  _spring = springSource({
+    destination: this._isOpen,
+
+    // TODO: make these optional in TypeScript
+    initialValue: createProperty({ initialValue: 0 }),
+    initialVelocity: createProperty({ initialValue: 0 }),
+    threshold: createProperty({ initialValue: 1 }),
+    tension: createProperty({ initialValue: 342 }),
+    friction: createProperty({ initialValue: 30 }),
+  });
+
+  _testing = this._spring.subscribe((value: number) => console.log('spring value: ', value));
 
   _model = {
     title: 'A really interesting talk',
@@ -59,8 +84,6 @@ class BottomSheetMain extends React.Component {
   };
 
   render() {
-    this._isOpen.subscribe(console.log);
-
     return (
       <Col
         backgroundColor = '#ECECEC'

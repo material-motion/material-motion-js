@@ -61,9 +61,9 @@ export interface MotionElement {
 
 export type SpringArgs<T> = {
   destination: PropertyObservable<T>,
-  initialValue: PropertyObservable<T>,
-  initialVelocity: PropertyObservable<T>,
-  threshold: ScopedReadable<number>,
-  friction: ScopedReadable<number>,
+  friction: PropertyObservable<number>,
   tension: ScopedReadable<number>,
+  initialValue: ScopedReadable<T>,
+  initialVelocity: ScopedReadable<T>,
+  threshold: ScopedReadable<number>,
 };

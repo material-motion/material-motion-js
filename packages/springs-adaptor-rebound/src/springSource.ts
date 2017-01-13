@@ -90,18 +90,18 @@ export function springSource<T extends number | NumericDict>({
 export default springSource;
 
 function numericSpringSource({
-  destination,
+  destination: destination$,
+  tension: tension$,
+  friction: friction$,
   initialValue,
-  initialVelocity = createProperty({ initialValue: 0 }),
+  initialVelocity,
   threshold,
-  tension,
-  friction,
 }: SpringArgs<number>) {
   return new MotionObservable(
     (observer: MotionObserver<number>) => {
       const spring = _springSystem.createSpringWithConfig({
-        tension: tension.read(),
-        friction: friction.read(),
+        tension: tension$.read(),
+        friction: friction$.read(),
       });
 
       const listener: Listener = {
@@ -121,12 +121,48 @@ function numericSpringSource({
       observer.state(State.AT_REST);
       spring.addListener(listener);
 
-      // Whenever the spring is subscribed to, it pulls its values from its
-      // parameters
-      spring.setCurrentValue(initialValue.read());
-      spring.setVelocity(initialVelocity.read());
-      spring.setEndValue(destination.read());
-      spring.setRestSpeedThreshold(threshold.read());
+      destination$.subscribe(
+        destination => {
+          // Any time the destination changes, we re-initialize the starting
+          // parameters.  This means initialValue needs to be backed by the same
+          // property that subscribe's to the spring.
+          //
+          // This is an optimization for elements that are draggable (and then
+          // spring to a location upon release), but is needlessly complicated
+          // for other cases.
+          //
+          // TODO: detect if a value is constant or readable, and only reset its
+          // values if it's readable
+          spring.setCurrentValue(initialValue.read());
+          spring.setRestSpeedThreshold(threshold.read());
+
+          // If we don't have an author-specified override, let Rebound handle
+          // tracking velocity
+          if (initialVelocity) {
+            spring.setVelocity(initialVelocity.read());
+          }
+
+          spring.setEndValue(destination);
+        }
+      );
+
+      tension$.subscribe(
+        tension => {
+          spring.setSpringConfig({
+            tension,
+            friction: spring.getSpringConfig().friction,
+          });
+        }
+      );
+
+      friction$.subscribe(
+        friction => {
+          spring.setSpringConfig({
+            tension: spring.getSpringConfig().tension,
+            friction,
+          });
+        }
+      );
 
       return function disconnect() {
         spring.removeListener(listener);
