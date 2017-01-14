@@ -1,11 +1,11 @@
-# Material Motion Streams for the DOM #
+# Material Motion Streams for React #
 
-DOM support for Material Motion
+React support for Material Motion
 
 ## Usage ##
 
 ```javascript
-import createMotionElementFromDOMNode from 'material-motion-streams-dom';
+import MaterialMotionProvider from 'material-motion-streams-react';
 
 
 ```
@@ -14,12 +14,12 @@ import createMotionElementFromDOMNode from 'material-motion-streams-dom';
 
 To encourage code readability, we follow the named arguments pattern: each function takes a single object literal.  Internally, we destructure that object to read a function's arguments.
 
-### `createMotionElementFromDOMNode` ###
+### `MaterialMotionProvider` ###
 
 ## Installation ##
 
 ```
-yarn add material-motion-streams-dom
+yarn add material-motion-streams-react
 ```
 
 ## License ##
