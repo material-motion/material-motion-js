@@ -17,4 +17,7 @@
 export * from './AttachStreams';
 export { default as AttachStreams } from './AttachStreams';
 
+export * from './TransformTarget';
+export { default as TransformTarget } from './TransformTarget';
+
 export default undefined;
