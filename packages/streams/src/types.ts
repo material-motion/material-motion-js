@@ -23,6 +23,7 @@ import {
   NextChannel,
   Observable,
   Observer,
+  Subscription,
 } from 'indefinite-observable';
 
 export {
@@ -107,4 +108,12 @@ export type SpringArgs<T> = {
   initialValue: ScopedReadable<T> | T,
   initialVelocity: ScopedReadable<T> | T,
   threshold: ScopedReadable<number> | number,
+};
+
+export type StreamDict = {
+  [index:string]: Observable<any>,
+};
+
+type SubscriptionDict = {
+  [key: string]: Subscription,
 };
