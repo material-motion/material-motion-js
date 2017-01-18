@@ -17,22 +17,88 @@
 import * as React from 'react';
 
 import {
+  IndefiniteObservable,
+} from 'indefinite-observable';
+
+import {
+  Observer,
   StreamDict,
+  Subject,
+  SubjectDict,
   SubscriptionDict,
 } from 'material-motion-streams';
 
-export type AttachStreamsProps = StreamDict;
+export type AttachStreamsProps = StreamDict<any> & {
+  children: React.ReactElement<{ domRef(element: Element): void }>,
+};
 export type AttachStreamsState = {
   [index:string]: any,
 };
 
+/**
+ * `AttachStreams` is a stateful component that listens to any stream it
+ * receives as a prop.  Whenever the stream dispatches a value, `AttachStreams`
+ * forwards that value as a prop onto its child component.
+ *
+ * If the prop name starts with "on," `AttachStreams` presumes the prop
+ * represents an event stream, and that the stream it received is a subject.
+ * Instead of subscribing to the stream and forwarding values to the child
+ * component, it will subscribe to the appropriate event on the child component
+ * and forward that event to the stream.
+ *
+ * In order for event subscription to work, `AttachStreams` must receive a child
+ * component that accepts a `domRef` prop.  That prop should be set as `ref` on
+ * whatever DOM node the child tree eventually renders.
+ */
 export class AttachStreams extends React.Component<AttachStreamsProps, AttachStreamsState> {
+  state = {};
   private _subscriptions:SubscriptionDict = {};
+  private _domNode: Element;
 
+  /**
+   * `domRef` is passed as a prop to this component's `children`.  `children`
+   * must ensure that `domRef` will eventually be called with a reference to the
+   * actual DOM node that this tree represents.
+   *
+   * For instance, the children component could look like this:
+   *
+   * const SomeComponent = ({ domRef }) => <div ref = { domRef } />;
+   */
+  private _domRef = (ref: Element) => {
+    this._domNode = ref;
+
+    if (!this._domNode) {
+      return;
+    }
+
+    Object.entries(this.props).forEach(
+      ([ propName, stream ]) => {
+        // Presumes any stream that starts with "on" is a Subject waiting to be
+        // bound to an event stream.
+        //
+        // Same presumption is made in `_subscribeToProps`.
+        if (propName.startsWith('on')) {
+          this._subscribeToEvent$(propName, stream as Subject);
+        }
+      }
+    );
+  }
+
+  /**
+   * A React lifecycle method that will be called before this component is added
+   * to the DOM.
+   */
   componentWillMount() {
     this._subscribeToProps(this.props);
   }
 
+  /**
+   * A React lifecycle method that will be called before this component will
+   * receive new props.
+   *
+   * Here, we compare the new props to the old props: subscribing to any new
+   * props and unsubscribing from any props that are no longer present.
+   */
   componentWillReceiveProps(nextProps: AttachStreamsProps) {
     const newStreams: StreamDict = {};
 
@@ -41,6 +107,7 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
         if (this.props[propName] !== stream && propName !== 'children') {
           if (this._subscriptions[propName]) {
             this._subscriptions[propName].unsubscribe();
+            delete this._subscriptions[propName];
           }
 
           newStreams[propName] = stream;
@@ -48,10 +115,11 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
       }
     );
 
-    Object.keys(this.props).forEach(
+    Object.keys(this._subscriptions).forEach(
       propName => {
         if (!nextProps[propName]) {
           this._subscriptions[propName].unsubscribe();
+          delete this._subscriptions[propName];
         }
       }
     );
@@ -59,21 +127,41 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
     this._subscribeToProps(newStreams);
   }
 
+  /**
+   * `AttachStreams` decides whether to forward events from the stream to the
+   * child or from the child to the stream based on the prop name.  If the prop
+   * name starts with "on", `AttachStreams` listen for events matching the rest
+   * of the prop name (e.g. `click` for `onClick`) and forward them to the
+   * stream.
+   *
+   * Otherwise, `AttachStreams` will subscribe to the stream and pass any values
+   * the stream dispatches as props to its `children` component.
+   */
   private _subscribeToProps(props) {
     Object.entries(props).forEach(
       ([propName, stream]) => {
-        if (propName !== 'children') {
+        if (propName === 'children') {
+          return;
+
+        } else if (stream.subscribe === undefined) {
+          // This prop isn't a stream, so pass it through unmolested
+          this.setState({
+            [propName]: stream
+          });
+
+        } else if (propName.startsWith('on')) {
+          if (this._domNode) {
+            this._subscribeToEvent$(propName, stream as Subject);
+          }
+
+        } else {
           this._subscriptions[propName] = stream.subscribe(
             (value: any) => {
               const nextState = {
                 [propName]: value,
               };
 
-              if (this.state) {
-                this.setState(nextState);
-              } else {
-                this.state = nextState;
-              }
+              this.setState(nextState);
             }
           );
         }
@@ -81,13 +169,44 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
     );
   }
 
+  /**
+   * React has a synthetic event system, which exposes events that it knows
+   * about, e.g. `click`, as `onClick`.  Unfortunately, React doesn't know about
+   * some event types that we might care about, e.g. `pointermove`.  Therefore,
+   * we subscribe to that actual DOM's event system for any prop that looks like
+   * an event listener (e.g. starts with `on`).
+   */
+  private _subscribeToEvent$(propName: string, subject: Subject) {
+    const eventType = propName.replace('on', '').toLowerCase();
+
+    // Using `observable.subscribe` for consistency, but this could just as
+    // easily be an object literal with an `unsubscribe` method.  That would be
+    // a bit simpler/more performant too.
+    this._subscriptions[propName] = new IndefiniteObservable(
+      (observer: Observer<any>) => {
+        this._domNode.addEventListener(eventType, observer.next);
+
+        return () => {
+          this._domNode.removeEventListener(eventType, observer.next);
+        };
+      }
+    ).subscribe(subject);
+  }
+
   render() {
     return React.cloneElement(
       this.props.children,
-      this.state
+      {
+        domRef: this._domRef,
+        ...this.state
+      }
     );
   }
 
+  /**
+   * A React lifecycle method that will be called just before this component is
+   * removed from the DOM.  Here, we unsubscribe from all current subscriptions.
+   */
   componentWillUnmount() {
     Object.values(this._subscriptions).forEach(
       subscription => subscription.unsubscribe()
