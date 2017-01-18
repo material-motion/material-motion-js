@@ -14,6 +14,6 @@
  *  under the License.
  */
 
-export * from './types';
-export * from './MaterialMotionProvider';
-export { default as MaterialMotionProvider } from './MaterialMotionProvider';
+export * from './components';
+
+export default undefined;
