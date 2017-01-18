@@ -3,17 +3,19 @@ const tsConfig = require('./tsconfig');
 const mainTSConfig = require('../../tsconfig');
 
 module.exports = {
+  rootDirectory: __dirname,
   entry: ['./src/mount.tsx'],
   output: {
-    bundlePath: './site/dist/bundle.js',
+    rootDirectory: './site/dist',
+    bundlePath: 'bundle.js',
     sourceMap: true,
-    sourceMapPath: './site/dist/bundle.js.map',
+    sourceMapPath: 'bundle.js.map',
   },
   server: {
     port: 8080,
+    rootDirectory: './site',
     hmrPath: '/dist/bundle_hmr',
     bundlePath: '/dist/bundle.js',
-    sourceRoot: path.join(__dirname, 'site'),
     sourceMapPath: '/dist/bundle.js.map',
     redirectNotFoundToIndex: true,
   },

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "pundle": "../../node_modules/.bin/pundle",
-    "start": "yarn run pundle -- --dev --dev-directory site",
+    "start": "yarn run pundle -- --dev",
     "clean": "rm -rf ./site/dist/*; mkdir -p ./site/dist/",
     "lint": "../../node_modules/.bin/tslint -c ../../tslint.json --project tsconfig.json",
     "build": "yarn run clean; yarn run pundle",
