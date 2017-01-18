@@ -16,10 +16,13 @@
 
 import * as React from 'react';
 
+import {
+  Point2D,
+} from 'material-motion-streams';
+
 export type TransformTargetArgs = {
   position: 'absolute' | 'fixed' | 'relative' | 'static' | 'sticky',
-  translateX: number,
-  translateY: number,
+  translate: Point2D,
   rotate: number,
   scale: number,
   opacity: number,
@@ -36,8 +39,10 @@ export type TransformTargetArgs = {
  */
 export default function TransformTarget({
   position = 'static',
-  translateX = 0,
-  translateY = 0,
+  translate = {
+    x: 0,
+    y: 0,
+  },
   rotate = 0,
   scale = 1,
   opacity = 1,
@@ -53,7 +58,7 @@ export default function TransformTarget({
   }
 
   if (
-    ['translateX', 'translateY', 'rotate', 'scale'].some(
+    ['translate', 'rotate', 'scale'].some(
       key => explicitProps.hasOwnProperty(key)
     )
   ) {
@@ -70,7 +75,7 @@ export default function TransformTarget({
           position,
           willChange: willChange.join(),
           transform: `
-            translate(${ applySuffix(translateX, 'px') }, ${ applySuffix(translateY, 'px') })
+            translate(${ applySuffix(translate.x || 0, 'px') }, ${ applySuffix(translate.y || 0, 'px') })
             rotate(${ applySuffix(rotate, 'rad') })
             scale(${ scale })
           `,
