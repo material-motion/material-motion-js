@@ -50,21 +50,6 @@ export default function TransformTarget({
   domRef,
   ...propsPassthrough
 }: TransformTargetArgs): React.ReactElement<any> {
-  let willChange = [];
-  const explicitProps = arguments[0];
-
-  if (explicitProps.hasOwnProperty('opacity')) {
-    willChange.push('opacity');
-  }
-
-  if (
-    ['translate', 'rotate', 'scale'].some(
-      key => explicitProps.hasOwnProperty(key)
-    )
-  ) {
-    willChange.push('transform');
-  }
-
   return (
     <div
       className = 'transform-target'
@@ -73,7 +58,6 @@ export default function TransformTarget({
         {
           ...propsPassthrough,
           position,
-          willChange: willChange.join(),
           transform: `
             translate(${ applySuffix(translate.x || 0, 'px') }, ${ applySuffix(translate.y || 0, 'px') })
             rotate(${ applySuffix(rotate, 'rad') })
