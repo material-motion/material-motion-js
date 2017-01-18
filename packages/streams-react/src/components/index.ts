@@ -14,7 +14,7 @@
  *  under the License.
  */
 
-export function MaterialMotionProvider() {
+export * from './AttachStreams';
+export { default as AttachStreams } from './AttachStreams';
 
-}
-export default MaterialMotionProvider;
+export default undefined;
