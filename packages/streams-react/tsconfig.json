@@ -3,6 +3,7 @@
   "include": ["./src/**/*"],
   "exclude": ["**/*.test.*"],
   "compilerOptions": {
+    "jsx": "react",
     "outDir": "dist",
     "rootDir": "src"
   }
