@@ -61,6 +61,10 @@ export type MotionConnect<T> = (observer: MotionObserver<T>) => Disconnect;
 export type NextOperation<T, U> = (value: T, nextChannel: NextChannel<U>) => void;
 
 
+export interface Subject<T> extends Observable<T> {
+  next(T): void;
+}
+
 export type Point2D = {
   x: number,
   y: number,
@@ -110,8 +114,12 @@ export type SpringArgs<T> = {
   threshold: ScopedReadable<number> | number,
 };
 
-export type StreamDict = {
-  [index:string]: Observable<any>,
+export type StreamDict<T> = {
+  [index:string]: Observable<T>,
+};
+
+type SubjectDict<T> = {
+  [key: string]: Subject<T>,
 };
 
 type SubscriptionDict = {
