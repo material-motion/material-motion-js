@@ -24,16 +24,8 @@ import {
 } from 'jsxstyle';
 
 import {
-  TogglableProperty,
-} from 'material-motion-experimental-addons';
-
-import {
-  springSource,
-} from 'material-motion-springs-adaptor-rebound';
-
-import {
-  createProperty,
-} from 'material-motion-streams';
+  createMotionComponent,
+} from 'material-motion-streams-react';
 
 // How the contents of a bottom sheet transition between states vary from app-
 // to-app.  For instance, an app could choose any of these:
@@ -57,81 +49,95 @@ import {
 // build any of them.  Here's an example that cross-dissolves between the states
 // when the user crosses a threshold.
 
-class BottomSheetMain extends React.Component {
-  _isOpen = new TogglableProperty({
-    onValue: 0,
-    // TODO: make these reactive based on viewport size
-    offValue: 300,
-  });
+import bottomSheetDirector from '../bottomSheetDirector';
 
-  _spring = springSource({
-    destination: this._isOpen,
+// tslint:disable-next-line variable-name
+export const BottomSheetMain: React.StatelessComponent<any> = createMotionComponent({
+  director: bottomSheetDirector,
+  render(
+    props,
+    context, {
+      Scrim,
+      BottomSheet,
+      CollapsedToolBar,
+      ExpandedToolBar,
+      CloseButton,
+    }
+  ) {
+    const model = {
+      title: 'A really interesting talk',
+      artist: 'Britta Holt',
+      avatar: '/images/album-art.png',
+    };
 
-    // TODO: make these optional in TypeScript
-    initialValue: createProperty({ initialValue: 0 }),
-    initialVelocity: createProperty({ initialValue: 0 }),
-    threshold: createProperty({ initialValue: 1 }),
-    tension: createProperty({ initialValue: 342 }),
-    friction: createProperty({ initialValue: 30 }),
-  });
-
-  _testing = this._spring.subscribe((value: number) => console.log('spring value: ', value));
-
-  _model = {
-    title: 'A really interesting talk',
-    artist: 'Britta Holt',
-    avatar: '/images/album-art.png',
-  };
-
-  render() {
     return (
       <Col
         backgroundColor = '#ECECEC'
         width = '100vw'
         height = '100vh'
       >
-        <WelcomeMessage />
-
-        <Col
-          position = 'fixed'
+        {/*
+          TODO: set pointerEvents: none here and pointer: cursor in the tappable spots
+          - Should these be
+            - in PropertyKind and set by the director?
+            - in here, set by the author?
+        */}
+        <Scrim
+          position = 'absolute'
+          backgroundColor = 'black'
           width = '100vw'
           height = '100vh'
-          alignItems = 'stretch'
-        >
-          {/*
-            There are three components to this transition:
+          top = { 0 }
+        />
 
-            - The bits that are only present when the bottom sheet is collapsed,
-              in what we call the "back" state;
+        <WelcomeMessage />
 
-            - The bits that are only present when the bottom sheet is expanded,
-              in what we call the "fore" state; and
+        <BottomSheet>
+          <Col
+            position = 'fixed'
+            width = '100vw'
+            height = '100vh'
+            alignItems = 'stretch'
+          >
+            {/*
+              There are three components to this transition:
 
-            - The bits that are appear in both states.
+              - The bits that are only present when the bottom sheet is collapsed,
+                in what we call the "back" state;
 
-            Each is represented by a single JSX element below.
-          */}
-          <BottomSheetBackground
-            position = 'absolute'
-            top = { 0 }
-            zIndex = { -1 }
-            model = { this._model }
-          />
+              - The bits that are only present when the bottom sheet is expanded,
+                in what we call the "fore" state; and
 
-          <CollapsedBottomSheetContents
-            model = { this._model }
-            cursor = 'pointer'
-            onTap = { this._isOpen.toggle }
-          />
-          <ExpandedBottomSheetContents
-            model = { this._model }
-            onCloseTap = { this._isOpen.turnOff }
-          />
-        </Col>
+              - The bits that are appear in both states.
+
+              Each is represented by a single JSX element below.
+            */}
+            <BottomSheetBackground
+              position = 'absolute'
+              top = { 0 }
+              zIndex = { -1 }
+              model = { model }
+            />
+
+            <CollapsedToolBar>
+              <CollapsedBottomSheetContents
+                model = { model }
+                cursor = 'pointer'
+              />
+            </CollapsedToolBar>
+
+            <ExpandedToolBar>
+              <ExpandedBottomSheetContents
+                model = { model }
+                CloseButtonContainer = { CloseButton }
+              />
+            </ExpandedToolBar>
+          </Col>
+        </BottomSheet>
       </Col>
     );
   }
-}
+});
 export default BottomSheetMain;
 
 function WelcomeMessage(props) {
@@ -169,7 +175,6 @@ function CollapsedBottomSheetContents({
   height = 84,
   iconSize = 36,
   model = {},
-  onTap = console.log,
   ...props,
 }) {
   return (
@@ -179,14 +184,6 @@ function CollapsedBottomSheetContents({
       height = { height }
       backgroundColor = '#FFFFFF'
       color = '#000000'
-
-      // Until https://github.com/smyte/jsxstyle/pull/49 lands, event handlers
-      // need to go in a `props` dict
-      props = {
-        {
-          onClick: onTap,
-        }
-      }
       { ...props }
     >
       <Row>
@@ -221,9 +218,12 @@ function CollapsedBottomSheetContents({
           {
             // In a real app, tapping play/pause would trigger playback.  Here,
             // we just want to ensure tapping it doesn't expand the bottom sheet
+            //
+            // Unfortunately, this doesn't seem to be working with the current
+            // implementation of event handling in attachStreams
             onClick(event) {
               event.stopPropagation();
-            }
+            },
           }
         }
       >
@@ -233,7 +233,7 @@ function CollapsedBottomSheetContents({
   );
 }
 
-function ExpandedBottomSheetContents({ model, onCloseTap }) {
+function ExpandedBottomSheetContents({ model, CloseButtonContainer }) {
   return (
     <Col
       width = '100%'
@@ -241,7 +241,7 @@ function ExpandedBottomSheetContents({ model, onCloseTap }) {
       justifyContent = 'space-between'
     >
       <BottomSheetAppBar
-        onCloseTap = { onCloseTap }
+        CloseButtonContainer = { CloseButtonContainer }
       />
 
       <PlaybackControls
@@ -251,7 +251,7 @@ function ExpandedBottomSheetContents({ model, onCloseTap }) {
   );
 }
 
-function BottomSheetAppBar({ onCloseTap = console.log }) {
+function BottomSheetAppBar({ CloseButtonContainer }) {
   return (
     // We add protection to the icons (making them more legible) by sampling a
     // color from the image and applying it as a gradient behind the white icons
@@ -265,17 +265,11 @@ function BottomSheetAppBar({ onCloseTap = console.log }) {
         height = { 56 }
         color = '#FFFFFF'
       >
-        <Icon
-          // Until https://github.com/smyte/jsxstyle/pull/49 lands, event
-          // handlers need to go in a `props` dict
-          props = {
-            {
-              onClick: onCloseTap,
-            }
-          }
-        >
-          close
-        </Icon>
+        <CloseButtonContainer>
+          <Icon>
+            close
+          </Icon>
+        </CloseButtonContainer>
 
         <Row>
           <Icon>
