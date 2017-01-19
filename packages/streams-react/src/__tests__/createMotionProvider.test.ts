@@ -14,9 +14,38 @@
  *  under the License.
  */
 
-export * from './components';
+import { expect } from 'chai';
 
-export * from './createMotionComponent';
-export { default as createMotionComponent } from './createMotionComponent';
+import {
+  beforeEach,
+  describe,
+  it,
+} from 'mocha-sugar-free';
 
-export default undefined;
+import {
+  stub,
+} from 'sinon';
+
+import createMotionProvider from '../createMotionProvider';
+
+declare function require(name: string);
+
+// chai really doesn't like being imported as an ES2015 module; will be fixed in v4
+require('chai').use(
+  require('sinon-chai')
+);
+
+describe('createMotionProvider',
+  () => {
+    beforeEach(
+      () => {
+      }
+    );
+
+    it('',
+      () => {
+      }
+    );
+  }
+);
+
