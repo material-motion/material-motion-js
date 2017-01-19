@@ -11,7 +11,7 @@
     "build": "yarn run clean; ../../node_modules/.bin/tsc"
   },
   "dependencies": {
-    "indefinite-observable": "0.3.0",
+    "indefinite-observable": "1.0.1",
     "material-motion-streams": "0.0.0",
     "tslib": "^1.2.0"
   },
