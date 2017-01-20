@@ -87,6 +87,22 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
   }
 
   /**
+   * Logs every value that passes through this section of the stream, and passes
+   * them downstream.
+   *
+   * Adding `log` to stream chain should have no effect on the rest of the
+   * chain.
+   */
+  log(): MotionObservable<T> {
+    return this._nextOperator(
+      (value: T, nextChannel: NextChannel<T>) => {
+        console.log(value);
+        nextChannel(value);
+      }
+    );
+  }
+
+  /**
    * Limits the number of dispatches to one per frame.
    *
    * When it receives a value, it waits until the next frame to dispatch it.  If
