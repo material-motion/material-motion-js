@@ -45,7 +45,7 @@ export class IndefiniteSubject<T> implements Observable<T>, Observer<T> {
    * observer `subscribe`s before `next` is called again, it will immediately
    * receive `value`.
    */
-  next(value: T) {
+  next = (value: T) => {
     this._hasStarted = true;
     this._lastValue = value;
 
@@ -65,7 +65,7 @@ export class IndefiniteSubject<T> implements Observable<T>, Observer<T> {
    * Call the returned `unsubscribe` method to stop receiving values on this
    * particular observer.
    */
-  subscribe(observerOrNext: ObserverOrNext<T>): Subscription {
+  subscribe = (observerOrNext: ObserverOrNext<T>): Subscription => {
     const observer = wrapWithObserver<T>(observerOrNext);
 
     this._observers.add(observer);
@@ -86,7 +86,7 @@ export class IndefiniteSubject<T> implements Observable<T>, Observer<T> {
    *
    * https://github.com/tc39/proposal-observable#observable
    */
-  [$$observable](): Observable<T> {
+  [$$observable] = (): Observable<T> => {
     return this;
   }
 }
