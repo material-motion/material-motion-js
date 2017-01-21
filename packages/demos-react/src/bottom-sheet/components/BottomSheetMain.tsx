@@ -92,47 +92,52 @@ export const BottomSheetMain: React.StatelessComponent<any> = createMotionCompon
 
         <WelcomeMessage />
 
-        <BottomSheet>
-          <Col
-            position = 'fixed'
-            width = '100vw'
-            height = '100vh'
-            alignItems = 'stretch'
+        <BottomSheet
+          position = 'fixed'
+          width = '100vw'
+          height = '100vh'
+          display = 'flex'
+          flexDirection = 'column'
+          alignItems = 'stretch'
+        >
+          {/*
+            There are three components to this transition:
+
+            - The bits that are only present when the bottom sheet is collapsed,
+              in what we call the "back" state;
+
+            - The bits that are only present when the bottom sheet is expanded,
+              in what we call the "fore" state; and
+
+            - The bits that are appear in both states.
+
+            Each is represented by a single JSX element below.
+          */}
+          <BottomSheetBackground
+            position = 'absolute'
+            top = { 0 }
+            zIndex = { -1 }
+            model = { model }
+          />
+
+          <CollapsedToolBar
+            // This should probably be set automatically by any director that
+            // listens to click
+            cursor = 'pointer'
           >
-            {/*
-              There are three components to this transition:
-
-              - The bits that are only present when the bottom sheet is collapsed,
-                in what we call the "back" state;
-
-              - The bits that are only present when the bottom sheet is expanded,
-                in what we call the "fore" state; and
-
-              - The bits that are appear in both states.
-
-              Each is represented by a single JSX element below.
-            */}
-            <BottomSheetBackground
-              position = 'absolute'
-              top = { 0 }
-              zIndex = { -1 }
+            <CollapsedBottomSheetContents
               model = { model }
             />
+          </CollapsedToolBar>
 
-            <CollapsedToolBar>
-              <CollapsedBottomSheetContents
-                model = { model }
-                cursor = 'pointer'
-              />
-            </CollapsedToolBar>
-
-            <ExpandedToolBar>
-              <ExpandedBottomSheetContents
-                model = { model }
-                CloseButtonContainer = { CloseButton }
-              />
-            </ExpandedToolBar>
-          </Col>
+          <ExpandedToolBar
+            flex = { 1 }
+          >
+            <ExpandedBottomSheetContents
+              model = { model }
+              CloseButtonContainer = { CloseButton }
+            />
+          </ExpandedToolBar>
         </BottomSheet>
       </Col>
     );
