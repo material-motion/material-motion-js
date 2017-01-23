@@ -2,7 +2,10 @@ const path = require('path');
 const tsConfig = require('./tsconfig');
 const mainTSConfig = require('../../tsconfig');
 
+const extensions = ['js', 'jsx', 'ts', 'tsx'];
+
 module.exports = {
+  debug: true,
   rootDirectory: __dirname,
   entry: ['./src/mount.tsx'],
   output: {
@@ -23,20 +26,25 @@ module.exports = {
     [
       require.resolve('pundle-preset-default'),
       {
-        // Put any preset config here
+        resolver: false,
+        loader: false,
       }
     ],
     [
       require.resolve('pundle-preset-typescript'),
       {
+        loader: {
+          extensions,
+        },
         resolver: {
-          packageMains: ['typescript:main', 'browser', 'main'],
+          packageMains: ['typescript:main', 'module', 'browser', 'main'],
+          extensions,
         },
         transformer: {
-          extensions: ['js', 'jsx', 'ts', 'tsx'],
-          exclude: [],
+          extensions,
           config: {
             compilerOptions: Object.assign(
+              {},
               mainTSConfig.compilerOptions,
               tsConfig.compilerOptions
             )
