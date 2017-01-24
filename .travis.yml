@@ -22,3 +22,9 @@ script:
 - yarn run ci
 group: stable
 os: linux
+
+# Travis will send an e-mail for every diff pushed to Phabricator's staging
+# area, unless you set this:
+notifications:
+  email:
+    on_success: never
