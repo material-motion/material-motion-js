@@ -14,20 +14,18 @@
  *  under the License.
  */
 
-export * from './types';
-export * from './ExperimentalMotionObservable';
-export { default as ExperimentalMotionObservable } from './ExperimentalMotionObservable';
+// enums serialize to numbers.  Strings are easier for external contributors
+// to extend and for everybody to parse.
+//
+// https://github.com/Microsoft/TypeScript/issues/1206
 
-export * from './TogglableProperty';
-export { default as TogglableProperty } from './TogglableProperty';
+// tslint:disable-next-line variable-name
+export const PrimitiveKind = {
+  NUMBER: 'number',
+  STRING: 'string',
+  BOOLEAN: 'boolean',
+  ARRAY: 'array',
+  OBJECT: 'object',
+};
 
-export * from './PrimitiveKind';
-export { default as PrimitiveKind } from './PrimitiveKind';
-
-export * from './PropertyKind';
-export { default as PropertyKind } from './PropertyKind';
-
-export * from './InputKind';
-export { default as InputKind } from './InputKind';
-
-export default undefined;
+export default PrimitiveKind;
