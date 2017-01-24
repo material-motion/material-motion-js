@@ -114,14 +114,11 @@ export type SpringArgs<T> = {
   threshold: ScopedReadable<number> | number,
 };
 
-export type StreamDict<T> = {
-  [index:string]: Observable<T>,
+export type Dict<T> = {
+  [index: string]: T,
 };
 
-type SubjectDict<T> = {
-  [key: string]: Subject<T>,
-};
+export type StreamDict<T> = Dict<Observable<T>>;
+export type SubjectDict<T> = Dict<Subject<T>>;
+export type SubscriptionDict<T> = Dict<Subscription>;
 
-type SubscriptionDict = {
-  [key: string]: Subscription,
-};
