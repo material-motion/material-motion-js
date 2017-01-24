@@ -14,4 +14,45 @@
  *  under the License.
  */
 
+import {
+  Observable,
+} from 'material-motion-streams';
+
+import {
+  ExperimentalMotionObservable,
+} from './ExperimentalMotionObservable';
+
+// If there were Set literals and collection methods, these might be better as
+// sets than arrays
+
+export interface InputOutputStreamsDict {
+  [viewName: string]: {
+    input: Array<Observable<any>>,
+  } | {
+    output: Array<Observable<any>>,
+  }
+};
+
+export interface DirectorArgs extends InputOutputStreamsDict {
+  state$: ExperimentalMotionObservable<any>,
+}
+
+// TODO: make this typed/templated in the same way propTypes are in React
+export interface Director {
+  (streams: DirectorArgs): {
+    state$: ExperimentalMotionObservable<any>,
+    [viewName: string]: {
+      [key: string]: ExperimentalMotionObservable<any>
+    }
+  }
+
+  streamKindsByTargetName:{
+    [viewName: string]: {
+      input: Array<string>,
+    } | {
+      output: Array<string>,
+    }
+  };
+}
+
 export type equalityCheck = (a: any, b: any) => boolean;
