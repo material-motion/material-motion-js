@@ -1,0 +1,23 @@
+# From https://circleci.com/docs/yarn/
+machine:
+  node:
+    version: 6.2.1
+
+  environment:
+    PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
+
+dependencies:
+  override:
+    - yarn run bootstrap
+  cache_directories:
+    - ~/.cache/yarn
+
+test:
+  override:
+    - yarn run ci
+
+
+# From http://codereview.cc/harbormaster/step/edit/6/
+notify:
+  webhooks:
+    - url: http://codereview.cc/harbormaster/hook/circleci/
