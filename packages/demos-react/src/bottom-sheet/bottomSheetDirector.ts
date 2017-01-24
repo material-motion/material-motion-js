@@ -20,39 +20,76 @@ import {
 
 import {
   Director,
+  DirectorArgs,
+  ExperimentalMotionObservable,
   InputKind,
-  InputOutputStreamsDict,
+  PrimitiveKind,
   PropertyKind,
 } from 'material-motion-experimental-addons';
 
 export const bottomSheetDirector: Director = function bottomSheetDirector({
+  state$,
   scrim,
   bottomSheet,
   collapsedToolBar,
   expandedToolBar,
   closeButton,
-}: InputOutputStreamsDict) {
-  const tempPosition$ = new IndefiniteSubject();
+}: DirectorArgs) {
+  // // This is basically pluck('isOpen').rewrite(), but since it's dependent on
+  // // multiple properties, it's not easy to express in that form:
+  const springDestinationY$ = state$._map(
+    ({ isOpen, length }) => isOpen
+      ? 0
+      : length
+  );
 
-  function randomMove() {
-    tempPosition$.next({
-      x: 0,
-      y: 300 * Math.random()
-    });
-  }
+  const bottomSheetPosition$ = ExperimentalMotionObservable.combineLatestFromDict({
+    x: 0,
+    y: 0 //spring({
+      // destination: springDestinationY$,
+    // })
+  });
 
-  closeButton.tap$.log().subscribe(randomMove);
-  collapsedToolBar.tap$.log().subscribe(randomMove);
+  const isOpen$ = state$.pluck('isOpen').merge(
+    closeButton.tap$.mapTo(false),
+
+    // This should be something like
+    // collapsedToolBar.tap$.mapToLatest(
+    //   state$.pluck('isOpen').merge(closeButton.tap$.mapTo(false))
+    // ).invert()
+    collapsedToolBar.tap$.toggle(),
+  ).dedupe();
 
   return {
+    state$: state$.applyDiffs(
+      ExperimentalMotionObservable.combineLatestFromDict({
+        isOpen: isOpen$,
+      })
+    ),
     scrim: {},
     bottomSheet: {
-      [PropertyKind.POSITION]: tempPosition$,
+      [PropertyKind.POSITION]: springDestinationY$.log(),
     },
     collapsedToolBar: {},
     expandedToolBar: {},
     closeButton: {},
   };
+};
+
+// This is basically ReactComponent.propTypes.  It doesn't do anything right
+// now, but we could build a validation/typing system on top of it in the
+// future.
+bottomSheetDirector.stateShape = {
+  // The state of the bottom sheet right now:
+  isOpen: PrimitiveKind.BOOLEAN,
+
+  // If the user is interacting now and releases control, the bottom sheet will
+  // transition to this state:
+  willOpen: PrimitiveKind.BOOLEAN,
+
+  // When the bottom sheet is closed, it will be translated down by this amount,
+  // in pixels:
+  length: PrimitiveKind.number,
 };
 
 bottomSheetDirector.streamKindsByTargetName = {
