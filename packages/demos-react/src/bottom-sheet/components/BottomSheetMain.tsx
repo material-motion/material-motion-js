@@ -49,11 +49,39 @@ import {
 // build any of them.  Here's an example that cross-dissolves between the states
 // when the user crosses a threshold.
 
-import bottomSheetDirector from '../bottomSheetDirector';
+import {
+  BottomSheetPosition,
+  bottomSheetDirector,
+} from '../bottomSheetDirector';
 
 // tslint:disable-next-line variable-name
 export const BottomSheetMain: React.StatelessComponent<any> = createMotionComponent({
   director: bottomSheetDirector,
+
+  // There's a bunch of state that both an application and an interaction need
+  // to share.  For instance, the URL should be controlled by the application,
+  // but the director needs to know which presentation to use, and this is often
+  // determined by the URL.  Furthermore, if the user requests a new state via
+  // a gestural interaction, the application should be able to observe that
+  // change and update the URL accordingly.
+  //
+  // The application likely stores its state in a { Redux, MobX, Backbone,
+  // Angular } container.  We can write adaptors for those state containers,
+  // expose out input and output as streams, or as callbacks.  These are all
+  // optimizations that can be done later.
+  //
+  // For now, createMotionComponent will take `initialState`, pass it into the
+  // director, and loop a director's output state back into its input.  This
+  // demonstrates where external state would go in the system, but
+  // short-circuits it for the purposes of creating this demo.  To enable quick
+  // prototyping, we may want to continue supporting this kind of
+  // short-circuiting, even after building more robust abstractions for real
+  // applications.
+  initialState: {
+    isOpen: false,
+    willOpen: false,
+    length: 731 - 84,
+  },
   render(
     props,
     context, {
