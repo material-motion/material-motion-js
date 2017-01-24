@@ -61,6 +61,51 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
   }
 
   /**
+   * Extracts the value at a given key from every incoming object and passes
+   * those values to the observer.
+   *
+   * For instance:
+   *
+   * - `transform$.pluck('translate')` is equivalent to
+   *   `transform$.map(transform => transform.translate)`
+   *
+   * - `transform$.pluck('translate.x')` is equivalent to
+   *   `transform$.map(transform => transform.translate.x)`
+   */
+  pluck<U>(key: string): MotionObservable<U> {
+    const keySegments = key.split('.');
+
+    return this._map(
+      // TODO: fix the type annotations
+      (value: {[k: string]: any }) => {
+        let result = value;
+
+        for (let keySegment of keySegments) {
+          result = result[keySegment];
+        }
+
+        return result;
+      }
+    );
+  }
+
+  /**
+   * Logs every value that passes through this section of the stream, and passes
+   * them downstream.
+   *
+   * Adding `log` to stream chain should have no effect on the rest of the
+   * chain.
+   */
+  log(): MotionObservable<T> {
+    return this._nextOperator(
+      (value: T, nextChannel: NextChannel<T>) => {
+        console.log(value);
+        nextChannel(value);
+      }
+    );
+  }
+
+  /**
    * Applies `transform` to every incoming value and synchronously passes the
    * result to the observer.
    */
@@ -82,22 +127,6 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
         if (predicate(value)) {
           nextChannel(value);
         }
-      }
-    );
-  }
-
-  /**
-   * Logs every value that passes through this section of the stream, and passes
-   * them downstream.
-   *
-   * Adding `log` to stream chain should have no effect on the rest of the
-   * chain.
-   */
-  log(): MotionObservable<T> {
-    return this._nextOperator(
-      (value: T, nextChannel: NextChannel<T>) => {
-        console.log(value);
-        nextChannel(value);
       }
     );
   }
