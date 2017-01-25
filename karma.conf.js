@@ -8,7 +8,7 @@ module.exports = function(config) {
     basePath: '',
     frameworks: ['mocha'],
     browsers: process.env.CI
-      ? ['Chrome', 'Firefox']
+      ? ['Chrome', 'Safari', 'Firefox']
       : ['ChromeCanary'],
     reporters: ['progress'],
     client: {
@@ -53,6 +53,12 @@ module.exports = function(config) {
     autoWatch: true,
     singleRun: false,
     concurrency: Infinity,
+
+    // CircleCI macOS Chrome will disconnect without running tests, unless you
+    // extend the time you're willing to wait for a connection.
+    browserNoActivityTimeout: 60000,
+    browserDisconnectTolerance: 1,
+    captureTimeout: 60000,
   });
 
   const argv = minimist(process.argv);
