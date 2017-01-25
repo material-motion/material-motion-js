@@ -24,6 +24,7 @@ import {
   NextChannel,
   Observable,
   Subscription,
+  isObservable,
 } from 'material-motion-streams';
 
 import {
@@ -44,13 +45,59 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
     );
   }
 
+  static combineLatestFromDict<T extends Dict<any>>(dict: Dict<Observable<any> | any>) {
+    return new ExperimentalMotionObservable(
+      (observer: MotionObserver<T>) => {
+        const outstandingKeys = new Set(Object.keys(dict));
+
+        const nextValue: T = {};
+        const subscriptions: Dict<Subscription> = {};
+
+        outstandingKeys.forEach(checkKey);
+
+        function checkKey(key) {
+          const maybeStream = dict[key];
+
+          if (isObservable(maybeStream)) {
+            subscriptions[key] = maybeStream.subscribe(
+              (value: any) => {
+                outstandingKeys.delete(key);
+
+                nextValue[key] = value;
+                dispatchNextValue();
+              }
+            );
+          } else {
+            outstandingKeys.delete(key);
+
+            nextValue[key] = maybeStream;
+            dispatchNextValue();
+          }
+        }
+
+        function dispatchNextValue() {
+          if (!outstandingKeys.size) {
+            observer.next(nextValue);
+          }
+        }
+
+        dispatchNextValue();
+
+        return function disconnect() {
+          Object.values(subscriptions).forEach(
+            subscription => subscription.unsubscribe()
+          );
+        };
+      }
+    );
+  }
   // If we don't explicitly provide a constructor, TypeScript won't remember the
   // signature
   constructor(connect: MotionConnect<T>) {
     super(connect);
   }
 
-  applyDiffs(other$: Observable<Partial<T>>): ExperimentalMotionObservable<T> {
+  applyDiffs<T extends Dict<any>>(other$: Observable<Partial<T>>): ExperimentalMotionObservable<T> {
     let latestValue: T;
     let dispatch: NextChannel<T>;
 
@@ -101,3 +148,4 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
   }
 }
 export default ExperimentalMotionObservable;
+
