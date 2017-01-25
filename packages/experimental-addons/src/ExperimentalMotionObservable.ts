@@ -22,5 +22,24 @@ import {
  * MotionObservable, with experimental operators
  */
 export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
+  /**
+   * Ensures that every value dispatched is different than the previous one.
+   */
+  dedupe():ExperimentalMotionObservable<T> {
+    let dispatched;
+    let lastValue;
+
+    return this._nextOperator(
+      (value, dispatch) => {
+        if (dispatched && value === lastValue) {
+          return;
+        }
+
+        dispatch(value);
+        dispatched = true;
+        lastValue = value;
+      }
+    ) as ExperimentalMotionObservable<T>;
+  }
 }
 export default ExperimentalMotionObservable;
