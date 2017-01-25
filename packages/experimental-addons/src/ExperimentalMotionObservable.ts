@@ -166,6 +166,31 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
       }
     ) as ExperimentalMotionObservable<number>;
   }
+
+  /**
+   * The first time it receives a value, it dispatches that value's truthiness.
+   *
+   * For every subsequent value, it dispatches the opposite of the last value it
+   * dispatched
+   */
+  toggle():ExperimentalMotionObservable<boolean> {
+    let dispatched;
+    let lastValue;
+
+    return this._nextOperator(
+      (value, dispatch) => {
+        if (!dispatched) {
+          lastValue = Boolean(value);
+          dispatch(lastValue);
+          dispatched = true;
+
+        } else {
+          lastValue = !lastValue;
+          dispatch(lastValue);
+        }
+      }
+    ) as ExperimentalMotionObservable<boolean>;
+  }
 }
 export default ExperimentalMotionObservable;
 
