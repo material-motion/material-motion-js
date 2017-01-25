@@ -6,6 +6,10 @@ machine:
   environment:
     PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
 
+    # CircleCI needs these to have values, even if they don't point at anything.
+    XCODE_PROJECT: "none"
+    XCODE_SCHEME: "none"
+
 dependencies:
   override:
     - yarn run bootstrap
