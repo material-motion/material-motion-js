@@ -24,6 +24,7 @@ import {
   MotionObserverOrNext,
   NextChannel,
   NextOperation,
+  Observable,
   StateChannel,
   Subscription,
 } from '../types';
@@ -58,6 +59,26 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
     }
 
     return super.subscribe(observer);
+  }
+
+  /**
+   * Dispatches values as it receives them, both from upstream and from any
+   * streams provided as arguments.
+   */
+  merge(...otherStreams: Array<Observable<any>>):MotionObservable<any> {
+    return new (this.constructor as typeof MotionObservable)<any>(
+      (observer: MotionObserver<any>) => {
+        const subscriptions = [this, ...otherStreams].map(
+          stream => stream.subscribe(observer)
+        );
+
+        return () => {
+          subscriptions.forEach(
+            subscription => subscription.unsubscribe()
+          );
+        };
+      }
+    );
   }
 
   /**
