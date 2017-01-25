@@ -16,16 +16,16 @@
 
 import {
   IndefiniteObservable,
-  NextChannel,
-  Subscription,
 } from 'indefinite-observable';
 
 import {
   MotionConnect,
   MotionObserver,
   MotionObserverOrNext,
+  NextChannel,
   NextOperation,
   StateChannel,
+  Subscription,
 } from '../types';
 
 export enum State {

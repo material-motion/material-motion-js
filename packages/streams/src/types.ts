@@ -14,11 +14,21 @@
  *  under the License.
  */
 
+// We re-export everything we import, so dependents don't need to know about
+// indefinite-observable.
 import {
   Disconnect,
   NextChannel,
   Observable,
   Observer,
+} from 'indefinite-observable';
+
+export {
+  Disconnect,
+  NextChannel,
+  Observable,
+  Observer,
+  Subscription,
 } from 'indefinite-observable';
 
 import {

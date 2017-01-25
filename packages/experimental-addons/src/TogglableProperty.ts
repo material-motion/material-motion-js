@@ -17,9 +17,6 @@
 import {
   Observable,
   Observer,
-} from 'indefinite-observable';
-
-import {
   PropertyObservable,
   ReactiveProperty,
 } from 'material-motion-streams';

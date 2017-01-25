@@ -15,19 +15,16 @@
  */
 
 import {
-  Observable,
-  ObserverOrNext,
-  Subscription,
-} from 'indefinite-observable';
-
-import {
   IndefiniteSubject,
 } from '../observables/IndefiniteSubject';
 
 import {
+  Observable,
+  ObserverOrNext,
   PropertyObservable,
   ScopedReadable,
   ScopedWritable,
+  Subscription,
 } from '../types';
 
 export class ReactiveProperty<T> implements PropertyObservable<T> {

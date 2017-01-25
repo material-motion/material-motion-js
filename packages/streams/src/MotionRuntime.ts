@@ -15,10 +15,6 @@
  */
 
 import {
-  Subscription,
-} from 'indefinite-observable';
-
-import {
   MotionObservable,
   State,
 } from './observables/MotionObservable';
@@ -26,6 +22,7 @@ import {
 import {
   MotionObserver,
   ScopedWritable,
+  Subscription,
 } from './types';
 
 export type RuntimeWriteArgs<T> = {
