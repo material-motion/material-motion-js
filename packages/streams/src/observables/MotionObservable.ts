@@ -171,7 +171,12 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
    * the result to the observer's `next` channel.
    */
   _nextOperator<U>(operation: NextOperation<T, U>): MotionObservable<U> {
-    return new MotionObservable<U>(
+    // Ensures that any subclass makes instances of itself rather than of
+    // MotionObservable
+    //
+    // TypeScript doesn't seem to know what the type of this.constructor is, so
+    // we explicitly tell it here.
+    return new (this.constructor as typeof MotionObservable)<U>(
       (observer: MotionObserver<U>) => {
         const subscription = this.subscribe({
           state: observer.state,

@@ -14,10 +14,13 @@
  *  under the License.
  */
 
-export * from './types';
+import {
+  MotionObservable,
+} from 'material-motion-streams';
 
-export * from './ExperimentalMotionObservable';
-export { default as ExperimentalMotionObservable } from './ExperimentalMotionObservable';
-
-export * from './TogglableProperty';
-export { default as TogglableProperty } from './TogglableProperty';
+/**
+ * MotionObservable, with experimental operators
+ */
+export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
+}
+export default ExperimentalMotionObservable;
