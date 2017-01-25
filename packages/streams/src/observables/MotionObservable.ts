@@ -82,6 +82,19 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
   }
 
   /**
+   * Dispatches its argument every time it receives a value from upstream.
+   */
+  mapTo<U>(value: U):MotionObservable<U> {
+    return this._nextOperator(
+      // TypeScript gets mad if you omit a variable, so we use `_` for variables
+      // we don't care bout
+      (_, dispatch: NextChannel<U>) => {
+        dispatch(value);
+      }
+    );
+  }
+
+  /**
    * Extracts the value at a given key from every incoming object and passes
    * those values to the observer.
    *
