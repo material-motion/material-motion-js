@@ -15,13 +15,33 @@
  */
 
 import {
+  MotionConnect,
   MotionObservable,
+  MotionObserver,
+  Observable,
+  Subscription,
 } from 'material-motion-streams';
 
 /**
  * MotionObservable, with experimental operators
  */
 export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
+  static from<T>(stream: Observable<T>): ExperimentalMotionObservable<T> {
+    return new ExperimentalMotionObservable<T>(
+      (observer: MotionObserver<T>) => {
+        const subscription: Subscription = stream.subscribe(observer);
+
+        return subscription.unsubscribe;
+      }
+    );
+  }
+
+  // If we don't explicitly provide a constructor, TypeScript won't remember the
+  // signature
+  constructor(connect: MotionConnect<T>) {
+    super(connect);
+  }
+
   /**
    * Ensures that every value dispatched is different than the previous one.
    */
