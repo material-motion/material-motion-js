@@ -1,14 +1,19 @@
-# From https://circleci.com/docs/yarn/
 machine:
-  node:
-    version: 6.2.1
-
   environment:
     PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
 
+    # CircleCI needs these to have values, even if they don't point at anything.
+    XCODE_PROJECT: "none"
+    XCODE_SCHEME: "none"
+
 dependencies:
   override:
+    - brew cask install google-chrome
+    - brew cask install firefox
+    - brew install yarn
+    - yarn config set cache-folder ~/.cache/yarn
     - yarn run bootstrap
+
   cache_directories:
     - ~/.cache/yarn
 
