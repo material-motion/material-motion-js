@@ -17,6 +17,7 @@
 import * as deepEqual from 'deep-equal';
 
 import {
+  Dict,
   MotionConnect,
   MotionObservable,
   MotionObserver,
@@ -47,6 +48,33 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
   // signature
   constructor(connect: MotionConnect<T>) {
     super(connect);
+  }
+
+  applyDiffs(other$: Observable<Partial<T>>): ExperimentalMotionObservable<T> {
+    let latestValue: T;
+    let dispatch: NextChannel<T>;
+
+    other$.subscribe(
+      (partial: Partial<T>) => {
+        latestValue = {
+          ...latestValue,
+          ...partial,
+        };
+
+        if (dispatch) {
+          dispatch(latestValue);
+        }
+      }
+    );
+
+    return this._nextOperator(
+      (value: T, nextChannel: NextChannel<T>) => {
+        latestValue = value;
+
+        dispatch = nextChannel;
+        dispatch(latestValue);
+      }
+    ) as ExperimentalMotionObservable<T>;
   }
 
   /**
