@@ -18,12 +18,12 @@ import * as React from 'react';
 
 import {
   IndefiniteSubject,
-  MotionObservable,
   StreamDict,
 } from 'material-motion-streams';
 
 import {
   Director,
+  ExperimentalMotionObservable,
   InputKind,
 } from 'material-motion-experimental-addons';
 
@@ -40,7 +40,7 @@ export type createMotionComponentArgs<P> = {
 // TODO: break this into separate files
 
 // make streams, glue them to the director, and set the display name of each resulting MotionTarget
-export function createMotionComponent<P>({ director, render }: createMotionComponentArgs<P>): React.StatelessComponent<P> {
+export function createMotionComponent<P>({ director, render, initialState }: createMotionComponentArgs<P>): React.StatelessComponent<P> {
   const motionTargets = {};
 
   const streamsByPropNameByTargetName = {};
@@ -76,19 +76,30 @@ export function createMotionComponent<P>({ director, render }: createMotionCompo
         }
 
         const subject = new IndefiniteSubject();
-        inputStreamsByPropNameByTargetName[targetName][inputKind] = new MotionObservable(
-          observer => {
-            const subscription = subject.subscribe(observer);
-
-            return subscription;
-          }
-        );
+        inputStreamsByPropNameByTargetName[targetName][inputKind] = ExperimentalMotionObservable.from(subject);
         streamsByPropNameByTargetName[targetName][eventHandlerName] = subject;
       );
     }
   );
 
-  const outputStreamsByTargetName = director(inputStreamsByPropNameByTargetName) || {};
+  // This is a quick hack to prototype cyclical state streams.
+  //
+  // If we move forward with this strategy, we should not presume that
+  // `initialState` is provided; instead, allowing `state$` to be set as a prop
+  // (and perhaps accepting `state` as a prop and converting it to a stream
+  // before passing it into the director).
+  const stateSubject = new IndefiniteSubject();
+  stateSubject.next(initialState);
+
+  const {
+    state$,
+    ...outputStreamsByTargetName
+  } = director({
+    state$: ExperimentalMotionObservable.from(stateSubject).dedupe(),
+    ...inputStreamsByPropNameByTargetName
+  }) || {};
+
+  state$.subscribe(stateSubject);
 
   Object.entries(outputStreamsByTargetName).forEach(
     ([ targetName, outputStreams ]) => {
