@@ -42,7 +42,7 @@ import {
   State,
 } from '../';
 
-describe('MotionObservable._nextOperator',
+describe('motionObservable',
   () => {
     let stream;
     let mockObserver;
@@ -59,47 +59,59 @@ describe('MotionObservable._nextOperator',
       }
     );
 
-    it('should apply an operation to the output stream',
+    it('should pass values to observer.next',
       () => {
-        const waitAMoment = Promise.resolve();
-
-        const makeValuesAsync = (value, nextChannel) => {
-          waitAMoment.then(
-            () => {
-              nextChannel(value);
-            }
-          );
-        }
-
-        stream._nextOperator(makeValuesAsync).subscribe(nextListener);
-
-        mockObserver.next(1);
-
-        expect(nextListener).not.to.have.been.called;
-        return waitAMoment.then(
-          () => {
-            expect(nextListener).to.have.been.calledWith(1);
-          }
-        );
-      }
-    );
-
-    it('should pass through observer.state',
-      () => {
-        const blackHole = () => {};
-
-        stream._nextOperator(blackHole).subscribe({
+        stream.subscribe({
           next: nextListener,
           state: stateListener,
         });
 
-        mockObserver.state(State.AT_REST);
+        mockObserver.next(1);
+
+        expect(nextListener).to.have.been.calledWith(1);
+        expect(stateListener).not.to.have.been.called;
+      }
+    );
+
+    it('should pass values to observer.state',
+      () => {
+        stream.subscribe({
+          next: nextListener,
+          state: stateListener,
+        });
+
+        mockObserver.state(State.ACTIVE);
+
+        expect(nextListener).not.to.have.been.called;
+        expect(stateListener).to.have.been.calledWith(State.ACTIVE);
+      }
+    );
+
+    it('should accept values on both channels',
+      () => {
+        stream.subscribe({
+          next: nextListener,
+          state: stateListener,
+        });
+
         mockObserver.next('hi');
         mockObserver.state(State.ACTIVE);
 
-        expect(stateListener).to.have.been.calledWith(State.AT_REST);
-        expect(nextListener).not.to.have.been.called;
+        expect(nextListener).to.have.been.calledWith('hi');
         expect(stateListener).to.have.been.calledWith(State.ACTIVE);
+      }
+    );
+
+    it(`should provide operators with a state channel even if the listener doesn't have one`,
+      () => {
+        new MotionObservable(
+          observer => {
+            expect(observer.state).to.exist;
+            observer.state(State.ACTIVE);
+
+            return mockObserver.disconnect;
+          }
+        ).subscribe(nextListener);
       }
     );
   }

@@ -26,6 +26,8 @@ import {
   stub,
 } from 'sinon';
 
+import createMotionElementFromDOMNode from '../createMotionElementFromDOMNode';
+
 declare function require(name: string);
 
 // chai really doesn't like being imported as an ES2015 module; will be fixed in v4
@@ -33,61 +35,40 @@ require('chai').use(
   require('sinon-chai')
 );
 
-import {
-  createMockObserver,
-} from 'material-motion-testing-utils';
-
-import MotionObservable from '../MotionObservable';
-
-describe('MotionObservable.pluck',
+describe('domMotionElement.getEvent$',
   () => {
-    let stream;
-    let mockObserver;
+    let domNode;
+    let motionElement;
     let listener;
 
     beforeEach(
       () => {
-        mockObserver = createMockObserver();
-        stream = new MotionObservable(mockObserver.connect);
+        domNode = document.createElement('div');
+        motionElement = createMotionElementFromDOMNode(domNode);
         listener = stub();
       }
     );
 
-    it('should return a stream of values from the specified key',
+    it('should forward events when subscribed to.',
       () => {
-        const translate = {
-          x: 10,
-          y: 15,
-        };
+        motionElement.getEvent$('click').subscribe(listener);
 
-        const transform = {
-          translate,
-        };
+        domNode.click();
 
-        stream.pluck('translate').subscribe(listener);
-
-        mockObserver.next(transform);
-
-        expect(listener).to.have.been.calledWith(translate);
+        expect(listener).to.have.been.calledOnce;
       }
     );
 
-    it('should recurse over every key in a .-separated string',
+    it('should stop forwarding events when unsubscribed from.',
       () => {
-        const translate = {
-          x: 10,
-          y: 15,
-        };
+        const { unsubscribe } = motionElement.getEvent$('click').subscribe(listener);
 
-        const transform = {
-          translate,
-        };
+        domNode.click();
+        domNode.click();
+        unsubscribe();
+        domNode.click();
 
-        stream.pluck('translate.x').subscribe(listener);
-
-        mockObserver.next(transform);
-
-        expect(listener).to.have.been.calledWith(10);
+        expect(listener).to.have.been.calledTwice;
       }
     );
   }

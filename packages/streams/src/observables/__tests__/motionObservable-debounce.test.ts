@@ -42,7 +42,7 @@ import {
 
 import MotionObservable from '../MotionObservable';
 
-describe('MotionObservable._debounce',
+describe('motionObservable._debounce',
   useMockedRAF(
     (mockRAF) => {
       let stream;

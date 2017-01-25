@@ -35,7 +35,7 @@ require('chai').use(
 
 import ReactiveProperty from '../ReactiveProperty';
 
-describe('ReactiveProperty',
+describe('reactiveProperty',
   () => {
     it(`should store the last value if created with no arguments`,
       () => {

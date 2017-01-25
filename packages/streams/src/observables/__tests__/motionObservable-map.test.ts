@@ -39,7 +39,7 @@ import {
 
 import MotionObservable from '../MotionObservable';
 
-describe('MotionObservable._filter',
+describe('motionObservable._map',
   () => {
     let stream;
     let mockObserver;
@@ -53,19 +53,14 @@ describe('MotionObservable._filter',
       }
     );
 
-    it('should only pass through values that pass the test',
+    it('should transform the stream with the supplied predicate',
       () => {
-        const isOdd = x => x % 2;
+        stream._map(
+          x => x + 40
+        ).subscribe(listener1);
 
-        stream._filter(isOdd).subscribe(listener1);
-
-        mockObserver.next(1);
         mockObserver.next(2);
-        mockObserver.next(3);
-
-        expect(listener1).to.have.been.calledWith(1);
-        expect(listener1).not.to.have.been.calledWith(2);
-        expect(listener1).to.have.been.calledWith(3);
+        expect(listener1).to.have.been.calledWith(42);
       }
     );
   }

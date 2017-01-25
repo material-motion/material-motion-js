@@ -26,8 +26,6 @@ import {
   stub,
 } from 'sinon';
 
-import createMotionElementFromDOMNode from '../createMotionElementFromDOMNode';
-
 declare function require(name: string);
 
 // chai really doesn't like being imported as an ES2015 module; will be fixed in v4
@@ -35,40 +33,39 @@ require('chai').use(
   require('sinon-chai')
 );
 
-describe('DOMMotionElement.getEvent$',
+import {
+  createMockObserver,
+} from 'material-motion-testing-utils';
+
+import MotionObservable from '../MotionObservable';
+
+describe('motionObservable._filter',
   () => {
-    let domNode;
-    let motionElement;
-    let listener;
+    let stream;
+    let mockObserver;
+    let listener1;
 
     beforeEach(
       () => {
-        domNode = document.createElement('div');
-        motionElement = createMotionElementFromDOMNode(domNode);
-        listener = stub();
+        mockObserver = createMockObserver();
+        stream = new MotionObservable(mockObserver.connect);
+        listener1 = stub();
       }
     );
 
-    it('should forward events when subscribed to.',
+    it('should only pass through values that pass the test',
       () => {
-        motionElement.getEvent$('click').subscribe(listener);
+        const isOdd = x => x % 2;
 
-        domNode.click();
+        stream._filter(isOdd).subscribe(listener1);
 
-        expect(listener).to.have.been.calledOnce;
-      }
-    );
+        mockObserver.next(1);
+        mockObserver.next(2);
+        mockObserver.next(3);
 
-    it('should stop forwarding events when unsubscribed from.',
-      () => {
-        const { unsubscribe } = motionElement.getEvent$('click').subscribe(listener);
-
-        domNode.click();
-        domNode.click();
-        unsubscribe();
-        domNode.click();
-
-        expect(listener).to.have.been.calledTwice;
+        expect(listener1).to.have.been.calledWith(1);
+        expect(listener1).not.to.have.been.calledWith(2);
+        expect(listener1).to.have.been.calledWith(3);
       }
     );
   }

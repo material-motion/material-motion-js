@@ -36,7 +36,7 @@ require('chai').use(
   require('sinon-chai')
 );
 
-describe('DOMMotionElement.scrollPosition',
+describe('domMotionElement.scrollPosition',
   () => {
     let outerDOMNode;
     let innerDOMNode;

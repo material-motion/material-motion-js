@@ -35,7 +35,7 @@ require('chai').use(
   require('sinon-chai')
 );
 
-describe('IndefiniteSubject',
+describe('indefiniteSubject',
   () => {
     let subject;
     let listener1;

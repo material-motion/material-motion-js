@@ -39,28 +39,55 @@ import {
 
 import MotionObservable from '../MotionObservable';
 
-describe('MotionObservable._map',
+describe('motionObservable.pluck',
   () => {
     let stream;
     let mockObserver;
-    let listener1;
+    let listener;
 
     beforeEach(
       () => {
         mockObserver = createMockObserver();
         stream = new MotionObservable(mockObserver.connect);
-        listener1 = stub();
+        listener = stub();
       }
     );
 
-    it('should transform the stream with the supplied predicate',
+    it('should return a stream of values from the specified key',
       () => {
-        stream._map(
-          x => x + 40
-        ).subscribe(listener1);
+        const translate = {
+          x: 10,
+          y: 15,
+        };
 
-        mockObserver.next(2);
-        expect(listener1).to.have.been.calledWith(42);
+        const transform = {
+          translate,
+        };
+
+        stream.pluck('translate').subscribe(listener);
+
+        mockObserver.next(transform);
+
+        expect(listener).to.have.been.calledWith(translate);
+      }
+    );
+
+    it('should recurse over every key in a .-separated string',
+      () => {
+        const translate = {
+          x: 10,
+          y: 15,
+        };
+
+        const transform = {
+          translate,
+        };
+
+        stream.pluck('translate.x').subscribe(listener);
+
+        mockObserver.next(transform);
+
+        expect(listener).to.have.been.calledWith(10);
       }
     );
   }

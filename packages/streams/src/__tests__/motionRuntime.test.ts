@@ -43,7 +43,7 @@ require('chai').use(
   require('sinon-chai')
 );
 
-describe('MotionRuntime',
+describe('motionRuntime',
   () => {
     let runtime;
     let stream;
