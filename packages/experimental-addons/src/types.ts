@@ -16,6 +16,7 @@
 
 import {
   Observable,
+  SpringSystem,
 } from 'material-motion-streams';
 
 import {
@@ -35,6 +36,7 @@ export interface InputOutputStreamsDict {
 
 export interface DirectorArgs extends InputOutputStreamsDict {
   state$: ExperimentalMotionObservable<any>,
+  springSystem: SpringSystem<any>,
 }
 
 // TODO: make this typed/templated in the same way propTypes are in React
