@@ -82,6 +82,22 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
   }
 
   /**
+   * Receives a value from upstream, linearly interpolates it between the given
+   * ranges, and dispatches the result to the observer.
+   */
+  mapRange({ fromStart, fromEnd, toStart = 0, toEnd = 1 }: MapRangeArgs):MotionObservable<number> {
+    return this._nextOperator(
+      (value: number, dispatch: NextChannel<number>) => {
+        const fromRange = fromStart - fromEnd;
+        const fromProgress = (value - fromEnd) / fromRange;
+        const toRange = toStart - toEnd;
+
+        dispatch(toEnd + fromProgress * toRange);
+      }
+    );
+  }
+
+  /**
    * Dispatches its argument every time it receives a value from upstream.
    */
   mapTo<U>(value: U):MotionObservable<U> {
@@ -224,3 +240,10 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
 }
 
 export default MotionObservable;
+
+export type MapRangeArgs = {
+  fromStart: number,
+  fromEnd: number,
+  toStart: number,
+  toEnd: number,
+};
