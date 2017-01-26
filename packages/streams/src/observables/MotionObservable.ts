@@ -130,10 +130,10 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
    * Adding `log` to stream chain should have no effect on the rest of the
    * chain.
    */
-  log(): MotionObservable<T> {
+  log(label = ''): MotionObservable<T> {
     return this._nextOperator(
       (value: T, nextChannel: NextChannel<T>) => {
-        console.log(value);
+        console.log(label, value);
         nextChannel(value);
       }
     );
