@@ -91,5 +91,9 @@ describe('experimentalMotionObservable.dedupe',
         expect(listener).to.have.callCount(4);
       }
     );
+
+    it('should work correctly when the observer is a cycle');
+    it('should use deep equality by default');
+    it('should use the provided callback to test equality');
   }
 );
