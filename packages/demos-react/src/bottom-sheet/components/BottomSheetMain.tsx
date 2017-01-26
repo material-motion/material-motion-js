@@ -80,7 +80,7 @@ export const BottomSheetMain: React.StatelessComponent<any> = createMotionCompon
   initialState: {
     isOpen: false,
     willOpen: false,
-    length: 731 - 84,
+    length: 484,
   },
   render(
     props,
@@ -152,6 +152,10 @@ export const BottomSheetMain: React.StatelessComponent<any> = createMotionCompon
             // This should probably be set automatically by any director that
             // listens to click
             cursor = 'pointer'
+            position = 'absolute'
+            top = { 0 }
+            zIndex = { 1000 }
+            width = '100%'
           >
             <CollapsedBottomSheetContents
               model = { model }
@@ -226,6 +230,7 @@ function CollapsedBottomSheetContents({
           height = { height }
           style = {
             {
+              flex: 'none',
               userSelect: 'none',
             }
           }
