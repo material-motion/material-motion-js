@@ -18,6 +18,7 @@ import {
   MotionConnect,
   MotionObservable,
   MotionObserver,
+  NextChannel,
   Observable,
   Subscription,
 } from 'material-motion-streams';
@@ -45,12 +46,12 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
   /**
    * Ensures that every value dispatched is different than the previous one.
    */
-  dedupe():ExperimentalMotionObservable<T> {
-    let dispatched;
-    let lastValue;
+  dedupe(): ExperimentalMotionObservable<T> {
+    let dispatched = false;
+    let lastValue: T;
 
     return this._nextOperator(
-      (value, dispatch) => {
+      (value: T, dispatch: NextChannel<T>) => {
         if (dispatched && value === lastValue) {
           return;
         }

@@ -14,6 +14,7 @@
   "dependencies": {
     "indefinite-observable": "1.0.1",
     "material-motion-streams": "0.0.0",
+    "material-motion-testing-utils": "0.0.0",
     "tslib": "^1.2.0"
   },
   "devDependencies": {
