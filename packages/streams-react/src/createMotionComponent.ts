@@ -22,6 +22,10 @@ import {
 } from 'material-motion-streams';
 
 import {
+  springSource as reboundSpringSystem,
+} from 'material-motion-springs-adaptor-rebound';
+
+import {
   Director,
   ExperimentalMotionObservable,
   InputKind,
@@ -95,11 +99,12 @@ export function createMotionComponent<P>({ director, render, initialState }: cre
     state$,
     ...outputStreamsByTargetName
   } = director({
-    state$: ExperimentalMotionObservable.from(stateSubject).dedupe(),
+    state$: ExperimentalMotionObservable.from(stateSubject),
+    springSystem: reboundSpringSystem,
     ...inputStreamsByPropNameByTargetName
   }) || {};
 
-  state$.subscribe(stateSubject);
+  state$.dedupe().subscribe(stateSubject);
 
   Object.entries(outputStreamsByTargetName).forEach(
     ([ targetName, outputStreams ]) => {
