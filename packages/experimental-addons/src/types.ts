@@ -56,3 +56,5 @@ export interface Director {
     }
   };
 }
+
+export type equalityCheck = (a: any, b: any) => boolean;
