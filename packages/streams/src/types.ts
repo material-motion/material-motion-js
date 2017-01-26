@@ -114,6 +114,8 @@ export type SpringArgs<T> = {
   threshold: ScopedReadable<number> | number,
 };
 
+export type SpringSystem<T> = (kwargs: SpringArgs<T>) => MotionObservable<T>;
+
 export type Dict<T> = {
   [index: string]: T,
 };

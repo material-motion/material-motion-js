@@ -53,7 +53,7 @@ export function springSource<T extends number | NumericDict>({
   tension = 342,
   friction = 30,
 }: { destination: T } & Partial<SpringArgs<T>>) {
-  const firstDestination = destination.read();
+  const firstDestination = 0; //destination.read();
 
   if (isNumber(firstDestination)) {
     return numericSpringSource({
