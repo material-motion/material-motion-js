@@ -29,14 +29,23 @@ import {
 
 export const bottomSheetDirector: Director = function bottomSheetDirector({
   state$,
+  springSystem,
   scrim,
   bottomSheet,
   collapsedToolBar,
   expandedToolBar,
   closeButton,
 }: DirectorArgs) {
-  // // This is basically pluck('isOpen').rewrite(), but since it's dependent on
-  // // multiple properties, it's not easy to express in that form:
+  const openness$ = springSystem({
+    destination: state$.pluck('isOpen').toNumber$(),
+  });
+
+  const previewOpenness$ = springSystem({
+    destination: state$.pluck('willOpen').toNumber$(),
+  });
+
+  // This is basically pluck('isOpen').rewrite(), but since it's dependent on
+  // multiple properties, it's not easy to express in that form:
   const springDestinationY$ = state$._map(
     ({ isOpen, length }) => isOpen
       ? 0
@@ -45,33 +54,60 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
 
   const bottomSheetPosition$ = ExperimentalMotionObservable.combineLatestFromDict({
     x: 0,
-    y: 0 //spring({
-      // destination: springDestinationY$,
-    // })
+    y: springSystem({
+      destination: springDestinationY$
+    })
   });
 
   const isOpen$ = state$.pluck('isOpen').merge(
     closeButton.tap$.mapTo(false),
 
-    // This should be something like
-    // collapsedToolBar.tap$.mapToLatest(
-    //   state$.pluck('isOpen').merge(closeButton.tap$.mapTo(false))
-    // ).invert()
-    collapsedToolBar.tap$.toggle(),
+    collapsedToolBar.tap$.mapToLatest(
+      state$.pluck('isOpen').invert()
+    )
   ).dedupe();
 
   return {
     state$: state$.applyDiffs(
+      // This should probably be a merge, to ensure we always use the latest
+      // state$
+      //
+      // Perhaps applyDiffs should take dicts of streams?
       ExperimentalMotionObservable.combineLatestFromDict({
         isOpen: isOpen$,
+
+        // // This will eventually have the potential to deviate from isOpen$ when
+        // // gestures are involved, but for now, they are identical.
+        // willOpen: isOpen$
       })
     ),
-    scrim: {},
-    bottomSheet: {
-      [PropertyKind.POSITION]: springDestinationY$.log(),
+    scrim: {
+      [PropertyKind.OPACITY]: previewOpenness$.mapRange({
+        fromStart: 0,
+        fromEnd: 1,
+        toStart: 0,
+        toEnd: .87,
+      })
     },
-    collapsedToolBar: {},
-    expandedToolBar: {},
+    bottomSheet: {
+      [PropertyKind.POSITION]: bottomSheetPosition$,
+    },
+    collapsedToolBar: {
+      [PropertyKind.OPACITY]: openness$.mapRange({
+        fromStart: 0,
+        fromEnd: 1,
+        toStart: 1,
+        toEnd: 0,
+      })
+    },
+    expandedToolBar: {
+      [PropertyKind.OPACITY]: openness$.mapRange({
+        fromStart: 0,
+        fromEnd: 1,
+        toStart: 0,
+        toEnd: 1,
+      })
+    },
     closeButton: {},
   };
 };
