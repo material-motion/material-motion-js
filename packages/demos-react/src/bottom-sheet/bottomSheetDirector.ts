@@ -29,6 +29,7 @@ import {
 
 export const bottomSheetDirector: Director = function bottomSheetDirector({
   state$,
+  springSystem,
   scrim,
   bottomSheet,
   collapsedToolBar,
@@ -45,9 +46,9 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
 
   const bottomSheetPosition$ = ExperimentalMotionObservable.combineLatestFromDict({
     x: 0,
-    y: 0 //spring({
-      // destination: springDestinationY$,
-    // })
+    y: springSystem({
+      destination: springDestinationY$
+    })
   });
 
   const isOpen$ = state$.pluck('isOpen').merge(
@@ -55,20 +56,24 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
 
     // This should be something like
     // collapsedToolBar.tap$.mapToLatest(
-    //   state$.pluck('isOpen').merge(closeButton.tap$.mapTo(false))
-    // ).invert()
+    //   state$.pluck('isOpen').invert()
+    // )
     collapsedToolBar.tap$.toggle(),
   ).dedupe();
 
   return {
     state$: state$.applyDiffs(
+      // This should probably be a merge, to ensure we always use the latest
+      // state$
+      //
+      // Perhaps applyDiffs should take dicts of streams?
       ExperimentalMotionObservable.combineLatestFromDict({
         isOpen: isOpen$,
       })
     ),
     scrim: {},
     bottomSheet: {
-      [PropertyKind.POSITION]: springDestinationY$.log(),
+      [PropertyKind.POSITION]: bottomSheetPosition$,
     },
     collapsedToolBar: {},
     expandedToolBar: {},
