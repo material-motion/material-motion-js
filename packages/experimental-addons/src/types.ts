@@ -13,3 +13,5 @@
  *  License for the specific language governing permissions and limitations
  *  under the License.
  */
+
+export type equalityCheck = (a: any, b: any) => boolean;
