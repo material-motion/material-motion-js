@@ -71,5 +71,25 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
       }
     ) as ExperimentalMotionObservable<T>;
   }
+
+  /**
+   * Casts incoming values to numbers, using parseFloat:
+   * - "3.14" becomes 3.14
+   * - truthy values (true, [], {}) become 1
+   * - falsey values (false, null, undefined, and '') become 0
+   */
+  toNumber$(): ExperimentalMotionObservable<number> {
+    return this._nextOperator(
+      (value: any, dispatch: NextChannel<number>) => {
+        let result = parseFloat(value);
+
+        if (isNaN(result)) {
+          result = Number(Boolean(value));
+        }
+
+        dispatch(result);
+      }
+    ) as ExperimentalMotionObservable<number>;
+  }
 }
 export default ExperimentalMotionObservable;
