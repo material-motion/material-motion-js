@@ -148,6 +148,42 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
   }
 
   /**
+   * Listens to a second stream, and replaces every value it receives from
+   * upstream with the latest value from the second stream.
+   */
+  mapToLatest<U>(value$: Observable<U>): ExperimentalMotionObservable<U> {
+    return new ExperimentalMotionObservable(
+      (observer: MotionObserver<U>) => {
+        const subscriptions: Array<Subscription> = [];
+        let lastValue: U;
+
+        subscriptions.push(
+          value$.subscribe(
+            (value: U) => {
+              lastValue = value;
+            }
+          )
+        );
+
+        subscriptions.push(
+          this.subscribe({
+            next(value: T) {
+              observer.next(lastValue);
+            },
+            state: observer.state,
+          })
+        );
+
+        return () => {
+          subscriptions.forEach(
+            subscription => subscription.unsubscribe()
+          );
+        };
+      }
+    );
+  }
+
+  /**
    * Casts incoming values to numbers, using parseFloat:
    * - "3.14" becomes 3.14
    * - truthy values (true, [], {}) become 1
