@@ -23,6 +23,7 @@ import {
   MotionObserver,
   NextChannel,
   Observable,
+  State,
   Subscription,
   isObservable,
 } from 'material-motion-streams';
@@ -57,7 +58,6 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
 
         function checkKey(key) {
           const maybeStream = dict[key];
-
           if (isObservable(maybeStream)) {
             subscriptions[key] = maybeStream.subscribe(
               (value: any) => {
@@ -144,7 +144,7 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
 
         dispatch(value);
       }
-    ) as ExperimentalMotionObservable<T>;
+    ).multicast() as ExperimentalMotionObservable<T>;
   }
 
   /**
@@ -289,6 +289,88 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
         }
       }
     ) as ExperimentalMotionObservable<number>;
+  }
+
+  /**
+   * Remembers the most recently dispatched value on each channel and passes
+   * them on to all subscribers.  Subscribing to a multicasted stream will
+   * synchronously provide the most recent value, if there has been one.
+   *
+   * `multicast()` is useful for ensuring that expensive operations only happen
+   * once per dispatch, sharing the resulting value with all observers.
+   */
+  multicast(): MotionObservable<T> {
+    // Keep track of all the observers who have subscribed,
+    // so we can notify them when we get new values.
+    const observers = new Set();
+    let subscription: Subscription;
+    let lastValue: T;
+    let lastState: State;
+    let hasStarted = false;
+
+    return new MotionObservable<T>(
+      (observer: MotionObserver<T>) => {
+        // If we already know about this observer, we don't
+        // have to do anything else.
+        if (observers.has(observer)) {
+          console.warn(
+            'observer is already subscribed; ignoring',
+            observer
+          );
+          return;
+        }
+
+        // Whenever we have at least one subscription, we
+        // should be subscribed to the parent stream (this).
+        if (!observers.size) {
+          subscription = this.subscribe({
+            next(value: T) {
+              // The parent stream has dispatched a value, so
+              // pass it along to all the children, and cache
+              // it for any observers that subscribe before
+              // the next dispatch.
+              observers.forEach(
+                observer => observer.next(value)
+              );
+
+              hasStarted = true;
+              lastValue = value;
+            },
+
+            state(value: State) {
+              // The parent stream has dispatched a value, so
+              // pass it along to all the children, and cache
+              // it for any observers that subscribe before
+              // the next dispatch.
+              observers.forEach(
+                observer => observer.state(value)
+              );
+
+              lastState = value;
+            }
+          });
+        }
+
+        observers.add(observer);
+
+        if (hasStarted) {
+          observer.next(lastValue);
+        }
+
+        if (lastState !== undefined) {
+          observer.state(lastState);
+        }
+
+        return () => {
+          observers.delete(observer);
+
+          if (!observers.size) {
+            subscription.unsubscribe();
+            subscription = null;
+          }
+        };
+      }
+    );
   }
 }
 export default ExperimentalMotionObservable;
