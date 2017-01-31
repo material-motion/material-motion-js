@@ -184,6 +184,57 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
   }
 
   /**
+   * Accepts a dictionary, keyed by numeric breakpoints.
+   *
+   * When it receives a new value from upstream, it will find the largest
+   * breakpoint in the dictionary that is lower than the given input and pass
+   * the value at that breakpoint to the observer.
+   *
+   * For instance,
+   *
+   * $.breakpointMap({
+   *   [0]: 'a',
+   *   [10]: 'b',
+   *   [20]: 'c'
+   * });
+   *
+   * would dispatch 'b' when $ dispatched 11 or 19, but 'c' for 20 or 374.
+   */
+  breakpointMap<U>(valuesByBreakpoint: Dict<U>): ExperimentalMotionObservable<U> {
+    const breakpointPairs = Object.entries(valuesByBreakpoint).map(
+      ([ key, value ]) => ([ parseFloat(key), value ])
+    ).sort(
+      ([a], [b]) => {
+        if (a === Infinity) {
+          return 1;
+
+        } else if (b === Infinity) {
+          return -1;
+
+        } else {
+          return a - b;
+        }
+      }
+    );
+
+    return this._nextOperator(
+      (input: T, dispatch: NextChannel<U>) => {
+        let result;
+
+        for (let [breakpoint, output] of breakpointPairs) {
+          if (input < breakpoint) {
+            break;
+          }
+
+          result = output;
+        }
+
+        dispatch(result);
+      }
+    ).dedupe();
+  }
+
+  /**
    * Dispatches:
    * - false when it receives true,
    * - true when it receives false,
