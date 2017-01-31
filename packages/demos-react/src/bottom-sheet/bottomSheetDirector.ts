@@ -67,6 +67,13 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
     )
   ).dedupe();
 
+  const collapsedToolBarOpacity = openness$.mapRange({
+    fromStart: 0,
+    fromEnd: 1,
+    toStart: 1,
+    toEnd: 0,
+  });
+
   return {
     state$: state$.applyDiffs(
       // This should probably be a merge, to ensure we always use the latest
@@ -79,7 +86,7 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
         // // This will eventually have the potential to deviate from isOpen$ when
         // // gestures are involved, but for now, they are identical.
         // willOpen: isOpen$
-      })
+      }),
     ),
     scrim: {
       [PropertyKind.OPACITY]: previewOpenness$.mapRange({
@@ -87,18 +94,19 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
         fromEnd: 1,
         toStart: 0,
         toEnd: .87,
-      })
+      }),
     },
     bottomSheet: {
       [PropertyKind.POSITION]: bottomSheetPosition$,
     },
     collapsedToolBar: {
-      [PropertyKind.OPACITY]: openness$.mapRange({
-        fromStart: 0,
-        fromEnd: 1,
-        toStart: 1,
-        toEnd: 0,
-      })
+      // Perhaps we should have a contract that MotionComponents disable pointer
+      // events when the opacity is below a threshold, but for now, it's manual
+      [PropertyKind.OPACITY]: collapsedToolBarOpacity,
+      [PropertyKind.POINTER_EVENTS]: collapsedToolBarOpacity.breakpointMap({
+        [0]: 'none',
+        [.1]: 'auto',
+      }),
     },
     expandedToolBar: {
       [PropertyKind.OPACITY]: openness$.mapRange({
@@ -106,7 +114,7 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
         fromEnd: 1,
         toStart: 0,
         toEnd: 1,
-      })
+      }),
     },
     closeButton: {},
   };
@@ -138,7 +146,10 @@ bottomSheetDirector.streamKindsByTargetName = {
   },
   collapsedToolBar: {
     input: [InputKind.TAP],
-    output: [PropertyKind.OPACITY],
+    output: [
+      PropertyKind.OPACITY,
+      PropertyKind.POINTER_EVENTS,
+    ],
   },
   expandedToolBar: {
     output: [PropertyKind.OPACITY],

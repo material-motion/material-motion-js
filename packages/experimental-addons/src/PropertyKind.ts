@@ -40,6 +40,7 @@ export const PropertyKind = {
   WIDTH: 'width$',
   HEIGHT: 'height$',
   CORNER_RADIUS: 'cornerRadius$',
+  POINTER_EVENTS: 'cssPointerEvents$',
 };
 
 export default PropertyKind;
