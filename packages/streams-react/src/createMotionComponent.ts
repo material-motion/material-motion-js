@@ -18,6 +18,7 @@ import * as React from 'react';
 
 import {
   IndefiniteSubject,
+  SpringArgs,
   StreamDict,
 } from 'material-motion-streams';
 
@@ -100,7 +101,9 @@ export function createMotionComponent<P>({ director, render, initialState }: cre
     ...outputStreamsByTargetName
   } = director({
     state$: ExperimentalMotionObservable.from(stateSubject),
-    springSystem: reboundSpringSystem,
+    springSystem: (kwargs: SpringArgs<number>) => ExperimentalMotionObservable.from(
+      reboundSpringSystem(kwargs)
+    ),
     ...inputStreamsByPropNameByTargetName
   }) || {};
 
@@ -115,6 +118,13 @@ export function createMotionComponent<P>({ director, render, initialState }: cre
           // Convert from Material Motion-standard names to CSS names
           if (propName === 'position') {
             propName = 'translate';
+          }
+
+          // Material Motion prefixes `pointerEvents` to avoid confusion with
+          // the JavaScript PointerEvent type, but `TransformTarget` expects a
+          // key it can use in `style`.
+          if (propName === 'cssPointerEvents') {
+            propName = 'pointerEvents';
           }
 
           streamsByPropNameByTargetName[targetName][propName] = stream;
