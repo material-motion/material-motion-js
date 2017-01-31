@@ -83,9 +83,9 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
       ExperimentalMotionObservable.combineLatestFromDict({
         isOpen: isOpen$,
 
-        // // This will eventually have the potential to deviate from isOpen$ when
-        // // gestures are involved, but for now, they are identical.
-        // willOpen: isOpen$
+        // This will eventually have the potential to deviate from isOpen$ when
+        // gestures are involved, but for now, they are identical.
+        willOpen: isOpen$
       }),
     ),
     scrim: {
