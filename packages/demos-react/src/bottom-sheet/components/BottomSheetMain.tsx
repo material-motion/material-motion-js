@@ -101,8 +101,18 @@ export const BottomSheetMain: React.StatelessComponent<any> = createMotionCompon
     return (
       <Col
         backgroundColor = '#ECECEC'
-        width = '100vw'
-        height = '100vh'
+
+        // iOS will show scroll bars if you use 100vh (because the address bar
+        // is not included in the viewport dimensions, but does take up visual
+        // space).  Therefore, we instead use position: absolute with all the
+        // distances set to 0 to ensure this element fills the body, regardless
+        // of whether or not the address bar is showing.
+        position = 'absolute'
+        top = { 0 }
+        left = { 0 }
+        right = { 0 }
+        bottom = { 0 }
+        overflow = 'auto'
       >
         {/*
           TODO: set pointerEvents: none here and pointer: cursor in the tappable spots
@@ -113,17 +123,19 @@ export const BottomSheetMain: React.StatelessComponent<any> = createMotionCompon
         <Scrim
           position = 'absolute'
           backgroundColor = 'black'
-          width = '100vw'
-          height = '100vh'
           top = { 0 }
+          left = { 0 }
+          bottom = { 0 }
+          right = { 0 }
         />
 
         <WelcomeMessage />
 
         <BottomSheet
           position = 'fixed'
-          width = '100vw'
-          height = '100vh'
+          top = { 0 }
+          width = '100%'
+          height = '100%'
           display = 'flex'
           flexDirection = 'column'
           alignItems = 'stretch'
@@ -274,8 +286,12 @@ function CollapsedBottomSheetContents({
 function ExpandedBottomSheetContents({ model, CloseButtonContainer }) {
   return (
     <Col
-      width = '100%'
-      height = '100%'
+      // use the same dimensions as the container
+      position = 'absolute'
+      top = { 0 }
+      left = { 0 }
+      right = { 0 }
+      bottom = { 0 }
       justifyContent = 'space-between'
     >
       <BottomSheetAppBar
