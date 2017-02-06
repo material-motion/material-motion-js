@@ -57,4 +57,9 @@ export interface Director {
   };
 }
 
+export interface Timestamped<T> {
+  value: T,
+  timestamp: number,
+}
+
 export type equalityCheck = (a: any, b: any) => boolean;
