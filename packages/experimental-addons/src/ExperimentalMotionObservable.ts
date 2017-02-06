@@ -148,6 +148,21 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
   }
 
   /**
+   * Transforms incoming `value` into `{ value, timestamp }`, where `timestamp`
+   * is the number of milliseconds since `navigationStart`.
+   */
+  withTimestamp(): ExperimentalMotionObservable<{ value: T, timestamp: number }> {
+    return this._map(
+      (value: T) => (
+        {
+          value,
+          timestamp: performance.now()
+        }
+      )
+    );
+  }
+
+  /**
    * Listens to a second stream, and replaces every value it receives from
    * upstream with the latest value from the second stream.
    */
