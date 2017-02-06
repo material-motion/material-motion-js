@@ -17,4 +17,7 @@
 export * from './GestureRecognitionState';
 export { default as GestureRecognitionState } from './GestureRecognitionState';
 
+export * from './createDragStream';
+export { default as createDragStream } from './createDragStream';
+
 export default undefined;
