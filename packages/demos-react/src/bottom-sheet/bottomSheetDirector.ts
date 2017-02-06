@@ -61,17 +61,25 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
 
   const isOpen$ = state$.pluck('isOpen').merge(
     closeButton.tap$.mapTo(false),
+    scrim.tap$.mapTo(false),
 
     collapsedToolBar.tap$.mapToLatest(
       state$.pluck('isOpen').invert()
     )
   ).dedupe();
 
-  const collapsedToolBarOpacity = openness$.mapRange({
+  const collapsedToolBarOpacity$ = openness$.mapRange({
     fromStart: 0,
     fromEnd: 1,
     toStart: 1,
     toEnd: 0,
+  });
+
+  const scrimOpacity$ = previewOpenness$.mapRange({
+    fromStart: 0,
+    fromEnd: 1,
+    toStart: 0,
+    toEnd: .87,
   });
 
   return {
@@ -89,11 +97,10 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
       }),
     ),
     scrim: {
-      [PropertyKind.OPACITY]: previewOpenness$.mapRange({
-        fromStart: 0,
-        fromEnd: 1,
-        toStart: 0,
-        toEnd: .87,
+      [PropertyKind.OPACITY]: scrimOpacity$,
+      [PropertyKind.POINTER_EVENTS]: collapsedToolBarOpacity$.breakpointMap({
+        [0]: 'none',
+        [.1]: 'auto',
       }),
     },
     bottomSheet: {
@@ -102,8 +109,8 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
     collapsedToolBar: {
       // Perhaps we should have a contract that MotionComponents disable pointer
       // events when the opacity is below a threshold, but for now, it's manual
-      [PropertyKind.OPACITY]: collapsedToolBarOpacity,
-      [PropertyKind.POINTER_EVENTS]: collapsedToolBarOpacity.breakpointMap({
+      [PropertyKind.OPACITY]: collapsedToolBarOpacity$,
+      [PropertyKind.POINTER_EVENTS]: collapsedToolBarOpacity$.breakpointMap({
         [0]: 'none',
         [.1]: 'auto',
       }),
@@ -138,6 +145,7 @@ bottomSheetDirector.stateShape = {
 
 bottomSheetDirector.streamKindsByTargetName = {
   scrim: {
+    input: [InputKind.TAP],
     output: [PropertyKind.OPACITY],
   },
   bottomSheet: {
