@@ -14,23 +14,7 @@
  *  under the License.
  */
 
-export * from './types';
-
-export * from './ExperimentalMotionObservable';
-export { default as ExperimentalMotionObservable } from './ExperimentalMotionObservable';
-
-export * from './TogglableProperty';
-export { default as TogglableProperty } from './TogglableProperty';
-
-export * from './PrimitiveKind';
-export { default as PrimitiveKind } from './PrimitiveKind';
-
-export * from './PropertyKind';
-export { default as PropertyKind } from './PropertyKind';
-
-export * from './InputKind';
-export { default as InputKind } from './InputKind';
-
-export * from './gestures';
+export * from './GestureRecognitionState';
+export { default as GestureRecognitionState } from './GestureRecognitionState';
 
 export default undefined;
