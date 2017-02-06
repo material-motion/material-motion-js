@@ -29,6 +29,7 @@ import {
 } from 'material-motion-streams';
 
 import {
+  Timestamped,
   equalityCheck,
 } from './types';
 
@@ -145,6 +146,21 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
         dispatch(value);
       }
     ).multicast() as ExperimentalMotionObservable<T>;
+  }
+
+  /**
+   * Transforms incoming `value` into `{ value, timestamp }`, where `timestamp`
+   * is the number of milliseconds since `navigationStart`.
+   */
+  withTimestamp(): ExperimentalMotionObservable<Timestamped<T>> {
+    return this._map(
+      (value: T) => (
+        {
+          value,
+          timestamp: performance.now()
+        }
+      )
+    );
   }
 
   /**
