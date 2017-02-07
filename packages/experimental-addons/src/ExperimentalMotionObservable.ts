@@ -23,13 +23,19 @@ import {
   MotionObserver,
   NextChannel,
   Observable,
+  Point2D,
   State,
   Subscription,
   isObservable,
 } from 'material-motion-streams';
 
 import {
+  GestureRecognitionState,
+} from './gestures/GestureRecognitionState';
+
+import {
   Timestamped,
+  TranslationGestureRecognizer,
   equalityCheck,
 } from './types';
 
@@ -405,6 +411,44 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
             subscription = null;
           }
         };
+      }
+    );
+  }
+
+  /**
+   * Combines the translation from the incoming stream with the most recent
+   * position and passes the result to the observer.
+   *
+   * `initialPosition$` is `read()` whenever the upstream state is `BEGAN`.
+   */
+  translationAddedTo(initialPosition$: ExperimentalMotionObservable<Point2D>): ExperimentalMotionObservable<Point2D> {
+    let initialPosition: Point2D | undefined;
+
+    return this._nextOperator(
+      ({ recognitionState, translation }: TranslationGestureRecognizer, dispatch: NextChannel<Point2D>) => {
+        switch (recognitionState) {
+          case GestureRecognitionState.BEGAN:
+            // We want a snapshot of initialPosition at this instant, so we use
+            // ... to clone its current value
+            initialPosition = { ...initialPosition$.read() };
+            break;
+
+          case GestureRecognitionState.CHANGED:
+            if (!initialPosition) {
+              initialPosition = { ...initialPosition$.read() };
+            }
+            break;
+
+          default:
+            initialPosition = undefined;
+        }
+
+        if (initialPosition) {
+          dispatch({
+            x: initialPosition.x + translation.x,
+            y: initialPosition.y + translation.y,
+          });
+        }
       }
     );
   }
