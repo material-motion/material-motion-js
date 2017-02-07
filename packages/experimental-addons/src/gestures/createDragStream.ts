@@ -26,6 +26,7 @@ import GestureRecognitionState from './GestureRecognitionState';
 
 import {
   Timestamped,
+  TranslationGestureRecognition,
 } from '../types';
 
 // A multi-pointer version of this exists in the streams branch, but it uses
@@ -46,7 +47,7 @@ export function createDragStream({
   up$,
   leave$,
   recognitionThreshold = 16,
-}:createDragStreamArgs) {
+}:createDragStreamArgs): ExperimentalMotionObservable<TranslationGestureRecognition> {
   return new ExperimentalMotionObservable(
     (observer: MotionObserver) => {
       let recognitionState: GestureRecognitionState = GestureRecognitionState.POSSIBLE;
