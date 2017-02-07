@@ -35,7 +35,7 @@ import {
 
 import {
   Timestamped,
-  TranslationGestureRecognizer,
+  TranslationGestureRecognition,
   equalityCheck,
 } from './types';
 
@@ -425,7 +425,7 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
     let initialPosition: Point2D | undefined;
 
     return this._nextOperator(
-      ({ recognitionState, translation }: TranslationGestureRecognizer, dispatch: NextChannel<Point2D>) => {
+      ({ recognitionState, translation }: TranslationGestureRecognition, dispatch: NextChannel<Point2D>) => {
         switch (recognitionState) {
           case GestureRecognitionState.BEGAN:
             initialPosition = initialPosition$.read();
