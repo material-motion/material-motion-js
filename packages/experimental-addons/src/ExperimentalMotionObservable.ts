@@ -416,6 +416,22 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
   }
 
   /**
+   * Returns the current value of an observable property (e.g. a subject or
+   * multicasted stream).
+   */
+  read(): T {
+    let result: T;
+
+    this.subscribe(
+      (value: T) => {
+        result = value;
+      }
+    ).unsubscribe();
+
+    return result;
+  }
+
+  /**
    * Combines the translation from the incoming stream with the most recent
    * position and passes the result to the observer.
    *
