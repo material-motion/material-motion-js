@@ -115,11 +115,6 @@ export function createMotionComponent<P>({ director, render, initialState }: cre
         ([ streamName, stream ]) => {
           let propName = streamName.replace('$', '');
 
-          // Convert from Material Motion-standard names to CSS names
-          if (propName === 'position') {
-            propName = 'translate';
-          }
-
           // Material Motion prefixes `pointerEvents` to avoid confusion with
           // the JavaScript PointerEvent type, but `TransformTarget` expects a
           // key it can use in `style`.
