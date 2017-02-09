@@ -52,7 +52,7 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
       : length
   );
 
-  const bottomSheetPosition$ = ExperimentalMotionObservable.combineLatestFromDict({
+  const bottomSheetTranslation$ = ExperimentalMotionObservable.combineLatestFromDict({
     x: 0,
     y: springSystem({
       destination: springDestinationY$
@@ -104,7 +104,7 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
       }),
     },
     bottomSheet: {
-      [PropertyKind.POSITION]: bottomSheetPosition$,
+      [PropertyKind.TRANSLATION]: bottomSheetTranslation$,
     },
     collapsedToolBar: {
       // Perhaps we should have a contract that MotionComponents disable pointer
@@ -150,7 +150,7 @@ bottomSheetDirector.streamKindsByTargetName = {
   },
   bottomSheet: {
     input: [InputKind.DRAG],
-    output: [PropertyKind.POSITION],
+    output: [PropertyKind.TRANSLATION],
   },
   collapsedToolBar: {
     input: [InputKind.TAP],
