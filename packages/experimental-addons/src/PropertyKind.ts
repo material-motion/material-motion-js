@@ -31,8 +31,8 @@
 
 // tslint:disable-next-line variable-name
 export const PropertyKind = {
-  POSITION: 'position$',
-  ROTATION: 'rotation$',
+  TRANSLATION: 'translate$',
+  ROTATION: 'rotate$',
   SCALE: 'scale$',
   OPACITY: 'opacity$',
   COLOR: 'color$',
