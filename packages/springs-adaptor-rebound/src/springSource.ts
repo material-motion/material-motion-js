@@ -49,7 +49,7 @@ export function springSource<T extends number | NumericDict>({
   destination,
   initialValue,
   initialVelocity = 0,
-  threshold = Number,
+  threshold = Number.EPSILON,
   tension = 342,
   friction = 30,
 }: { destination: T } & Partial<SpringArgs<T>>) {
@@ -97,8 +97,8 @@ function numericSpringSource({
   return new MotionObservable(
     (observer: MotionObserver<number>) => {
       const spring = _springSystem.createSpringWithConfig({
-        tension: readValue(tension),
-        friction: readValue(friction),
+        tension: readValue<number>(tension),
+        friction: readValue<number>(friction),
       });
 
       const listener: Listener = {
@@ -122,7 +122,7 @@ function numericSpringSource({
       spring.setVelocity(readValue(initialVelocity));
 
       destination$.subscribe(
-        destination => {
+        (destination: number) => {
           // initialValue, initialVelocity, and threshold may be maintained by
           // either the author or the spring.  If the values are Readable, the
           // state is being maintained externally and the spring will be updated
@@ -141,7 +141,7 @@ function numericSpringSource({
         const tension$: PropertyObservable<number> = tension;
 
         tension$.subscribe(
-          tension => {
+          (tension: number) => {
             spring.setSpringConfig({
               tension,
               friction: spring.getSpringConfig().friction,
@@ -154,7 +154,7 @@ function numericSpringSource({
         const friction$: PropertyObservable<number> = friction;
 
         friction$.subscribe(
-          friction => {
+          (friction: number) => {
             spring.setSpringConfig({
               tension: spring.getSpringConfig().tension,
               friction,
