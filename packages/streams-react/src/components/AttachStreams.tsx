@@ -77,7 +77,7 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
         // bound to an event stream.
         //
         // Same presumption is made in `_subscribeToProps`.
-        if (propName.startsWith('on')) {
+        if (isEventHandlerName(propName)) {
           this._subscribeToEvent$(propName, stream as Subject);
         }
       }
@@ -149,7 +149,7 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
             [propName]: stream
           });
 
-        } else if (propName.startsWith('on')) {
+        } else if (isEventHandlerName(propName)) {
           if (this._domNode) {
             this._subscribeToEvent$(propName, stream as Subject);
           }
@@ -212,6 +212,13 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
       subscription => subscription.unsubscribe()
     );
   }
+}
+
+/**
+ * Tests if a string starts with "on" followed by a capital letter.
+ */
+function isEventHandlerName(propName: string): boolean {
+  return Boolean(/^on[A-Z]/.exec(propName));
 }
 
 export default AttachStreams;
