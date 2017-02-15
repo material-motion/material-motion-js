@@ -17,10 +17,15 @@
 import {
   MotionObservable,
   MotionObserver,
+  NumericDict,
   PropertyObservable,
   ScopedReadable,
   SpringArgs,
+  SpringRecord,
   State,
+  StreamDict,
+  Subscription,
+  SubscriptionDict,
   createProperty,
 } from 'material-motion-streams';
 
@@ -41,145 +46,132 @@ export let _springSystem = new SpringSystem();
  * If `initialValue`, `initialVelocity`, or `threshold` have `read` methods,
  * they will be used to update the spring whenever `destination` changes.
  * Otherwise, they will only be used once, during spring creation.
- *
- * The values emitted will be the same type as the first value in the
- * destination stream.
  */
-export function springSource<T extends number | NumericDict>({
-  destination,
-  initialValue,
+export function springSource<T extends number>({
+  destination: destination$,
+  enabled: enabled$ = createProperty({ initialValue: true }),
+  initialValue = 0,
   initialVelocity = 0,
   threshold = Number.EPSILON,
   tension = 342,
   friction = 30,
-}: { destination: T } & Partial<SpringArgs<T>>) {
-  const firstDestination = 0; //destination.read();
-
-  if (isNumber(firstDestination)) {
-    return numericSpringSource({
-      destination,
-      initialValue: initialValue || 0,
-      initialVelocity,
-      threshold,
-      tension,
-      friction,
-
-    // TypeScript doesn't seem to infer that if firstDestination is a number,
-    // then T must be a number, so we cast the args here.
-    } as SpringArgs<number>);
-  } else {
-    /* Currently only accepts numeric values for initialValue and destination,
-     * but will eventually accept a dictionary of string:number.  Each key:value
-     * pair in the dictionary will be represented by an independent spring.  If
-     * any of the springs emits a value, the latest values from each should be
-     * emitted, e.g. {x: 10, y: 43 }.
-     *
-     * This will likely be achieved with something like:
-     *
-     *   combineLatest(x$, y$, z$).map([x, y, z] => ({ x, y, z })).debounce()
-     *
-     * Care will need to be taken to ensure that `state` is handled
-     * appropriately.
-     */
-    throw new Error("springSource only supports numbers.");
-  }
-}
-export default springSource;
-
-function numericSpringSource({
-  destination: destination$,
-  tension,
-  friction,
-  initialValue,
-  initialVelocity,
-  threshold,
-}: SpringArgs<number>) {
+}: SpringArgs<number>): MotionObservable<SpringRecord> {
   return new MotionObservable(
-    (observer: MotionObserver<number>) => {
+    (observer: MotionObserver<T>) => {
+      // The inputs could be primitives or ReactivePropertys of primitives.  To
+      // make the rest of the logic simpler, we cast them all to
+      // ReactivePropertys here.
+      const tension$ = toProperty(tension);
+      const friction$ = toProperty(friction);
+      const initialValue$ = toProperty(initialValue);
+      const initialVelocity$ = toProperty(initialVelocity);
+      const threshold$ = toProperty(threshold);
+
+      let subscriptions: SubscriptionDict = {};
+      let latestValue: SpringRecord = {
+        state: State.AT_REST,
+      };
+
       const spring = _springSystem.createSpringWithConfig({
-        tension: readValue<number>(tension),
-        friction: readValue<number>(friction),
+        tension: tension$.read(),
+        friction: friction$.read(),
       });
 
       const listener: Listener = {
         onSpringUpdate() {
-          observer.next(spring.getCurrentValue());
+          latestValue.value = spring.getCurrentValue();
+          dispatchLatestValue();
         },
 
         onSpringActivate() {
-          observer.state(State.ACTIVE);
+          latestValue.state = State.ACTIVE;
+          dispatchLatestValue();
         },
 
         onSpringAtRest() {
-          observer.state(State.AT_REST);
+          latestValue.state = State.AT_REST;
+          dispatchLatestValue();
         },
       };
-
-      observer.state(State.AT_REST);
       spring.addListener(listener);
 
-      spring.setCurrentValue(readValue(initialValue));
-      spring.setVelocity(readValue(initialVelocity));
+      spring.setCurrentValue(initialValue$.read());
+      spring.setVelocity(initialVelocity$.read());
 
-      destination$.subscribe(
+      subscriptions.destination = destination$.subscribe(
         (destination: number) => {
-          // initialValue, initialVelocity, and threshold may be maintained by
-          // either the author or the spring.  If the values are Readable, the
-          // state is being maintained externally and the spring will be updated
-          // here.  Otherwise, the spring will use its internal state.
-          callSpringMethodsWithReadableValues({
-            'setCurrentValue': initialValue,
-            'setVelocity': initialVelocity,
-            'setRestSpeedThreshold': threshold,
-          });
-
+          initializeSpringParams();
+          latestValue.destination = destination;
           spring.setEndValue(destination);
         }
       );
 
-      if (isReadable(tension)) {
-        const tension$: PropertyObservable<number> = tension;
+      subscriptions.enabled = enabled$.subscribe(
+        (enabled: boolean) => {
+          initializeSpringParams();
+          latestValue.enabled = enabled;
+          spring.setAtRest();
+        }
+      );
 
-        tension$.subscribe(
-          (tension: number) => {
-            spring.setSpringConfig({
-              tension,
-              friction: spring.getSpringConfig().friction,
-            });
-          }
-        );
-      }
+      subscriptions.tension = tension$.subscribe(
+        (tension: number) => {
+          latestValue.tension = tension;
+          spring.setSpringConfig({
+            tension,
+            friction: spring.getSpringConfig().friction,
+          });
+        }
+      );
 
-      if (isReadable(friction)) {
-        const friction$: PropertyObservable<number> = friction;
-
-        friction$.subscribe(
-          (friction: number) => {
-            spring.setSpringConfig({
-              tension: spring.getSpringConfig().tension,
-              friction,
-            });
-          }
-        );
-      }
+      subscriptions.friction = friction$.subscribe(
+        (friction: number) => {
+          latestValue.friction = friction;
+          spring.setSpringConfig({
+            tension: spring.getSpringConfig().tension,
+            friction,
+          });
+        }
+      );
 
       return function disconnect() {
         spring.removeListener(listener);
         spring.setAtRest();
+
+        Object.values(subscriptions).forEach(
+          (subscription: Subscription) => subscription.unsubscribe()
+        );
+        subscriptions = {};
       };
 
-      function callSpringMethodsWithReadableValues(valuesByMethodName: {[methodName: string]: any }) {
-        Object.entries(valuesByMethodName).forEach(
-          ([ value, methodName ]) => {
-            if (isReadable(value)) {
-              const method = (spring as any)[methodName];
-              method(readValue(value));
-            }
-          }
-        );
+      function dispatchLatestValue() {
+        if (latestValue.destination !== undefined && latestValue.state !== undefined) {
+          // The same instance of latestValue is being recycled on every frame. We
+          // could clone it (e.g. `observer.next({ ...latestValue })`), but that
+          // would create a bunch of garbage, so I'm avoiding doing it until
+          // there's a clear, practical benefit.
+          observer.next(latestValue);
+        }
+      }
+
+      function initializeSpringParams() {
+        latestValue.initialValue = initialValue$.read();
+        latestValue.initialVelocity = initialVelocity$.read();
+        latestValue.threshold = threshold$.read();
+
+        spring.setCurrentValue(latestValue.initialValue);
+        spring.setVelocity(latestValue.initialVelocity);
+        spring.setRestSpeedThreshold(latestValue.threshold);
       }
     }
-  );
+  ).multicast();
+}
+export default springSource;
+
+function toProperty<T>(value: T | ScopedReadable<T>): ScopedReadable<T> {
+  return isReadable(value)
+    ? value
+    : createProperty({ initialValue: value });
 }
 
 function isNumber(value: any): value is number {
@@ -195,7 +187,3 @@ function readValue<T>(readableOrPrimitive: T | ScopedReadable<T>): T {
     ? readableOrPrimitive.read()
     : readableOrPrimitive;
 }
-
-export type NumericDict = {
-  [key: string]: number,
-};
