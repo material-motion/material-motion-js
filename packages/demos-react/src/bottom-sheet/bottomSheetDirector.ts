@@ -38,11 +38,11 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
 }: DirectorArgs) {
   const openness$ = springSystem({
     destination: state$.pluck('isOpen').toNumber$(),
-  });
+  }).pluck('value');
 
   const previewOpenness$ = springSystem({
     destination: state$.pluck('willOpen').toNumber$(),
-  });
+  }).pluck('value');
 
   // This is basically pluck('isOpen').rewrite(), but since it's dependent on
   // multiple properties, it's not easy to express in that form:
@@ -56,7 +56,7 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
     x: 0,
     y: springSystem({
       destination: springDestinationY$
-    })
+    }).pluck('value')
   });
 
   const isOpen$ = state$.pluck('isOpen').merge(

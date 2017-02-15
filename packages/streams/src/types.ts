@@ -80,8 +80,19 @@ export interface MotionElement {
   getEvent$(type: string): MotionObservable<Event>;
 }
 
+export type SpringRecord<T> = {
+  destination: T,
+  enabled: boolean,
+  friction: number,
+  tension: number,
+  initialValue: T,
+  initialVelocity: T,
+  threshold: number,
+};
+
 export type SpringArgs<T> = {
   destination: PropertyObservable<T>,
+  enabled: PropertyObservable<boolean>,
 
   /* When the destination changes, the spring will update its configuration from
    * the properties given below.
@@ -112,7 +123,7 @@ export type Dict<T> = {
   [index: string]: T,
 };
 
+export type NumericDict = Dict<number>;
 export type StreamDict<T> = Dict<Observable<T>>;
 export type SubjectDict<T> = Dict<Subject<T>>;
 export type SubscriptionDict<T> = Dict<Subscription>;
-
