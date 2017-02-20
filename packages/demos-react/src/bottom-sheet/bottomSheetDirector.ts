@@ -36,6 +36,9 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
   expandedToolBar,
   closeButton,
 }: DirectorArgs) {
+  // opacity is broken.  presumably the spring isn't emitting on changes from 0
+  // to 0, but it worked before.  *shrug*
+
   const openness$ = springSystem({
     destination: state$.pluck('isOpen').toNumber$(),
   }).pluck('value');
@@ -54,9 +57,9 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
 
   const bottomSheetTranslation$ = ExperimentalMotionObservable.combineLatestFromDict({
     x: 0,
-    y: springSystem({
-      destination: springDestinationY$
-    }).pluck('value')
+    y: bottomSheet.drag$.translated(bottomSheet.translate$).pluck('y') // springSystem({
+    //   destination: springDestinationY$
+    // }).pluck('value')
   });
 
   const isOpen$ = state$.pluck('isOpen').merge(
@@ -144,27 +147,25 @@ bottomSheetDirector.stateShape = {
 };
 
 bottomSheetDirector.streamKindsByTargetName = {
-  scrim: {
-    input: [InputKind.TAP],
-    output: [PropertyKind.OPACITY],
-  },
-  bottomSheet: {
-    input: [InputKind.DRAG],
-    output: [PropertyKind.TRANSLATION],
-  },
-  collapsedToolBar: {
-    input: [InputKind.TAP],
-    output: [
-      PropertyKind.OPACITY,
-      PropertyKind.POINTER_EVENTS,
-    ],
-  },
-  expandedToolBar: {
-    output: [PropertyKind.OPACITY],
-  },
-  closeButton: {
-    input: [InputKind.TAP],
-  },
+  scrim: [
+    InputKind.TAP,
+    PropertyKind.OPACITY,
+  ],
+  bottomSheet: [
+    InputKind.DRAG,
+    PropertyKind.TRANSLATION,
+  ],
+  collapsedToolBar: [
+    InputKind.TAP,
+    PropertyKind.OPACITY,
+    PropertyKind.POINTER_EVENTS,
+  ],
+  expandedToolBar: [
+    PropertyKind.OPACITY,
+  ],
+  closeButton: [
+    InputKind.TAP,
+  ],
 };
 
 export default bottomSheetDirector;
