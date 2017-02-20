@@ -43,4 +43,17 @@ export const PropertyKind = {
   POINTER_EVENTS: 'cssPointerEvents$',
 };
 
+export const propertyKinds = [
+  PropertyKind.TRANSLATION,
+  PropertyKind.ROTATION,
+  PropertyKind.SCALE,
+  PropertyKind.OPACITY,
+  PropertyKind.COLOR,
+  PropertyKind.BACKGROUND_COLOR,
+  PropertyKind.WIDTH,
+  PropertyKind.HEIGHT,
+  PropertyKind.CORNER_RADIUS,
+  PropertyKind.POINTER_EVENTS,
+];
+
 export default PropertyKind;
