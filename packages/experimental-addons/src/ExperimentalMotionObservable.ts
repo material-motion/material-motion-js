@@ -434,6 +434,21 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
   }
 
   /**
+   * Listens to a GestureRecognition stream and dispatches true if
+   * recognitionState is POSSIBLE, CANCELLED, ENDED, or FAILED.
+   */
+  atRest(): MotionObservable<boolean> {
+    return this._map(
+      ({ recognitionState }: GestureRecognition<T>) => [
+        GestureRecognitionState.POSSIBLE,
+        GestureRecognitionState.CANCELLED,
+        GestureRecognitionState.ENDED,
+        GestureRecognitionState.FAILED
+      ].includes(recognitionState)
+    );
+  }
+
+  /**
    * Listens to a GestureRecognition stream, filters for recognitions that match
    * the provided states, and dispatches them downstream.
    */
