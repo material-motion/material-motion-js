@@ -184,7 +184,7 @@ export function springSource<T extends number>({
         }
       }
     }
-  ).multicast();
+  )._remember();
 }
 export default springSource;
 
