@@ -34,6 +34,7 @@ import {
 } from './gestures/GestureRecognitionState';
 
 import {
+  GestureRecognition,
   Timestamped,
   TranslationGestureRecognition,
   equalityCheck,
@@ -430,6 +431,24 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
     ).unsubscribe();
 
     return result;
+  }
+
+  /**
+   * Listens to a GestureRecognition stream, filters for recognitions that match
+   * the provided states, and dispatches them downstream.
+   */
+  whenRecognitionStateIs(...passingStates: Array<GestureRecognitionState>): MotionObservable<GestureRecognition<T>> {
+    return this._filter(
+      ({ recognitionState }: GestureRecognition<T>) => passingStates.includes(recognitionState)
+    );
+  }
+
+  /**
+   * Listens to a GestureRecognition stream, filters for recognitions that match
+   * the provided states, and dispatches them downstream.
+   */
+  whenRecognitionStateIsAnyOf(passingStates: Array<GestureRecognitionState>): MotionObservable<GestureRecognition<T>> {
+    return this.whenRecognitionStateIs(...passingStates);
   }
 
   /**
