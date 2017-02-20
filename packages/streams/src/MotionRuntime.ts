@@ -37,7 +37,7 @@ export type RuntimeWriteArgs<T> = {
  * If any stream is active, the runtime is active. Otherwise, the runtime is at
  * rest.
  */
-export class MotionRuntime<T> {
+export class MotionRuntime {
   _subscriptions: Set<Subscription> = new Set();
   _activeObservers: Set<MotionObserver<any>> = new Set();
 
@@ -51,7 +51,7 @@ export class MotionRuntime<T> {
    * Subscribes to the given stream and write its `next` values to the given
    * property.
    */
-  write({ stream, to }: RuntimeWriteArgs<T>) {
+  write<T>({ stream, to }: RuntimeWriteArgs<T>) {
     const observer = {
       next: (value: any) => {
         to.write(value);
