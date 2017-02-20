@@ -37,7 +37,6 @@ export type createDragStreamArgs = {
   down$: Observable<PointerEvent>,
   move$: Observable<PointerEvent>,
   up$: Observable<PointerEvent>,
-  leave$: Observable<PointerEvent>,
   recognitionThreshold: number,
 };
 
@@ -45,7 +44,6 @@ export function createDragStream({
   down$,
   move$,
   up$,
-  leave$,
   recognitionThreshold = 16,
 }:createDragStreamArgs): ExperimentalMotionObservable<TranslationGestureRecognition> {
   return new ExperimentalMotionObservable(
@@ -62,7 +60,7 @@ export function createDragStream({
           // down$ is repeated here because we need two events to be able to
           // calculate the distance between them.  Including down$ and
           // using pairwise(), makes the logic for this simple.
-          const pointerEvent$ = down$.merge(move$, up$, leave$)._filter(
+          const pointerEvent$ = down$.merge(move$, up$)._filter(
             (event: PointerEvent) => event.pointerId === downEvent.pointerId
           );
 
@@ -73,7 +71,7 @@ export function createDragStream({
                 { value: nextEvent, timestamp: nextTime },
               ] = latestEvents;
 
-              const atRest = nextEvent.type.includes('up') || nextEvent.type.includes('leave');
+              const atRest = nextEvent.type.includes('up');
 
               const translation = {
                 x: nextEvent.pageX - downEvent.pageX,
