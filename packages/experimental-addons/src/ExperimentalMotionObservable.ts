@@ -151,7 +151,7 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
 
         dispatch(value);
       }
-    ).multicast() as ExperimentalMotionObservable<T>;
+    )._remember() as ExperimentalMotionObservable<T>;
   }
 
   /**
@@ -335,13 +335,14 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
 
   /**
    * Remembers the most recently dispatched value on each channel and passes
-   * them on to all subscribers.  Subscribing to a multicasted stream will
-   * synchronously provide the most recent value, if there has been one.
+   * them on to all new subscribers.  Subscribing to a stream that's being
+   * remembered will synchronously provide the most recent value to each of the
+   * observer's channels to the observer, if there have been any values.
    *
-   * `multicast()` is useful for ensuring that expensive operations only happen
-   * once per dispatch, sharing the resulting value with all observers.
+   * `_remember()` is also useful for ensuring that expensive operations only
+   * happen once per dispatch, sharing the resulting value with all observers.
    */
-  multicast(): MotionObservable<T> {
+  _remember(): MotionObservable<T> {
     // Keep track of all the observers who have subscribed,
     // so we can notify them when we get new values.
     const observers = new Set();
@@ -417,7 +418,7 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
 
   /**
    * Returns the current value of an observable property (e.g. a subject or
-   * multicasted stream).
+   * remembered stream).
    */
   read(): T {
     let result: T;
