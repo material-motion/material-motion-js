@@ -335,13 +335,13 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
 
   /**
    * Remembers the most recently dispatched value on each channel and passes
-   * them on to all subscribers.  Subscribing to a multicasted stream will
+   * them on to all subscribers.  Subscribing to a memoized stream will
    * synchronously provide the most recent value, if there has been one.
    *
-   * `multicast()` is useful for ensuring that expensive operations only happen
+   * `_memoize()` is useful for ensuring that expensive operations only happen
    * once per dispatch, sharing the resulting value with all observers.
    */
-  multicast(): MotionObservable<T> {
+  _memoize(): MotionObservable<T> {
     // Keep track of all the observers who have subscribed,
     // so we can notify them when we get new values.
     const observers = new Set();
