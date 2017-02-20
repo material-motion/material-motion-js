@@ -17,9 +17,12 @@
 import * as React from 'react';
 
 import {
+  Dict,
   IndefiniteSubject,
+  ReactiveProperty,
   SpringArgs,
   StreamDict,
+  createProperty,
 } from 'material-motion-streams';
 
 import {
@@ -30,6 +33,9 @@ import {
   Director,
   ExperimentalMotionObservable,
   InputKind,
+  PropertyKind,
+  createDragStream,
+  propertyKinds,
 } from 'material-motion-experimental-addons';
 
 import {
@@ -48,41 +54,107 @@ export type createMotionComponentArgs<P> = {
 export function createMotionComponent<P>({ director, render, initialState }: createMotionComponentArgs<P>): React.StatelessComponent<P> {
   const motionTargets = {};
 
-  const streamsByPropNameByTargetName = {};
-  const inputStreamsByPropNameByTargetName = {};
+  const propertiesByKindByTargetName: Dict<Dict<ReactiveProperty<any>> = {};
+  const streamsByPropNameByTargetName: Dict<Dict<Observable<UIEvent>>> = {};
+  const inputStreamsByPropNameByTargetName: Dict<Dict<Observable<UIEvent>>> = {};
 
   Object.entries(director.streamKindsByTargetName).forEach(
-    ([ targetName, { input = [] }]) => {
-      inputStreamsByPropNameByTargetName[targetName] = {};
+    ([ targetName, streamKinds]) => {
+      propertiesByKindByTargetName[targetName] = {};
       streamsByPropNameByTargetName[targetName] = {};
+      inputStreamsByPropNameByTargetName[targetName] = {};
 
-      input.forEach(
-        (inputKind: string) => {
-          let eventHandlerName;
-
-          // The conversion between pointer/keyup events and input needs to
-          // happen somewhere - probably outside the director.
+      streamKinds.forEach(
+        (streamKind: string) => {
+          // There are two kinds of streams we're modeling here:
+          // ReactiveProperty and something like a cacheless subject.  (We
+          // wouldn't want a stale move event to be dispatched if someone
+          // subscribed to move$ - we just need the ability to write to its
+          // observers from the outside.)
           //
-          // For the purposes of prototyping, we're treating all taps as 'click'
-          // events here and ignoring everything else.
+          // For the sake of prototyping, these are modeled with a
+          // property/subject + EMO.from.  When we have operators broken out
+          // into their own files and shared across observable varieties
+          // (https://github.com/material-motion/material-motion-js/issues/114)
+          // we can revisit this.
+          if (streamKind === InputKind.TAP) {
+            const subject = new IndefiniteSubject();
+            inputStreamsByPropNameByTargetName[targetName][streamKind] = ExperimentalMotionObservable.from(subject);
+            streamsByPropNameByTargetName[targetName]['onClick'] = subject;
 
-          switch (inputKind) {
-            case InputKind.TAP:
-              eventHandlerName = 'onClick';
-              break;
+          } else if ([InputKind.DRAG, InputKind.PINCH, InputKind.ROTATE].includes(streamKind)) {
+            const downSubject = new IndefiniteSubject();
+            const down$ = ExperimentalMotionObservable.from(downSubject);
+            streamsByPropNameByTargetName[targetName]['onPointerDown'] = downSubject;
 
-            case InputKind.KEY:
-              eventHandlerName = 'onKeyUp';
-              break;
+            const moveSubject = new IndefiniteSubject();
+            const move$ = ExperimentalMotionObservable.from(moveSubject);
+            streamsByPropNameByTargetName[targetName]['onPointerMove'] = moveSubject;
 
-            default:
-              console.error(`The createMotionComponent prototype doesn't support ${ inputKind }`);
-              return;
+            const upSubject = new IndefiniteSubject();
+            const up$ = ExperimentalMotionObservable.from(upSubject);
+            streamsByPropNameByTargetName[targetName]['onPointerUp'] = upSubject;
+
+            switch (streamKind) {
+              case InputKind.DRAG:
+                const drag$ = createDragStream({ down$, move$, up$ });
+                inputStreamsByPropNameByTargetName[targetName][streamKind] = drag$;
+                break;
+
+              case InputKind.PINCH:
+                break;
+
+              case InputKind.ROTATE:
+                break;
+
+              // Needed to make the linter happy - all possible cases should be
+              // covered above
+              default:break;
+            }
+          } else if (propertyKinds.includes(streamKind)) {
+            // Perhaps I should subscribe to the results of the director and
+            // write all its emissions to these properties to create cycles
+            let property: ReactiveProperty;
+            switch (streamKind) {
+              case PropertyKind.TRANSLATION:
+                property = createProperty({ initialValue: { x: 0, y: 0 } });
+                propertiesByKindByTargetName[targetName][streamKind] = property;
+                inputStreamsByPropNameByTargetName[targetName][streamKind] = ExperimentalMotionObservable.from(property);
+                break;
+
+              case PropertyKind.ROTATION:
+              case PropertyKind.OPACITY:
+              case PropertyKind.CORNER_RADIUS:
+                property = createProperty({ initialValue: 0 });
+                propertiesByKindByTargetName[targetName][streamKind] = property;
+                inputStreamsByPropNameByTargetName[targetName][streamKind] = ExperimentalMotionObservable.from(property);
+                break;
+
+              case PropertyKind.SCALE:
+                property = createProperty({ initialValue: 1 });
+                propertiesByKindByTargetName[targetName][streamKind] = property;
+                inputStreamsByPropNameByTargetName[targetName][streamKind] = ExperimentalMotionObservable.from(property);
+                break;
+
+
+              case PropertyKind.COLOR:
+              case PropertyKind.BACKGROUND_COLOR:
+              case PropertyKind.WIDTH:
+              case PropertyKind.HEIGHT:
+              case PropertyKind.POINTER_EVENTS:
+                // TODO: figure out how to seed these with initial values.  It
+                // might be something as inelegant as putting an initialValues
+                // dict in createMotionComponentArgs until we find a better
+                // solution
+                break;
+
+
+              // Needed to make the linter happy - all possible cases should be
+              // covered above
+              default:break;
+            }
+          }
         }
-
-        const subject = new IndefiniteSubject();
-        inputStreamsByPropNameByTargetName[targetName][inputKind] = ExperimentalMotionObservable.from(subject);
-        streamsByPropNameByTargetName[targetName][eventHandlerName] = subject;
       );
     }
   );
@@ -123,6 +195,15 @@ export function createMotionComponent<P>({ director, render, initialState }: cre
           }
 
           streamsByPropNameByTargetName[targetName][propName] = stream;
+
+          // This is a quick hack of cyclic properties.  If we move in this
+          // direction, we should decide where the subscription goes and when it
+          // is unsubscribed from.
+          if (propertiesByKindByTargetName[targetName] && propertiesByKindByTargetName[targetName][streamName]) {
+            stream.subscribe(
+              value => propertiesByKindByTargetName[targetName][streamName].write(value)
+            );
+          }
         }
       );
 
@@ -142,16 +223,16 @@ export function createMotionComponent<P>({ director, render, initialState }: cre
 }
 export default createMotionComponent;
 
-interface MotionReceiver<P> extends React.StatelessComponent<P> {
+export interface MotionReceiver<P> extends React.StatelessComponent<P> {
   // This is the same signature as StatelessComponent, but with MotionTargetDict added
   (props: P, context: any, motionTargets: MotionTargetDict): React.ReactElement<any>;
 }
 
-type MotionTargetDict = {
+export type MotionTargetDict = {
   [key: string]: React.StatelessComponent<MotionTargetProps>,
 };
 
-type MotionTargetProps = {
+export type MotionTargetProps = {
   children: React.ReactNode,
 };
 
