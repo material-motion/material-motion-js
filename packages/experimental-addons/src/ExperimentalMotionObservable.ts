@@ -152,7 +152,7 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
 
         dispatch(value);
       }
-    ).multicast() as ExperimentalMotionObservable<T>;
+    )._remember() as ExperimentalMotionObservable<T>;
   }
 
   /**
@@ -419,7 +419,7 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
 
   /**
    * Returns the current value of an observable property (e.g. a subject or
-   * multicasted stream).
+   * remembered stream).
    */
   read(): T {
     let result: T;
