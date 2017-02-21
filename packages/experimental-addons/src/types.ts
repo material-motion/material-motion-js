@@ -15,6 +15,7 @@
  */
 
 import {
+  MotionRuntime,
   Observable,
   Point2D,
   SpringSystem,
@@ -40,6 +41,7 @@ export interface InputOutputStreamsDict {
 };
 
 export interface DirectorArgs extends InputOutputStreamsDict {
+  runtime: MotionRuntime,
   state$: ExperimentalMotionObservable<any>,
   springSystem: SpringSystem<any>,
 }
