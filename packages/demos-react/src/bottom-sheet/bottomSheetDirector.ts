@@ -28,6 +28,7 @@ import {
 } from 'material-motion-experimental-addons';
 
 export const bottomSheetDirector: Director = function bottomSheetDirector({
+  runtime,
   state$,
   springSystem,
   scrim,
@@ -55,12 +56,40 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
       : length
   );
 
-  const bottomSheetTranslation$ = ExperimentalMotionObservable.combineLatestFromDict({
-    x: 0,
-    y: bottomSheet.drag$.translated(bottomSheet.translate$).pluck('y') // springSystem({
-    //   destination: springDestinationY$
-    // }).pluck('value')
+  // This was originally an experiment in using cycles to model an interaction.
+  // Though that approach worked, there were a couple concerns:
+  //
+  // - "institutional knowledge": Do you have to remember how all of the streams
+  //   fit together throughout the entire interaction to feel comfortable
+  //   modifying on any of its code?  Is this worse than the alternative model?
+  //
+  // - It's a different approach than the native platforms have been exploring.
+  //
+  // Therefore, I'm attempting to transition to a model closer to the native
+  // platforms, where streams are connected with
+  // runtime.write(stream, property).  Until that's done, this file will be an
+  // unfortunate blend of both approaches.
+  //
+  // Specifically, bottomSheet.translate$ is being managed with runtime.write().
+
+  const spring = springSystem({
+    destination: springDestinationY$
   });
+
+  runtime.write({
+    stream: spring.pluck('value')._map(
+      (value: number) => ({
+        x: 0,
+        y: value,
+      }),
+    ),
+    to: bottomSheet.translate$
+  });
+
+  // const bottomSheetTranslation$ = ExperimentalMotionObservable.combineLatestFromDict({
+  //   x: 0,
+  //   y: bottomSheet.drag$.translated(bottomSheet.translate$).pluck('y')
+  // });
 
   const isOpen$ = state$.pluck('isOpen').merge(
     closeButton.tap$.mapTo(false),
@@ -107,7 +136,7 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
       }),
     },
     bottomSheet: {
-      [PropertyKind.TRANSLATION]: bottomSheetTranslation$,
+      [PropertyKind.TRANSLATION]: ExperimentalMotionObservable.from(bottomSheet.translate$).dedupe(),
     },
     collapsedToolBar: {
       // Perhaps we should have a contract that MotionComponents disable pointer
