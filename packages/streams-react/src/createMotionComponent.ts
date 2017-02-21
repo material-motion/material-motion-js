@@ -19,6 +19,7 @@ import * as React from 'react';
 import {
   Dict,
   IndefiniteSubject,
+  MotionRuntime,
   ReactiveProperty,
   SpringArgs,
   StreamDict,
@@ -53,6 +54,7 @@ export type createMotionComponentArgs<P> = {
 // make streams, glue them to the director, and set the display name of each resulting MotionTarget
 export function createMotionComponent<P>({ director, render, initialState }: createMotionComponentArgs<P>): React.StatelessComponent<P> {
   const motionTargets = {};
+  const runtime = new MotionRuntime();
 
   const propertiesByKindByTargetName: Dict<Dict<ReactiveProperty<any>> = {};
   const streamsByPropNameByTargetName: Dict<Dict<Observable<UIEvent>>> = {};
@@ -119,7 +121,7 @@ export function createMotionComponent<P>({ director, render, initialState }: cre
               case PropertyKind.TRANSLATION:
                 property = createProperty({ initialValue: { x: 0, y: 0 } });
                 propertiesByKindByTargetName[targetName][streamKind] = property;
-                inputStreamsByPropNameByTargetName[targetName][streamKind] = ExperimentalMotionObservable.from(property);
+                inputStreamsByPropNameByTargetName[targetName][streamKind] = property;
                 break;
 
               case PropertyKind.ROTATION:
@@ -127,13 +129,13 @@ export function createMotionComponent<P>({ director, render, initialState }: cre
               case PropertyKind.CORNER_RADIUS:
                 property = createProperty({ initialValue: 0 });
                 propertiesByKindByTargetName[targetName][streamKind] = property;
-                inputStreamsByPropNameByTargetName[targetName][streamKind] = ExperimentalMotionObservable.from(property);
+                inputStreamsByPropNameByTargetName[targetName][streamKind] = property;
                 break;
 
               case PropertyKind.SCALE:
                 property = createProperty({ initialValue: 1 });
                 propertiesByKindByTargetName[targetName][streamKind] = property;
-                inputStreamsByPropNameByTargetName[targetName][streamKind] = ExperimentalMotionObservable.from(property);
+                inputStreamsByPropNameByTargetName[targetName][streamKind] = property;
                 break;
 
 
@@ -172,6 +174,7 @@ export function createMotionComponent<P>({ director, render, initialState }: cre
     state$,
     ...outputStreamsByTargetName
   } = director({
+    runtime,
     state$: ExperimentalMotionObservable.from(stateSubject),
     springSystem: (kwargs: SpringArgs<number>) => ExperimentalMotionObservable.from(
       reboundSpringSystem(kwargs)
