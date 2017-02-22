@@ -55,8 +55,14 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
   // multiple properties, it's not easy to express in that form:
   const springDestinationY$ = state$._map(
     ({ isOpen, length }) => isOpen
-      ? 0
-      : length
+      ? {
+          x: 0,
+          y: 0,
+        }
+      : {
+          x: 0,
+          y: length,
+        }
   );
 
   // This was originally an experiment in using cycles to model an interaction.
@@ -75,7 +81,7 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
   //
   // Specifically, bottomSheet.translate$ is being managed with runtime.write().
 
-  const springVelocity = createProperty({ initialValue: 0 });
+  const springVelocity = createProperty({ initialValue: { x: 0, y: 0 } });
   const springEnabled = createProperty({ initialValue: true });
 
   const spring = springSystem({
@@ -86,12 +92,7 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
   }).log();
 
   runtime.write({
-    stream: spring.pluck('value')._map(
-      (value: number) => ({
-        x: 0,
-        y: value,
-      }),
-    ),
+    stream: spring.pluck('value'),
     to: bottomSheet.translate$
   });
 
