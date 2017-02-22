@@ -440,7 +440,6 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
   atRest(): MotionObservable<boolean> {
     return this._map(
       ({ recognitionState }: GestureRecognition<T>) => [
-        GestureRecognitionState.POSSIBLE,
         GestureRecognitionState.CANCELLED,
         GestureRecognitionState.ENDED,
         GestureRecognitionState.FAILED
