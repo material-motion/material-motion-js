@@ -19,8 +19,10 @@ import {
 } from 'material-motion-experimental-addons';
 
 import {
+  MotionObservable,
   MotionObserver,
   NumericDict,
+  Point2D,
   PropertyObservable,
   ScopedReadable,
   SpringArgs,
@@ -50,14 +52,43 @@ export let _springSystem = new SpringSystem();
  * they will be used to update the spring whenever `destination` changes.
  * Otherwise, they will only be used once, during spring creation.
  */
-export function springSource<T extends number>({
-  destination: destination$,
-  enabled: enabled$ = createProperty({ initialValue: true }),
-  initialValue = 0,
-  initialVelocity = 0,
+export function springSource<T extends (number | Point2D)>({
+  destination,
+  initialValue,
+  initialVelocity,
+  enabled = createProperty({ initialValue: true }),
   threshold = .001,
   tension = 342,
   friction = 30,
+}: SpringArgs<T>): MotionObservable<SpringRecord<T>> {
+  const firstDestination: T = destination.read();
+
+  if (isNumber(firstDestination)) {
+    return numericSpringSource({
+      destination,
+      initialValue,
+      initialVelocity,
+      enabled,
+      threshold,
+      tension,
+      friction,
+    });
+  }
+}
+export default springSource;
+
+/**
+ * A springSource where `destination`, `initialValue`, and `initialVelocity` are
+ * each numbers.
+ */
+export function numericSpringSource<T extends number>({
+  destination: destination$,
+  enabled: enabled$,
+  initialValue = 0,
+  initialVelocity = 0,
+  threshold,
+  tension,
+  friction,
 }: SpringArgs<number>): MotionObservable<SpringRecord> {
   return new ExperimentalMotionObservable(
     (observer: MotionObserver<T>) => {
@@ -186,7 +217,6 @@ export function springSource<T extends number>({
     }
   )._remember();
 }
-export default springSource;
 
 function toProperty<T>(value: T | ScopedReadable<T>): ScopedReadable<T> {
   return isReadable(value)
