@@ -73,9 +73,136 @@ export function springSource<T extends (number | Point2D)>({
       tension,
       friction,
     });
+
+  } else {
+    return point2DSpringSource({
+      destination,
+      initialValue,
+      initialVelocity,
+      enabled,
+      threshold,
+      tension,
+      friction,
+    });
   }
 }
 export default springSource;
+
+/**
+ * A springSource where `destination`, `initialValue`, and `initialVelocity` are
+ * each 2-dimensional points.
+ */
+export function point2DSpringSource<T extends Point2D>({
+  destination,
+  enabled,
+  initialValue = { x: 0, y: 0 },
+  initialVelocity = { x: 0, y: 0 },
+  threshold,
+  tension,
+  friction,
+}: SpringArgs<Point2D>): MotionObservable<SpringRecord<Point2D>> {
+  return new ExperimentalMotionObservable(
+    (observer: MotionObserver<T>) => {
+      let latestXValue: Partial<SpringRecord<number>> = {};
+      let latestYValue: Partial<SpringRecord<number>> = {};
+
+      let initialXValue: number | ScopedReadable<number>;
+      let initialYValue: number | ScopedReadable<number>;
+      let initialYVelocity: number | ScopedReadable<number>;
+      let initialXVelocity: number | ScopedReadable<number>;
+
+      // There's lots of casting to ExperimentalMotionObservable, because that's
+      // where `read` currently lives.  When ExperimentalMotionObservable is
+      // folded into MotionObservable, we ought to be able to remove most of
+      // these.  (If properties exposed operators, we could remove all of them.)
+
+      if (isReadable(initialValue)) {
+        const initialValue$: ExperimentalMotionObservable<Point2D> = ExperimentalMotionObservable.from(initialValue);
+        initialXValue = ExperimentalMotionObservable.from(initialValue$.pluck('x')._remember());
+        initialYValue = ExperimentalMotionObservable.from(initialValue$.pluck('y')._remember());
+      } else {
+        initialXValue = initialValue.x;
+        initialYValue = initialValue.y;
+      }
+
+      if (isReadable(initialVelocity)) {
+        const initialVelocity$: ExperimentalMotionObservable<Point2D> = ExperimentalMotionObservable.from(initialVelocity);
+        initialXVelocity = ExperimentalMotionObservable.from(initialVelocity$.pluck('x')._remember());
+        initialYVelocity = ExperimentalMotionObservable.from(initialVelocity$.pluck('y')._remember());
+      } else {
+        initialXVelocity = initialVelocity.x;
+        initialYVelocity = initialVelocity.y;
+      }
+
+      const xSpring = numericSpringSource({
+        destination: ExperimentalMotionObservable.from(destination).pluck('x'),
+        enabled,
+        initialValue: initialXValue,
+        initialVelocity: initialXVelocity,
+        threshold,
+        tension,
+        friction,
+      });
+
+      const ySpring = numericSpringSource({
+        destination: ExperimentalMotionObservable.from(destination).pluck('y'),
+        enabled,
+        initialValue: initialYValue,
+        initialVelocity: initialYVelocity,
+        threshold,
+        tension,
+        friction,
+      });
+
+      const xSubscription: Subscription = xSpring.subscribe(
+        (value: SpringRecord<number>) => {
+          latestXValue = value;
+          dispatchLatestValue();
+        }
+      );
+
+      const ySubscription: Subscription = ySpring.subscribe(
+        (value: SpringRecord<number>) => {
+          latestYValue = value;
+          dispatchLatestValue();
+        }
+      );
+
+      function dispatchLatestValue() {
+        if (latestXValue.destination !== undefined && latestYValue.destination !== undefined) {
+          observer.next({
+            value: {
+              x: latestXValue.value,
+              y: latestYValue.value,
+            },
+            state: initialXValue.state | initialYValue.state,
+            destination: {
+              x: latestXValue.destination,
+              y: latestYValue.destination,
+            },
+            initialVelocity: {
+              x: latestXValue.initialVelocity,
+              y: latestYValue.initialVelocity,
+            },
+            initialValue: {
+              x: latestXValue.initialValue,
+              y: latestYValue.initialValue,
+            },
+            enabled: latestXValue.enabled,
+            tension: latestXValue.tension,
+            friction: latestXValue.friction,
+            threshold: latestXValue.threshold,
+          });
+        }
+      }
+
+      return function disconnect() {
+        xSubscription.unsubscribe();
+        ySubscription.unsubscribe();
+      };
+    }
+  )._debounce();
+}
 
 /**
  * A springSource where `destination`, `initialValue`, and `initialVelocity` are
@@ -89,7 +216,7 @@ export function numericSpringSource<T extends number>({
   threshold,
   tension,
   friction,
-}: SpringArgs<number>): MotionObservable<SpringRecord> {
+}: SpringArgs<number>): MotionObservable<SpringRecord<number>> {
   return new ExperimentalMotionObservable(
     (observer: MotionObserver<T>) => {
       // The inputs could be primitives or ReactivePropertys of primitives.  To
@@ -169,6 +296,8 @@ export function numericSpringSource<T extends number>({
           });
         }
       );
+
+      dispatchLatestValue();
 
       return function disconnect() {
         spring.removeListener(listener);
