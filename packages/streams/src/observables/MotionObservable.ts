@@ -19,6 +19,7 @@ import {
 } from 'indefinite-observable';
 
 import {
+  Dict,
   MotionConnect,
   MotionObserver,
   MotionObserverOrNext,
@@ -122,20 +123,9 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
    * - `transform$.pluck('translate.x')` is equivalent to
    *   `transform$.map(transform => transform.translate.x)`
    */
-  pluck<U>(key: string): MotionObservable<U> {
-    const keySegments = key.split('.');
-
+  pluck<U>(path: string): MotionObservable<U> {
     return this._map(
-      // TODO: fix the type annotations
-      (value: {[k: string]: any }) => {
-        let result = value;
-
-        for (let keySegment of keySegments) {
-          result = result[keySegment];
-        }
-
-        return result;
-      }
+      createPlucker(path)
     );
   }
 
@@ -146,9 +136,19 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
    * Adding `log` to stream chain should have no effect on the rest of the
    * chain.
    */
-  log(label = ''): MotionObservable<T> {
+  log(label: string = '', path: string = ''): MotionObservable<T> {
+    let plucker: (value: T) => any;
+
+    if (path) {
+      plucker = createPlucker(path);
+    }
+
     return this._nextOperator(
       (value: T, nextChannel: NextChannel<T>) => {
+        if (plucker) {
+          value = plucker(value);
+        }
+
         console.log(label, value);
         nextChannel(value);
       }
@@ -237,6 +237,21 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
       }
     );
   }
+}
+
+// TODO: fix the type annotations
+function createPlucker(path: string) {
+  const pathSegments = path.split('.');
+
+  return function plucker(value: Dict<any>) {
+    let result = value;
+
+    for (let pathSegment of pathSegments) {
+      result = result[pathSegment];
+    }
+
+    return result;
+  };
 }
 
 export default MotionObservable;
