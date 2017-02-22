@@ -16,15 +16,18 @@
 
 import {
   IndefiniteSubject,
+  createProperty,
 } from 'material-motion-streams';
 
 import {
   Director,
   DirectorArgs,
   ExperimentalMotionObservable,
+  GestureRecognitionState,
   InputKind,
   PrimitiveKind,
   PropertyKind,
+  TranslationGestureRecognition,
 } from 'material-motion-experimental-addons';
 
 export const bottomSheetDirector: Director = function bottomSheetDirector({
@@ -72,9 +75,15 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
   //
   // Specifically, bottomSheet.translate$ is being managed with runtime.write().
 
+  const springVelocity = createProperty({ initialValue: 0 });
+  const springEnabled = createProperty({ initialValue: true });
+
   const spring = springSystem({
-    destination: springDestinationY$
-  });
+    destination: springDestinationY$,
+    initialValue: bottomSheet.translate$,
+    initialVelocity: springVelocity,
+    enabled: springEnabled,
+  }).log();
 
   runtime.write({
     stream: spring.pluck('value')._map(
@@ -86,11 +95,31 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
     to: bottomSheet.translate$
   });
 
-  // const bottomSheetTranslation$ = ExperimentalMotionObservable.combineLatestFromDict({
-  //   x: 0,
-  //   y: bottomSheet.drag$.translated(bottomSheet.translate$).pluck('y')
-  // });
+  runtime.write({
+    stream: bottomSheet.drag$._map(
+      (value: TranslationGestureRecognition) => ({
+        ...value,
+        translation: {
+          x: 0,
+          y: value.translation.y
+        }
+      })
+    ).translationAddedTo(bottomSheet.translate$),
+    to: bottomSheet.translate$
+  });
 
+  runtime.write({
+    stream: bottomSheet.drag$.atRest(),
+    to: springEnabled
+  });
+
+  runtime.write({
+    stream: bottomSheet.drag$.whenRecognitionStateIs(GestureRecognitionState.ENDED).pluck('velocity'),
+    to: springVelocity
+  });
+
+  // looks like we need an actual tap gesture recognizer, because click$ doesn't
+  // bail when a drag recognizes
   const isOpen$ = state$.pluck('isOpen').merge(
     closeButton.tap$.mapTo(false),
     scrim.tap$.mapTo(false),
