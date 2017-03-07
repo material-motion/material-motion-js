@@ -51,7 +51,12 @@ export type AttachStreamsState = {
  * whatever DOM node the child tree eventually renders.
  */
 export class AttachStreams extends React.Component<AttachStreamsProps, AttachStreamsState> {
-  state = {};
+  state = {
+    // The PEP polyfill doesn't handle nested touch-actions very well:
+    //   https://github.com/jquery/PEP/issues/336
+    // so only set touch-action if it isn't the default.
+    usesPointerEvents: false,
+  };
   private _subscriptions:SubscriptionDict = {};
   private _domNode: Element;
 
@@ -138,6 +143,8 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
    * the stream dispatches as props to its `children` component.
    */
   private _subscribeToProps(props) {
+    let usesPointerEvents: boolean = false;
+
     Object.entries(props).forEach(
       ([propName, stream]) => {
         if (propName === 'children') {
@@ -154,6 +161,10 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
             this._subscribeToEvent$(propName, stream as Subject);
           }
 
+          if (propName.includes('onPointer')) {
+            usesPointerEvents = true;
+          }
+
         } else {
           this._subscriptions[propName] = stream.subscribe(
             (value: any) => {
@@ -167,6 +178,8 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
         }
       }
     );
+
+    this.setState({ usesPointerEvents });
   }
 
   /**
@@ -194,13 +207,18 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
   }
 
   render() {
-    return React.cloneElement(
-      this.props.children,
-      {
-        domRef: this._domRef,
-        ...this.state
-      }
-    );
+    const {
+      usesPointerEvents,
+      ...props
+    } = this.state;
+
+    props.domRef =  this._domRef;
+
+    if (this.state.usesPointerEvents) {
+      props.touchAction = 'none';
+    }
+
+    return React.cloneElement(this.props.children, props);
   }
 
   /**
