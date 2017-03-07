@@ -22,6 +22,9 @@ import {
 
 export type TransformTargetArgs = {
   position: 'absolute' | 'fixed' | 'relative' | 'static' | 'sticky',
+  touchAction: 'auto' | 'none' | 'pan-x' | 'pan-left' | 'pan-right' | 'pan-y'
+              | 'pan-up' | 'pan-down' | 'pinch-zoom' | 'manipulation'
+              | 'inherit' | 'initial' | 'unset',
   translate: Point2D,
   rotate: number,
   scale: number,
@@ -46,6 +49,7 @@ export default function TransformTarget({
   rotate = 0,
   scale = 1,
   opacity = 1,
+  touchAction,
   children,
   domRef,
   ...propsPassthrough
@@ -54,9 +58,13 @@ export default function TransformTarget({
     <div
       className = 'transform-target'
       ref = { domRef }
+      // We manually need to pass touch-action to both CSS and DOM attributes to
+      // support the Pointer Events Polyfill
+      is touch-action = { touchAction }
       style = {
         {
           ...propsPassthrough,
+          touchAction,
           position,
           transform: `
             translate(${ applySuffix(translate.x || 0, 'px') }, ${ applySuffix(translate.y || 0, 'px') })
