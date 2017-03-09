@@ -34,6 +34,10 @@ import {
 } from './gestures/GestureRecognitionState';
 
 import {
+  ThresholdSide,
+} from './ThresholdSide';
+
+import {
   GestureRecognition,
   Timestamped,
   TranslationGestureRecognition,
@@ -307,6 +311,103 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
        }
      ) as ExperimentalMotionObservable<T>;
    }
+
+// There are a couple sketches of what slidingThreshold might look like here.
+//
+// The first uses both min and max.  It should mostly work, except min and max
+// need a way to be reset so if the user drags to 200, then back down to 100,
+// they don't need to go to 260 to cross the threshold again.
+//
+// The second one is more correct - it uses a single threshold and only checks
+// for the side of the threshold that it isn't already in.  The bug here is more
+// subtle - if the user dragged down to -26 and back up to +26, slidingThreshold
+// ought to dispatch, but it wouldn't until the user crossed +56.
+//
+// I'm leaving both for now, because the correct solution may be closer to the
+// first, even though the second one is more correct now.
+//
+// Other potential solution:
+// - Store lastSide, thresholdForAbove, and thresholdForBelow.
+// - If lastSide === ABOVE,
+//     - thresholdForBelow = max(value - distance, thresholdForBelow)
+//     - if value < thresholdForBelow, nextSide = BELOW
+// and vice-versa
+
+  /**
+   * Listens to a stream of numbers and
+   */
+  slidingThreshold(distance: number = 56): ExperimentalMotionObservable<ThresholdSide> {
+    let min: number;
+    let max: number;
+    let lastSide: ThresholdSide;
+
+    return this._nextOperator(
+      (value: number, dispatch: NextChannel<ThresholdSide>) => {
+        let nextSide;
+
+        if (lastSide !== ThresholdSide.BELOW && value < max - distance) {
+          nextSide = ThresholdSide.BELOW;
+        }
+
+        if (lastSide !== ThresholdSide.ABOVE && value > min + distance) {
+          nextSide = ThresholdSide.ABOVE;
+        }
+
+        if (nextSide !== undefined) {
+          dispatch(nextSide);
+          lastSide = nextSide;
+        }
+
+        if (min === undefined || value < min) {
+          min = value;
+        }
+
+        if (max === undefined || value > max) {
+          max = value;
+        }
+      }
+    );
+  }
+
+  /**
+   * Listens to a stream of numbers and
+   *
+   * distance should be positive
+   */
+  slidingThreshold(distance: number = 56): ExperimentalMotionObservable<ThresholdSide> {
+    let threshold: number;
+    let lastSide: ThresholdSide;
+
+    return this._nextOperator(
+      (value: number, dispatch: NextChannel<ThresholdSide>) => {
+        let nextSide;
+
+        if (threshold === undefined) {
+          threshold = value;
+        }
+
+        if (value < threshold - distance) {
+          nextSide = ThresholdSide.BELOW;
+        }
+
+        if (value > threshold + distance) {
+          nextSide = ThresholdSide.ABOVE;
+        }
+
+        if (nextSide !== undefined) {
+          dispatch(nextSide);
+          lastSide = nextSide;
+        }
+
+        if (
+          (lastSide === ThresholdSide.ABOVE && value > threshold) ||
+          (lastSide === ThresholdSide.BELOW && value < threshold)
+        ) {
+          threshold = value;
+        }
+      }
+    );
+  }
 
   /**
    * Casts incoming values to numbers, using parseFloat:
