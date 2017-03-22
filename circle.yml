@@ -1,7 +1,7 @@
 # From https://circleci.com/docs/yarn/
 machine:
   node:
-    version: 6.2.1
+    version: 7.7.4
 
   environment:
     PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
