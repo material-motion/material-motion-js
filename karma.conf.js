@@ -10,7 +10,16 @@ module.exports = function(config) {
     browsers: process.env.CI
       ? ['Chrome', 'Firefox']
       : ['ChromeCanary'],
-    reporters: ['progress'],
+
+    // CircleCI needs JUnit to show tests correctly.
+    // https://circleci.com/docs/1.0/test-metadata/#karma
+    reporters: process.env.CI
+      ? ['junit']
+      : ['progress'],
+    junitReporter: {
+      outputDir: process.env.CIRCLE_TEST_REPORTS,
+    },
+
     client: {
       mocha: {
         reporter: 'html',
