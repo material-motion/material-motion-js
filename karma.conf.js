@@ -3,6 +3,10 @@ const path = require('path');
 const minimist = require('minimist');
 
 module.exports = function(config) {
+  console.log('junit:');
+  console.log(process.env.JUNIT_REPORT_PATH);
+  console.log(process.env.JUNIT_REPORT_NAME);
+
   // Default config for all packages
   config.set({
     basePath: '',
@@ -10,7 +14,18 @@ module.exports = function(config) {
     browsers: process.env.CI
       ? ['Chrome', 'Firefox']
       : ['ChromeCanary'],
-    reporters: ['progress'],
+
+    // CircleCI needs JUnit to show tests correctly.
+    // https://circleci.com/docs/1.0/test-metadata/#karma
+    reporters: process.env.CI
+      ? ['junit']
+      : ['progress'],
+    junitReporter: {
+      outputDir: process.env.JUNIT_REPORT_PATH,
+      outputFile: process.env.JUNIT_REPORT_NAME,
+      useBrowserName: false
+    },
+
     client: {
       mocha: {
         reporter: 'html',
