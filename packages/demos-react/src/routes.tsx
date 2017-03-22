@@ -21,7 +21,6 @@ import Match from 'react-router/Match';
 import Miss from 'react-router/Miss';
 import Router from 'react-router/BrowserRouter';
 
-import ParallaxClouds from './map-scroll-to-css/components/ParallaxClouds';
 import BottomSheetMain from './bottom-sheet/components/BottomSheetMain';
 
 // To add a new demo, import the correct component above and add it to the links
@@ -31,11 +30,6 @@ const links = [
     href: '/bottom-sheet/',
     name: 'BottomSheetMain',
     component: BottomSheetMain,
-  },
-  {
-    href: '/map-scroll-to-css/parallax/',
-    name: 'MapScrollPositionToCSSValue',
-    component: ParallaxClouds,
   },
 ];
 
