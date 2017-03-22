@@ -59,89 +59,10 @@ describe('springSource',
       }
     );
 
-    it('transitions from initialValue to destination',
-      () => {
-        springSource({
-          initialValue: createProperty({ initialValue: 2 }),
-          destination: createProperty({ initialValue: 3 }),
-        }).subscribe(listener);
-
-        expect(listener.firstCall).to.have.been.calledWith(2);
-        expect(listener.lastCall).to.have.been.calledWith(3);
-      }
-    );
-
-    it('starts at rest',
-      () => {
-        let firstAtRestTime;
-        let firstNextTime;
-
-        springSource({
-          initialValue: createProperty({ initialValue: 0 }),
-          destination: createProperty({ initialValue: 0 }),
-        }).subscribe({
-          next(value) {},
-          state: listener
-        });
-
-        expect(listener).to.have.been.calledOnce;
-        expect(listener).to.have.been.calledWith(State.AT_REST);
-      }
-    );
-
-    it('becomes active before dispatching new values',
-      () => {
-        let state;
-        let tested;
-
-        const spring = springSource({
-          initialValue: createProperty({ initialValue: 0 }),
-          destination: createProperty({ initialValue: 1 }),
-        });
-
-        const subscription = spring.subscribe({
-          next(value) {
-            if (value !== 0 && !tested) {
-              expect(state).to.equal(State.ACTIVE);
-              tested = true;
-            }
-          },
-
-          state(value) {
-            state = value;
-          }
-        });
-
-        expect(tested).to.equal(true);
-      }
-    );
-
-    it('comes to rest upon completion',
-      () => {
-        let next;
-        let tested;
-
-        const spring = springSource({
-          initialValue: createProperty({ initialValue: 0 }),
-          destination: createProperty({ initialValue: 1 }),
-        });
-
-        const subscription = spring.subscribe({
-          next(value) {
-            next = value;
-          },
-
-          state(value) {
-            if (next === 1 && !tested) {
-              expect(value).to.equal(State.AT_REST);
-              tested = true;
-            }
-          }
-        });
-
-        expect(tested).to.equal(true);
-      }
-    );
+    it('transitions from initialValue to destination');
+    it('starts at rest');
+    it('becomes active before dispatching new values');
+    it('comes to rest upon completion');
   }
 );
 
