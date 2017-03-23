@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "typescript:main": "src/index.ts",
   "scripts": {
-    "lint": "../../node_modules/.bin/tslint -c ../../tslint.json --project tsconfig.json",
+    "lint": "../../node_modules/.bin/tslint -c ../../tslint.json --project tsconfig.json --type-check",
     "clean": "rm -rf ./dist/*; mkdir -p ./dist/",
     "build": "yarn run clean; ../../node_modules/.bin/tsc",
     "test": "node ../../tools/test.js --only streams"

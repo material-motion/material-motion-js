@@ -10,6 +10,7 @@
     "interface-name": [true, "never-prefix"],
     "jsdoc-format": true,
     "label-position": true,
+    "match-default-export-name": true,
     "new-parens": true,
     "no-angle-bracket-type-assertion": true,
     "no-conditional-assignment": true,
@@ -20,6 +21,7 @@
     "no-require-imports": true,
     "no-trailing-whitespace": true,
     "no-unused-expression": true,
+    "no-unbound-method": true,
     "no-use-before-declare": false,
     "no-var-keyword": true,
     "one-variable-per-declaration": [true, "ignore-for-loop"],
@@ -31,10 +33,13 @@
         "named-imports-order": "lowercase-last"
       }
     ],
+    "prefer-const": true,
+    "prefer-method-signature": true,
     "radix": true,
     "semicolon": [true, "always", "ignore-interfaces"],
     "switch-default": true,
     "triple-equals": [true, "allow-null-check"],
+    "typeof-compare": true,
     "use-isnan": true,
     "variable-name": [
       true,
