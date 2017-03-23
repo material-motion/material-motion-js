@@ -43,6 +43,7 @@
     "sinon-chai": "2.9.0",
     "ts-loader": "2.0.3",
     "tslint": "4.5.1",
+    "tslint-junit-formatter": "2.0.0",
     "typescript": "2.2.1",
     "webpack": "2.3.1"
   }
