@@ -13,7 +13,6 @@
     "@types/chai": "^3.4.34",
     "@types/sinon": "^1.16.34",
     "@types/sinon-chai": "^2.7.27",
-    "awesome-typescript-loader": "^3.0.0-beta.17",
     "chai": "3.5.0",
     "karma": "1.3.0",
     "karma-chrome-launcher": "2.0.0",
@@ -41,6 +40,7 @@
     "pundle": "2.0.0-beta12",
     "sinon": "2.0.0-pre.3",
     "sinon-chai": "2.8.0",
+    "ts-loader": "2.0.3",
     "tslint": "4.0.2",
     "typescript": "2.1",
     "webpack": "2.1.0-beta.25"
