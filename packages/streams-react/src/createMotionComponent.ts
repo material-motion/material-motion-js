@@ -24,7 +24,7 @@ import {
   SpringArgs,
   StreamDict,
   createProperty,
-} from 'material-motion-streams';
+} from 'material-motion';
 
 import {
   springSource as reboundSpringSystem,

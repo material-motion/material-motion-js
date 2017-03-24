@@ -5,7 +5,7 @@ A stream-powered implementation of Material Motion
 ## Usage ##
 
 ```javascript
-import MotionProperty from 'material-motion-streams';
+import MotionProperty from 'material-motion';
 
 
 ```

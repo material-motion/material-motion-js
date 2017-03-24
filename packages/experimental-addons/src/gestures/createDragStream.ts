@@ -18,7 +18,7 @@ import {
   Observable,
   Observer,
   Subscription,
-} from 'material-motion-streams';
+} from 'material-motion';
 
 import ExperimentalMotionObservable from '../ExperimentalMotionObservable';
 import GestureRecognitionState from './GestureRecognitionState';

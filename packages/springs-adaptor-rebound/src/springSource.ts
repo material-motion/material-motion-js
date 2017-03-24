@@ -32,7 +32,7 @@ import {
   Subscription,
   SubscriptionDict,
   createProperty,
-} from 'material-motion-streams';
+} from 'material-motion';
 
 import {
   Listener,
