@@ -1,0 +1,102 @@
+lerna(verbose) GitUtilities.isInitialized    ()
+lerna(verbose) GitUtilities.isInitialized    () => true
+lerna(verbose) GitUtilities.getTopLevelDirectory()
+lerna(verbose) GitUtilities.getTopLevelDirectory() => "."
+lerna(verbose) FileSystemUtilities.existsSync("./lerna.json")
+lerna(verbose) FileSystemUtilities.existsSync("./lerna.json") => true
+lerna(verbose) FileSystemUtilities.readFileSync("./lerna.json")
+lerna(verbose) FileSystemUtilities.readFileSync("./lerna.json") => "{\n  \"lerna\": \"2.0.0-beta.38\",\n  \"version\": \"1.0.0\",\n  \"npmClient\": \"yarn\"\n}"
+lerna(verbose) FileSystemUtilities.existsSync("./package.json")
+lerna(verbose) FileSystemUtilities.existsSync("./package.json") => true
+lerna(verbose) FileSystemUtilities.readFileSync("./package.json")
+lerna(verbose) FileSystemUtilities.readFileSync("./package.json") => "{\n  \"private\": true,\n  \"lerna\": \"2.0.0-beta.38\",\n  \"version\": \"1.0.0\",\n  \"scripts\": {\n    \"bootstrap\": \"yarn; $( yarn bin )/lerna bootstrap --concurrency=1\",\n    \"build\": \"$( yarn bin )/lerna run build\",\n    \"lint\": \"$( yarn bin)/lerna run lint\",\n    \"test\": \"$( yarn bin )/karma start\",\n    \"ci\": \"yarn run lint; yarn run build; yarn run test -- --single-run\"\n  },\n  \"devDependencies\": {\n    \"@types/chai\": \"^3.4.34\",\n    \"@types/sinon\": \"^1.16.34\",\n    \"@types/sinon-chai\": \"^2.7.27\",\n    \"chai\": \"3.5.0\",\n    \"karma\": \"1.5.0\",\n    \"karma-chrome-launcher\": \"2.0.0\",\n    \"karma-firefox-launcher\": \"1.0.0\",\n    \"karma-junit-reporter\": \"1.2.0\",\n    \"karma-mocha\": \"1.3.0\",\n    \"karma-safari-launcher\": \"1.0.0\",\n    \"karma-webpack\": \"2.0.3\",\n    \"lerna\": \"2.0.0-beta.38\",\n    \"minimist\": \"1.2.0\",\n    \"mocha\": \"3.2.0\",\n    \"mocha-sugar-free\": \"1.3.1\",\n    \"pundle\": \"2.0.0-beta12\",\n    \"pundle-api\": \"2.0.0-beta12\",\n    \"pundle-browser\": \"2.0.0-beta12\",\n    \"pundle-cli\": \"2.0.0-beta12\",\n    \"pundle-dev\": \"2.0.0-beta12\",\n    \"pundle-fs\": \"2.0.0-beta12\",\n    \"pundle-generator-default\": \"2.0.0-beta12\",\n    \"pundle-loader-js\": \"2.0.0-beta12\",\n    \"pundle-loader-json\": \"2.0.0-beta12\",\n    \"pundle-preset-default\": \"2.0.0-beta12\",\n    \"pundle-preset-typescript\": \"2.0.0-beta12\",\n    \"pundle-reporter-cli\": \"2.0.0-beta12\",\n    \"pundle-resolver-default\": \"2.0.0-beta12\",\n    \"pundle-transformer-typescript\": \"2.0.0-beta12\",\n    \"sinon\": \"2.1.0\",\n    \"sinon-chai\": \"2.9.0\",\n    \"ts-loader\": \"2.0.3\",\n    \"tslint\": \"4.5.1\",\n    \"typescript\": \"2.2.1\",\n    \"webpack\": \"2.3.1\"\n  }\n}"
+lerna(info)    Lerna v2.0.0-beta.38
+lerna(verbose) FileSystemUtilities.existsSync("./package.json")
+lerna(verbose) FileSystemUtilities.existsSync("./package.json") => true
+lerna(verbose) FileSystemUtilities.existsSync("./lerna.json")
+lerna(verbose) FileSystemUtilities.existsSync("./lerna.json") => true
+lerna(verbose) FileSystemUtilities.existsSync("./VERSION")
+lerna(verbose) FileSystemUtilities.existsSync("./VERSION") => false
+lerna(verbose) FileSystemUtilities.existsSync("./packages/demos-react/package.json")
+lerna(verbose) FileSystemUtilities.existsSync("./packages/demos-react/package.json") => true
+lerna(verbose) FileSystemUtilities.existsSync("./packages/experimental-addons/package.json")
+lerna(verbose) FileSystemUtilities.existsSync("./packages/experimental-addons/package.json") => true
+lerna(verbose) FileSystemUtilities.existsSync("./packages/springs-adaptor-rebound/package.json")
+lerna(verbose) FileSystemUtilities.existsSync("./packages/springs-adaptor-rebound/package.json") => true
+lerna(verbose) FileSystemUtilities.existsSync("./packages/streams-dom/package.json")
+lerna(verbose) FileSystemUtilities.existsSync("./packages/streams-dom/package.json") => true
+lerna(verbose) FileSystemUtilities.existsSync("./packages/streams-react/package.json")
+lerna(verbose) FileSystemUtilities.existsSync("./packages/streams-react/package.json") => true
+lerna(verbose) FileSystemUtilities.existsSync("./packages/streams/package.json")
+lerna(verbose) FileSystemUtilities.existsSync("./packages/streams/package.json") => true
+lerna(verbose) FileSystemUtilities.existsSync("./packages/testing-utils/package.json")
+lerna(verbose) FileSystemUtilities.existsSync("./packages/testing-utils/package.json") => true
+lerna(verbose) Attempting running RunCommand.initialize
+lerna(verbose) Successfully ran RunCommand.initialize
+lerna(verbose) Attempting running RunCommand.execute
+lerna(verbose) NpmUtilities.runScriptInDir   ("build", [], "./packages/testing-utils")
+lerna(verbose) NpmUtilities.execInDir        ("run build", [], "./packages/testing-utils")
+lerna(error)   NpmUtilities.execInDir        ("run build", [], "./packages/testing-utils")
+    Error: Command failed: npm run build 
+    
+    npm ERR! Darwin 16.3.0
+    npm ERR! argv "/usr/local/bin/node" "/usr/local/bin/npm" "run" "build"
+    npm ERR! node v6.2.1
+    npm ERR! npm  v3.9.3
+    npm ERR! code ELIFECYCLE
+    npm ERR! material-motion-testing-utils@0.0.0 build: `yarn run clean; ../../node_modules/.bin/tsc`
+    npm ERR! Exit status 2
+    npm ERR! 
+    npm ERR! Failed at the material-motion-testing-utils@0.0.0 build script 'yarn run clean; ../../node_modules/.bin/tsc'.
+    npm ERR! Make sure you have the latest version of node.js and npm installed.
+    npm ERR! If you do, this is most likely a problem with the material-motion-testing-utils package,
+    npm ERR! not with npm itself.
+    npm ERR! Tell the author that this fails on your system:
+    npm ERR!     yarn run clean; ../../node_modules/.bin/tsc
+    npm ERR! You can get information on how to open an issue for this project with:
+    npm ERR!     npm bugs material-motion-testing-utils
+    npm ERR! Or if that isn't available, you can get their info via:
+    npm ERR!     npm owner ls material-motion-testing-utils
+    npm ERR! There is likely additional logging output above.
+    
+    npm ERR! Please include the following file with any support request:
+    npm ERR!     /Users/brentons/Projects/material-motion-js/packages/testing-utils/npm-debug.log
+    
+        at ChildProcess.exithandler (child_process.js:207:12)
+        at emitTwo (events.js:106:13)
+        at ChildProcess.emit (events.js:191:7)
+        at maybeClose (internal/child_process.js:852:16)
+        at Socket.<anonymous> (internal/child_process.js:323:11)
+        at emitOne (events.js:96:13)
+        at Socket.emit (events.js:188:7)
+        at Pipe._handle.close [as _onclose] (net.js:492:12)
+lerna(error)   
+> material-motion-testing-utils@0.0.0 build /Users/brentons/Projects/material-motion-js/packages/testing-utils
+> yarn run clean; ../../node_modules/.bin/tsc
+
+yarn run v0.17.8
+$ rm -rf ./dist/*; mkdir -p ./dist/ 
+Done in 0.10s.
+src/useMockedRAF.ts(27,32): error TS2307: Cannot find module 'mock-raf'.
+
+lerna(error)   NpmUtilities.runScriptInDir   ("build", [], "./packages/testing-utils")
+lerna(error)   
+> material-motion-testing-utils@0.0.0 build /Users/brentons/Projects/material-motion-js/packages/testing-utils
+> yarn run clean; ../../node_modules/.bin/tsc
+
+yarn run v0.17.8
+$ rm -rf ./dist/*; mkdir -p ./dist/ 
+Done in 0.10s.
+src/useMockedRAF.ts(27,32): error TS2307: Cannot find module 'mock-raf'.
+
+lerna(info)    
+> material-motion-testing-utils@0.0.0 build /Users/brentons/Projects/material-motion-js/packages/testing-utils
+> yarn run clean; ../../node_modules/.bin/tsc
+
+yarn run v0.17.8
+$ rm -rf ./dist/*; mkdir -p ./dist/ 
+Done in 0.10s.
+src/useMockedRAF.ts(27,32): error TS2307: Cannot find module 'mock-raf'.
+
+lerna(error)   Errored while running npm script 'build' in 'material-motion-testing-utils'
+lerna(error)   Errored while running RunCommand.execute
