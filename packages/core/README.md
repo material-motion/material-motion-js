@@ -21,7 +21,7 @@ To encourage code readability, we follow the named arguments pattern: each funct
 ## Installation ##
 
 ```
-yarn add material-motion-streams
+yarn add material-motion
 ```
 
 ## License ##

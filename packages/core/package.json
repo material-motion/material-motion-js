@@ -9,7 +9,7 @@
     "lint": "../../node_modules/.bin/tslint -c ../../tslint.json --project tsconfig.json --type-check",
     "clean": "rm -rf ./dist/*; mkdir -p ./dist/",
     "build": "yarn run clean; ../../node_modules/.bin/tsc",
-    "test": "node ../../tools/test.js --only streams"
+    "test": "node ../../tools/test.js --only core"
   },
   "dependencies": {
     "indefinite-observable": "1.0.1",
