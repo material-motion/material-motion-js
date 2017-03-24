@@ -27,7 +27,10 @@ import {
 } from 'sinon';
 
 import ExperimentalMotionObservable from '../ExperimentalMotionObservable';
-import ThresholdSide from '../ThresholdSide';
+
+import {
+  ThresholdSide,
+} from 'material-motion';
 
 declare function require(name: string);
 
