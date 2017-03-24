@@ -26,7 +26,7 @@ import {
   stub,
 } from 'sinon';
 
-import ExperimentalMotionObservable from '../ExperimentalMotionObservable';
+import MotionObservable from '../MotionObservable';
 
 declare function require(name: string);
 
@@ -39,7 +39,7 @@ import {
   createMockObserver,
 } from 'material-motion-testing-utils';
 
-describe('experimentalMotionObservable.invert',
+describe('motionObservable.inverted',
   () => {
     let stream;
     let mockObserver;
@@ -48,14 +48,14 @@ describe('experimentalMotionObservable.invert',
     beforeEach(
       () => {
         mockObserver = createMockObserver();
-        stream = new ExperimentalMotionObservable(mockObserver.connect);
+        stream = new MotionObservable(mockObserver.connect);
         listener = stub();
       }
     );
 
     it('should false when it receives true',
       () => {
-        stream.invert().subscribe(listener);
+        stream.inverted().subscribe(listener);
 
         mockObserver.next(true);
 
@@ -65,7 +65,7 @@ describe('experimentalMotionObservable.invert',
 
     it('should true when it receives false',
       () => {
-        stream.invert().subscribe(listener);
+        stream.inverted().subscribe(listener);
 
         mockObserver.next(false);
 
@@ -75,7 +75,7 @@ describe('experimentalMotionObservable.invert',
 
     it('should 0 when it receives 1',
       () => {
-        stream.invert().subscribe(listener);
+        stream.inverted().subscribe(listener);
 
         mockObserver.next(1);
 
@@ -85,7 +85,7 @@ describe('experimentalMotionObservable.invert',
 
     it('should 1 when it receives 0',
       () => {
-        stream.invert().subscribe(listener);
+        stream.inverted().subscribe(listener);
 
         mockObserver.next(0);
 

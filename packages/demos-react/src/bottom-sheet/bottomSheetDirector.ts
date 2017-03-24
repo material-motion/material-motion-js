@@ -126,7 +126,7 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
     scrim.tap$.mapTo(false),
 
     collapsedToolBar.tap$.mapToLatest(
-      state$.pluck('isOpen').invert()
+      state$.pluck('isOpen').inverted()
     )
   ).dedupe();
 
