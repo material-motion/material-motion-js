@@ -35,6 +35,23 @@ import {
  */
 export class MotionObservable<T> extends IndefiniteObservable<T> {
   /**
+   * Creates a new `MotionObservable` that dispatches whatever values it
+   * receives from the provided stream.
+   *
+   * This is useful for imbuing another type of `Observable`, like an
+   * `IndefiniteSubject`, with the operators present on `MotionObservable`.
+   */
+  static from<T>(stream: Observable<T>): MotionObservable<T> {
+    return new MotionObservable<T>(
+      (observer: Observer<T>) => {
+        const subscription: Subscription = stream.subscribe(observer);
+
+        return subscription.unsubscribe;
+      }
+    );
+  }
+
+  /**
    * Dispatches values as it receives them, both from upstream and from any
    * streams provided as arguments.
    */
