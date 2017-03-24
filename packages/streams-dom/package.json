@@ -1,5 +1,5 @@
 {
-  "name": "material-motion-streams-dom",
+  "name": "material-motion-views-dom",
   "version": "0.0.0",
   "description": "DOM support for Material Motion",
   "main": "dist/index.js",
