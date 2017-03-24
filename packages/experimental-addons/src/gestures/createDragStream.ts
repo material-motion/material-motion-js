@@ -15,9 +15,8 @@
  */
 
 import {
-  MotionObserver,
   Observable,
-  State,
+  Observer,
   Subscription,
 } from 'material-motion-streams';
 
@@ -46,15 +45,13 @@ export function createDragStream({
   up$,
   recognitionThreshold = 16,
 }:createDragStreamArgs): ExperimentalMotionObservable<TranslationGestureRecognition> {
-  return new ExperimentalMotionObservable(
-    (observer: MotionObserver) => {
+  return new ExperimentalMotionObservable<TranslationGestureRecognition>(
+    (observer: Observer<TranslationGestureRecognition>) => {
       let recognitionState: GestureRecognitionState = GestureRecognitionState.POSSIBLE;
 
       let moveSubscription: Subscription;
       const downSubscription: Subscription = down$.subscribe(
         (downEvent: PointerEvent) => {
-          observer.state(State.ACTIVE);
-
           downEvent.target.setPointerCapture(downEvent.pointerId);
 
           // down$ is repeated here because we need two events to be able to
@@ -116,7 +113,6 @@ export function createDragStream({
               });
 
               if (atRest) {
-                observer.state(State.AT_REST);
                 recognitionState = GestureRecognitionState.POSSIBLE;
               }
             }
