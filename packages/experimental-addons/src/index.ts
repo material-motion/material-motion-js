@@ -19,9 +19,6 @@ export * from './types';
 export * from './ExperimentalMotionObservable';
 export { default as ExperimentalMotionObservable } from './ExperimentalMotionObservable';
 
-export * from './ThresholdSide';
-export { default as ThresholdSide } from './ThresholdSide';
-
 export * from './TogglableProperty';
 export { default as TogglableProperty } from './TogglableProperty';
 
