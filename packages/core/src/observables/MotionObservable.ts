@@ -171,6 +171,70 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
   }
 
   /**
+   * Remembers the most recently dispatched value and synchronously
+   * dispatches it to all new subscribers.
+   *
+   * `_remember()` is also useful for ensuring that expensive operations only
+   * happen once per dispatch, sharing the resulting value with all observers.
+   */
+  _remember(): MotionObservable<T> {
+    // Keep track of all the observers who have subscribed,
+    // so we can notify them when we get new values.
+    const observers = new Set();
+    let subscription: Subscription;
+    let lastValue: T;
+    let hasStarted = false;
+
+    return new MotionObservable<T>(
+      (observer: Observer<T>) => {
+        // If we already know about this observer, we don't
+        // have to do anything else.
+        if (observers.has(observer)) {
+          console.warn(
+            'observer is already subscribed; ignoring',
+            observer
+          );
+          return;
+        }
+
+        // Whenever we have at least one subscription, we
+        // should be subscribed to the parent stream (this).
+        if (!observers.size) {
+          subscription = this.subscribe(
+            (value: T) => {
+              // The parent stream has dispatched a value, so
+              // pass it along to all the children, and cache
+              // it for any observers that subscribe before
+              // the next dispatch.
+              observers.forEach(
+                observer => observer.next(value)
+              );
+
+              hasStarted = true;
+              lastValue = value;
+            }
+          );
+        }
+
+        observers.add(observer);
+
+        if (hasStarted) {
+          observer.next(lastValue);
+        }
+
+        return () => {
+          observers.delete(observer);
+
+          if (!observers.size) {
+            subscription.unsubscribe();
+            subscription = null;
+          }
+        };
+      }
+    );
+  }
+
+  /**
    * Limits the number of dispatches to one per frame.
    *
    * When it receives a value, it waits until the next frame to dispatch it.  If
