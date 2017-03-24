@@ -14,14 +14,8 @@
  *  under the License.
  */
 
-export * from './types';
-export * from './properties';
-export * from './observables';
-
-export * from './MotionRuntime';
-export { default as MotionRuntime } from './MotionRuntime';
-
-export * from './State';
-export { default as State } from './State';
-
-export default undefined;
+export enum State {
+  AT_REST = 0,
+  ACTIVE = 1,
+}
+export default State;

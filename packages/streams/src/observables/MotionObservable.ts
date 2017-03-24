@@ -16,59 +16,31 @@
 
 import {
   IndefiniteObservable,
+  Observer,
 } from 'indefinite-observable';
 
 import {
   Dict,
-  MotionConnect,
-  MotionObserver,
-  MotionObserverOrNext,
   NextChannel,
   NextOperation,
   Observable,
-  StateChannel,
   Subscription,
 } from '../types';
 
-export enum State {
-  AT_REST = 0,
-  ACTIVE = 1,
-}
-
 /**
- * MotionObservable is an Observable with two channels, `next` and `state`.
- * If this stream's source is active, `state` should dispatch `1`.  When it
- * comes to rest, `state` should dispatch `0`.
+ * `MotionObservable` is an extension of `IndefiniteObservable` that includes
+ * a series of purely-declarative operators that are useful for building
+ * animated interactions.  Those operators are specified in the
+ * [Starmap](https://material-motion.github.io/material-motion/starmap/specifications/operators/)
  */
 export class MotionObservable<T> extends IndefiniteObservable<T> {
-  constructor(connect: MotionConnect<T>) {
-    super(connect);
-  }
-
-  subscribe(observerOrNext: MotionObserverOrNext<T>): Subscription {
-    // To make operators observer-agnostic, they should receive a state channel
-    // even if the underlying observer doesn't have one.
-    let observer: MotionObserver<T>;
-
-    if (typeof observerOrNext === 'function') {
-      observer = {
-        next: observerOrNext,
-        state() {}
-      };
-    } else {
-      observer = observerOrNext;
-    }
-
-    return super.subscribe(observer);
-  }
-
   /**
    * Dispatches values as it receives them, both from upstream and from any
    * streams provided as arguments.
    */
   merge(...otherStreams: Array<Observable<any>>):MotionObservable<any> {
     return new (this.constructor as typeof MotionObservable)<any>(
-      (observer: MotionObserver<any>) => {
+      (observer: Observer<any>) => {
         const subscriptions = [this, ...otherStreams].map(
           stream => stream.subscribe(observer)
         );
@@ -227,11 +199,10 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
     // TypeScript doesn't seem to know what the type of this.constructor is, so
     // we explicitly tell it here.
     return new (this.constructor as typeof MotionObservable)<U>(
-      (observer: MotionObserver<U>) => {
-        const subscription = this.subscribe({
-          state: observer.state,
-          next: (value: T) => operation(value, observer.next),
-        });
+      (observer: Observer<U>) => {
+        const subscription = this.subscribe(
+          (value: T) => operation(value, observer.next)
+        );
 
         return subscription.unsubscribe;
       }
