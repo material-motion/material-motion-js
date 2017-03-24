@@ -5,7 +5,7 @@ Creates Material Motion springs powered by Rebound
 ## Usage ##
 
 ```javascript
-import { springSource } from 'material-motion-springs-adaptor-rebound';
+import { springSource } from 'material-motion-springs-rebound';
 
 
 ```
@@ -21,7 +21,7 @@ To encourage code readability, we follow the named arguments pattern: each funct
 ## Installation ##
 
 ```
-yarn add material-motion-springs-adaptor-rebound
+yarn add material-motion-springs-rebound
 ```
 
 ## License ##
