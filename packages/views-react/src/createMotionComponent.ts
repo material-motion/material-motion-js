@@ -28,7 +28,7 @@ import {
 
 import {
   springSource as reboundSpringSystem,
-} from 'material-motion-springs-adaptor-rebound';
+} from 'material-motion-springs-rebound';
 
 import {
   Director,
