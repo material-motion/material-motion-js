@@ -33,7 +33,7 @@ import {
 import {
   State,
   createProperty,
-} from 'material-motion-streams';
+} from 'material-motion';
 
 import {
   _springSystem,

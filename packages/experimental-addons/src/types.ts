@@ -19,7 +19,7 @@ import {
   Observable,
   Point2D,
   SpringSystem,
-} from 'material-motion-streams';
+} from 'material-motion';
 
 import {
   ExperimentalMotionObservable,

@@ -26,7 +26,7 @@ import {
   Point2D,
   Subscription,
   isObservable,
-} from 'material-motion-streams';
+} from 'material-motion';
 
 import {
   GestureRecognitionState,

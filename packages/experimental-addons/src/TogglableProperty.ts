@@ -19,7 +19,7 @@ import {
   Observer,
   PropertyObservable,
   ReactiveProperty,
-} from 'material-motion-streams';
+} from 'material-motion';
 
 export class TogglableProperty<T> implements PropertyObservable<T> {
   _property = new ReactiveProperty<T>();
