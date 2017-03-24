@@ -12,7 +12,7 @@
   "dependencies": {
     "jsxstyle": "1.0.2",
     "material-motion-experimental-addons": "0.0.0",
-    "material-motion-springs-adaptor-rebound": "0.0.0",
+    "material-motion-springs-rebound": "0.0.0",
     "material-motion": "0.0.0",
     "material-motion-views-react": "0.0.0",
     "react": "15.4.1",
