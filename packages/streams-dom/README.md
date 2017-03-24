@@ -5,7 +5,7 @@ DOM support for Material Motion
 ## Usage ##
 
 ```javascript
-import createMotionElementFromDOMNode from 'material-motion-streams-dom';
+import createMotionElementFromDOMNode from 'material-motion-views-dom';
 
 
 ```
@@ -19,7 +19,7 @@ To encourage code readability, we follow the named arguments pattern: each funct
 ## Installation ##
 
 ```
-yarn add material-motion-streams-dom
+yarn add material-motion-views-dom
 ```
 
 ## License ##

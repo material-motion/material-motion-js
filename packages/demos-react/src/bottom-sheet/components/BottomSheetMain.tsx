@@ -25,7 +25,7 @@ import {
 
 import {
   createMotionComponent,
-} from 'material-motion-streams-react';
+} from 'material-motion-views-react';
 
 // How the contents of a bottom sheet transition between states vary from app-
 // to-app.  For instance, an app could choose any of these:
