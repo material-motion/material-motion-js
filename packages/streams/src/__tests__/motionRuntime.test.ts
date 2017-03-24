@@ -29,7 +29,6 @@ import {
 import {
   MotionObservable,
   MotionRuntime,
-  State,
 } from '../';
 
 import {
@@ -75,120 +74,6 @@ describe('motionRuntime',
 
         mockObserver.next(2);
         expect(mockProperty.write).to.have.been.calledWith(2);
-      }
-    );
-
-    it(`should start at rest`,
-      () => {
-        expect(runtime.aggregateState).to.equal(State.AT_REST);
-      }
-    );
-
-    it(`should become active when a stream does`,
-      () => {
-        runtime.write({
-          stream,
-          to: mockProperty,
-        });
-
-        mockObserver.state(State.ACTIVE);
-        expect(runtime.aggregateState).to.equal(State.ACTIVE);
-      }
-    );
-
-    it(`should be active if any streams are active`,
-      () => {
-        const mockObserver2 = createMockObserver();
-        const stream2 = new MotionObservable(mockObserver2.connect);
-
-        runtime.write({
-          stream,
-          to: mockProperty,
-        });
-
-        runtime.write({
-          stream: stream2,
-          to: mockProperty,
-        });
-
-        mockObserver.state(State.AT_REST);
-        mockObserver2.state(State.ACTIVE);
-
-        expect(runtime.aggregateState).to.equal(State.ACTIVE);
-      }
-    );
-
-    it(`should come to rest when all streams come to rest`,
-      () => {
-        const mockObserver2 = createMockObserver();
-        const stream2 = new MotionObservable(mockObserver2.connect);
-
-        runtime.write({
-          stream,
-          to: mockProperty,
-        });
-
-        runtime.write({
-          stream: stream2,
-          to: mockProperty,
-        });
-
-        mockObserver.state(State.ACTIVE);
-        mockObserver2.state(State.ACTIVE);
-        mockObserver.state(State.AT_REST);
-        mockObserver2.state(State.AT_REST);
-
-        expect(runtime.aggregateState).to.equal(State.AT_REST);
-      }
-    );
-
-    it(`should not be active unless a stream's state channel declares so`,
-      () => {
-        runtime.write({
-          stream,
-          to: mockProperty,
-        });
-
-        mockObserver.next(5);
-        expect(runtime.aggregateState).to.equal(State.AT_REST);
-      }
-    );
-
-    it(`should be accurate even if it receives imbalanced state streams`,
-      () => {
-        runtime.write({
-          stream,
-          to: mockProperty,
-        });
-
-        mockObserver.state(State.AT_REST);
-        mockObserver.state(State.AT_REST);
-        mockObserver.state(State.ACTIVE);
-        expect(runtime.aggregateState).to.equal(State.ACTIVE);
-
-        mockObserver.state(State.ACTIVE);
-        expect(runtime.aggregateState).to.equal(State.ACTIVE);
-
-        mockObserver.state(State.AT_REST);
-        expect(runtime.aggregateState).to.equal(State.AT_REST);
-      }
-    );
-
-    it(`should change between active and at rest as often as the underlying streams do`,
-      () => {
-        runtime.write({
-          stream,
-          to: mockProperty,
-        });
-
-        mockObserver.state(State.ACTIVE);
-        expect(runtime.aggregateState).to.equal(State.ACTIVE);
-
-        mockObserver.state(State.AT_REST);
-        expect(runtime.aggregateState).to.equal(State.AT_REST);
-
-        mockObserver.state(State.ACTIVE);
-        expect(runtime.aggregateState).to.equal(State.ACTIVE);
       }
     );
   }

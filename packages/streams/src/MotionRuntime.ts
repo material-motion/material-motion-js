@@ -52,22 +52,7 @@ export class MotionRuntime {
    * property.
    */
   write<T>({ stream, to }: RuntimeWriteArgs<T>) {
-    const observer = {
-      next: (value: any) => {
-        to.write(value);
-      },
-
-      state: (state: State) => {
-        if (state === State.ACTIVE) {
-          this._activeObservers.add(observer);
-
-        } else {
-          this._activeObservers.delete(observer);
-        }
-      },
-    };
-
-    const subscription = stream.subscribe(observer);
+    const subscription = stream.subscribe(to.write);
     this._subscriptions.add(subscription);
   }
 }

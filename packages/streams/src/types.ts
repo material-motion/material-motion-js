@@ -36,7 +36,6 @@ export {
 
 import {
   MotionObservable,
-  State,
 } from './observables/MotionObservable';
 
 export function isObservable(value:any): value is Observable<any> {
@@ -51,18 +50,11 @@ export function isObservable(value:any): value is Observable<any> {
   return value[$$observable] !== undefined && value[$$observable]() === value;
 }
 
-export interface MotionObserver<T> extends Observer<T> {
-  state:StateChannel;
-}
-export type StateChannel = (value: State) => void;
-export type MotionObserverOrNext<T> = MotionObserver<T> | NextChannel<T>;
-
-export type MotionConnect<T> = (observer: MotionObserver<T>) => Disconnect;
 export type NextOperation<T, U> = (value: T, nextChannel: NextChannel<U>) => void;
 
 
 export interface Subject<T> extends Observable<T> {
-  next(T): void;
+  next(value: T): void;
 }
 
 export type Point2D = {
