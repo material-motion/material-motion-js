@@ -1,5 +1,5 @@
 {
-  "name": "material-motion-springs-adaptor-rebound",
+  "name": "material-motion-springs-rebound",
   "version": "0.0.0",
   "description": "Creates Material Motion springs powered by Rebound",
   "main": "dist/index.js",
@@ -7,7 +7,7 @@
   "typescript:main": "src/index.ts",
   "scripts": {
     "lint": "$( yarn bin )/tslint -c ../../tslint.json --project tsconfig.json --type-check",
-    "test": "node ../../tools/test.js --only springs-adaptor-rebound",
+    "test": "node ../../tools/test.js --only springs-rebound",
     "clean": "rm -rf ./dist/*; mkdir -p ./dist/",
     "build": "yarn run clean; $( yarn bin )/tsc"
   },
