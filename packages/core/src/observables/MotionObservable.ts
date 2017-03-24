@@ -101,6 +101,39 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
   }
 
   /**
+   * Dispatches:
+   * - false when it receives true,
+   * - true when it receives false,
+   * - 0 when it receives 1, and
+   * - 1 when it receives 0.
+   */
+  inverted<T extends T & (boolean | number)>(): MotionObservable<T> {
+    return this._nextOperator(
+      (value: T, dispatch: NextChannel<T>) => {
+        switch (value) {
+          case 0:
+            dispatch(1);
+            break;
+
+           case 1:
+            dispatch(0);
+            break;
+
+           case false:
+            dispatch(true);
+            break;
+
+           case true:
+            dispatch(false);
+            break;
+
+          default:break;
+        }
+      }
+    );
+  }
+
+  /**
    * Extracts the value at a given key from every incoming object and passes
    * those values to the observer.
    *
