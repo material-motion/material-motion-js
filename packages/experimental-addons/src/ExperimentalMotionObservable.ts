@@ -348,22 +348,6 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
   }
 
   /**
-   * Returns the current value of an observable property (e.g. a subject or
-   * remembered stream).
-   */
-  read(): T {
-    let result: T;
-
-    this.subscribe(
-      (value: T) => {
-        result = value;
-      }
-    ).unsubscribe();
-
-    return result;
-  }
-
-  /**
    * Listens to a GestureRecognition stream and dispatches true if
    * recognitionState is POSSIBLE, CANCELLED, ENDED, or FAILED.
    */
