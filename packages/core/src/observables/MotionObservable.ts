@@ -298,6 +298,22 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
   }
 
   /**
+   * Returns the current value of an observable property (e.g. a subject or
+   * remembered stream).
+   */
+  _read(): T {
+    let result: T;
+
+    this.subscribe(
+      (value: T) => {
+        result = value;
+      }
+    ).unsubscribe();
+
+    return result;
+  }
+
+  /**
    * `_nextOperator` is sugar for creating an operator that reads and writes
    * from the `next` channel.  It encapsulates the stream creation and
    * subscription boilerplate required for most operators.
