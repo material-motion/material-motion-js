@@ -5,7 +5,7 @@ React support for Material Motion
 ## Usage ##
 
 ```javascript
-import MaterialMotionProvider from 'material-motion-streams-react';
+import MaterialMotionProvider from 'material-motion-views-react';
 
 
 ```
@@ -19,7 +19,7 @@ To encourage code readability, we follow the named arguments pattern: each funct
 ## Installation ##
 
 ```
-yarn add material-motion-streams-react
+yarn add material-motion-views-react
 ```
 
 ## License ##
