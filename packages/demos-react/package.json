@@ -13,7 +13,7 @@
     "jsxstyle": "1.0.2",
     "material-motion-experimental-addons": "0.0.0",
     "material-motion-springs-adaptor-rebound": "0.0.0",
-    "material-motion-streams": "0.0.0",
+    "material-motion": "0.0.0",
     "material-motion-streams-react": "0.0.0",
     "react": "15.4.1",
     "react-dom": "15.4.1",

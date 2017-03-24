@@ -26,7 +26,7 @@ import {
   Subject,
   SubjectDict,
   SubscriptionDict,
-} from 'material-motion-streams';
+} from 'material-motion';
 
 export type AttachStreamsProps = StreamDict<any> & {
   children: React.ReactElement<{ domRef(element: Element): void }>,

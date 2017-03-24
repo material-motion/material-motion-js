@@ -19,7 +19,7 @@ import {
   MotionObservable,
   MotionObserver,
   Point2D,
-} from 'material-motion-streams';
+} from 'material-motion';
 
 export default function createMotionElementFromDOMNode(domNode: Element): MotionElement {
   return {
