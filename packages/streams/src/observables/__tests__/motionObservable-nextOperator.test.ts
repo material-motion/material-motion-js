@@ -39,7 +39,6 @@ import {
 
 import {
   MotionObservable,
-  State,
 } from '../';
 
 describe('motionObservable._nextOperator',
@@ -47,7 +46,6 @@ describe('motionObservable._nextOperator',
     let stream;
     let mockObserver;
     let nextListener;
-    let stateListener;
 
     beforeEach(
       () => {
@@ -55,7 +53,6 @@ describe('motionObservable._nextOperator',
         stream = new MotionObservable(mockObserver.connect);
 
         nextListener = stub();
-        stateListener = stub();
       }
     );
 
@@ -69,7 +66,7 @@ describe('motionObservable._nextOperator',
               nextChannel(value);
             }
           );
-        }
+        };
 
         stream._nextOperator(makeValuesAsync).subscribe(nextListener);
 
@@ -81,25 +78,6 @@ describe('motionObservable._nextOperator',
             expect(nextListener).to.have.been.calledWith(1);
           }
         );
-      }
-    );
-
-    it('should pass through observer.state',
-      () => {
-        const blackHole = () => {};
-
-        stream._nextOperator(blackHole).subscribe({
-          next: nextListener,
-          state: stateListener,
-        });
-
-        mockObserver.state(State.AT_REST);
-        mockObserver.next('hi');
-        mockObserver.state(State.ACTIVE);
-
-        expect(stateListener).to.have.been.calledWith(State.AT_REST);
-        expect(nextListener).not.to.have.been.called;
-        expect(stateListener).to.have.been.calledWith(State.ACTIVE);
       }
     );
   }
