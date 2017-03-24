@@ -17,14 +17,13 @@
 import * as deepEqual from 'deep-equal';
 
 import {
+  Connect,
   Dict,
-  MotionConnect,
   MotionObservable,
-  MotionObserver,
   NextChannel,
   Observable,
+  Observer,
   Point2D,
-  State,
   Subscription,
   isObservable,
 } from 'material-motion-streams';
@@ -50,7 +49,7 @@ import {
 export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
   static from<T>(stream: Observable<T>): ExperimentalMotionObservable<T> {
     return new ExperimentalMotionObservable<T>(
-      (observer: MotionObserver<T>) => {
+      (observer: Observer<T>) => {
         const subscription: Subscription = stream.subscribe(observer);
 
         return subscription.unsubscribe;
@@ -60,7 +59,7 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
 
   static combineLatestFromDict<T extends Dict<any>>(dict: Dict<Observable<any> | any>) {
     return new ExperimentalMotionObservable(
-      (observer: MotionObserver<T>) => {
+      (observer: Observer<T>) => {
         const outstandingKeys = new Set(Object.keys(dict));
 
         const nextValue: T = {};
@@ -200,7 +199,7 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
    */
   mapToLatest<U>(value$: Observable<U>): ExperimentalMotionObservable<U> {
     return new ExperimentalMotionObservable(
-      (observer: MotionObserver<U>) => {
+      (observer: Observer<U>) => {
         const subscriptions: Array<Subscription> = [];
         let lastValue: U;
 
@@ -397,11 +396,10 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
     const observers = new Set();
     let subscription: Subscription;
     let lastValue: T;
-    let lastState: State;
     let hasStarted = false;
 
     return new MotionObservable<T>(
-      (observer: MotionObserver<T>) => {
+      (observer: Observer<T>) => {
         // If we already know about this observer, we don't
         // have to do anything else.
         if (observers.has(observer)) {
@@ -415,8 +413,8 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
         // Whenever we have at least one subscription, we
         // should be subscribed to the parent stream (this).
         if (!observers.size) {
-          subscription = this.subscribe({
-            next(value: T) {
+          subscription = this.subscribe(
+            (value: T) => {
               // The parent stream has dispatched a value, so
               // pass it along to all the children, and cache
               // it for any observers that subscribe before
@@ -427,30 +425,14 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
 
               hasStarted = true;
               lastValue = value;
-            },
-
-            state(value: State) {
-              // The parent stream has dispatched a value, so
-              // pass it along to all the children, and cache
-              // it for any observers that subscribe before
-              // the next dispatch.
-              observers.forEach(
-                observer => observer.state(value)
-              );
-
-              lastState = value;
             }
-          });
+          );
         }
 
         observers.add(observer);
 
         if (hasStarted) {
           observer.next(lastValue);
-        }
-
-        if (lastState !== undefined) {
-          observer.state(lastState);
         }
 
         return () => {
