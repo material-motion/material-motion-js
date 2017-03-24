@@ -14,8 +14,8 @@
  *  under the License.
  */
 
-// Using const instead of enum because 'above' is more meaningful in a log/to JS
-// decelopers than 0.
+// Using const instead of enum because `'above'` is more meaningful in a log/to
+// JS developers than `0`.
 export const ThresholdSide = {
   ABOVE: 'above',
   WITHIN: 'within',
