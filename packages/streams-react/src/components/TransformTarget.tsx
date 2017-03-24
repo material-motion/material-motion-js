@@ -18,7 +18,7 @@ import * as React from 'react';
 
 import {
   Point2D,
-} from 'material-motion-streams';
+} from 'material-motion';
 
 export type TransformTargetArgs = {
   position: 'absolute' | 'fixed' | 'relative' | 'static' | 'sticky',

@@ -17,7 +17,7 @@
 import {
   IndefiniteSubject,
   createProperty,
-} from 'material-motion-streams';
+} from 'material-motion';
 
 import {
   Director,

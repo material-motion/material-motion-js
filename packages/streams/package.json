@@ -1,7 +1,7 @@
 {
-  "name": "material-motion-streams",
+  "name": "material-motion",
   "version": "0.0.0",
-  "description": "A stream-powered implementation of Material Motion",
+  "description": "Makes it easy to add rich, interactive motion to your application.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "typescript:main": "src/index.ts",
