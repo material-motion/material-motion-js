@@ -278,37 +278,6 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
   }
 
   /**
-   * Dispatches:
-   * - false when it receives true,
-   * - true when it receives false,
-   * - 0 when it receives 1, and
-   * - 1 when it receives 0.
-   */
-   invert<T extends (boolean | number)>(): ExperimentalMotionObservable<T> {
-     return this._nextOperator(
-       (value: T, dispatch: NextChannel<T>) => {
-         switch (value) {
-           case 0:
-             dispatch(1);
-             break;
-
-           case 1:
-             dispatch(0);
-             break;
-
-           case false:
-             dispatch(true);
-             break;
-
-           case true:
-             dispatch(false);
-             break;
-         }
-       }
-     ) as ExperimentalMotionObservable<T>;
-   }
-
-  /**
    * Listens to an incoming stream of numbers.  When the values have increased
    * by at least `distance`, it dispatches `ThresholdSide.ABOVE`.  When they
    * have decreased by at least `distance`, it dispatches `ThresholdSide.BELOW`.
