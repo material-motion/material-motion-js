@@ -1,5 +1,5 @@
 {
-  "name": "material-motion-streams-react",
+  "name": "material-motion-views-react",
   "version": "0.0.0",
   "description": "React support for Material Motion",
   "main": "dist/index.js",
