@@ -1,19 +1,27 @@
 {
-  "name": "material-motion-views-dom",
+  "name": "material-motion-views-react",
   "version": "0.0.0",
-  "description": "DOM support for Material Motion",
+  "description": "React support for Material Motion",
   "main": "dist/index.js",
-  "types": "src/index.ts",
+  "types": "dist/index.d.ts",
+  "typescript:main": "src/index.ts",
   "scripts": {
-    "lint": "../../node_modules/.bin/tslint -c ../../tslint.json --project tsconfig.json --type-check",
-    "test": "node ../../tools/test.js --only streams-dom",
+    "lint": "$( yarn bin )/tslint -c ../../tslint.json --project tsconfig.json --type-check",
+    "test": "node ../../tools/test.js --only views-react",
     "clean": "rm -rf ./dist/*; mkdir -p ./dist/",
-    "build": "yarn run clean; ../../node_modules/.bin/tsc"
+    "build": "yarn run clean; $( yarn bin )/tsc"
   },
   "dependencies": {
     "indefinite-observable": "1.0.1",
+    "material-motion-springs-adaptor-rebound": "0.0.0",
+    "material-motion-experimental-addons": "0.0.0",
     "material-motion": "0.0.0",
     "tslib": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^15.0.0",
+    "tslint": "4.0.2",
+    "typescript": "2.1"
   },
   "repository": {
     "type": "git",
@@ -39,5 +47,5 @@
   "bugs": {
     "url": "https://github.com/material-motion/material-motion-js/issues/"
   },
-  "homepage": "https://github.com/material-motion/material-motion-js/tree/develop/packages/streams-dom/#readme"
+  "homepage": "https://github.com/material-motion/material-motion-js/tree/develop/packages/streams-react/#readme"
 }
