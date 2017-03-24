@@ -25,16 +25,13 @@ import {
   Observer,
   Point2D,
   Subscription,
+  ThresholdSide,
   isObservable,
 } from 'material-motion';
 
 import {
   GestureRecognitionState,
 } from './gestures/GestureRecognitionState';
-
-import {
-  ThresholdSide,
-} from './ThresholdSide';
 
 import {
   GestureRecognition,
