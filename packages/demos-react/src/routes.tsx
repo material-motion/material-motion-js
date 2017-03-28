@@ -21,16 +21,16 @@ import Match from 'react-router/Match';
 import Miss from 'react-router/Miss';
 import Router from 'react-router/BrowserRouter';
 
-import BottomSheetMain from './bottom-sheet/components/BottomSheetMain';
+// import ExampleMain from './example/components/ExampleMain';
 
 // To add a new demo, import the correct component above and add it to the links
 // list below.  Everything else is automatic.
 const links = [
-  {
-    href: '/bottom-sheet/',
-    name: 'BottomSheetMain',
-    component: BottomSheetMain,
-  },
+  // {
+  //   href: '/example/',
+  //   name: 'ExampleMain',
+  //   component: ExampleMain,
+  // },
 ];
 
 function Links() {
@@ -55,6 +55,18 @@ export default function() {
   return (
     <Router>
       <div>
+        <h1
+          style = {
+            {
+              padding: 16,
+              margin: 0,
+              fontSize: 24,
+            }
+          }
+        >
+          Demos:
+        </h1>
+
         {
           links.map(
             link => (
