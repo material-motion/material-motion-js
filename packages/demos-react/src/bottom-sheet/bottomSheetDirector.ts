@@ -43,17 +43,23 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
   // opacity is broken.  presumably the spring isn't emitting on changes from 0
   // to 0, but it worked before.  *shrug*
 
-  const openness$ = springSystem({
-    destination: state$.pluck('isOpen').toNumber$(),
-  }).pluck('value');
+  // These were originally written as streams, but `read` was moved to
+  // `_read()`. As a quick hack to keep the demo working, the streams are now
+  // being forwarded to properties, which are passed to `springSystem()`
+  const opennessDestination = createProperty({ initialValue: true });
+  state$.pluck('isOpen').toNumber$().subscribe(
+    opennessDestination.write
+  );
 
-  const previewOpenness$ = springSystem({
-    destination: state$.pluck('willOpen').toNumber$(),
-  }).pluck('value');
+  const previewOpennessDestination = createProperty({ initialValue: true });
+  state$.pluck('isOpen').toNumber$().subscribe(
+    previewOpennessDestination.write
+  );
 
+  const springDestinationY = createProperty({ initialValue: 0 });
   // This is basically pluck('isOpen').rewrite(), but since it's dependent on
   // multiple properties, it's not easy to express in that form:
-  const springDestinationY$ = state$._map(
+  state$._map(
     ({ isOpen, length }) => isOpen
       ? {
           x: 0,
@@ -63,7 +69,18 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
           x: 0,
           y: length,
         }
+  ).subscribe(
+    springDestinationY.write
   );
+
+  const openness$ = springSystem({
+    destination: opennessDestination,
+  }).pluck('value');
+
+  const previewOpenness$ = springSystem({
+    destination: previewOpennessDestination,
+  }).pluck('value');
+
 
   // This was originally an experiment in using cycles to model an interaction.
   // Though that approach worked, there were a couple concerns:
@@ -85,7 +102,7 @@ export const bottomSheetDirector: Director = function bottomSheetDirector({
   const springEnabled = createProperty({ initialValue: true });
 
   const spring = springSystem({
-    destination: springDestinationY$,
+    destination: springDestinationY,
     initialValue: bottomSheet.translate$,
     initialVelocity: springVelocity,
     enabled: springEnabled,
