@@ -153,16 +153,25 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
 
   /**
    * Logs every value that passes through this section of the stream, and passes
-   * them downstream.
+   * them downstream.  Adding `log` to stream chain should have no effect on the
+   * rest of the chain.
    *
-   * Adding `log` to stream chain should have no effect on the rest of the
-   * chain.
+   * If `label` is specified, its value will be added to each log.  For
+   * instance, `number$.log('id')` would log `id 1`, `id 2`, etc.
+   *
+   * If `pluckPath` is specified, the value at that path will be logged for each
+   * item `log()` receives.  For instance, if `log('Name:', 'item.name')`
+   * received this value:
+   *
+   *     { item: { type: 'fruit', name: 'banana' }, count: 2 }
+   *
+   * it would log `Name: banana`.
    */
-  log(label: string = '', path: string = ''): MotionObservable<T> {
+  log(label: string = '', pluckPath: string = ''): MotionObservable<T> {
     let plucker: (value: T) => any;
 
-    if (path) {
-      plucker = createPlucker(path);
+    if (pluckPath) {
+      plucker = createPlucker(pluckPath);
     }
 
     return this._nextOperator(
