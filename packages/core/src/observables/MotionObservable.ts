@@ -107,7 +107,7 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
    * - 0 when it receives 1, and
    * - 1 when it receives 0.
    */
-  inverted<T extends T & (boolean | number)>(): MotionObservable<T> {
+  inverted(): MotionObservable<T> {
     return this._nextOperator(
       (value: T, dispatch: NextChannel<T>) => {
         switch (value) {
