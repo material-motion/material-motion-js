@@ -12,14 +12,12 @@
     "build": "yarn run clean; $( yarn bin )/tsc"
   },
   "dependencies": {
-    "deep-equal": "1.0.1",
     "indefinite-observable": "1.0.1",
     "material-motion": "0.0.0",
     "material-motion-testing-utils": "0.0.0",
     "tslib": "^1.2.0"
   },
   "devDependencies": {
-    "@types/deep-equal": "0.0.30",
     "tslint": "4.0.2",
     "typescript": "2.1"
   },

@@ -26,7 +26,7 @@ import {
   stub,
 } from 'sinon';
 
-import ExperimentalMotionObservable from '../ExperimentalMotionObservable';
+import MotionObservable from '../MotionObservable';
 
 declare function require(name: string);
 
@@ -39,7 +39,7 @@ import {
   createMockObserver,
 } from 'material-motion-testing-utils';
 
-describe('experimentalMotionObservable.dedupe',
+describe('motionObservable.dedupe',
   () => {
     let stream;
     let mockObserver;
@@ -48,7 +48,7 @@ describe('experimentalMotionObservable.dedupe',
     beforeEach(
       () => {
         mockObserver = createMockObserver();
-        stream = new ExperimentalMotionObservable(mockObserver.connect);
+        stream = new MotionObservable(mockObserver.connect);
         listener = stub();
       }
     );
@@ -73,9 +73,9 @@ describe('experimentalMotionObservable.dedupe',
         mockObserver.next(3);
 
         expect(listener).to.have.calledThrice;
-        expect(listener).to.have.calledWith(1);
-        expect(listener).to.have.calledWith(2);
-        expect(listener).to.have.calledWith(3);
+        expect(listener).to.have.been.calledWith(1);
+        expect(listener).to.have.been.calledWith(2);
+        expect(listener).to.have.been.calledWith(3);
       }
     );
 
