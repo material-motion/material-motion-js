@@ -14,6 +14,8 @@
  *  under the License.
  */
 
+import * as deepEqual from 'deep-equal';
+
 import {
   IndefiniteObservable,
   Observer,
@@ -25,6 +27,7 @@ import {
   NextOperation,
   Observable,
   Subscription,
+  equalityCheck,
 } from '../types';
 
 /**
@@ -142,6 +145,8 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
    * - `transform$.pluck('translate')` is equivalent to
    *   `transform$.map(transform => transform.translate)`
    *
+
+
    * - `transform$.pluck('translate.x')` is equivalent to
    *   `transform$.map(transform => transform.translate.x)`
    */
@@ -149,6 +154,29 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
     return this._map(
       createPlucker(path)
     );
+  }
+
+  /**
+   * Ensures that every value dispatched is different than the previous one.
+   */
+  dedupe(areEqual: equalityCheck = deepEqual): MotionObservable<T> {
+    let dispatched = false;
+    let lastValue: T;
+
+    return this._nextOperator(
+      (value: T, dispatch: NextChannel<T>) => {
+        if (dispatched && areEqual(value, lastValue)) {
+          return;
+        }
+
+        // To prevent a potential infinite loop, these flags must be set before
+        // dispatching the result to the observer
+        lastValue = value;
+        dispatched = true;
+
+        dispatch(value);
+      }
+    )._remember() as MotionObservable<T>;
   }
 
   /**

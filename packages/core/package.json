@@ -12,10 +12,12 @@
     "test": "node ../../tools/test.js --only core"
   },
   "dependencies": {
+    "deep-equal": "1.0.1",
     "indefinite-observable": "1.0.1",
     "tslib": "^1.2.0"
   },
   "devDependencies": {
+    "@types/deep-equal": "0.0.30",
     "material-motion-testing-utils": "0.0.0"
   },
   "repository": {
