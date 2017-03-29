@@ -69,8 +69,6 @@ export interface Timestamped<T> {
   timestamp: number,
 }
 
-export type equalityCheck = (a: any, b: any) => boolean;
-
 export interface GestureRecognition<T> {
   recognitionState: GestureRecognitionState,
   recognitionThreshold: number,

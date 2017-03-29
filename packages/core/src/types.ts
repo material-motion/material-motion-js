@@ -90,6 +90,8 @@ export type SpringRecord<T> = {
   threshold: number,
 };
 
+export type equalityCheck = (a: any, b: any) => boolean;
+
 export type SpringArgs<T> = {
   destination: PropertyObservable<T>,
   enabled: PropertyObservable<boolean>,

@@ -14,8 +14,6 @@
  *  under the License.
  */
 
-import * as deepEqual from 'deep-equal';
-
 import {
   Connect,
   Dict,
@@ -37,7 +35,6 @@ import {
   GestureRecognition,
   Timestamped,
   TranslationGestureRecognition,
-  equalityCheck,
 } from './types';
 
 /**
@@ -130,29 +127,6 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
         dispatch(latestValue);
       }
     ) as ExperimentalMotionObservable<T>;
-  }
-
-  /**
-   * Ensures that every value dispatched is different than the previous one.
-   */
-  dedupe(areEqual: equalityCheck = deepEqual): ExperimentalMotionObservable<T> {
-    let dispatched = false;
-    let lastValue: T;
-
-    return this._nextOperator(
-      (value: T, dispatch: NextChannel<T>) => {
-        if (dispatched && areEqual(value, lastValue)) {
-          return;
-        }
-
-        // To prevent a potential infinite loop, these flags must be set before
-        // dispatching the result to the observer
-        lastValue = value;
-        dispatched = true;
-
-        dispatch(value);
-      }
-    )._remember() as ExperimentalMotionObservable<T>;
   }
 
   /**
