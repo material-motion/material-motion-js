@@ -14,8 +14,20 @@
  *  under the License.
  */
 
-class Spring {
+import createProperty from '../properties/createProperty';
 
+import {
+  PropertyObservable,
+} from '../types';
+
+class Spring<T> {
+  destination: PropertyObservable<T> = createProperty<T>();
+  initialValue: PropertyObservable<T> = createProperty<T>();
+  initialVelocity: PropertyObservable<T> = createProperty<T>();
+  tension: PropertyObservable<number> = createProperty<number>({ initialValue: 342 });
+  friction: PropertyObservable<number> = createProperty<number>({ initialValue: 30 });
+  threshold: PropertyObservable<number> = createProperty<number>({ initialValue: .001 });
+  enabled: PropertyObservable<boolean> = createProperty<boolean>({ initialValue: true });
 }
 
 export default Spring;
