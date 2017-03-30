@@ -99,46 +99,18 @@ export interface MotionElement {
   getEvent$(type: string): MotionObservable<Event>;
 }
 
-export type SpringRecord<T> = {
-  destination: T,
-  enabled: boolean,
-  friction: number,
-  tension: number,
-  initialValue: T,
-  initialVelocity: T,
-  threshold: number,
-};
-
 export type equalityCheck = (a: any, b: any) => boolean;
 
-export type SpringArgs<T> = {
-  destination: PropertyObservable<T>,
+export type SpringProperties<T> = {
   enabled: PropertyObservable<boolean>,
-
-  /* When the destination changes, the spring will update its configuration from
-   * the properties given below.
-   *
-   * The spring's current value and configuration are state that would normally
-   * be managed by the spring itself.  However, an author may want to take
-   * control of that state (for instance, to ensure that it is updated if
-   * its affected externally, perhaps by a gesture).
-   *
-   * Therefore, we provide two ways for the spring to be configured:
-   *
-   *  - If we receive a raw primitive, we'll use it for the initial value and
-   *    the spring will manage that state.
-   *
-   *  - If we receive a readable or stream, we'll presume the author is managing
-   *    the value externally and check there for updates.
-   */
-  friction: PropertyObservable<number> | number,
-  tension: PropertyObservable<number> | number,
-  initialValue: ScopedReadable<T> | T,
-  initialVelocity: ScopedReadable<T> | T,
-  threshold: ScopedReadable<number> | number,
+  destination: PropertyObservable<T>,
+  initialValue: PropertyObservable<T>,
+  initialVelocity: PropertyObservable<T>,
+  friction: PropertyObservable<number>,
+  tension: PropertyObservable<number>,
+  threshold: PropertyObservable<number>,
 };
-
-export type SpringSystem<T> = (kwargs: SpringArgs<T>) => MotionObservable<T>;
+export type SpringSystem<T extends number | Point2D> = (spring: SpringProperties<T>) => MotionObservable<T>;
 
 export type Dict<T> = {
   [index: string]: T,

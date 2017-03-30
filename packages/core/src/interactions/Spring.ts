@@ -21,6 +21,7 @@ import {
   PropertyObservable,
 } from '../types';
 
+// Might be able to set T = number by default in TS 2.3 and get rid of SpringT
 export class SpringT<T extends number | Point2D> {
   destination: PropertyObservable<T>;
   initialValue: PropertyObservable<T>;
