@@ -14,18 +14,7 @@
  *  under the License.
  */
 
-export * from './types';
-export * from './properties';
-export * from './observables';
-export * from './interactions';
-
-export * from './MotionRuntime';
-export { default as MotionRuntime } from './MotionRuntime';
-
-export * from './State';
-export { default as State } from './State';
-
-export * from './ThresholdSide';
-export { default as ThresholdSide } from './ThresholdSide';
+export * from './Spring';
+export { default as Spring } from './Spring';
 
 export default undefined;
