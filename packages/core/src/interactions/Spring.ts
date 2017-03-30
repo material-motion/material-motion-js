@@ -17,17 +17,47 @@
 import createProperty from '../properties/createProperty';
 
 import {
+  Point2D,
   PropertyObservable,
 } from '../types';
 
-class Spring<T> {
-  destination: PropertyObservable<T> = createProperty<T>();
-  initialValue: PropertyObservable<T> = createProperty<T>();
-  initialVelocity: PropertyObservable<T> = createProperty<T>();
+export class SpringT<T extends number | Point2D> {
+  destination: PropertyObservable<T>;
+  initialValue: PropertyObservable<T>;
+  initialVelocity: PropertyObservable<T>;
   tension: PropertyObservable<number> = createProperty<number>({ initialValue: 342 });
   friction: PropertyObservable<number> = createProperty<number>({ initialValue: 30 });
   threshold: PropertyObservable<number> = createProperty<number>({ initialValue: .001 });
   enabled: PropertyObservable<boolean> = createProperty<boolean>({ initialValue: true });
+}
+
+export class Spring extends SpringT<number> {
+  destination: PropertyObservable<number> = createProperty<T>({ initialValue: 0 });
+  initialValue: PropertyObservable<number> = createProperty<T>({ initialValue: 0 });
+  initialVelocity: PropertyObservable<number> = createProperty<T>({ initialValue: 0 });
+}
+
+export class Spring2D extends SpringT<Point2D> {
+  destination: PropertyObservable<Point2D> = createProperty<Point2D>({
+    initialValue: {
+      x: 0,
+      y: 0
+    },
+  });
+
+  initialValue: PropertyObservable<Point2D> = createProperty<Point2D>({
+    initialValue: {
+      x: 0,
+      y: 0
+    },
+  });
+
+  initialVelocity: PropertyObservable<Point2D> = createProperty<Point2D>({
+    initialValue: {
+      x: 0,
+      y: 0
+    },
+  });
 }
 
 export default Spring;
