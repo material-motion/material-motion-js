@@ -21,6 +21,11 @@ import {
   PropertyObservable,
 } from '../types';
 
+import {
+  State,
+} from '../State';
+
+// Might be able to set T = number by default in TS 2.3 and get rid of SpringT
 export class SpringT<T extends number | Point2D> {
   destination: PropertyObservable<T>;
   initialValue: PropertyObservable<T>;
@@ -29,6 +34,7 @@ export class SpringT<T extends number | Point2D> {
   friction: PropertyObservable<number> = createProperty<number>({ initialValue: 30 });
   threshold: PropertyObservable<number> = createProperty<number>({ initialValue: .001 });
   enabled: PropertyObservable<boolean> = createProperty<boolean>({ initialValue: true });
+  state: PropertyObservable<State> = createProperty<State>({ initialValue: State.AT_REST });
 }
 
 export class Spring extends SpringT<number> {
