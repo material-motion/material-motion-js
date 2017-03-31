@@ -145,14 +145,12 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
    * - `transform$.pluck('translate')` is equivalent to
    *   `transform$.map(transform => transform.translate)`
    *
-
-
    * - `transform$.pluck('translate.x')` is equivalent to
    *   `transform$.map(transform => transform.translate.x)`
    */
-  pluck<U>(path: string): MotionObservable<U> {
-    return this._map(
-      createPlucker(path)
+  pluck<K extends keyof T>(path: string | K): MotionObservable<Pick<T, K>> {
+    return this._map<Pick<T, K>>(
+      createPlucker<K>(path)
     );
   }
 
@@ -377,18 +375,18 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
   }
 }
 
-// TODO: fix the type annotations
-function createPlucker(path: string) {
-  const pathSegments = path.split('.');
+type Plucker<K extends string> = <T extends Record<K, any>>(value: T) => Pick<T, K>;
+function createPlucker<K extends string>(path: K | string): Plucker<K> {
+  const pathSegments = path.split('.') as Array<K>;
 
-  return function plucker(value: Dict<any>) {
-    let result = value;
+  return function plucker<T extends Record<K, any>>(value: T): Pick<T, K> {
+    let result: any = value;
 
-    for (let pathSegment of pathSegments) {
+    for (const pathSegment of pathSegments) {
       result = result[pathSegment];
     }
 
-    return result;
+    return result as Pick<T, K>;
   };
 }
 
