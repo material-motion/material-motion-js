@@ -34,9 +34,19 @@ export {
   Subscription,
 } from 'indefinite-observable';
 
+export {
+  ObservableWithMotionOperators,
+} from './operators'
+
 import {
   MotionObservable,
 } from './observables/MotionObservable';
+
+export type ObservableConstructor<T> = new (...args: Array<any>) => Observable<T>;
+
+export interface Subject<T> extends Observable<T> {
+  next(value: T): void;
+}
 
 export function isObservable(value:any): value is Observable<any> {
   // According to the spec, all Observables should have a `$$observable` method
@@ -52,16 +62,10 @@ export function isObservable(value:any): value is Observable<any> {
 
 export type NextOperation<T, U> = (value: T, nextChannel: NextChannel<U>) => void;
 
-
-export interface Subject<T> extends Observable<T> {
-  next(value: T): void;
-}
-
 export type Point2D = {
   x: number,
   y: number,
 };
-
 
 export type Read<T> = () => T;
 export interface ScopedReadable<T> {
