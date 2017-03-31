@@ -26,9 +26,14 @@ import {
   NextChannel,
   NextOperation,
   Observable,
+  ObservableConstructor,
   Subscription,
   equalityCheck,
 } from '../types';
+
+import {
+  addMotionOperators
+} from '../operators';
 
 /**
  * `MotionObservable` is an extension of `IndefiniteObservable` that includes
@@ -36,7 +41,7 @@ import {
  * animated interactions.  Those operators are specified in the
  * [Starmap](https://material-motion.github.io/material-motion/starmap/specifications/operators/)
  */
-export class MotionObservable<T> extends IndefiniteObservable<T> {
+export class MotionObservable<T> extends withMotionOperators(IndefiniteObservable<T>) {
   /**
    * Creates a new `MotionObservable` that dispatches whatever values it
    * receives from the provided stream.
@@ -59,7 +64,7 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
    * streams provided as arguments.
    */
   merge(...otherStreams: Array<Observable<any>>):MotionObservable<any> {
-    return new (this.constructor as typeof MotionObservable)<any>(
+    return new MotionObservable<any>(
       (observer: Observer<any>) => {
         const subscriptions = [this, ...otherStreams].map(
           stream => stream.subscribe(observer)
@@ -365,7 +370,7 @@ export class MotionObservable<T> extends IndefiniteObservable<T> {
     //
     // TypeScript doesn't seem to know what the type of this.constructor is, so
     // we explicitly tell it here.
-    return new (this.constructor as typeof MotionObservable)<U>(
+    return new MotionObservable<U>(
       (observer: Observer<U>) => {
         const subscription = this.subscribe(
           (value: T) => operation(value, observer.next)
