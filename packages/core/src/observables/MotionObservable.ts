@@ -22,18 +22,28 @@ import {
 } from 'indefinite-observable';
 
 import {
+  Constructor,
   Dict,
   NextChannel,
   NextOperation,
   Observable,
-  ObservableConstructor,
   Subscription,
   equalityCheck,
 } from '../types';
 
 import {
-  addMotionOperators
+  ObservableWithMotionOperators,
+  withMotionOperators,
 } from '../operators';
+
+// Mixins and generics don't work together yet:
+//
+// https://github.com/Microsoft/TypeScript/issues/13807
+//
+// In the mean time, we can work around this by passing `any` where `T` ought to
+// be and mixing our observable together before extending it.
+export type ShouldBeT = any;
+export const MixedTogetherObservable: Constructor<ObservableWithMotionOperators<ShouldBeT>> = withMotionOperators<ShouldBeT, Constructor<Observable<ShouldBeT>>>(IndefiniteObservable);
 
 /**
  * `MotionObservable` is an extension of `IndefiniteObservable` that includes
@@ -41,7 +51,7 @@ import {
  * animated interactions.  Those operators are specified in the
  * [Starmap](https://material-motion.github.io/material-motion/starmap/specifications/operators/)
  */
-export class MotionObservable<T> extends withMotionOperators(IndefiniteObservable<T>) {
+export class MotionObservable<T> extends MixedTogetherObservable {
   /**
    * Creates a new `MotionObservable` that dispatches whatever values it
    * receives from the provided stream.
@@ -353,32 +363,6 @@ export class MotionObservable<T> extends withMotionOperators(IndefiniteObservabl
     ).unsubscribe();
 
     return result;
-  }
-
-  /**
-   * `_nextOperator` is sugar for creating an operator that reads and writes
-   * from the `next` channel.  It encapsulates the stream creation and
-   * subscription boilerplate required for most operators.
-   *
-   * Its argument `operation` should receive a value from the parent stream's
-   * `next` channel, transform it, and use the supplied callback to dispatch
-   * the result to the observer's `next` channel.
-   */
-  _nextOperator<U>(operation: NextOperation<T, U>): MotionObservable<U> {
-    // Ensures that any subclass makes instances of itself rather than of
-    // MotionObservable
-    //
-    // TypeScript doesn't seem to know what the type of this.constructor is, so
-    // we explicitly tell it here.
-    return new MotionObservable<U>(
-      (observer: Observer<U>) => {
-        const subscription = this.subscribe(
-          (value: T) => operation(value, observer.next)
-        );
-
-        return subscription.unsubscribe;
-      }
-    );
   }
 }
 
