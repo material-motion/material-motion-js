@@ -20,15 +20,16 @@ import {
 } from '../../types';
 
 import {
-  ObservableWithFoundationalMotionOperators,
-  withFoundationalMotionOperators,
-} from './foundation';
+  MotionNextOperable,
+  withNextOperator,
+} from './_nextOperator';
 
-export type ObservableWithMotionOperators<T> = ObservableWithFoundationalMotionOperators<T>;
+export type ObservableWithFoundationalMotionOperators<T> = MotionNextOperable<T>;
 
-export function withMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
+export function withFoundationalMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
     & Constructor<ObservableWithFoundationalMotionOperators<T>> {
-  return withFoundationalMotionOperators<T, Constructor<Observable<T>>>(superclass);
+  return withNextOperator<T, S>(superclass);
 }
 
-export * from './foundation';
+export * from './_nextOperator';
+
