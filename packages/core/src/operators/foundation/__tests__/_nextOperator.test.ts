@@ -39,7 +39,7 @@ import {
 
 import {
   MotionObservable,
-} from '../';
+} from '../../../observables/';
 
 describe('motionObservable._nextOperator',
   () => {

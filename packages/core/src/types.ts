@@ -35,6 +35,7 @@ export {
 } from 'indefinite-observable';
 
 export {
+  ObservableWithFoundationalMotionOperators,
   ObservableWithMotionOperators,
 } from './operators'
 
@@ -42,7 +43,7 @@ import {
   MotionObservable,
 } from './observables/MotionObservable';
 
-export type ObservableConstructor<T> = new (...args: Array<any>) => Observable<T>;
+export type Constructor<T> = new(...args: Array<any>) => T;
 
 export interface Subject<T> extends Observable<T> {
   next(value: T): void;
