@@ -35,6 +35,8 @@ export {
 } from 'indefinite-observable';
 
 export {
+  MotionMappable,
+  MotionNextOperable,
   ObservableWithFoundationalMotionOperators,
   ObservableWithMotionOperators,
 } from './operators'
