@@ -228,20 +228,6 @@ export class MotionObservable<T> extends MixedTogetherObservable {
   }
 
   /**
-   * Applies `predicate` to every incoming value and synchronously passes values
-   * that return `true` to the observer.
-   */
-  _filter(predicate: (value: T) => boolean): MotionObservable<T> {
-    return this._nextOperator(
-      (value: T, nextChannel: NextChannel<T>) => {
-        if (predicate(value)) {
-          nextChannel(value);
-        }
-      }
-    );
-  }
-
-  /**
    * Limits the number of dispatches to one per frame.
    *
    * When it receives a value, it waits until the next frame to dispatch it.  If
