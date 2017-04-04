@@ -20,6 +20,11 @@ import {
 } from '../../types';
 
 import {
+  MotionMappable,
+  withMap,
+} from './_map';
+
+import {
   MotionNextOperable,
   withNextOperator,
 } from './_nextOperator';
@@ -28,8 +33,15 @@ export type ObservableWithFoundationalMotionOperators<T> = MotionNextOperable<T>
 
 export function withFoundationalMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
     & Constructor<ObservableWithFoundationalMotionOperators<T>> {
-  return withNextOperator<T, S>(superclass);
+  // Not sure if withMap needs to be specialized.  Trying results in this error:
+  //     Type 'Constructor<MotionNextOperable<T>> &
+  //     Constructor<MotionMappable<T>>' is not assignable to type 'S &
+  //     Constructor<MotionNextOperable<T>>'.
+  //       Type 'Constructor<MotionNextOperable<T>> &
+  //       Constructor<MotionMappable<T>>' is not assignable to type 'S'.
+  return withMap(withNextOperator<T, S>(superclass));
 }
 
+export * from './_map';
 export * from './_nextOperator';
 
