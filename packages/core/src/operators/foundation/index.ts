@@ -29,7 +29,12 @@ import {
   withNextOperator,
 } from './_nextOperator';
 
-export type ObservableWithFoundationalMotionOperators<T> = MotionNextOperable<T> & MotionMappable<T>;
+import {
+  MotionRememberable,
+  withRemember,
+} from './_remember';
+
+export type ObservableWithFoundationalMotionOperators<T> = MotionNextOperable<T> & MotionMappable<T> & MotionRememberable<T>;
 
 export function withFoundationalMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
     & Constructor<ObservableWithFoundationalMotionOperators<T>> {
@@ -39,9 +44,9 @@ export function withFoundationalMotionOperators<T, S extends Constructor<Observa
   //     Constructor<MotionNextOperable<T>>'.
   //       Type 'Constructor<MotionNextOperable<T>> &
   //       Constructor<MotionMappable<T>>' is not assignable to type 'S'.
-  return withMap(withNextOperator<T, S>(superclass));
+  return withRemember(withMap(withNextOperator<T, S>(superclass)));
 }
 
 export * from './_map';
 export * from './_nextOperator';
-
+export * from './_remember';
