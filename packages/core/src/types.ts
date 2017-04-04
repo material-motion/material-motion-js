@@ -36,6 +36,7 @@ export {
 
 export {
   MotionMappable,
+  MotionMemorable,
   MotionNextOperable,
   ObservableWithFoundationalMotionOperators,
   ObservableWithMotionOperators,
