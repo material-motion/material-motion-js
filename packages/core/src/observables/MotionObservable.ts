@@ -160,8 +160,6 @@ export class MotionObservable<T> extends MixedTogetherObservable {
    * - `transform$.pluck('translate')` is equivalent to
    *   `transform$.map(transform => transform.translate)`
    *
-
-
    * - `transform$.pluck('translate.x')` is equivalent to
    *   `transform$.map(transform => transform.translate.x)`
    */
@@ -225,18 +223,6 @@ export class MotionObservable<T> extends MixedTogetherObservable {
 
         console.log(label, value);
         nextChannel(value);
-      }
-    );
-  }
-
-  /**
-   * Applies `transform` to every incoming value and synchronously passes the
-   * result to the observer.
-   */
-  _map<U>(transform: (value: T) => U): MotionObservable<U> {
-    return this._nextOperator(
-      (value: T, nextChannel: NextChannel<U>) => {
-        nextChannel(transform(value));
       }
     );
   }
