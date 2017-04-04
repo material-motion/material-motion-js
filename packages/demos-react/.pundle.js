@@ -41,7 +41,7 @@ module.exports = {
           extensions,
         },
         transformer: {
-          extensions,
+          extensions: ['ts', 'tsx'],
           config: {
             compilerOptions: Object.assign(
               {},
