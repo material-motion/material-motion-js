@@ -40,6 +40,7 @@ export {
   MotionMappable,
   MotionMemorable,
   MotionNextOperable,
+  MotionReadable,
   ObservableWithFoundationalMotionOperators,
   ObservableWithMotionOperators,
 } from './operators'
