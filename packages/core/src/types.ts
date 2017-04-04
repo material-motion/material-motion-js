@@ -37,6 +37,7 @@ export {
 export {
   MotionMappable,
   MotionNextOperable,
+  MotionRememberable,
 } from './operators'
 
 import {
