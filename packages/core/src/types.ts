@@ -35,6 +35,7 @@ export {
 } from 'indefinite-observable';
 
 export {
+  MotionFilterable,
   MotionMappable,
   MotionMemorable,
   MotionNextOperable,
@@ -47,6 +48,7 @@ import {
 } from './observables/MotionObservable';
 
 export type Constructor<T> = new(...args: Array<any>) => T;
+export type Predicate = (value: T) => boolean;
 
 export interface Subject<T> extends Observable<T> {
   next(value: T): void;
