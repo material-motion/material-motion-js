@@ -34,6 +34,11 @@ export {
   Subscription,
 } from 'indefinite-observable';
 
+export {
+  MotionMappable,
+  MotionNextOperable,
+} from './operators'
+
 import {
   MotionObservable,
 } from './observables/MotionObservable';
