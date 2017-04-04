@@ -226,22 +226,6 @@ export class MotionObservable<T> extends MixedTogetherObservable {
       }
     );
   }
-
-  /**
-   * Returns the current value of an observable property (e.g. a subject or
-   * remembered stream).
-   */
-  _read(): T {
-    let result: T;
-
-    this.subscribe(
-      (value: T) => {
-        result = value;
-      }
-    ).unsubscribe();
-
-    return result;
-  }
 }
 
 // TODO: fix the type annotations

@@ -39,6 +39,7 @@ export {
   MotionFilterable,
   MotionMappable,
   MotionNextOperable,
+  MotionReadable,
   MotionRememberable,
 } from './operators'
 
