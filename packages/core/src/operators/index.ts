@@ -25,20 +25,26 @@ import {
 } from './foundation';
 
 import {
+  MotionLoggable,
+  withLog,
+} from './log';
+
+import {
   MotionPluckable,
   withPluck,
 } from './pluck';
 
 export type ObservableWithMotionOperators<T> = ObservableWithFoundationalMotionOperators<T>
-  & MotionPluckable<T>;
+  & MotionPluckable<T> & MotionLoggable<T>;
 
 export function withMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
     & Constructor<ObservableWithMotionOperators<T>> {
 
-  return withPluck<T, ObservableWithFoundationalMotionOperators<T>>(
+  return withLog(withPluck<T, ObservableWithFoundationalMotionOperators<T>>(
     withFoundationalMotionOperators<T, Constructor<Observable<T>>>(superclass)
-  );
+  ));
 }
 
 export * from './foundation';
+export * from './log';
 export * from './pluck';
