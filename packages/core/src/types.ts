@@ -40,6 +40,7 @@ export {
   MotionMappable,
   MotionMemorable,
   MotionNextOperable,
+  MotionPluckable,
   MotionReadable,
   ObservableWithFoundationalMotionOperators,
   ObservableWithMotionOperators,

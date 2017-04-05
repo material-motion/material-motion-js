@@ -152,24 +152,6 @@ export class MotionObservable<T> extends MixedTogetherObservable {
   }
 
   /**
-   * Extracts the value at a given key from every incoming object and passes
-   * those values to the observer.
-   *
-   * For instance:
-   *
-   * - `transform$.pluck('translate')` is equivalent to
-   *   `transform$.map(transform => transform.translate)`
-   *
-   * - `transform$.pluck('translate.x')` is equivalent to
-   *   `transform$.map(transform => transform.translate.x)`
-   */
-  pluck<U>(path: string): MotionObservable<U> {
-    return this._map(
-      createPlucker(path)
-    );
-  }
-
-  /**
    * Ensures that every value dispatched is different than the previous one.
    */
   dedupe(areEqual: equalityCheck = deepEqual): MotionObservable<T> {
