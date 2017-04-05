@@ -26,7 +26,9 @@ import {
   stub,
 } from 'sinon';
 
-import MotionObservable from '../MotionObservable';
+import {
+  MotionObservable,
+} from '../../observables/';
 
 declare function require(name: string);
 
@@ -59,7 +61,7 @@ describe('motionObservable.dedupe',
 
         mockObserver.next();
 
-        expect(listener).to.have.calledOnce.and.to.have.been.calledWith(undefined);
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(undefined);
       }
     );
 
@@ -72,7 +74,7 @@ describe('motionObservable.dedupe',
         mockObserver.next(2);
         mockObserver.next(3);
 
-        expect(listener).to.have.calledThrice;
+        expect(listener).to.have.been.calledThrice;
         expect(listener).to.have.been.calledWith(1);
         expect(listener).to.have.been.calledWith(2);
         expect(listener).to.have.been.calledWith(3);

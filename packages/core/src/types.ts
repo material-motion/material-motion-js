@@ -36,6 +36,7 @@ export {
 
 export {
   MotionDebounceable,
+  MotionDeduplicable,
   MotionFilterable,
   MotionLoggable,
   MotionMappable,
@@ -43,6 +44,7 @@ export {
   MotionPluckable,
   MotionReadable,
   MotionRememberable,
+  ObservableWithFoundationalMotionOperators,
 } from './operators'
 
 import {
