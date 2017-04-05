@@ -17,18 +17,28 @@
 import {
   Constructor,
   Observable,
-} from '../../types';
+} from '../types';
 
 import {
   ObservableWithFoundationalMotionOperators,
   withFoundationalMotionOperators,
 } from './foundation';
 
-export type ObservableWithMotionOperators<T> = ObservableWithFoundationalMotionOperators<T>;
+import {
+  MotionPluckable,
+  withPluck,
+} from './pluck';
+
+export type ObservableWithMotionOperators<T> = ObservableWithFoundationalMotionOperators<T>
+  & MotionPluckable<T>;
 
 export function withMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
-    & Constructor<ObservableWithFoundationalMotionOperators<T>> {
-  return withFoundationalMotionOperators<T, Constructor<Observable<T>>>(superclass);
+    & Constructor<ObservableWithMotionOperators<T>> {
+
+  return withPluck<T, ObservableWithFoundationalMotionOperators<T>>(
+    withFoundationalMotionOperators<T, Constructor<Observable<T>>>(superclass)
+  );
 }
 
 export * from './foundation';
+export * from './pluck';
