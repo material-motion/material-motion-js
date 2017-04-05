@@ -37,6 +37,7 @@ export {
 export {
   MotionDebounceable,
   MotionFilterable,
+  MotionLoggable,
   MotionMappable,
   MotionNextOperable,
   MotionPluckable,
