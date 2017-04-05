@@ -26,8 +26,6 @@ import {
   stub,
 } from 'sinon';
 
-import MotionObservable from '../MotionObservable';
-
 declare function require(name: string);
 
 // chai really doesn't like being imported as an ES2015 module; will be fixed in v4
@@ -38,6 +36,10 @@ require('chai').use(
 import {
   createMockObserver,
 } from 'material-motion-testing-utils';
+
+import {
+  MotionObservable,
+} from '../../observables/';
 
 describe('motionObservable.dedupe',
   () => {
@@ -59,7 +61,7 @@ describe('motionObservable.dedupe',
 
         mockObserver.next();
 
-        expect(listener).to.have.calledOnce.and.to.have.been.calledWith(undefined);
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(undefined);
       }
     );
 
@@ -72,7 +74,7 @@ describe('motionObservable.dedupe',
         mockObserver.next(2);
         mockObserver.next(3);
 
-        expect(listener).to.have.calledThrice;
+        expect(listener).to.have.been.calledThrice;
         expect(listener).to.have.been.calledWith(1);
         expect(listener).to.have.been.calledWith(2);
         expect(listener).to.have.been.calledWith(3);
