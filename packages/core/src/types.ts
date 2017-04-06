@@ -41,6 +41,7 @@ export {
   MotionInvertible,
   MotionLoggable,
   MotionMappable,
+  MotionMapRangeable,
   MotionMapToable,
   MotionMemorable,
   MotionMergeable,

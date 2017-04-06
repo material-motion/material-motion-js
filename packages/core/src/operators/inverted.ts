@@ -22,7 +22,7 @@ import {
 } from '../types';
 
 // TODO: figure out the right way to cast T to boolean | number without
-// constraining T on streams that don't support inverted.
+// constraining T on streams that don't support inverted.  Same in rewriteRange.
 
 export interface MotionInvertible<T> {
   inverted(): Observable<T>;
