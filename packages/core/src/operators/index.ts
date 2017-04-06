@@ -30,6 +30,11 @@ import {
 } from './foundation';
 
 import {
+  MotionInvertible,
+  withInverted,
+} from './inverted';
+
+import {
   MotionLoggable,
   withLog,
 } from './log';
@@ -40,17 +45,18 @@ import {
 } from './pluck';
 
 export type ObservableWithMotionOperators<T> = ObservableWithFoundationalMotionOperators<T>
-  & MotionPluckable<T> & MotionLoggable<T> & MotionDeduplicable<T>;
+  & MotionPluckable<T> & MotionLoggable<T> & MotionDeduplicable<T> & MotionInvertible<T>;
 
 export function withMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
     & Constructor<ObservableWithMotionOperators<T>> {
 
-  return withDedupe(withLog(withPluck<T, ObservableWithFoundationalMotionOperators<T>>(
+  return withInverted(withDedupe(withLog(withPluck<T, ObservableWithFoundationalMotionOperators<T>>(
     withFoundationalMotionOperators<T, Constructor<Observable<T>>>(superclass)
-  )));
+  ))));
 }
 
 export * from './dedupe';
 export * from './foundation';
+export * from './inverted';
 export * from './log';
 export * from './pluck';
