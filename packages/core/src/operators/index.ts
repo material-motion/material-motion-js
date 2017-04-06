@@ -40,6 +40,11 @@ import {
 } from './log';
 
 import {
+  MotionMapRangeable,
+  withMapRange,
+} from './mapRange';
+
+import {
   MotionMapToable,
   withMapTo,
 } from './mapTo';
@@ -56,22 +61,23 @@ import {
 
 export type ObservableWithMotionOperators<T> = ObservableWithFoundationalMotionOperators<T>
   & MotionPluckable<T> & MotionLoggable<T> & MotionDeduplicable<T> & MotionInvertible<T>
-  & MotionMergeable<T> & MotionMapToable<T>;
+  & MotionMergeable<T> & MotionMapToable<T> & MotionMapRangeable<T>;
 
 export function withMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
     & Constructor<ObservableWithMotionOperators<T>> {
 
-  return withMapTo(withMerge(withInverted(withDedupe(withLog(
+  return withMapRange(withMapTo(withMerge(withInverted(withDedupe(withLog(
     withPluck<T, ObservableWithFoundationalMotionOperators<T>>(
       withFoundationalMotionOperators<T, Constructor<Observable<T>>>(superclass)
     )
-  )))));
+  ))))));
 }
 
 export * from './dedupe';
 export * from './foundation';
 export * from './inverted';
 export * from './log';
+export * from './mapRange';
 export * from './mapTo';
 export * from './merge';
 export * from './pluck';
