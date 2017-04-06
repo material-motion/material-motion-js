@@ -80,19 +80,6 @@ export class MotionObservable<T> extends MixedTogetherObservable {
       }
     );
   }
-
-  /**
-   * Dispatches its argument every time it receives a value from upstream.
-   */
-  mapTo<U>(value: U):MotionObservable<U> {
-    return this._nextOperator(
-      // TypeScript gets mad if you omit a variable, so we use `_` for variables
-      // we don't care bout
-      (_, dispatch: NextChannel<U>) => {
-        dispatch(value);
-      }
-    );
-  }
 }
 
 export default MotionObservable;
