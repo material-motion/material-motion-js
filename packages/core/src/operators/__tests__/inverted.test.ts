@@ -26,8 +26,6 @@ import {
   stub,
 } from 'sinon';
 
-import MotionObservable from '../MotionObservable';
-
 declare function require(name: string);
 
 // chai really doesn't like being imported as an ES2015 module; will be fixed in v4
@@ -38,6 +36,10 @@ require('chai').use(
 import {
   createMockObserver,
 } from 'material-motion-testing-utils';
+
+import {
+  MotionObservable,
+} from '../../observables/';
 
 describe('motionObservable.inverted',
   () => {
