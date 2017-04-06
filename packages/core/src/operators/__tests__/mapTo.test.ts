@@ -37,7 +37,9 @@ import {
   createMockObserver,
 } from 'material-motion-testing-utils';
 
-import MotionObservable from '../MotionObservable';
+import {
+  MotionObservable,
+} from '../../observables/';
 
 describe('motionObservable.mapTo',
   () => {
