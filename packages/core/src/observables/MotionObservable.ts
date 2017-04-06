@@ -66,26 +66,6 @@ export class MotionObservable<T> extends MixedTogetherObservable {
   }
 
   /**
-   * Dispatches values as it receives them, both from upstream and from any
-   * streams provided as arguments.
-   */
-  merge(...otherStreams: Array<Observable<any>>):MotionObservable<any> {
-    return new MotionObservable<any>(
-      (observer: Observer<any>) => {
-        const subscriptions = [this, ...otherStreams].map(
-          stream => stream.subscribe(observer)
-        );
-
-        return () => {
-          subscriptions.forEach(
-            subscription => subscription.unsubscribe()
-          );
-        };
-      }
-    );
-  }
-
-  /**
    * Receives a value from upstream, linearly interpolates it between the given
    * ranges, and dispatches the result to the observer.
    */
