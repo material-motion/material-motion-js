@@ -40,25 +40,26 @@ export function withPluck<T, S extends Constructor<MotionMappable<T>>>(superclas
      * - `transform$.pluck('translate.x')` is equivalent to
      *   `transform$.map(transform => transform.translate.x)`
      */
-    pluck<U>(path: string): Observable<U> {
-      return this._map(
-        createPlucker(path)
+    pluck<K extends keyof T>(path: string | K): Observable<Pick<T, K>> {
+      return this._map<Pick<T, K>>(
+        createPlucker<K>(path)
       );
     }
   };
 }
 
-// TODO: fix the type annotations
-export function createPlucker(path: string) {
-  const pathSegments = path.split('.');
+export type Plucker<K extends string> = <T extends Record<K, any>>(value: T) => Pick<T, K>;
+export function createPlucker<K extends string>(path: K | string): Plucker<K> {
+  const pathSegments = path.split('.') as Array<K>;
 
-  return function plucker(value: Dict<any>) {
-    let result = value;
+  return function plucker<T extends Record<K, any>>(value: T): Pick<T, K> {
+    let result: any = value;
 
-    for (let pathSegment of pathSegments) {
+    for (const pathSegment of pathSegments) {
       result = result[pathSegment];
     }
 
-    return result;
+    return result as Pick<T, K>;
   };
 }
+
