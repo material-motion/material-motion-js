@@ -15,18 +15,21 @@
  */
 
 import {
-  MotionObservable,
-  State,
-} from './observables/MotionObservable';
+  ObservableWithMotionOperators,
+} from './types';
 
 import {
-  MotionObserver,
+  State,
+} from './State';
+
+import {
+  Observer,
   ScopedWritable,
   Subscription,
 } from './types';
 
 export type RuntimeWriteArgs<T> = {
-  stream: MotionObservable<T>,
+  stream: ObservableWithMotionOperators<T>,
   to: ScopedWritable<T>,
 };
 
@@ -39,7 +42,7 @@ export type RuntimeWriteArgs<T> = {
  */
 export class MotionRuntime {
   _subscriptions: Set<Subscription> = new Set();
-  _activeObservers: Set<MotionObserver<any>> = new Set();
+  _activeObservers: Set<Observer<any>> = new Set();
 
   get aggregateState() {
     return this._activeObservers.size === 0

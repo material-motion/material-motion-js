@@ -20,7 +20,7 @@ import {
 } from '../../types';
 
 import {
-  MotionDebouncable,
+  MotionDebounceable,
   withDebounce,
 } from './_debounce';
 
@@ -50,7 +50,7 @@ import {
 } from './_read';
 
 export type ObservableWithFoundationalMotionOperators<T> = MotionNextOperable<T> & MotionMappable<T>
-    & MotionFilterable<T> & MotionMemorable<T> & MotionDebouncable<T> & MotionReadable<T>;
+    & MotionFilterable<T> & MotionMemorable<T> & MotionDebounceable<T> & MotionReadable<T>;
 
 export function withFoundationalMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
     & Constructor<ObservableWithFoundationalMotionOperators<T>> {
