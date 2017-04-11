@@ -31,6 +31,7 @@ export {
   NextChannel,
   Observable,
   Observer,
+  ObserverOrNext,
   Subscription,
 } from 'indefinite-observable';
 
@@ -56,8 +57,12 @@ import {
   MotionObservable,
 } from './observables/MotionObservable';
 
+import {
+  State,
+} from './State';
+
 export type Constructor<T> = new(...args: Array<any>) => T;
-export type Predicate = (value: T) => boolean;
+export type Predicate<T> = (value: T) => boolean;
 
 export interface Subject<T> extends Observable<T> {
   next(value: T): void;
