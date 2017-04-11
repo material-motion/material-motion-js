@@ -23,17 +23,17 @@ import {
 
 // TODO: figure out how to specify that T should extend number.  Same in
 // inverted.
-export interface MotionMapRangeable<T> {
-  mapRange<U>(kwargs: MapRangeArgs): Observable<U>;
+export interface MotionRewriteRangeable<T> {
+  rewriteRange<U>(kwargs: RewriteRangeArgs): Observable<U>;
 }
 
-export function withMapRange<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionMapRangeable<T>> {
-  return class extends superclass implements MotionMapRangeable<T> {
+export function withRewriteRange<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionRewriteRangeable<T>> {
+  return class extends superclass implements MotionRewriteRangeable<T> {
   /**
    * Receives a value from upstream, linearly interpolates it between the given
    * ranges, and dispatches the result to the observer.
    */
-  mapRange({ fromStart, fromEnd, toStart = 0, toEnd = 1 }: MapRangeArgs): Observable<number> {
+  rewriteRange({ fromStart, fromEnd, toStart = 0, toEnd = 1 }: RewriteRangeArgs): Observable<number> {
     return this._nextOperator(
       (value: T, dispatch: NextChannel<number>) => {
         const fromRange = fromStart - fromEnd;
@@ -46,7 +46,7 @@ export function withMapRange<T, S extends Constructor<MotionNextOperable<T>>>(su
   }
 };
 
-export type MapRangeArgs = {
+export type RewriteRangeArgs = {
   fromStart: number,
   fromEnd: number,
   toStart: number,

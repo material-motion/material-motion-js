@@ -41,7 +41,7 @@ import {
   MotionObservable,
 } from '../../observables/';
 
-describe('motionObservable.mapRange',
+describe('motionObservable.rewriteTo',
   () => {
     let stream;
     let mockObserver;
@@ -55,40 +55,16 @@ describe('motionObservable.mapRange',
       }
     );
 
-    it('should use interpolate between the from and to ranges',
+    it('should dispatch its argument whenever it receives a value from upstream',
       () => {
-        stream.mapRange({
-          fromStart: 15,
-          fromEnd: 35,
-          toStart: 200,
-          toEnd: 100,
-        }).subscribe(listener);
+        stream.rewriteTo('banana').subscribe(listener);
 
-        mockObserver.next(20);
+        mockObserver.next();
+        mockObserver.next(false);
+        mockObserver.next(123);
+        mockObserver.next({a: '1234'});
 
-        // Interpolation in a computer is sadly imprecise, so we can only assert
-        // the expectation approximately.
-        const valueInLastCall = listener.lastCall.args[0];
-        expect(valueInLastCall).to.be.closeTo(175, .001);
-      }
-    );
-
-    it('should not be capped',
-      () => {
-        // or maybe it should be, but it isn't right now
-        stream.mapRange({
-          fromStart: 10,
-          fromEnd: 100,
-          toStart: 110,
-          toEnd: 200,
-        }).subscribe(listener);
-
-        mockObserver.next(1);
-
-        // Interpolation in a computer is sadly imprecise, so we can only assert
-        // the expectation approximately.
-        const valueInLastCall = listener.lastCall.args[0];
-        expect(valueInLastCall).to.be.closeTo(101, .001);
+        expect(listener).to.have.callCount(4).and.to.always.have.been.calledWith('banana');
       }
     );
   }
