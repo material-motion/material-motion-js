@@ -49,6 +49,7 @@ export {
   MotionReadable,
   MotionRewriteRangeable,
   MotionRewriteToable,
+  MotionThresholdable,
   ObservableWithFoundationalMotionOperators,
   ObservableWithMotionOperators,
 } from './operators'
