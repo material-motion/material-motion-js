@@ -47,6 +47,7 @@ export {
   MotionNextOperable,
   MotionPluckable,
   MotionReadable,
+  MotionRewritable,
   MotionRewriteRangeable,
   MotionRewriteToable,
   MotionThresholdable,
