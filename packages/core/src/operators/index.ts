@@ -55,6 +55,11 @@ import {
 } from './pluck';
 
 import {
+  MotionOffsetable,
+  withOffsetBy,
+} from './offsetBy';
+
+import {
   MotionRewritable,
   withRewrite,
 } from './rewrite';
@@ -87,15 +92,18 @@ import {
 export type ObservableWithMotionOperators<T> = ObservableWithFoundationalMotionOperators<T>
   & MotionPluckable<T> & MotionLoggable<T> & MotionDeduplicable<T> & MotionInvertible<T>
   & MotionMergeable<T> & MotionRewritable<T>  & MotionRewriteToable<T> & MotionRewriteRangeable<T>
-  & MotionThresholdable & MotionThresholdRangeable & MotionUpperBoundable & MotionLowerBoundable;
+  & MotionThresholdable & MotionThresholdRangeable & MotionUpperBoundable & MotionLowerBoundable
+  & MotionOffsetable;
 
 export function withMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
     & Constructor<ObservableWithMotionOperators<T>> {
 
   return withThresholdRange(withThreshold(withRewriteRange(withRewriteTo(withRewrite(
     withMerge(withInverted(withDedupe(withLog(withUpperBound(withLowerBound(
-      withPluck<T, ObservableWithFoundationalMotionOperators<T>>(
-        withFoundationalMotionOperators<T, Constructor<Observable<T>>>(superclass)
+      withOffsetBy(
+        withPluck<T, ObservableWithFoundationalMotionOperators<T>>(
+          withFoundationalMotionOperators<T, Constructor<Observable<T>>>(superclass)
+        )
       )
     )))))))
   ))));
@@ -107,6 +115,7 @@ export * from './inverted';
 export * from './log';
 export * from './lowerBound';
 export * from './merge';
+export * from './offsetBy';
 export * from './rewrite';
 export * from './rewriteRange';
 export * from './rewriteTo';
