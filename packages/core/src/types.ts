@@ -52,6 +52,7 @@ export {
   MotionRewritable,
   MotionRewriteRangeable,
   MotionRewriteToable,
+  MotionScalable,
   MotionThresholdable,
   MotionThresholdRangeable,
   MotionUpperBoundable,
