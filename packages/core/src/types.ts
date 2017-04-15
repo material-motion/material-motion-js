@@ -46,6 +46,7 @@ export {
   MotionMemorable,
   MotionMergeable,
   MotionNextOperable,
+  MotionOffsetable,
   MotionPluckable,
   MotionReadable,
   MotionRewritable,
