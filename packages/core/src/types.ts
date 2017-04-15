@@ -52,6 +52,7 @@ export {
   MotionRewriteToable,
   MotionThresholdable,
   MotionThresholdRangeable,
+  MotionUpperBoundable,
   ObservableWithFoundationalMotionOperators,
   ObservableWithMotionOperators,
 } from './operators'
