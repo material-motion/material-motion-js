@@ -6,7 +6,7 @@
   version "0.0.30"
   resolved "https://registry.yarnpkg.com/@types/deep-equal/-/deep-equal-0.0.30.tgz#c14df825c9201a1804980e7ebc3ef30e137bb64c"
 
-deep-equal@^1.0.1:
+deep-equal@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.0.1.tgz#f5d260292b660e084eff4cdbc9f08ad3247448b5"
 
@@ -15,6 +15,16 @@ indefinite-observable@1.0.1:
   resolved "https://registry.yarnpkg.com/indefinite-observable/-/indefinite-observable-1.0.1.tgz#09915423cc8d6f7eb1cb7882ad134633c9a6edc3"
   dependencies:
     symbol-observable "1.0.4"
+
+lodash@^2.4.1:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-2.4.2.tgz#fadd834b9683073da179b3eae6d9c0d15053f73e"
+
+mock-timeout@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/mock-timeout/-/mock-timeout-0.0.2.tgz#cd600eb1ebc4a4010557e6b37aa35938e9bd0c05"
+  dependencies:
+    lodash "^2.4.1"
 
 symbol-observable@1.0.4:
   version "1.0.4"

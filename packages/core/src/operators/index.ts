@@ -25,6 +25,11 @@ import {
 } from './dedupe';
 
 import {
+  MotionDelayable,
+  withDelayBy,
+} from './delayBy';
+
+import {
   ObservableWithFoundationalMotionOperators,
   withFoundationalMotionOperators,
 } from './foundation';
@@ -105,16 +110,17 @@ export function withMotionOperators<T, S extends Constructor<Observable<T>>>(sup
 
   return withThresholdRange(withThreshold(withRewriteRange(withRewriteTo(withRewrite(
     withMerge(withInverted(withDedupe(withLog(withUpperBound(withLowerBound(
-      withOffsetBy(withScaledBy(
+      withOffsetBy(withScaledBy(withDelayBy(
         withPluck<T, ObservableWithFoundationalMotionOperators<T>>(
           withFoundationalMotionOperators<T, Constructor<Observable<T>>>(superclass)
         )
-      ))
+      )))
     )))))))
   ))));
 }
 
 export * from './dedupe';
+export * from './delayBy';
 export * from './foundation';
 export * from './inverted';
 export * from './log';
