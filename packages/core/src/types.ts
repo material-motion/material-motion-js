@@ -37,6 +37,7 @@ export {
 
 export {
   MotionDebounceable,
+  MotionDelayable,
   MotionDeduplicable,
   MotionFilterable,
   MotionInvertible,
