@@ -31,7 +31,7 @@ export function withDelayBy<T, S extends Constructor<Observable<T>>>(superclass:
      * dispatches them.
      */
     delayBy(time: number): Observable<T> {
-      const constructor = this.constructor as Constructor<Observable<U>>;
+      const constructor = this.constructor as Constructor<Observable<T>>;
 
       return new constructor(
         (observer: Observer<T>) => {
