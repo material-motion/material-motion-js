@@ -30,6 +30,11 @@ import {
 } from './delayBy';
 
 import {
+  MotionMeasurable,
+  withDistanceFrom,
+} from './distanceFrom';
+
+import {
   ObservableWithFoundationalMotionOperators,
   withFoundationalMotionOperators,
 } from './foundation';
@@ -103,24 +108,25 @@ export type ObservableWithMotionOperators<T> = ObservableWithFoundationalMotionO
   & MotionPluckable<T> & MotionLoggable<T> & MotionDeduplicable<T> & MotionInvertible<T>
   & MotionMergeable<T> & MotionRewritable<T>  & MotionRewriteToable<T> & MotionRewriteRangeable<T>
   & MotionThresholdable & MotionThresholdRangeable & MotionUpperBoundable & MotionLowerBoundable
-  & MotionOffsetable & MotionScalable;
+  & MotionOffsetable & MotionScalable & MotionDelayable<T> & MotionMeasurable<T>;
 
 export function withMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
     & Constructor<ObservableWithMotionOperators<T>> {
 
   return withThresholdRange(withThreshold(withRewriteRange(withRewriteTo(withRewrite(
     withMerge(withInverted(withDedupe(withLog(withUpperBound(withLowerBound(
-      withOffsetBy(withScaledBy(withDelayBy(
+      withOffsetBy(withScaledBy(withDelayBy(withDistanceFrom(
         withPluck<T, ObservableWithFoundationalMotionOperators<T>>(
           withFoundationalMotionOperators<T, Constructor<Observable<T>>>(superclass)
         )
-      )))
+      ))))
     )))))))
   ))));
 }
 
 export * from './dedupe';
 export * from './delayBy';
+export * from './distanceFrom';
 export * from './foundation';
 export * from './inverted';
 export * from './log';
