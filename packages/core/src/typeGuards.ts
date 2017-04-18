@@ -14,19 +14,13 @@
  *  under the License.
  */
 
-export * from './types';
-export * from './typeGuards';
-export * from './properties';
-export * from './observables';
-export * from './interactions';
+import {
+  Point2D,
+} from './types';
 
-export * from './MotionRuntime';
-export { default as MotionRuntime } from './MotionRuntime';
-
-export * from './State';
-export { default as State } from './State';
-
-export * from './ThresholdSide';
-export { default as ThresholdSide } from './ThresholdSide';
-
-export default undefined;
+/**
+ * Checks if an object has numeric values for both `x` and `y`.
+ */
+export function isPoint2D(value: any): value is Point2D {
+  return typeof value.x === 'number' && typeof value.y === 'number';
+}
