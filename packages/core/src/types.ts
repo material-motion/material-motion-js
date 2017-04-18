@@ -44,6 +44,7 @@ export {
   MotionLoggable,
   MotionLowerBoundable,
   MotionMappable,
+  MotionMeasurable,
   MotionMemorable,
   MotionMergeable,
   MotionNextOperable,
