@@ -114,7 +114,7 @@ export interface MotionElement {
   getEvent$(type: string): MotionObservable<Event>;
 }
 
-export type equalityCheck = (a: any, b: any) => boolean;
+export type EqualityCheck = (a: any, b: any) => boolean;
 
 export type SpringProperties<T> = {
   state: PropertyObservable<State>,
