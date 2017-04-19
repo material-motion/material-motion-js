@@ -40,6 +40,11 @@ import {
 } from './foundation';
 
 import {
+  MotionIgnorable,
+  withIgnoreUntil,
+} from './ignoreUntil';
+
+import {
   MotionInvertible,
   withInverted,
 } from './inverted';
@@ -114,7 +119,7 @@ export type ObservableWithMotionOperators<T> = ObservableWithFoundationalMotionO
   & MotionMergeable<T> & MotionRewritable<T>  & MotionRewriteToable<T> & MotionRewriteRangeable<T>
   & MotionThresholdable & MotionThresholdRangeable & MotionUpperBoundable & MotionLowerBoundable
   & MotionOffsetable & MotionScalable & MotionDelayable<T> & MotionMeasurable<T>
-  & MotionSeedable<T>;
+  & MotionSeedable<T> & MotionIgnorable<T>;
 
 export function withMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
     & Constructor<ObservableWithMotionOperators<T>> {
@@ -122,8 +127,10 @@ export function withMotionOperators<T, S extends Constructor<Observable<T>>>(sup
   return withThresholdRange(withThreshold(withRewriteRange(withRewriteTo(withRewrite(
     withMerge(withInverted(withDedupe(withLog(withUpperBound(withLowerBound(
       withOffsetBy(withScaledBy(withDelayBy(withDistanceFrom(withStartWith(
-        withPluck<T, ObservableWithFoundationalMotionOperators<T>>(
-          withFoundationalMotionOperators<T, Constructor<Observable<T>>>(superclass)
+        withIgnoreUntil(
+          withPluck<T, ObservableWithFoundationalMotionOperators<T>>(
+            withFoundationalMotionOperators<T, Constructor<Observable<T>>>(superclass)
+          )
         )
       )))))
     )))))))
@@ -134,6 +141,7 @@ export * from './dedupe';
 export * from './delayBy';
 export * from './distanceFrom';
 export * from './foundation';
+export * from './ignoreUntil';
 export * from './inverted';
 export * from './log';
 export * from './lowerBound';
