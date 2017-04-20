@@ -98,6 +98,22 @@ export type Point2D = {
   y: number,
 };
 
+/**
+ * There are 2 competing input events on the Web: `PointerEvent`s and
+ * `TouchEvent`s. Our gesture system only needs 3 properties: x, y, and and ID.
+ * In both models, `pageX` and `pageY` are provided. `TouchEvent` calls its ID
+ * `identifier`; whereas, `PointerEvent` uses `pointerId`.
+ *
+ * `PartialPointerEvent` is the subset we care about.  `PointerEvent` already
+ * has this shape.  `TouchEvent` can be trivially converted by extracting the
+ * touches and renaming `identifier` to `pointerId`.
+ */
+export type PartialPointerEvent {
+  pageX: number;
+  pageY: number;
+  pointerId: number;
+};
+
 export type Read<T> = () => T;
 export interface ScopedReadable<T> {
   read: Read<T>;
