@@ -26,6 +26,9 @@ export { default as MotionRuntime } from './MotionRuntime';
 export * from './State';
 export { default as State } from './State';
 
+export * from './GestureRecognitionState';
+export { default as GestureRecognitionState } from './GestureRecognitionState';
+
 export * from './ThresholdSide';
 export { default as ThresholdSide } from './ThresholdSide';
 
