@@ -24,3 +24,11 @@ import {
 export function isPoint2D(value: any): value is Point2D {
   return typeof value.x === 'number' && typeof value.y === 'number';
 }
+
+/**
+ * Checks if a value is a `PointerEvent` by checking if `type` starts with
+ * `pointer`.
+ */
+export function isPointerEvent(value: any): value is PointerEvent {
+  return value.type.startsWith('pointer');
+}
