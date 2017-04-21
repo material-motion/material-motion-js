@@ -19,11 +19,11 @@ import {
   Dict,
   MotionMappable,
   NextChannel,
-  Observable,
+  ObservableWithMotionOperators,
 } from '../types';
 
 export interface MotionPluckable<T> {
-  pluck<U>(key: string): Observable<U>;
+  pluck<U>(key: string): ObservableWithMotionOperators<U>;
 }
 
 export function withPluck<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionPluckable<T>> {
@@ -40,7 +40,7 @@ export function withPluck<T, S extends Constructor<MotionMappable<T>>>(superclas
      * - `transform$.pluck('translate.x')` is equivalent to
      *   `transform$.map(transform => transform.translate.x)`
      */
-    pluck<U>(path: string): Observable<U> {
+    pluck<U>(path: string): ObservableWithMotionOperators<U> {
       return this._map(
         createPlucker(path)
       );

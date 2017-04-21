@@ -18,12 +18,12 @@ import {
   Constructor,
   MotionNextOperable,
   NextChannel,
-  Observable,
+  ObservableWithMotionOperators,
   Predicate,
 } from '../../types';
 
 export interface MotionFilterable<T> {
-  _filter(predicate: Predicate): Observable<T>;
+  _filter(predicate: Predicate<T>): ObservableWithMotionOperators<T>;
 }
 
 export function withFilter<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionFilterable<T>> {
@@ -32,7 +32,7 @@ export function withFilter<T, S extends Constructor<MotionNextOperable<T>>>(supe
      * Applies `predicate` to every incoming value and synchronously passes
      * values that return `true` to the observer.
      */
-    _filter(predicate: Predicate): Observable<T> {
+    _filter(predicate: Predicate<T>): ObservableWithMotionOperators<T> {
       return this._nextOperator(
         (value: T, dispatch: NextChannel<T>) => {
           if (predicate(value)) {

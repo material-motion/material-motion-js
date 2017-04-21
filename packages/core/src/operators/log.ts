@@ -18,7 +18,7 @@ import {
   Constructor,
   MotionNextOperable,
   NextChannel,
-  Observable,
+  ObservableWithMotionOperators,
 } from '../types';
 
 import {
@@ -26,7 +26,7 @@ import {
 } from './pluck';
 
 export interface MotionLoggable<T> {
-  log(label: string, pluckPath: string): Observable<T>;
+  log(label: string, pluckPath: string): ObservableWithMotionOperators<T>;
 }
 
 export function withLog<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionLoggable<T>> {
@@ -47,7 +47,7 @@ export function withLog<T, S extends Constructor<MotionNextOperable<T>>>(supercl
      *
      * it would log `Name: banana`.
      */
-    log(label: string = '', pluckPath: string = ''): Observable<T> {
+    log(label: string = '', pluckPath: string = ''): ObservableWithMotionOperators<T> {
       let plucker: (value: T) => any | undefined;
 
       if (pluckPath) {

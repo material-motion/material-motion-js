@@ -18,18 +18,18 @@ import {
   Constructor,
   Dict,
   MotionMappable,
-  Observable,
+  ObservableWithMotionOperators,
 } from '../types';
 
 export interface MotionRewritable<T> {
-  rewrite<U>(dict: Dict<U>): Observable<U>;
-  rewrite<U>(dict: Map<T, U>): Observable<U>;
+  rewrite<U>(dict: Dict<U>): ObservableWithMotionOperators<U>;
+  rewrite<U>(dict: Map<T, U>): ObservableWithMotionOperators<U>;
 }
 
 export function withRewrite<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionRewritable<T>> {
   return class extends superclass implements MotionRewritable<T> {
-    rewrite<U>(dict: Dict<U>): Observable<U>;
-    rewrite<U>(dict: Map<T, U>): Observable<U> {
+    rewrite<U>(dict: Dict<U>): ObservableWithMotionOperators<U>;
+    rewrite<U>(dict: Map<T, U>): ObservableWithMotionOperators<U> {
       return this._map(
         (key: T) => typeof dict.get === 'function'
           ? dict.get(key)

@@ -18,11 +18,12 @@ import {
   Constructor,
   NextOperation,
   Observable,
+  ObservableWithMotionOperators,
   Observer,
 } from '../../types';
 
 export interface MotionNextOperable<T> extends Observable<T> {
-  _nextOperator<U>(operation: NextOperation<T, U>): Observable<U>;
+  _nextOperator<U>(operation: NextOperation<T, U>): ObservableWithMotionOperators<U>;
 }
 
 export function withNextOperator<T, S extends Constructor<Observable<T>>>(superclass: S): S & Constructor<MotionNextOperable<T>> {
@@ -36,8 +37,8 @@ export function withNextOperator<T, S extends Constructor<Observable<T>>>(superc
      * `next` channel, transform it, and use the supplied callback to dispatch
      * the result to the observer's `next` channel.
      */
-    _nextOperator<U>(operation: NextOperation<T, U>): Observable<U> {
-      const constructor = this.constructor as Constructor<Observable<U>>;
+    _nextOperator<U>(operation: NextOperation<T, U>): ObservableWithMotionOperators<U> {
+      const constructor = this.constructor as Constructor<ObservableWithMotionOperators<T>>;
 
       return new constructor(
         (observer: Observer<U>) => {
