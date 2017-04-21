@@ -17,8 +17,17 @@
 import createProperty from '../properties/createProperty';
 
 import {
-  Observable,
+  MotionObservable,
+} from '../observables/MotionObservable';
+
+import {
+  dragSystem,
+} from '../systems/dragSystem';
+
+import {
+  DragSystem,
   PartialPointerEvent,
+  Point2D,
   PropertyObservable,
 } from '../types';
 
@@ -26,23 +35,26 @@ import {
   GestureRecognitionState,
 } from '../GestureRecognitionState';
 
-export type PointerEventStreams = {
-  down$: Observable<PartialPointerEvent>;
-  move$: Observable<PartialPointerEvent>;
-  up$: Observable<PartialPointerEvent>;
+export type DraggableArgs = {
+  down$: MotionObservable<PartialPointerEvent>,
+  move$: MotionObservable<PartialPointerEvent>,
+  up$: MotionObservable<PartialPointerEvent>,
+  system: DragSystem,
 };
 
 export class Draggable {
   state: PropertyObservable<GestureRecognitionState> = createProperty<GestureRecognitionState>({ initialValue: GestureRecognitionState.POSSIBLE });
   recognitionThreshold: PropertyObservable<number> = createProperty<number>({ initialValue: 16 });
-  down$: Observable<PartialPointerEvent>;
-  move$: Observable<PartialPointerEvent>;
-  up$: Observable<PartialPointerEvent>;
+  down$: MotionObservable<PartialPointerEvent>;
+  move$: MotionObservable<PartialPointerEvent>;
+  up$: MotionObservable<PartialPointerEvent>;
+  system: DragSystem;
 
-  constructor({ down$, move$, up$ }: PointerEventStreams) {
+  constructor({ down$, move$, up$, system = dragSystem }: DraggableArgs) {
     this.down$ = down$;
     this.move$ = move$;
     this.up$ = up$;
+    this.system = system;
   }
 }
 export default Draggable;

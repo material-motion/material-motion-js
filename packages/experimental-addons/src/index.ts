@@ -31,6 +31,4 @@ export { default as PropertyKind } from './PropertyKind';
 export * from './InputKind';
 export { default as InputKind } from './InputKind';
 
-export * from './gestures';
-
 export default undefined;
