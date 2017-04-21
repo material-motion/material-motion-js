@@ -65,6 +65,14 @@ export {
 } from './operators'
 
 import {
+  Draggable,
+} from './interactions/Draggable';
+
+import {
+  SpringT,
+} from './interactions/Spring';
+
+import {
   MotionObservable,
 } from './observables/MotionObservable';
 
@@ -100,9 +108,9 @@ export type Point2D = {
 
 /**
  * There are 2 competing input events on the Web: `PointerEvent`s and
- * `TouchEvent`s. Our gesture system only needs 3 properties: x, y, and and ID.
- * In both models, `pageX` and `pageY` are provided. `TouchEvent` calls its ID
- * `identifier`; whereas, `PointerEvent` uses `pointerId`.
+ * `TouchEvent`s. Our gesture system only needs 4 properties: x, y, type and an
+ * ID. In both models, `pageX` and `pageY` are provided. `TouchEvent` calls its
+ * ID `identifier`; whereas, `PointerEvent` uses `pointerId`.
  *
  * `PartialPointerEvent` is the subset we care about.  `PointerEvent` already
  * has this shape.  `TouchEvent` can be trivially converted by extracting the
@@ -112,6 +120,7 @@ export type PartialPointerEvent = {
   pageX: number;
   pageY: number;
   pointerId: number;
+  type: 'pointerdown' | 'pointermove' | 'pointerup';
 };
 
 export type Read<T> = () => T;
@@ -133,17 +142,8 @@ export interface MotionElement {
 
 export type EqualityCheck = (a: any, b: any) => boolean;
 
-export type SpringProperties<T> = {
-  state: PropertyObservable<State>,
-  enabled: PropertyObservable<boolean>,
-  destination: PropertyObservable<T>,
-  initialValue: PropertyObservable<T>,
-  initialVelocity: PropertyObservable<T>,
-  friction: PropertyObservable<number>,
-  tension: PropertyObservable<number>,
-  threshold: PropertyObservable<number>,
-};
-export type SpringSystem<T extends number | Point2D> = (spring: SpringProperties<T>) => MotionObservable<T>;
+export type DragSystem = (interaction: Draggable) => MotionObservable<Point2D>;
+export type SpringSystem<T extends number | Point2D> = (interaction: SpringT<T>) => MotionObservable<T>;
 
 export type Dict<T> = {
   [index: string]: T,
