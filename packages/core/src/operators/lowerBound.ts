@@ -15,19 +15,22 @@
  */
 
 import {
+  MotionObservable,
+} from '../observables/MotionObservable';
+
+import {
   Constructor,
   MotionMappable,
-  Observable,
 } from '../types';
 
 export interface MotionLowerBoundable {
-  lowerBound(limit: number): Observable<number>;
+  lowerBound(limit: number): MotionObservable<number>;
 }
 
 export function withLowerBound<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionLowerBoundable> {
   return class extends superclass implements MotionLowerBoundable {
-    lowerBound(limit: number): Observable<number> {
-      return this._map(
+    lowerBound(limit: number): MotionObservable<number> {
+      return (this as any as MotionObservable<number>)._map(
         (value: number) => Math.max(value, limit)
       );
     }

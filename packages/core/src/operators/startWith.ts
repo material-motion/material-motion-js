@@ -15,14 +15,17 @@
  */
 
 import {
+  MotionObservable,
+} from '../observables/MotionObservable';
+
+import {
   Constructor,
-  Observable,
   ObservableWithFoundationalMotionOperators,
   Observer,
 } from '../types';
 
 export interface MotionSeedable<T> {
-  startWith(initialValue: T): Observable<T>;
+  startWith(initialValue: T): MotionObservable<T>;
 }
 
 export function withStartWith<T, S extends Constructor<ObservableWithFoundationalMotionOperators<T>>>(superclass: S): S & Constructor<MotionSeedable<T>> {
@@ -33,10 +36,8 @@ export function withStartWith<T, S extends Constructor<ObservableWithFoundationa
      * Returns a remembered stream, so each new observer will synchronously
      * receive the most recent value.
      */
-    startWith(initialValue: T): Observable<T> {
-      const constructor = this.constructor as Constructor<ObservableWithFoundationalMotionOperators<T>>;
-
-      return new constructor(
+    startWith(initialValue: T): MotionObservable<T> {
+      return new MotionObservable(
         (observer: Observer<T>) => {
           observer.next(initialValue);
           const subscription = this.subscribe(observer);

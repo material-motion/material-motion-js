@@ -15,14 +15,17 @@
  */
 
 import {
+  MotionObservable,
+} from '../../observables/MotionObservable';
+
+import {
   Constructor,
   MotionNextOperable,
   NextChannel,
-  Observable,
 } from '../../types';
 
 export interface MotionDebounceable<T> {
-  _debounce(): Observable<T>;
+  _debounce(): MotionObservable<T>;
 }
 
 export function withDebounce<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S
@@ -38,7 +41,7 @@ export function withDebounce<T, S extends Constructor<MotionNextOperable<T>>>(su
      * Since no rendering will happen until `requestAnimationFrame` is called,
      * it should be safe to `_debounce()` without missing a frame.
      */
-    _debounce(): Observable<T> {
+    _debounce(): MotionObservable<T> {
       let queuedFrameID: number;
       let lastValue: T;
 

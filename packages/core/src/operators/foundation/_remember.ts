@@ -15,6 +15,10 @@
  */
 
 import {
+  MotionObservable,
+} from '../../observables/MotionObservable';
+
+import {
   Constructor,
   NextOperation,
   Observable,
@@ -23,7 +27,7 @@ import {
 } from '../../types';
 
 export interface MotionMemorable<T> extends Observable<T> {
-  _remember(): Observable<T>;
+  _remember(): MotionObservable<T>;
 }
 
 export function withRemember<T, S extends Constructor<Observable<T>>>(superclass: S): S & Constructor<MotionMemorable<T>> {
@@ -35,7 +39,7 @@ export function withRemember<T, S extends Constructor<Observable<T>>>(superclass
      * `_remember()` is also useful for ensuring that expensive operations only
      * happen once per dispatch, sharing the resulting value with all observers.
      */
-    _remember(): Observable<T> {
+    _remember(): MotionObservable<T> {
       // Keep track of all the observers who have subscribed,
       // so we can notify them when we get new values.
       const observers = new Set();
@@ -43,9 +47,7 @@ export function withRemember<T, S extends Constructor<Observable<T>>>(superclass
       let lastValue: T;
       let hasStarted = false;
 
-      const constructor = this.constructor as Constructor<Observable<T>>;
-
-      return new constructor(
+      return new MotionObservable(
         (observer: Observer<T>) => {
           // If we already know about this observer, we don't
           // have to do anything else.
