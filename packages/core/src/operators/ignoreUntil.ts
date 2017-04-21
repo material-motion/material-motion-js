@@ -17,14 +17,17 @@
 import * as deepEqual from 'deep-equal';
 
 import {
+  MotionObservable,
+} from '../observables/MotionObservable';
+
+import {
   Constructor,
   EqualityCheck,
-  Observable,
   ObservableWithFoundationalMotionOperators,
 } from '../types';
 
 export interface MotionIgnorable<T> {
-  ignoreUntil(expectedValue: T, areEqual?: EqualityCheck): Observable<T>;
+  ignoreUntil(expectedValue: T, areEqual?: EqualityCheck): MotionObservable<T>;
 }
 
 export function withIgnoreUntil<T, S extends Constructor<ObservableWithFoundationalMotionOperators<T>>>(superclass: S): S & Constructor<MotionIgnorable<T>> {
@@ -34,7 +37,7 @@ export function withIgnoreUntil<T, S extends Constructor<ObservableWithFoundatio
      * value.  The expected value, and all subsequent values, will then be
      * dispatched.
      */
-    ignoreUntil(expectedValue: T, areEqual: EqualityCheck = deepEqual): Observable<T> {
+    ignoreUntil(expectedValue: T, areEqual: EqualityCheck = deepEqual): MotionObservable<T> {
       let ignoring = true;
 
       return this._filter(

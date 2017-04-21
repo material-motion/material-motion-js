@@ -15,9 +15,12 @@
  */
 
 import {
+  MotionObservable,
+} from '../observables/MotionObservable';
+
+import {
   Constructor,
   MotionMappable,
-  Observable,
 } from '../types';
 
 import {
@@ -25,13 +28,13 @@ import {
 } from '../ThresholdSide';
 
 export interface MotionThresholdable {
-  threshold(limit: number): Observable<ThresholdSide>;
+  threshold(limit: number): MotionObservable<ThresholdSide>;
 }
 
 export function withThreshold<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionThresholdable> {
   return class extends superclass implements MotionThresholdable {
-    threshold(limit: number): Observable<ThresholdSide> {
-      return this._map(
+    threshold(limit: number): MotionObservable<ThresholdSide> {
+      return (this as any as MotionObservable<number>)._map(
         (value: number) => {
           if (value === limit) {
             return ThresholdSide.WITHIN;

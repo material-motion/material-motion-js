@@ -15,19 +15,22 @@
  */
 
 import {
+  MotionObservable,
+} from '../observables/MotionObservable';
+
+import {
   Constructor,
   MotionMappable,
-  Observable,
 } from '../types';
 
 export interface MotionOffsetable {
-  offsetBy(offset: number): Observable<number>;
+  offsetBy(offset: number): MotionObservable<number>;
 }
 
 export function withOffsetBy<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionOffsetable> {
   return class extends superclass implements MotionOffsetable {
-    offsetBy(offset: number): Observable<number> {
-      return this._map(
+    offsetBy(offset: number): MotionObservable<number> {
+      return (this as any as MotionMappable<number>)._map(
         (value: number) => value + offset
       );
     }

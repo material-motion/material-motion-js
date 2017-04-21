@@ -15,19 +15,23 @@
  */
 
 import {
+  MotionObservable,
+} from '../observables/MotionObservable';
+
+import {
   Constructor,
   MotionMappable,
   Observable,
 } from '../types';
 
 export interface MotionScalable {
-  scaledBy(coefficient: number): Observable<number>;
+  scaledBy(coefficient: number): MotionObservable<number>;
 }
 
 export function withScaledBy<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionScalable> {
   return class extends superclass implements MotionScalable {
-    scaledBy(coefficient: number): Observable<number> {
-      return this._map(
+    scaledBy(coefficient: number): MotionObservable<number> {
+      return (this as any as MotionObservable<number>)._map(
         (value: number) => coefficient * value
       );
     }

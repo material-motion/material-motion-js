@@ -15,9 +15,12 @@
  */
 
 import {
+  MotionObservable,
+} from '../observables/MotionObservable';
+
+import {
   Constructor,
   MotionMappable,
-  Observable,
   Point2D,
 } from '../types';
 
@@ -26,7 +29,7 @@ import {
 } from '../typeGuards';
 
 export interface MotionMeasurable<T> {
-  distanceFrom(origin: T): Observable<number>;
+  distanceFrom(origin: T): MotionObservable<number>;
 }
 
 export function withDistanceFrom<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionMeasurable<T>> {
@@ -36,7 +39,7 @@ export function withDistanceFrom<T, S extends Constructor<MotionMappable<T>>>(su
      * The origin may be a number or a point, but the dispatched value will
      * always be a number; distance is computed using Pythagorean theorem.
      */
-    distanceFrom(origin: T): Observable<number> {
+    distanceFrom(origin: T): MotionObservable<number> {
       if (isPoint2D(origin)) {
         return this._map(
           (value: Point2D) => Math.sqrt((origin.x - value.x) ** 2 + (origin.y - value.y) ** 2)

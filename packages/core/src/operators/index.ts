@@ -116,7 +116,7 @@ import {
 
 export type ObservableWithMotionOperators<T> = ObservableWithFoundationalMotionOperators<T>
   & MotionPluckable<T> & MotionLoggable<T> & MotionDeduplicable<T> & MotionInvertible<T>
-  & MotionMergeable<T> & MotionRewritable<T>  & MotionRewriteToable<T> & MotionRewriteRangeable<T>
+  & MotionMergeable<T> & MotionRewritable<T> & MotionRewriteToable & MotionRewriteRangeable
   & MotionThresholdable & MotionThresholdRangeable & MotionUpperBoundable & MotionLowerBoundable
   & MotionOffsetable & MotionScalable & MotionDelayable<T> & MotionMeasurable<T>
   & MotionSeedable<T> & MotionIgnorable<T>;
@@ -128,7 +128,7 @@ export function withMotionOperators<T, S extends Constructor<Observable<T>>>(sup
     withMerge(withInverted(withDedupe(withLog(withUpperBound(withLowerBound(
       withOffsetBy(withScaledBy(withDelayBy(withDistanceFrom(withStartWith(
         withIgnoreUntil(
-          withPluck<T, ObservableWithFoundationalMotionOperators<T>>(
+          withPluck<T, Constructor<ObservableWithFoundationalMotionOperators<T>>>(
             withFoundationalMotionOperators<T, Constructor<Observable<T>>>(superclass)
           )
         )
