@@ -26,9 +26,16 @@ export function isPoint2D(value: any): value is Point2D {
 }
 
 /**
- * Checks if a value is a `PointerEvent` by checking if `type` starts with
- * `pointer`.
+ * Checks if a value is a `PointerEvent` by checking if the value is an `Event`
+ * whose `type` starts with `pointer`.
+ *
+ * This is useful for ensuring that `downEvent.target.setPointerCapture()` can
+ * be called:  To avoid using the PointerEvent polyfill, a developer could
+ * create an object that had the subset of `PointerEvent` that we care about
+ * (`PartialPointerEvent`) and populate its values from `event.targetTouches`.
+ * However, we only need to call `setPointerCapture()` on a true `PointerEvent`,
+ * so `isPointerEvent(value)` needs to be able to distinguish between them.
  */
 export function isPointerEvent(value: any): value is PointerEvent {
-  return value.type.startsWith('pointer');
+  return value instanceof Event && value.type.startsWith('pointer');
 }
