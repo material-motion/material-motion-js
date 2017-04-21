@@ -14,7 +14,7 @@
  *  under the License.
  */
 
-export * from './createDragStream';
-export { default as createDragStream } from './createDragStream';
+export * from './dragSystem';
+export { default as dragSystem } from './dragSystem';
 
 export default undefined;
