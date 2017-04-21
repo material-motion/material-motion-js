@@ -18,14 +18,14 @@ import {
   Constructor,
   MotionNextOperable,
   NextChannel,
-  Observable,
+  ObservableWithMotionOperators,
 } from '../types';
 
 // TODO: figure out the right way to cast T to boolean | number without
 // constraining T on streams that don't support inverted.  Same in rewriteRange.
 
 export interface MotionInvertible<T> {
-  inverted(): Observable<T>;
+  inverted(): ObservableWithMotionOperators<T>;
 }
 
 export function withInverted<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionInvertible<T>> {
@@ -37,9 +37,10 @@ export function withInverted<T, S extends Constructor<MotionNextOperable<T>>>(su
      * - 0 when it receives 1, and
      * - 1 when it receives 0.
      */
-    inverted(): Observable<T> {
-      return this._nextOperator(
-        (value: T, dispatch: NextChannel<T>) => {
+    inverted(): ObservableWithMotionOperators<T> {
+      type U = number | boolean;
+      return (this as any as ObservableWithMotionOperators<U>)._nextOperator(
+        (value: U, dispatch: NextChannel<U>) => {
           switch (value) {
             case 0:
               dispatch(1);
