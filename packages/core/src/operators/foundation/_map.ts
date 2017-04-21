@@ -18,11 +18,11 @@ import {
   Constructor,
   MotionNextOperable,
   NextChannel,
-  Observable,
+  ObservableWithMotionOperators,
 } from '../../types';
 
 export interface MotionMappable<T> {
-  _map<U>(transform: (value: T) => U): Observable<U>;
+  _map<U>(transform: (value: T) => U): ObservableWithMotionOperators<U>;
 }
 
 export function withMap<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionMappable<T>> {
@@ -31,7 +31,7 @@ export function withMap<T, S extends Constructor<MotionNextOperable<T>>>(supercl
      * Applies `transform` to every incoming value and synchronously passes the
      * result to the observer.
      */
-    _map<U>(transform: (value: T) => U): Observable<U> {
+    _map<U>(transform: (value: T) => U): ObservableWithMotionOperators<U> {
       return this._nextOperator(
         (value: T, dispatch: NextChannel<U>) => {
           dispatch(transform(value));

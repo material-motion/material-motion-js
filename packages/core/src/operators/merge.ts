@@ -17,6 +17,7 @@
 import {
   Constructor,
   Observable,
+  ObservableWithMotionOperators,
   Observer,
 } from '../types';
 
@@ -25,7 +26,7 @@ import {
 } from './pluck';
 
 export interface MotionMergeable<T> extends Observable<T> {
-  merge(...otherStreams: Array<Observable<any>>): Observable<any>;
+  merge(...otherStreams: Array<Observable<any>>): ObservableWithMotionOperators<any>;
 }
 
 export function withMerge<T, S extends Constructor<Observable<T>>>(superclass: S): S & Constructor<MotionMergeable<T>> {
@@ -34,8 +35,8 @@ export function withMerge<T, S extends Constructor<Observable<T>>>(superclass: S
      * Dispatches values as it receives them, both from upstream and from any
      * streams provided as arguments.
      */
-    merge(...otherStreams: Array<Observable<any>>): Observable<any> {
-      const constructor = this.constructor as Constructor<Observable<any>>;
+    merge(...otherStreams: Array<Observable<any>>): ObservableWithMotionOperators<any> {
+      const constructor = this.constructor as Constructor<ObservableWithMotionOperators<T>>;
 
       return new constructor(
         (observer: Observer<any>) => {
