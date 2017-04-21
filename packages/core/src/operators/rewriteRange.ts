@@ -18,24 +18,22 @@ import {
   Constructor,
   MotionNextOperable,
   NextChannel,
-  Observable,
+  ObservableWithMotionOperators,
 } from '../types';
 
-// TODO: figure out how to specify that T should extend number.  Same in
-// inverted.
-export interface MotionRewriteRangeable<T> {
-  rewriteRange<U>(kwargs: RewriteRangeArgs): Observable<U>;
+export interface MotionRewriteRangeable {
+  rewriteRange(kwargs: RewriteRangeArgs): ObservableWithMotionOperators<number>;
 }
 
-export function withRewriteRange<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionRewriteRangeable<T>> {
-  return class extends superclass implements MotionRewriteRangeable<T> {
+export function withRewriteRange<S extends Constructor<MotionNextOperable<number>>>(superclass: S): S & Constructor<MotionRewriteRangeable> {
+  return class extends superclass implements MotionRewriteRangeable {
     /**
      * Receives a value from upstream, linearly interpolates it between the given
      * ranges, and dispatches the result to the observer.
      */
-    rewriteRange({ fromStart, fromEnd, toStart = 0, toEnd = 1 }: RewriteRangeArgs): Observable<number> {
-      return this._nextOperator(
-        (value: T, dispatch: NextChannel<number>) => {
+    rewriteRange({ fromStart, fromEnd, toStart = 0, toEnd = 1 }: RewriteRangeArgs): ObservableWithMotionOperators<number> {
+      return (this as any as ObservableWithMotionOperators<number>)._nextOperator(
+        (value: number, dispatch: NextChannel<number>) => {
           const fromRange = fromStart - fromEnd;
           const fromProgress = (value - fromEnd) / fromRange;
           const toRange = toStart - toEnd;

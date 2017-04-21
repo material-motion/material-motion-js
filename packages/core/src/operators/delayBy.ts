@@ -17,11 +17,12 @@
 import {
   Constructor,
   Observable,
+  ObservableWithMotionOperators,
   Observer,
 } from '../types';
 
 export interface MotionDelayable<T> {
-  delayBy(time: number): Observable<T>;
+  delayBy(time: number): ObservableWithMotionOperators<T>;
 }
 
 export function withDelayBy<T, S extends Constructor<Observable<T>>>(superclass: S): S & Constructor<MotionDelayable<T>> {
@@ -30,8 +31,8 @@ export function withDelayBy<T, S extends Constructor<Observable<T>>>(superclass:
      * Buffers upstream values for the specified number of milliseconds, then
      * dispatches them.
      */
-    delayBy(time: number): Observable<T> {
-      const constructor = this.constructor as Constructor<Observable<T>>;
+    delayBy(time: number): ObservableWithMotionOperators<T> {
+      const constructor = this.constructor as Constructor<ObservableWithMotionOperators<T>>;
 
       return new constructor(
         (observer: Observer<T>) => {
