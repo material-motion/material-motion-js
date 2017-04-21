@@ -30,5 +30,5 @@ export function isPoint2D(value: any): value is Point2D {
  * `pointer`.
  */
 export function isPointerEvent(value: any): value is PointerEvent {
-  return value.type.startsWith('pointer');
+  return value.type && value.type.startsWith('pointer');
 }
