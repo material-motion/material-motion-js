@@ -20,7 +20,7 @@ import {
 } from '../../types';
 
 export interface MotionReadable<T> extends Observable<T> {
-  _read(): T;
+  _read(): T | undefined;
 }
 
 export function withRead<T, S extends Constructor<Observable<T>>>(superclass: S): S & Constructor<MotionReadable<T>> {
@@ -29,8 +29,8 @@ export function withRead<T, S extends Constructor<Observable<T>>>(superclass: S)
      * Returns the current value of an observable property (e.g. a subject or
      * remembered stream).
      */
-    _read(): T {
-      let result: T;
+    _read(): T | undefined {
+      let result: T | undefined;
 
       this.subscribe(
         (value: T) => {
