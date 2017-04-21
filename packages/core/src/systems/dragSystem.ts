@@ -50,56 +50,61 @@ export function dragSystem({
       let moveSubscription: Subscription;
       const downSubscription: Subscription = down$.subscribe(
         (downEvent: PointerEvent) => {
-          if (isPointerEvent(downEvent)) {
-            // The `as Element` is a workaround for
-            // https://github.com/Microsoft/TypeScript/issues/299
-            (downEvent.target as Element).setPointerCapture(downEvent.pointerId);
-          }
+          // If we get a new down event while we're already listening for moves,
+          // ignore it.
+          if (!moveSubscription) {
+            if (isPointerEvent(downEvent)) {
+              // The `as Element` is a workaround for
+              // https://github.com/Microsoft/TypeScript/issues/299
+              (downEvent.target as Element).setPointerCapture(downEvent.pointerId);
+            }
 
-          moveSubscription = move$.merge(up$)._filter(
-            (nextEvent: PartialPointerEvent) => nextEvent.pointerId === downEvent.pointerId
-          ).subscribe(
-            (nextEvent: PartialPointerEvent) => {
-              const atRest = nextEvent.type.includes('up');
+            moveSubscription = move$.merge(up$)._filter(
+              (nextEvent: PartialPointerEvent) => nextEvent.pointerId === downEvent.pointerId
+            ).subscribe(
+              (nextEvent: PartialPointerEvent) => {
+                const atRest = nextEvent.type.includes('up');
 
-              const translation = {
-                x: nextEvent.pageX - downEvent.pageX,
-                y: nextEvent.pageY - downEvent.pageY,
-              };
+                const translation = {
+                  x: nextEvent.pageX - downEvent.pageX,
+                  y: nextEvent.pageY - downEvent.pageY,
+                };
 
-              switch (state.read()) {
-                case GestureRecognitionState.POSSIBLE:
-                  if (Math.abs(translation.x ** 2 + translation.y ** 2) > recognitionThreshold.read()) {
-                    state.write(GestureRecognitionState.BEGAN);
+                switch (state.read()) {
+                  case GestureRecognitionState.POSSIBLE:
+                    if (Math.abs(translation.x ** 2 + translation.y ** 2) > recognitionThreshold.read()) {
+                      state.write(GestureRecognitionState.BEGAN);
+                    }
+                    break;
+
+                  case GestureRecognitionState.BEGAN:
+                    state.write(GestureRecognitionState.CHANGED);
+                    break;
+
+                  default:break;
+                }
+
+                if (atRest) {
+                  // This would be a takeWhile if we were using an Observable
+                  // implementation that supported completion.
+                  moveSubscription.unsubscribe();
+
+                  if (state.read() === GestureRecognitionState.POSSIBLE) {
+                    state.write(GestureRecognitionState.FAILED);
+                  } else {
+                    state.write(GestureRecognitionState.ENDED);
                   }
-                  break;
+                }
 
-                case GestureRecognitionState.BEGAN:
-                  state.write(GestureRecognitionState.CHANGED);
-                  break;
+                observer.next(translation);
 
-                default:break;
-              }
-
-              if (atRest) {
-                // This would be a takeWhile if we were using an Observable
-                // implementation that supported completion.
-                moveSubscription.unsubscribe();
-
-                if (state.read() === GestureRecognitionState.POSSIBLE) {
-                  state.write(GestureRecognitionState.FAILED);
-                } else {
-                  state.write(GestureRecognitionState.ENDED);
+                if (atRest) {
+                  state.write(GestureRecognitionState.POSSIBLE);
+                  moveSubscription = undefined;
                 }
               }
-
-              observer.next(translation);
-
-              if (atRest) {
-                state.write(GestureRecognitionState.POSSIBLE);
-              }
-            }
-          );
+            );
+          }
         }
       );
 
