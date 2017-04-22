@@ -142,26 +142,6 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
   }
 
   /**
-   * Dispatches an array of the two most recent values, as long as at least two
-   * incoming values have been received.
-   */
-  pairwise(): ExperimentalMotionObservable<Array<T>> {
-    let prevValue: T;
-    let ready = false;
-
-    return this._nextOperator(
-      (nextValue: T, dispatch: NextChannel<Array<T>>) => {
-        if (ready) {
-          dispatch([prevValue, nextValue]);
-        }
-
-        prevValue = nextValue;
-        ready = true;
-      }
-    );
-  }
-
-  /**
    * Listens to a second stream, and replaces every value it receives from
    * upstream with the latest value from the second stream.
    */
