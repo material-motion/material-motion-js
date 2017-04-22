@@ -59,6 +59,7 @@ export {
   MotionSeedable,
   MotionThresholdable,
   MotionThresholdRangeable,
+  MotionTimestampable,
   MotionUpperBoundable,
   MotionWindowable,
   ObservableWithFoundationalMotionOperators,
@@ -142,6 +143,11 @@ export interface MotionElement {
 }
 
 export type EqualityCheck = (a: any, b: any) => boolean;
+
+export interface Timestamped<T> {
+  value: T,
+  timestamp: number,
+}
 
 export type DragSystem = (interaction: Draggable) => MotionObservable<Point2D>;
 export type SpringSystem<T extends number | Point2D> = (interaction: SpringT<T>) => MotionObservable<T>;

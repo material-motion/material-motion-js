@@ -115,6 +115,11 @@ import {
 } from './thresholdRange';
 
 import {
+  MotionTimestampable,
+  withTimestamp,
+} from './timestamp';
+
+import {
   MotionUpperBoundable,
   withUpperBound,
 } from './upperBound';
@@ -132,11 +137,11 @@ export function withMotionOperators<T, S extends Constructor<Observable<T>>>(sup
   return withThresholdRange(withThreshold(withRewriteRange(withRewriteTo(withRewrite(
     withMerge(withInverted(withDedupe(withLog(withUpperBound(withLowerBound(
       withOffsetBy(withScaledBy(withDelayBy(withDistanceFrom(withStartWith(
-        withIgnoreUntil(withSlidingWindow(
+        withIgnoreUntil(withSlidingWindow(withTimestamp(
           withPluck<T, Constructor<ObservableWithFoundationalMotionOperators<T>>>(
             withFoundationalMotionOperators<T, Constructor<Observable<T>>>(superclass)
           )
-        ))
+        )))
       )))))
     )))))))
   ))));
@@ -161,4 +166,5 @@ export * from './slidingWindow';
 export * from './startWith';
 export * from './threshold';
 export * from './thresholdRange';
+export * from './timestamp';
 export * from './upperBound';
