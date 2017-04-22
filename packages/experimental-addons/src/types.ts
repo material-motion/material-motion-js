@@ -25,10 +25,6 @@ import {
   ExperimentalMotionObservable,
 } from './ExperimentalMotionObservable';
 
-import {
-  GestureRecognitionState,
-} from './gestures/GestureRecognitionState';
-
 // If there were Set literals and collection methods, these might be better as
 // sets than arrays
 
@@ -67,22 +63,4 @@ export interface Director {
 export interface Timestamped<T> {
   value: T,
   timestamp: number,
-}
-
-export interface GestureRecognition<T> {
-  recognitionState: GestureRecognitionState,
-  recognitionThreshold: number,
-  velocity: T,
-}
-
-export interface TranslationGestureRecognition extends GestureRecognition<Point2D> {
-  translation: Point2D,
-}
-
-export interface RotationGestureRecognition extends GestureRecognition<number> {
-  rotation: number,
-}
-
-export interface ScaleGestureRecognition extends GestureRecognition<number> {
-  scale: number,
 }

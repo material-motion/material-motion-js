@@ -17,6 +17,7 @@
 import {
   Connect,
   Dict,
+  GestureRecognitionState,
   MotionObservable,
   NextChannel,
   Observable,
@@ -26,10 +27,6 @@ import {
   ThresholdSide,
   isObservable,
 } from 'material-motion';
-
-import {
-  GestureRecognitionState,
-} from './gestures/GestureRecognitionState';
 
 import {
   GestureRecognition,
