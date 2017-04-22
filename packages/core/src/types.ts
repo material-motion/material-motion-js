@@ -60,6 +60,7 @@ export {
   MotionThresholdable,
   MotionThresholdRangeable,
   MotionUpperBoundable,
+  MotionWindowable,
   ObservableWithFoundationalMotionOperators,
   ObservableWithMotionOperators,
 } from './operators'
