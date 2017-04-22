@@ -14,8 +14,8 @@ module.exports = function(config) {
     // CircleCI needs JUnit to show tests correctly.
     // https://circleci.com/docs/1.0/test-metadata/#karma
     reporters: process.env.CI
-      ? ['junit']
-      : ['progress'],
+      ? ['junit', 'progress']
+      : ['junit'],
     junitReporter: {
       outputDir: process.env.CIRCLE_TEST_REPORTS,
     },
