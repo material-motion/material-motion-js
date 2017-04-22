@@ -59,8 +59,3 @@ export interface Director {
     }
   };
 }
-
-export interface Timestamped<T> {
-  value: T,
-  timestamp: number,
-}
