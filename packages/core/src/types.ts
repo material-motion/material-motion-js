@@ -61,6 +61,7 @@ export {
   MotionThresholdRangeable,
   MotionTimestampable,
   MotionUpperBoundable,
+  MotionVelocityMeasurable,
   MotionWindowable,
   ObservableWithFoundationalMotionOperators,
   ObservableWithMotionOperators,
