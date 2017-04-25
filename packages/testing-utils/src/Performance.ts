@@ -14,16 +14,15 @@
  *  under the License.
  */
 
-export * from './Performance';
-export { default as Performance } from './Performance';
+export class Performance {
+  _currentTime: number = Math.round(Math.random() * 10000);
 
-export * from './createMockObserver';
-export { default as createMockObserver } from './createMockObserver';
+  now = () => {
+    return this._currentTime;
+  }
 
-export * from './useMockedRAF';
-export { default as useMockedRAF } from './useMockedRAF';
-
-export * from './useMockedPerformance';
-export { default as useMockedPerformance } from './useMockedPerformance';
-
-export default undefined;
+  increment(amount = 16) {
+    this._currentTime += amount;
+  }
+}
+export default Performance;
