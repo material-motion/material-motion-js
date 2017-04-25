@@ -43,6 +43,12 @@ import {
   MotionObservable,
 } from '../../observables/';
 
+import {
+  DEFAULT_VELOCITY,
+  MAXIMUM_AGE,
+  MAXIMUM_VELOCITY,
+} from '../velocity';
+
 describe('motionObservable.velocity',
   useMockedPerformance(
     (mockPerformance) => {
@@ -74,7 +80,7 @@ describe('motionObservable.velocity',
         }
       );
 
-      it(`should dispatch every time it receives a value is pulse isn't supplied`,
+      it(`should dispatch every time it receives a value if pulse isn't supplied`,
         () => {
           valueStream.velocity().subscribe(listener);
 
@@ -82,7 +88,7 @@ describe('motionObservable.velocity',
           mockPerformance.increment(1);
           valueSubject.next(1);
 
-          expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(0).and.to.have.been.calledWith(1);
+          expect(listener).to.have.been.calledTwice;
         }
       );
 
@@ -90,9 +96,160 @@ describe('motionObservable.velocity',
         () => {
           valueStream.velocity(pulseStream).subscribe(listener);
 
-          pulseSubject.next(0);
+          pulseSubject.next();
 
           expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(0);
+        }
+      );
+
+      it(`should calculate velocity for reasonable px / ms rates`,
+        () => {
+          valueStream.velocity(pulseStream).subscribe(listener);
+
+          valueSubject.next(1);
+          mockPerformance.increment(5);
+          valueSubject.next(7);
+          mockPerformance.increment(5);
+          valueSubject.next(11);
+
+          pulseSubject.next();
+
+          expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(1);
+        }
+      );
+
+      it(`should support negative velocities`,
+        () => {
+          valueStream.velocity(pulseStream).subscribe(listener);
+
+          valueSubject.next(-1);
+          mockPerformance.increment(5);
+          valueSubject.next(-7);
+          mockPerformance.increment(5);
+          valueSubject.next(-11);
+
+          pulseSubject.next();
+
+          expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(-1);
+        }
+      );
+
+      it(`should dispatch DEFAULT_VELOCITY when there is only one recent data point`,
+        () => {
+          valueStream.velocity(pulseStream).subscribe(listener);
+
+          valueSubject.next(100);
+          pulseSubject.next();
+
+          expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(DEFAULT_VELOCITY);
+        }
+      );
+
+      it(`should dispatch DEFAULT_VELOCITY for super-fast velocities with only 2 data points`,
+        () => {
+          valueStream.velocity(pulseStream).subscribe(listener);
+
+          valueSubject.next(7);
+          mockPerformance.increment(20);
+          valueSubject.next(1000);
+
+          pulseSubject.next();
+
+          expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(DEFAULT_VELOCITY);
+        }
+      );
+
+      it(`should dispatch MAXIMUM_VELOCITY for super-fast velocities with at least 3 data points`,
+        () => {
+          valueStream.velocity(pulseStream).subscribe(listener);
+
+          valueSubject.next(1);
+          mockPerformance.increment(1);
+          valueSubject.next(3);
+          mockPerformance.increment(1);
+          valueSubject.next(6);
+          mockPerformance.increment(1);
+          valueSubject.next(9);
+          mockPerformance.increment(1);
+          valueSubject.next(100);
+
+          pulseSubject.next();
+
+          expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(MAXIMUM_VELOCITY);
+        }
+      );
+
+      it(`should ignore trailing values older than MAXIMUM_AGE`,
+        () => {
+          valueStream.velocity(pulseStream).subscribe(listener);
+
+          valueSubject.next(1);
+          mockPerformance.increment(MAXIMUM_AGE);
+          valueSubject.next(7);
+          mockPerformance.increment(10);
+          valueSubject.next(10);
+
+          pulseSubject.next();
+
+          expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(.3);
+        }
+      );
+
+      it(`should ignore values that aren't going in the current direction`,
+        () => {
+          valueStream.velocity(pulseStream).subscribe(listener);
+
+          valueSubject.next(7);
+          mockPerformance.increment(10);
+          valueSubject.next(1);
+          mockPerformance.increment(10);
+          valueSubject.next(11);
+
+          pulseSubject.next();
+
+          expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(1);
+        }
+      );
+
+      it(`should use the most recent 5 values`,
+        () => {
+          valueStream.velocity(pulseStream).subscribe(listener);
+
+          valueSubject.next(2);
+          mockPerformance.increment(16);
+          valueSubject.next(4);
+          mockPerformance.increment(16);
+          valueSubject.next(8);
+          mockPerformance.increment(16);
+          valueSubject.next(16);
+          mockPerformance.increment(16);
+          valueSubject.next(32);
+          mockPerformance.increment(16);
+          valueSubject.next(64);
+          mockPerformance.increment(16);
+          valueSubject.next(128);
+          mockPerformance.increment(16);
+          valueSubject.next(256);
+
+          pulseSubject.next();
+
+          expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(3.75);
+        }
+      );
+
+      it(`should dispatch a point if the upstream values are points`,
+        () => {
+          valueStream.velocity(pulseStream).subscribe(listener);
+
+          valueSubject.next({ x: 0, y: 0 });
+          mockPerformance.increment(16);
+          valueSubject.next({ x: 10, y: 20 });
+          mockPerformance.increment(16);
+          valueSubject.next({ x: 32, y: 64 });
+
+          pulseSubject.next();
+
+          expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({ x: 1, y: 2 });
         }
       );
     }
