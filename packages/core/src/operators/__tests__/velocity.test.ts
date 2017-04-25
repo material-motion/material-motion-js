@@ -34,6 +34,8 @@ require('chai').use(
 );
 
 import {
+  Performance,
+  useMockedPerformance
 } from 'material-motion-testing-utils';
 
 import {
@@ -42,54 +44,57 @@ import {
 } from '../../observables/';
 
 describe('motionObservable.velocity',
-  () => {
-    let valueStream;
-    let pulseStream;
-    let valueSubject;
-    let pulseSubject;
-    let listener;
+  useMockedPerformance(
+    (mockPerformance) => {
+      let valueStream;
+      let pulseStream;
+      let valueSubject;
+      let pulseSubject;
+      let listener;
 
-    beforeEach(
-      () => {
-        valueSubject = new IndefiniteSubject();
-        pulseSubject = new IndefiniteSubject();
-        valueStream = MotionObservable.from(valueSubject);
-        pulseStream = MotionObservable.from(pulseSubject);
-        listener = stub();
-      }
-    );
+      beforeEach(
+        () => {
+          valueSubject = new IndefiniteSubject();
+          pulseSubject = new IndefiniteSubject();
+          valueStream = MotionObservable.from(valueSubject);
+          pulseStream = MotionObservable.from(pulseSubject);
+          listener = stub();
+        }
+      );
 
-    it(`should not dispatch unless pulse does`,
-      () => {
-        valueStream.velocity(pulseStream).subscribe(listener);
+      it(`should not dispatch unless pulse does`,
+        () => {
+          valueStream.velocity(pulseStream).subscribe(listener);
 
-        valueSubject.next(0);
-        valueSubject.next(1);
-        valueSubject.next(2);
+          valueSubject.next(0);
+          valueSubject.next(1);
+          valueSubject.next(2);
 
-        expect(listener).not.to.have.been.called;
-      }
-    );
+          expect(listener).not.to.have.been.called;
+        }
+      );
 
-    it(`should dispatch every time it receives a value is pulse isn't supplied`,
-      () => {
-        valueStream.velocity().subscribe(listener);
+      it(`should dispatch every time it receives a value is pulse isn't supplied`,
+        () => {
+          valueStream.velocity().subscribe(listener);
 
-        valueSubject.next(0);
-        valueSubject.next(1);
+          valueSubject.next(0);
+          mockPerformance.increment(1);
+          valueSubject.next(1);
 
-        expect(listener).to.have.been.calledTwice;
-      }
-    );
+          expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(0).and.to.have.been.calledWith(1);
+        }
+      );
 
-    it(`should dispatch 0 if pulse dispatches before it's received values from upstream`,
-      () => {
-        valueStream.velocity(pulseStream).subscribe(listener);
+      it(`should dispatch 0 if pulse dispatches before it's received values from upstream`,
+        () => {
+          valueStream.velocity(pulseStream).subscribe(listener);
 
-        pulseSubject.next(0);
+          pulseSubject.next(0);
 
-        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(0);
-      }
-    );
-  }
+          expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(0);
+        }
+      );
+    }
+  )
 );
