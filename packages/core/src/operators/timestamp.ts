@@ -23,12 +23,12 @@ import {
 } from '../types';
 
 export interface MotionTimestampable<T> {
-  timestamp(value: T): ObservableWithMotionOperators<Timestamped<T>>;
+  timestamp(): ObservableWithMotionOperators<Timestamped<T>>;
 }
 
 export function withTimestamp<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionTimestampable<T>> {
   return class extends superclass implements MotionTimestampable<T> {
-    timestamp(value: T): ObservableWithMotionOperators<Timestamped<T>> {
+    timestamp(): ObservableWithMotionOperators<Timestamped<T>> {
       return this._map(
         (value: T) => (
           {
