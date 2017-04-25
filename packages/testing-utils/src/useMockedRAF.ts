@@ -36,7 +36,7 @@ export default function useMockedRAF(closure) {
 
     before(
       () => {
-        stub(window, 'requestAnimationFrame', mockRAF.raf);
+        stub(window, 'requestAnimationFrame').callsFake(mockRAF.raf);
       }
     );
 
