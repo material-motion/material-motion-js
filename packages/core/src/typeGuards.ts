@@ -39,3 +39,10 @@ export function isPoint2D(value: any): value is Point2D {
 export function isPointerEvent(value: any): value is PointerEvent {
   return value instanceof Event && value.type.startsWith('pointer');
 }
+
+/**
+ * Checks if value is iterable; that is, usable in a `for of` loop.
+ */
+export function isIterable(value: any): value is Iterable<any> {
+  return value[Symbol.iterator] !== undefined;
+}
