@@ -81,12 +81,6 @@ export function dragSystem({
                     state.write(GestureRecognitionState.CHANGED);
                     break;
 
-                  case GestureRecognitionState.CHANGED:
-                    if (!atRest) {
-                      state.write(GestureRecognitionState.CHANGED);
-                    }
-                    break;
-
                   default:break;
                 }
 
