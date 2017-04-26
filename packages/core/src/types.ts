@@ -40,6 +40,7 @@ export {
   MotionDelayable,
   MotionDeduplicable,
   MotionFilterable,
+  MotionFlattenable,
   MotionIgnorable,
   MotionInvertible,
   MotionLoggable,
