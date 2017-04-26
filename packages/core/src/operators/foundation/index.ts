@@ -30,6 +30,11 @@ import {
 } from './_filter';
 
 import {
+  MotionFlattenable,
+  withFlattenIterables,
+} from './_flattenIterables';
+
+import {
   MotionMappable,
   withMap,
 } from './_map';
@@ -50,7 +55,8 @@ import {
 } from './_read';
 
 export type ObservableWithFoundationalMotionOperators<T> = MotionNextOperable<T> & MotionMappable<T>
-    & MotionFilterable<T> & MotionMemorable<T> & MotionDebounceable<T> & MotionReadable<T>;
+    & MotionFilterable<T> & MotionMemorable<T> & MotionDebounceable<T> & MotionReadable<T>
+    & MotionFlattenable<T>;
 
 export function withFoundationalMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
     & Constructor<ObservableWithFoundationalMotionOperators<T>> {
@@ -60,11 +66,14 @@ export function withFoundationalMotionOperators<T, S extends Constructor<Observa
   //     Constructor<MotionNextOperable<T>>'.
   //       Type 'Constructor<MotionNextOperable<T>> &
   //       Constructor<MotionMappable<T>>' is not assignable to type 'S'.
-  return withRead(withDebounce(withRemember(withFilter(withMap(withNextOperator<T, S>(superclass))))));
+  return withRead(withDebounce(withRemember(withFilter(withMap(
+    withFlattenIterables(withNextOperator<T, S>(superclass))
+  )))));
 }
 
 export * from './_debounce';
 export * from './_filter';
+export * from './_flattenIterables';
 export * from './_map';
 export * from './_nextOperator';
 export * from './_remember';
