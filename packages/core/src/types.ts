@@ -123,7 +123,7 @@ export type Point2D = {
 export type PartialPointerEvent = {
   pageX: number;
   pageY: number;
-  pointerId: number;
+  pointerId?: number; // Can be undefined for MouseEvent
   type: 'pointerdown' | 'pointermove' | 'pointerup';
 };
 
