@@ -14,6 +14,15 @@
  *  under the License.
  */
 
+export * from './convertTouchEventsToPointerEvents';
+export { default as convertTouchEventsToPointerEvents } from './convertTouchEventsToPointerEvents';
+
 export * from './createMotionElementFromDOMNode';
 export { default as createMotionElementFromDOMNode } from './createMotionElementFromDOMNode';
+
+export * from './getEventStreamFromElement';
+export { default as getEventStreamFromElement } from './getEventStreamFromElement';
+
+export * from './getPointerEventStreamsFromElement';
+export { default as getPointerEventStreamsFromElement } from './getPointerEventStreamsFromElement';
 
