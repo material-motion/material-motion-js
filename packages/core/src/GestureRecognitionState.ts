@@ -14,14 +14,14 @@
  *  under the License.
  */
 
-export enum GestureRecognitionState {
-  POSSIBLE,
-  BEGAN,
-  CHANGED,
-  ENDED,
-  CANCELLED,
-  FAILED,
-  RECOGNIZED = ENDED,
+export const GestureRecognitionState = {
+  POSSIBLE: 'possible',
+  BEGAN: 'began',
+  CHANGED: 'changed',
+  ENDED: 'ended',
+  RECOGNIZED: 'ended',
+  CANCELLED: 'cancelled',
+  FAILED: 'failed',
 };
 
 export default GestureRecognitionState;
