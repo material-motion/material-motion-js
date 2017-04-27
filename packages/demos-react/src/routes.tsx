@@ -22,6 +22,7 @@ import Miss from 'react-router/Miss';
 import Router from 'react-router/BrowserRouter';
 
 // import ExampleMain from './example/components/ExampleMain';
+import QuickiePointerEventTest from './QuickiePointerEventTest';
 
 // To add a new demo, import the correct component above and add it to the links
 // list below.  Everything else is automatic.
@@ -31,6 +32,11 @@ const links = [
   //   name: 'ExampleMain',
   //   component: ExampleMain,
   // },
+  {
+    href: '/pointer-events/',
+    name: 'QuickiePointerEventTest',
+    component: QuickiePointerEventTest,
+  },
 ];
 
 function Links() {

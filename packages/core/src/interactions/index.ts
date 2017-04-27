@@ -14,6 +14,9 @@
  *  under the License.
  */
 
+export * from './Draggable';
+export { default as Draggable } from './Draggable';
+
 export * from './Spring';
 export { default as Spring } from './Spring';
 
