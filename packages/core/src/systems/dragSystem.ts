@@ -88,19 +88,17 @@ export function dragSystem({
                   // This would be a takeWhile if we were using an Observable
                   // implementation that supported completion.
                   moveSubscription.unsubscribe();
+                  moveSubscription = undefined;
 
                   if (state.read() === GestureRecognitionState.POSSIBLE) {
                     state.write(GestureRecognitionState.FAILED);
                   } else {
                     state.write(GestureRecognitionState.ENDED);
                   }
-                }
 
-                observer.next(translation);
-
-                if (atRest) {
                   state.write(GestureRecognitionState.POSSIBLE);
-                  moveSubscription = undefined;
+                } else {
+                  observer.next(translation);
                 }
               }
             );
