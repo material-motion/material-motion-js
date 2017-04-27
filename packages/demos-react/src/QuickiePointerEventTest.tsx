@@ -116,7 +116,7 @@ export class QuickiePointerEventTest extends React.Component {
               State
             </td>
             <td>
-              { GestureRecognitionState[state] }
+              { state }
             </td>
           </tr>
           <tr>
