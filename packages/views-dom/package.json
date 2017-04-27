@@ -15,6 +15,9 @@
     "material-motion": "0.0.0",
     "tslib": "^1.2.0"
   },
+  "devDependencies": {
+    "material-motion-testing-utils": "0.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com:material-motion/material-motion-js.git"
