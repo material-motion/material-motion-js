@@ -20,7 +20,16 @@ export { default as IndefiniteSubject } from './IndefiniteSubject';
 export * from './MotionObservable';
 export { default as MotionObservable } from './MotionObservable';
 
+export * from './MotionProperty';
+export { default as MotionProperty } from './MotionProperty';
+
 export * from './MotionSubject';
 export { default as MotionSubject } from './MotionSubject';
+
+export * from './ReactiveProperty';
+export { default as ReactiveProperty } from './ReactiveProperty';
+
+export * from './createProperty';
+export { default as createProperty } from './createProperty';
 
 export default undefined;
