@@ -24,6 +24,7 @@ import {
   NextChannel,
   NextOperation,
   Observable,
+  Operable,
   Subscription,
 } from '../types';
 
@@ -32,14 +33,7 @@ import {
   withMotionOperators,
 } from '../operators';
 
-// Mixins and generics don't work together yet:
-//
-// https://github.com/Microsoft/TypeScript/issues/13807
-//
-// In the mean time, we can work around this by passing `any` where `T` ought to
-// be and mixing our observable together before extending it.
-export type ShouldBeT = any;
-export const MixedTogetherObservable: Constructor<ObservableWithMotionOperators<ShouldBeT>> = withMotionOperators<ShouldBeT, Constructor<Observable<ShouldBeT>>>(IndefiniteObservable);
+export type MotionObservable<T> = Constructor<ObservableWithMotionOperators<T>>;
 
 /**
  * `MotionObservable` is an extension of `IndefiniteObservable` that includes
@@ -47,7 +41,7 @@ export const MixedTogetherObservable: Constructor<ObservableWithMotionOperators<
  * animated interactions.  Those operators are specified in the
  * [Starmap](https://material-motion.github.io/material-motion/starmap/specifications/operators/)
  */
-export class MotionObservable<T> extends MixedTogetherObservable {
+export class OperableObservable<T> extends IndefiniteObservable<T> implements Operable<T> {
   /**
    * Creates a new `MotionObservable` that dispatches whatever values it
    * receives from the provided stream.
@@ -64,6 +58,8 @@ export class MotionObservable<T> extends MixedTogetherObservable {
       }
     );
   }
-}
 
+  _observableConstructor = MotionObservable;
+}
+export const MotionObservable = withMotionOperators(OperableObservable);
 export default MotionObservable;
