@@ -6,20 +6,16 @@
   "types": "dist/index.d.ts",
   "typescript:main": "src/index.ts",
   "scripts": {
-    "lint": "$( yarn bin )/tslint -c ../../tslint.json --project tsconfig.json --type-check",
+    "lint": "../../node_modules/.bin/tslint -c ../../tslint.json --project tsconfig.json --type-check",
     "test": "node ../../tools/test.js --only springs-rebound",
     "clean": "rm -rf ./dist/*; mkdir -p ./dist/",
-    "build": "yarn run clean; $( yarn bin )/tsc"
+    "build": "yarn run clean; ../../node_modules/.bin/tsc"
   },
   "dependencies": {
     "material-motion-experimental-addons": "0.0.0",
     "material-motion": "0.0.0",
     "rebound": "^0.0.13",
     "tslib": "^1.2.0"
-  },
-  "devDependencies": {
-    "tslint": "4.0.2",
-    "typescript": "2.1"
   },
   "repository": {
     "type": "git",
