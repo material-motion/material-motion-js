@@ -39,7 +39,7 @@ export type DraggableArgs = {
   down$: MotionObservable<PartialPointerEvent>,
   move$: MotionObservable<PartialPointerEvent>,
   up$: MotionObservable<PartialPointerEvent>,
-  system: DragSystem,
+  system?: DragSystem,
 };
 
 export class Draggable {
