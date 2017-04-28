@@ -16,7 +16,6 @@
 
 export * from './types';
 export * from './typeGuards';
-export * from './properties';
 export * from './observables';
 export * from './interactions';
 export * from './systems';

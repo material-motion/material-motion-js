@@ -14,7 +14,9 @@
  *  under the License.
  */
 
-import createProperty from '../properties/createProperty';
+import {
+  createProperty,
+} from '../observables';
 
 import {
   Point2D,
