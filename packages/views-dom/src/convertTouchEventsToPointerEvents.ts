@@ -34,8 +34,7 @@ export function convertTouchEventsToPointerEvents(touchEvent$: MotionObservable<
     ({ type, targetTouches, changedTouches }: TouchEvent) => Array.from(
       type === 'touchend'
         ? changedTouches
-        : targetTouches
-    ).map(
+        : targetTouches,
       ({ pageX, pageY, identifier }: Touch) => (
         {
           pageX,
