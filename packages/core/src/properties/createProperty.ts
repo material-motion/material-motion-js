@@ -14,10 +14,10 @@
  *  under the License.
  */
 
-import ReactiveProperty from './ReactiveProperty';
+import MotionProperty from './MotionProperty';
 
-export function createProperty<T>({ initialValue }: { initialValue?: T} = {}): ReactiveProperty<T> {
-  const result = new ReactiveProperty<T>();
+export function createProperty<T>({ initialValue }: { initialValue?: T} = {}): MotionProperty<T> {
+  const result = new MotionProperty<T>();
 
   if (initialValue !== undefined) {
     result.write(initialValue);
