@@ -17,6 +17,7 @@
 import {
   Constructor,
   Observable,
+  Operable,
 } from '../types';
 
 import {
@@ -129,23 +130,28 @@ import {
   withVelocity,
 } from './velocity';
 
-export type ObservableWithMotionOperators<T> = ObservableWithFoundationalMotionOperators<T>
-  & MotionPluckable<T> & MotionLoggable<T> & MotionDeduplicable<T> & MotionInvertible<T>
-  & MotionMergeable<T> & MotionRewritable<T> & MotionRewriteToable & MotionRewriteRangeable
-  & MotionThresholdable & MotionThresholdRangeable & MotionUpperBoundable & MotionLowerBoundable
-  & MotionOffsetable & MotionScalable & MotionDelayable<T> & MotionMeasurable<T>
-  & MotionSeedable<T> & MotionIgnorable<T> & MotionWindowable<T> & MotionTimestampable<T>
-  & MotionVelocityMeasurable<T>;
+export interface ObservableWithMotionOperators<T> extends
+  ObservableWithFoundationalMotionOperators<T>, MotionPluckable<T>,
+  MotionLoggable<T>, MotionDeduplicable<T>, MotionInvertible<T>,
+  MotionMergeable<T>, MotionRewritable<T>, MotionRewriteToable,
+  MotionRewriteRangeable, MotionThresholdable, MotionThresholdRangeable,
+  MotionUpperBoundable, MotionLowerBoundable, MotionOffsetable, MotionScalable,
+  MotionDelayable<T>, MotionMeasurable<T>, MotionSeedable<T>,
+  MotionIgnorable<T>, MotionWindowable<T>, MotionTimestampable<T>,
+  MotionVelocityMeasurable<T> {}
 
-export function withMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
+export function withMotionOperators<T, S extends Constructor<Observable<T> & Operable<T>>>(superclass: S): S
     & Constructor<ObservableWithMotionOperators<T>> {
 
+  // TypeScript seems to dislike returning this function.  Calling the functions
+  // themselves in a constant works fine (except it gets mad about the Ts being
+  // incompatible for some combinations);
   return withThresholdRange(withThreshold(withRewriteRange(withRewriteTo(withRewrite(
     withMerge(withInverted(withDedupe(withLog(withUpperBound(withLowerBound(
       withOffsetBy(withScaledBy(withDelayBy(withDistanceFrom(withStartWith(
-        withIgnoreUntil(withSlidingWindow(withTimestamp(withVelocity(
-          withPluck<T, Constructor<ObservableWithFoundationalMotionOperators<T>>>(
-            withFoundationalMotionOperators<T, Constructor<Observable<T>>>(superclass)
+        withIgnoreUntil(withVelocity(withSlidingWindow(withTimestamp(
+          withPluck(
+            withFoundationalMotionOperators<T, S>(superclass)
           )
         ))))
       )))))
