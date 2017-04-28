@@ -137,6 +137,10 @@ export interface ScopedWritable<T> {
   write: Write<T>;
 }
 
+export interface Operable<T> {
+  _observableConstructor: Constructor<Observable<T>>;
+}
+
 export interface PropertyObservable<T> extends Observable<T>, ScopedReadable<T>, ScopedWritable<T> {}
 
 export interface MotionElement {

@@ -25,6 +25,7 @@ import {
   Observable,
   ObservableWithMotionOperators,
   Observer,
+  Operable,
   Point2D,
   Timestamped,
 } from '../types';
@@ -54,7 +55,7 @@ const pluckValue = createPlucker('value') as any as NumericPlucker;
 const pluckX = createPlucker('value.x') as any as NumericPlucker;
 const pluckY = createPlucker('value.y') as any as NumericPlucker;
 
-export function withVelocity<T, S extends Constructor<Observable<T> & MotionTimestampable<T> & MotionWindowable<T>>>(superclass: S): S & Constructor<MotionVelocityMeasurable<T>> {
+export function withVelocity<T, S extends Constructor<Observable<T> & MotionTimestampable<T> & MotionWindowable<T> & Operable<T>>>(superclass: S): S & Constructor<MotionVelocityMeasurable<T>> {
   return class extends superclass implements MotionVelocityMeasurable<T> {
     /**
      * Computes the velocity of an incoming stream and dispatches the result.
@@ -71,7 +72,7 @@ export function withVelocity<T, S extends Constructor<Observable<T> & MotionTime
      * is only calculated when it will be used.
      */
     velocity(pulse: MotionTimestampable<T> & Observable<any> = this): ObservableWithMotionOperators<T> {
-      const constructor = this.constructor as Constructor<ObservableWithMotionOperators<T>>;
+      const constructor = this._observableConstructor as Constructor<ObservableWithMotionOperators<T>>;
 
       return new constructor(
         (observer: Observer<T>) => {
