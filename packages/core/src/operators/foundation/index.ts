@@ -17,6 +17,7 @@
 import {
   Constructor,
   Observable,
+  Operable,
 } from '../../types';
 
 import {
@@ -54,18 +55,14 @@ import {
   withRead,
 } from './_read';
 
-export type ObservableWithFoundationalMotionOperators<T> = MotionNextOperable<T> & MotionMappable<T>
-    & MotionFilterable<T> & MotionMemorable<T> & MotionDebounceable<T> & MotionReadable<T>
-    & MotionFlattenable<T>;
+export interface ObservableWithFoundationalMotionOperators<T> extends
+  MotionNextOperable<T>, MotionMappable<T>, MotionFilterable<T>,
+  MotionMemorable<T>, MotionDebounceable<T>, MotionReadable<T>,
+  MotionFlattenable<T> {}
 
-export function withFoundationalMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
+export function withFoundationalMotionOperators<T, S extends Constructor<Observable<T> & Operable<T>>>(superclass: S): S
     & Constructor<ObservableWithFoundationalMotionOperators<T>> {
-  // Not sure if withMap needs to be specialized.  Trying results in this error:
-  //     Type 'Constructor<MotionNextOperable<T>> &
-  //     Constructor<MotionMappable<T>>' is not assignable to type 'S &
-  //     Constructor<MotionNextOperable<T>>'.
-  //       Type 'Constructor<MotionNextOperable<T>> &
-  //       Constructor<MotionMappable<T>>' is not assignable to type 'S'.
+
   return withRead(withDebounce(withRemember(withFilter(withMap(
     withFlattenIterables(withNextOperator<T, S>(superclass))
   )))));
