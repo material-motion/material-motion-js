@@ -70,11 +70,8 @@ export {
 
 import {
   Draggable,
-} from './interactions/Draggable';
-
-import {
-  SpringT,
-} from './interactions/Spring';
+  Spring,
+} from './interactions';
 
 import {
   MotionObservable,
@@ -153,13 +150,9 @@ export type EqualityCheck = (a: any, b: any) => boolean;
 export interface Timestamped<T> {
   value: T,
   timestamp: number,
+export type SpringSystem<T extends number | Point2D> = (interaction: Spring<T>) => MotionObservable<T>;
 }
-
 export type DragSystem = (interaction: Draggable) => MotionObservable<Point2D>;
-export type SpringSystem<T extends number | Point2D> = (interaction: SpringT<T>) => MotionObservable<T>;
-
-export type Dict<T> = {
-  [index: string]: T,
 };
 
 export type NumericDict = Dict<number>;
