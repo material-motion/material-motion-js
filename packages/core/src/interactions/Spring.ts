@@ -28,10 +28,10 @@ import {
 } from '../State';
 
 // Might be able to set T = number by default in TS 2.3 and get rid of SpringT
-export class SpringT<T extends number | Point2D> {
-  destination: PropertyObservable<T>;
-  initialValue: PropertyObservable<T>;
-  initialVelocity: PropertyObservable<T>;
+export class Spring<T extends number | Point2D = number> {
+  destination: PropertyObservable<T> = createProperty<number>({ initialValue: 0 });
+  initialValue: PropertyObservable<T> = createProperty<number>({ initialValue: 0 });
+  initialVelocity: PropertyObservable<T> = createProperty<number>({ initialValue: 0 });
   tension: PropertyObservable<number> = createProperty<number>({ initialValue: 342 });
   friction: PropertyObservable<number> = createProperty<number>({ initialValue: 30 });
   threshold: PropertyObservable<number> = createProperty<number>({ initialValue: .001 });
@@ -39,13 +39,7 @@ export class SpringT<T extends number | Point2D> {
   state: PropertyObservable<State> = createProperty<State>({ initialValue: State.AT_REST });
 }
 
-export class Spring extends SpringT<number> {
-  destination: PropertyObservable<number> = createProperty<T>({ initialValue: 0 });
-  initialValue: PropertyObservable<number> = createProperty<T>({ initialValue: 0 });
-  initialVelocity: PropertyObservable<number> = createProperty<T>({ initialValue: 0 });
-}
-
-export class Spring2D extends SpringT<Point2D> {
+export class Spring2D extends Spring<Point2D> {
   destination: PropertyObservable<Point2D> = createProperty<Point2D>({
     initialValue: {
       x: 0,
