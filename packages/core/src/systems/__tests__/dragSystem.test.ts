@@ -39,11 +39,8 @@ import {
 
 import {
   MotionObservable,
-} from '../../observables/';
-
-import {
   createProperty,
-} from '../../properties/';
+} from '../../observables/';
 
 import {
   dragSystem,

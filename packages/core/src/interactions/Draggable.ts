@@ -14,11 +14,10 @@
  *  under the License.
  */
 
-import createProperty from '../properties/createProperty';
-
 import {
   MotionObservable,
-} from '../observables/MotionObservable';
+  createProperty,
+} from '../observables';
 
 import {
   dragSystem,
