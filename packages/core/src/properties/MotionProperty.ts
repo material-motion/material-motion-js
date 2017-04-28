@@ -14,13 +14,28 @@
  *  under the License.
  */
 
-export * from './MotionProperty';
-export { default as MotionProperty } from './MotionProperty';
+import {
+  MotionObservable,
+} from '../observables';
 
-export * from './ReactiveProperty';
-export { default as ReactiveProperty } from './ReactiveProperty';
+// ObservableWithMotionOperators isn't referenced in this file, but TypeScript
+// gets mad if you remove it. (MotionProperty is using MotionDebounceable from
+// an external module)
+import {
+  ObservableWithMotionOperators,
+  withMotionOperators,
+} from '../operators';
 
-export * from './createProperty';
-export { default as createProperty } from './createProperty';
+import {
+  Operable,
+} from '../types';
 
-export default undefined;
+import {
+  ReactiveProperty,
+} from './ReactiveProperty';
+
+export class OperableProperty<T> extends ReactiveProperty<T> implements Operable<T> {
+  _observableConstructor = MotionObservable;
+}
+export const MotionProperty = withMotionOperators(OperableProperty);
+export default MotionProperty;

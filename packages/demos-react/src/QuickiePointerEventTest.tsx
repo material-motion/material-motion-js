@@ -49,7 +49,7 @@ export class QuickiePointerEventTest extends React.Component {
 
       const drag$ = dragSystem(draggable);
       const velocity$ = drag$.velocity(
-        MotionObservable.from(draggable.state)._filter(
+        draggable.state._filter(
           state => state === GestureRecognitionState.RECOGNIZED
         )
       );
