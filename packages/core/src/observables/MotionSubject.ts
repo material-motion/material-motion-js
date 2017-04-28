@@ -14,13 +14,28 @@
  *  under the License.
  */
 
-export * from './IndefiniteSubject';
-export { default as IndefiniteSubject } from './IndefiniteSubject';
+import {
+  MotionObservable,
+} from '../observables';
 
-export * from './MotionObservable';
-export { default as MotionObservable } from './MotionObservable';
+// ObservableWithMotionOperators isn't referenced in this file, but TypeScript
+// gets mad if you remove it. (MotionSubject is using MotionDebounceable from an
+// external module)
+import {
+  ObservableWithMotionOperators,
+  withMotionOperators,
+} from '../operators';
 
-export * from './MotionSubject';
-export { default as MotionSubject } from './MotionSubject';
+import {
+  Operable,
+} from '../types';
 
-export default undefined;
+import {
+  IndefiniteSubject,
+} from './IndefiniteSubject';
+
+export class OperableSubject<T> extends IndefiniteSubject<T> implements Operable<T> {
+  _observableConstructor = MotionObservable;
+}
+export const MotionSubject = withMotionOperators(OperableSubject);
+export default MotionSubject;
