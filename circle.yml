@@ -7,6 +7,11 @@ machine:
     PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
 
 dependencies:
+  pre:
+    # Use latest stable Firefox
+    - sudo apt-get remove firefox
+    - sudo apt-get update
+    - sudo apt-get install firefox
   override:
     - yarn run bootstrap
   cache_directories:
