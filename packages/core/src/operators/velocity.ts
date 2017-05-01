@@ -50,10 +50,10 @@ export const DEFAULT_VELOCITY = 1;
 
 type NumericPlucker = (value: any) => number;
 
-const pluckTimestamp = createPlucker('timestamp') as any as NumericPlucker;
-const pluckValue = createPlucker('value') as any as NumericPlucker;
-const pluckX = createPlucker('value.x') as any as NumericPlucker;
-const pluckY = createPlucker('value.y') as any as NumericPlucker;
+const pluckTimestamp = createPlucker('timestamp');
+const pluckValue = createPlucker('value');
+const pluckX = createPlucker('value.x');
+const pluckY = createPlucker('value.y');
 
 export function withVelocity<T, S extends Constructor<Observable<T> & MotionTimestampable<T> & MotionWindowable<T> & Operable<T>>>(superclass: S): S & Constructor<MotionVelocityMeasurable<T>> {
   return class extends superclass implements MotionVelocityMeasurable<T> {

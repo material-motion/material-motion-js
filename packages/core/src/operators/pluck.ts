@@ -16,18 +16,17 @@
 
 import {
   Constructor,
-  Dict,
   MotionMappable,
   NextChannel,
   ObservableWithMotionOperators,
 } from '../types';
 
-export interface MotionPluckable<T> {
-  pluck<U>(key: string): ObservableWithMotionOperators<U>;
+export interface MotionPluckable<T extends Record<K, {}>, K extends string> {
+  pluck(key: K): ObservableWithMotionOperators<T[K]>;
 }
 
-export function withPluck<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionPluckable<T>> {
-  return class extends superclass implements MotionPluckable<T> {
+export function withPluck<T extends Record<K, {}>, S extends Constructor<MotionMappable<T>>, K extends string>(superclass: S): S & Constructor<MotionPluckable<T, K>> {
+  return class extends superclass implements MotionPluckable<T, K> {
     /**
      * Extracts the value at a given key from every incoming object and passes
      * those values to the observer.
@@ -40,7 +39,7 @@ export function withPluck<T, S extends Constructor<MotionMappable<T>>>(superclas
      * - `transform$.pluck('translate.x')` is equivalent to
      *   `transform$.map(transform => transform.translate.x)`
      */
-    pluck<U>(path: string): ObservableWithMotionOperators<U> {
+    pluck(path: K): ObservableWithMotionOperators<T[K]> {
       return this._map(
         createPlucker(path)
       );
@@ -48,12 +47,11 @@ export function withPluck<T, S extends Constructor<MotionMappable<T>>>(superclas
   };
 }
 
-// TODO: fix the type annotations
-export function createPlucker(path: string) {
+export function createPlucker<K extends string>(path: K) {
   const pathSegments = path.split('.');
 
-  return function plucker(value: Dict<any>) {
-    let result = value;
+  return function plucker<T extends Record<K, {}>>(value: T): T[K] {
+    let result: T[K] = value;
 
     for (let pathSegment of pathSegments) {
       result = result[pathSegment];
