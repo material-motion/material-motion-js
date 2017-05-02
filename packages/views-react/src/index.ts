@@ -16,7 +16,4 @@
 
 export * from './components';
 
-export * from './createMotionComponent';
-export { default as createMotionComponent } from './createMotionComponent';
-
 export default undefined;
