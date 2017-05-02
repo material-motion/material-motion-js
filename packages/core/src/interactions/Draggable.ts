@@ -31,6 +31,10 @@ import {
 } from '../types';
 
 import {
+  Axis,
+} from '../Axis';
+
+import {
   GestureRecognitionState,
 } from '../GestureRecognitionState';
 
@@ -38,21 +42,35 @@ export type DraggableArgs = {
   down$: MotionObservable<PartialPointerEvent>,
   move$: MotionObservable<PartialPointerEvent>,
   up$: MotionObservable<PartialPointerEvent>,
+  axis?: string,
+  recognitionThreshold?: number,
   system?: DragSystem,
 };
 
 export class Draggable {
-  state: PropertyObservable<GestureRecognitionState> = createProperty<GestureRecognitionState>({ initialValue: GestureRecognitionState.POSSIBLE });
-  recognitionThreshold: PropertyObservable<number> = createProperty<number>({ initialValue: 16 });
+  state: PropertyObservable<string> = createProperty<string>({ initialValue: GestureRecognitionState.POSSIBLE });
+  recognitionThreshold: PropertyObservable<number> = createProperty<number>();
+  axis: PropertyObservable<string> = createProperty<string>();
   down$: MotionObservable<PartialPointerEvent>;
   move$: MotionObservable<PartialPointerEvent>;
   up$: MotionObservable<PartialPointerEvent>;
   system: DragSystem;
 
-  constructor({ down$, move$, up$, system = dragSystem }: DraggableArgs) {
+  constructor({
+    down$,
+    move$,
+    up$,
+    axis = Axis.ALL,
+    recognitionThreshold = 16,
+    system = dragSystem,
+  }: DraggableArgs) {
     this.down$ = down$;
     this.move$ = move$;
     this.up$ = up$;
+
+    this.axis.write(axis);
+    this.recognitionThreshold.write(recognitionThreshold);
+
     this.system = system;
   }
 }
