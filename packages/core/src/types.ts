@@ -58,6 +58,7 @@ export {
   MotionRewriteToable,
   MotionScalable,
   MotionSeedable,
+  MotionTappable,
   MotionThresholdable,
   MotionThresholdRangeable,
   MotionTimestampable,
