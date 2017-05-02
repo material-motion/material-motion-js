@@ -16,8 +16,7 @@
 
 import {
   Constructor,
-  MotionNextOperable,
-  NextChannel,
+  MotionTappable,
   ObservableWithMotionOperators,
 } from '../types';
 
@@ -29,7 +28,7 @@ export interface MotionLoggable<T> {
   log(label: string, pluckPath: string): ObservableWithMotionOperators<T>;
 }
 
-export function withLog<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionLoggable<T>> {
+export function withLog<T, S extends Constructor<MotionTappable<T>>>(superclass: S): S & Constructor<MotionLoggable<T>> {
   return class extends superclass implements MotionLoggable<T> {
     /**
      * Logs every value that passes through this section of the stream, and passes
@@ -54,14 +53,13 @@ export function withLog<T, S extends Constructor<MotionNextOperable<T>>>(supercl
         plucker = createPlucker(pluckPath);
       }
 
-      return this._nextOperator(
-        (value: T, dispatch: NextChannel<T>) => {
+      return this._tap(
+        (value: T) => {
           if (plucker) {
             value = plucker(value);
           }
 
           console.log(label, value);
-          dispatch(value);
         }
       );
     }
