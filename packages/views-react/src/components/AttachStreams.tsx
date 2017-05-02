@@ -30,6 +30,7 @@ import {
 
 export type AttachStreamsProps = StreamDict<any> & {
   children: React.ReactElement<{ domRef(element: Element): void }>,
+  domRef?: (element: Element) => void,
 };
 export type AttachStreamsState = {
   [index:string]: any,
@@ -72,21 +73,23 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
   private _domRef = (ref: Element) => {
     this._domNode = ref;
 
-    if (!this._domNode) {
-      return;
+    if (this._domNode) {
+      Object.entries(this.props).forEach(
+        ([ propName, stream ]) => {
+          // Presumes any stream that starts with "on" is a Subject waiting to be
+          // bound to an event stream.
+          //
+          // Same presumption is made in `_subscribeToProps`.
+          if (isEventHandlerName(propName)) {
+            this._subscribeToEvent$(propName, stream as Subject);
+          }
+        }
+      );
     }
 
-    Object.entries(this.props).forEach(
-      ([ propName, stream ]) => {
-        // Presumes any stream that starts with "on" is a Subject waiting to be
-        // bound to an event stream.
-        //
-        // Same presumption is made in `_subscribeToProps`.
-        if (isEventHandlerName(propName)) {
-          this._subscribeToEvent$(propName, stream as Subject);
-        }
-      }
-    );
+    if (this.props.domRef) {
+      this.props.domRef(ref);
+    }
   }
 
   /**
