@@ -23,6 +23,10 @@ import {
 } from '../observables/MotionObservable';
 
 import {
+  Axis,
+} from '../Axis';
+
+import {
   GestureRecognitionState,
 } from '../GestureRecognitionState';
 
@@ -43,6 +47,7 @@ export function dragSystem({
   move$,
   up$,
   state,
+  axis,
   recognitionThreshold,
 }: Draggable): MotionObservable<Point2D> {
   return new MotionObservable<Point2D>(
@@ -50,6 +55,8 @@ export function dragSystem({
       let moveSubscription: Subscription;
       const downSubscription: Subscription = down$.subscribe(
         (downEvent: PointerEvent) => {
+          const currentAxis = axis.read();
+
           // If we get a new down event while we're already listening for moves,
           // ignore it.
           if (!moveSubscription) {
@@ -66,8 +73,12 @@ export function dragSystem({
                 const atRest = nextEvent.type.includes('up');
 
                 const translation = {
-                  x: nextEvent.pageX - downEvent.pageX,
-                  y: nextEvent.pageY - downEvent.pageY,
+                  x: currentAxis !== Axis.Y
+                    ? nextEvent.pageX - downEvent.pageX
+                    : 0,
+                  y: currentAxis !== Axis.X
+                    ? nextEvent.pageY - downEvent.pageY
+                    : 0,
                 };
 
                 switch (state.read()) {
