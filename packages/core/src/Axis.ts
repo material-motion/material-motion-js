@@ -14,25 +14,9 @@
  *  under the License.
  */
 
-export * from './types';
-export * from './typeGuards';
-export * from './observables';
-export * from './interactions';
-export * from './systems';
-
-export * from './MotionRuntime';
-export { default as MotionRuntime } from './MotionRuntime';
-
-export * from './State';
-export { default as State } from './State';
-
-export * from './Axis';
-export { default as Axis } from './Axis';
-
-export * from './GestureRecognitionState';
-export { default as GestureRecognitionState } from './GestureRecognitionState';
-
-export * from './ThresholdSide';
-export { default as ThresholdSide } from './ThresholdSide';
-
-export default undefined;
+export const Axis = {
+  X: 'x',
+  Y: 'y',
+  ALL: 'all',
+};
+export default Axis;
