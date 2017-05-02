@@ -49,6 +49,7 @@ import {
 describe('dragSystem',
   () => {
     let drag$;
+    let axis;
     let state;
     let recognitionThreshold;
     let downObserver;
@@ -58,6 +59,7 @@ describe('dragSystem',
 
     beforeEach(
       () => {
+        axis = createProperty();
         state = createProperty();
         recognitionThreshold = createProperty({ initialValue: 16 });
         downObserver = createMockObserver();
@@ -71,6 +73,7 @@ describe('dragSystem',
           up$: new MotionObservable(upObserver.connect),
           recognitionThreshold: recognitionThreshold,
           state: state,
+          axis: axis,
         });
         drag$.subscribe(listener);
       }
