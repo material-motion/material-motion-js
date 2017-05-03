@@ -101,6 +101,11 @@ import {
 } from './startWith';
 
 import {
+  MotionSlidingThresholdable,
+  withSlidingThreshold,
+} from './slidingThreshold';
+
+import {
   MotionWindowable,
   withSlidingWindow,
 } from './slidingWindow';
@@ -138,7 +143,7 @@ export interface ObservableWithMotionOperators<T> extends
   MotionUpperBoundable, MotionLowerBoundable, MotionOffsetable, MotionScalable,
   MotionDelayable<T>, MotionMeasurable<T>, MotionSeedable<T>,
   MotionIgnorable<T>, MotionWindowable<T>, MotionTimestampable<T>,
-  MotionVelocityMeasurable<T> {}
+  MotionVelocityMeasurable<T>, MotionSlidingThresholdable<T> {}
 
 export function withMotionOperators<T, S extends Constructor<Observable<T> & Operable<T>>>(superclass: S): S
     & Constructor<ObservableWithMotionOperators<T>> {
@@ -150,9 +155,9 @@ export function withMotionOperators<T, S extends Constructor<Observable<T> & Ope
     withMerge(withInverted(withDedupe(withLog(withUpperBound(withLowerBound(
       withOffsetBy(withScaledBy(withDelayBy(withDistanceFrom(withStartWith(
         withIgnoreUntil(withVelocity(withSlidingWindow(withTimestamp(
-          withPluck(
+          withPluck(withSlidingThreshold(
             withFoundationalMotionOperators<T, S>(superclass)
-          )
+          ))
         ))))
       )))))
     )))))))
@@ -174,6 +179,7 @@ export * from './rewriteRange';
 export * from './rewriteTo';
 export * from './pluck';
 export * from './scaledBy';
+export * from './slidingThreshold';
 export * from './slidingWindow';
 export * from './startWith';
 export * from './threshold';
