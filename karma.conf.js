@@ -8,7 +8,7 @@ module.exports = function(config) {
     basePath: '',
     frameworks: ['mocha'],
     browsers: process.env.CI
-      ? ['Chrome', 'Firefox']
+      ? ['Chrome']
       : ['ChromeCanary'],
 
     // CircleCI needs JUnit to show tests correctly.
