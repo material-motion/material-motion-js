@@ -99,7 +99,6 @@ export class QuickiePointerEventTest extends React.Component {
               height: 56,
               backgroundColor: 'blue',
               transform: `translate(${ x }px, ${ y }px)`,
-              touchAction: 'none',
             }
           }
           ref = { this.testEvents }

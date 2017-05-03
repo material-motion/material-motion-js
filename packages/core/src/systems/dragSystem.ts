@@ -55,15 +55,36 @@ export function dragSystem({
       let moveSubscription: Subscription;
       const downSubscription: Subscription = down$.subscribe(
         (downEvent: PointerEvent) => {
-          const currentAxis = axis.read();
-
           // If we get a new down event while we're already listening for moves,
           // ignore it.
           if (!moveSubscription) {
+            // The `as Element` is a workaround for
+            // https://github.com/Microsoft/TypeScript/issues/299
+            const target: HTMLElement = downEvent.currentTarget as HTMLElement;
+
+            const initialAxis = axis.read();
+            const initialTouchAction = target.style.touchAction;
+
+            if (!initialTouchAction && getComputedStyle(target).touchAction === 'auto') {
+              switch (initialAxis) {
+                case Axis.X:
+                  target.style.touchAction = 'pan-y';
+                  break;
+
+                case Axis.Y:
+                  target.style.touchAction = 'pan-x';
+                  break;
+
+                default:
+                  target.style.touchAction = 'none';
+                  break;
+              }
+            }
+
             if (isPointerEvent(downEvent)) {
-              // The `as Element` is a workaround for
-              // https://github.com/Microsoft/TypeScript/issues/299
-              (downEvent.target as Element).setPointerCapture(downEvent.pointerId);
+              if (!target.hasPointerCapture(downEvent.pointerId)) {
+                target.setPointerCapture(downEvent.pointerId);
+              }
             }
 
             moveSubscription = move$.merge(up$)._filter(
@@ -73,10 +94,10 @@ export function dragSystem({
                 const atRest = nextEvent.type.includes('up');
 
                 const translation = {
-                  x: currentAxis !== Axis.Y
+                  x: initialAxis !== Axis.Y
                     ? nextEvent.pageX - downEvent.pageX
                     : 0,
-                  y: currentAxis !== Axis.X
+                  y: initialAxis !== Axis.X
                     ? nextEvent.pageY - downEvent.pageY
                     : 0,
                 };
@@ -100,6 +121,8 @@ export function dragSystem({
                   // implementation that supported completion.
                   moveSubscription.unsubscribe();
                   moveSubscription = undefined;
+
+                  target.style.touchAction = initialTouchAction;
 
                   if (state.read() === GestureRecognitionState.POSSIBLE) {
                     state.write(GestureRecognitionState.FAILED);
