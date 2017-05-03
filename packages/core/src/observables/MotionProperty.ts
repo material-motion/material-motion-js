@@ -27,6 +27,8 @@ import {
 } from '../operators';
 
 import {
+  Constructor,
+  Observable,
   Operable,
 } from '../types';
 
@@ -35,7 +37,8 @@ import {
 } from './ReactiveProperty';
 
 export class OperableProperty<T> extends ReactiveProperty<T> implements Operable<T> {
-  _observableConstructor = MotionObservable;
+  _observableConstructor: Constructor<Observable<T>> = MotionObservable;
 }
+export interface MotionProperty<T> extends OperableProperty<T>, ObservableWithMotionOperators<T> {}
 export const MotionProperty = withMotionOperators(OperableProperty);
 export default MotionProperty;

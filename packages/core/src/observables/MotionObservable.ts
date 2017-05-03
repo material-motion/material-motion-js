@@ -21,8 +21,6 @@ import {
 
 import {
   Constructor,
-  NextChannel,
-  NextOperation,
   Observable,
   Operable,
   Subscription,
@@ -32,8 +30,6 @@ import {
   ObservableWithMotionOperators,
   withMotionOperators,
 } from '../operators';
-
-export type MotionObservable<T> = Constructor<ObservableWithMotionOperators<T>>;
 
 /**
  * `MotionObservable` is an extension of `IndefiniteObservable` that includes
@@ -59,7 +55,8 @@ export class OperableObservable<T> extends IndefiniteObservable<T> implements Op
     );
   }
 
-  _observableConstructor = MotionObservable;
+  _observableConstructor: Constructor<Observable<T>> = MotionObservable;
 }
+export interface MotionObservable<T> extends OperableObservable<T>, ObservableWithMotionOperators<T> {}
 export const MotionObservable = withMotionOperators(OperableObservable);
 export default MotionObservable;
