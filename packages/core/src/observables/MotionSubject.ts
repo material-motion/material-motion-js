@@ -27,6 +27,8 @@ import {
 } from '../operators';
 
 import {
+  Constructor,
+  Observable,
   Operable,
 } from '../types';
 
@@ -35,7 +37,8 @@ import {
 } from './IndefiniteSubject';
 
 export class OperableSubject<T> extends IndefiniteSubject<T> implements Operable<T> {
-  _observableConstructor = MotionObservable;
+  _observableConstructor: Constructor<Observable<T>> = MotionObservable;
 }
+export interface MotionSubject<T> extends OperableSubject<T>, ObservableWithMotionOperators<T> {}
 export const MotionSubject = withMotionOperators(OperableSubject);
 export default MotionSubject;
