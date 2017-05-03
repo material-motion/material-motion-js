@@ -26,12 +26,6 @@ import {
   stub,
 } from 'sinon';
 
-import ExperimentalMotionObservable from '../ExperimentalMotionObservable';
-
-import {
-  ThresholdSide,
-} from 'material-motion';
-
 declare function require(name: string);
 
 // chai really doesn't like being imported as an ES2015 module; will be fixed in v4
@@ -43,7 +37,15 @@ import {
   createMockObserver,
 } from 'material-motion-testing-utils';
 
-describe('experimentalMotionObservable.slidingThreshold',
+import {
+  MotionObservable,
+} from '../../observables/';
+
+import {
+  ThresholdSide,
+} from '../../ThresholdSide';
+
+describe('motionObservable.slidingThreshold',
   () => {
     let stream;
     let mockObserver;
@@ -52,7 +54,7 @@ describe('experimentalMotionObservable.slidingThreshold',
     beforeEach(
       () => {
         mockObserver = createMockObserver();
-        stream = new ExperimentalMotionObservable(mockObserver.connect);
+        stream = new MotionObservable(mockObserver.connect);
         listener = stub();
       }
     );
