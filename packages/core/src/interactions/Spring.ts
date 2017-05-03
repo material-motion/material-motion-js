@@ -15,46 +15,45 @@
  */
 
 import {
+  MotionProperty,
   createProperty,
 } from '../observables';
 
 import {
   Point2D,
-  PropertyObservable,
 } from '../types';
 
 import {
   State,
 } from '../State';
 
-// Might be able to set T = number by default in TS 2.3 and get rid of SpringT
 export class Spring<T extends number | Point2D = number> {
-  destination: PropertyObservable<T> = createProperty<number>({ initialValue: 0 });
-  initialValue: PropertyObservable<T> = createProperty<number>({ initialValue: 0 });
-  initialVelocity: PropertyObservable<T> = createProperty<number>({ initialValue: 0 });
-  tension: PropertyObservable<number> = createProperty<number>({ initialValue: 342 });
-  friction: PropertyObservable<number> = createProperty<number>({ initialValue: 30 });
-  threshold: PropertyObservable<number> = createProperty<number>({ initialValue: .001 });
-  enabled: PropertyObservable<boolean> = createProperty<boolean>({ initialValue: true });
-  state: PropertyObservable<State> = createProperty<State>({ initialValue: State.AT_REST });
+  destination: MotionProperty<T> = createProperty<number>({ initialValue: 0 });
+  initialValue: MotionProperty<T> = createProperty<number>({ initialValue: 0 });
+  initialVelocity: MotionProperty<T> = createProperty<number>({ initialValue: 0 });
+  tension: MotionProperty<number> = createProperty<number>({ initialValue: 342 });
+  friction: MotionProperty<number> = createProperty<number>({ initialValue: 30 });
+  threshold: MotionProperty<number> = createProperty<number>({ initialValue: .001 });
+  enabled: MotionProperty<boolean> = createProperty<boolean>({ initialValue: true });
+  state: MotionProperty<string> = createProperty<string>({ initialValue: State.AT_REST });
 }
 
 export class Spring2D extends Spring<Point2D> {
-  destination: PropertyObservable<Point2D> = createProperty<Point2D>({
+  destination: MotionProperty<Point2D> = createProperty<Point2D>({
     initialValue: {
       x: 0,
       y: 0
     },
   });
 
-  initialValue: PropertyObservable<Point2D> = createProperty<Point2D>({
+  initialValue: MotionProperty<Point2D> = createProperty<Point2D>({
     initialValue: {
       x: 0,
       y: 0
     },
   });
 
-  initialVelocity: PropertyObservable<Point2D> = createProperty<Point2D>({
+  initialVelocity: MotionProperty<Point2D> = createProperty<Point2D>({
     initialValue: {
       x: 0,
       y: 0

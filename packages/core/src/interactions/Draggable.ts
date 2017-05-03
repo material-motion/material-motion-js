@@ -16,6 +16,7 @@
 
 import {
   MotionObservable,
+  MotionProperty,
   createProperty,
 } from '../observables';
 
@@ -27,7 +28,6 @@ import {
   DragSystem,
   PartialPointerEvent,
   Point2D,
-  PropertyObservable,
 } from '../types';
 
 import {
@@ -48,9 +48,9 @@ export type DraggableArgs = {
 };
 
 export class Draggable {
-  state: PropertyObservable<string> = createProperty<string>({ initialValue: GestureRecognitionState.POSSIBLE });
-  recognitionThreshold: PropertyObservable<number> = createProperty<number>();
-  axis: PropertyObservable<string> = createProperty<string>();
+  state: MotionProperty<string> = createProperty<string>({ initialValue: GestureRecognitionState.POSSIBLE });
+  recognitionThreshold: MotionProperty<number> = createProperty<number>();
+  axis: MotionProperty<string> = createProperty<string>();
   down$: MotionObservable<PartialPointerEvent>;
   move$: MotionObservable<PartialPointerEvent>;
   up$: MotionObservable<PartialPointerEvent>;

@@ -21,13 +21,12 @@ import {
 import {
   Observable,
   ObserverOrNext,
-  PropertyObservable,
   ScopedReadable,
   ScopedWritable,
   Subscription,
 } from '../types';
 
-export class ReactiveProperty<T> implements PropertyObservable<T> {
+export class ReactiveProperty<T> implements Observable<T>, ScopedReadable<T>, ScopedWritable<T> {
   // ReactiveProperty delegates all of its reactive functionality to an internal
   // instance of IndefiniteSubject.
   //

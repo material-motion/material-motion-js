@@ -139,8 +139,6 @@ export interface Operable<T> {
   _observableConstructor: Constructor<Observable<T>>;
 }
 
-export interface PropertyObservable<T> extends Observable<T>, ScopedReadable<T>, ScopedWritable<T> {}
-
 export interface MotionElement {
   readonly scrollPosition: ScopedReadable<Point2D> & ScopedWritable<Point2D>;
   getEvent$(type: string): MotionObservable<Event>;
