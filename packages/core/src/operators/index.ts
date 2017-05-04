@@ -131,7 +131,7 @@ import {
 } from './velocity';
 
 export interface ObservableWithMotionOperators<T> extends
-  ObservableWithFoundationalMotionOperators<T>, MotionPluckable<T>,
+  ObservableWithFoundationalMotionOperators<T>, MotionPluckable<T, string>,
   MotionLoggable<T>, MotionDeduplicable<T>, MotionInvertible<T>,
   MotionMergeable<T>, MotionRewritable<T>, MotionRewriteToable,
   MotionRewriteRangeable, MotionThresholdable, MotionThresholdRangeable,
