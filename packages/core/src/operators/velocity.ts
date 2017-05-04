@@ -71,7 +71,7 @@ export function withVelocity<T, S extends Constructor<Observable<T> & MotionTime
      * `pulse` dispatches a value.  This is useful for ensuring that velocity
      * is only calculated when it will be used.
      */
-    velocity(pulse: MotionTimestampable<T> & Observable<any> = this): ObservableWithMotionOperators<T> {
+    velocity(pulse: MotionTimestampable<any> & Observable<any> = this): ObservableWithMotionOperators<T> {
       const constructor = this._observableConstructor as Constructor<ObservableWithMotionOperators<T>>;
 
       return new constructor(
