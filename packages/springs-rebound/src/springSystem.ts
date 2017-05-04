@@ -39,8 +39,8 @@ export function numericSpringSystem({
   tension: tension$,
   friction: friction$,
   threshold: threshold$,
-}: Spring<number>): MotionObservable<number> {
-  return new MotionObservable<number>(
+}: Spring<number>): MotionObservable {
+  return new MotionObservable(
     (observer: Observer<number>) => {
       const spring: ReboundSpring = _reboundInternalSpringSystem.createSpring();
 
@@ -91,12 +91,22 @@ export function numericSpringSystem({
         // properties that can start/stop the spring
         enabled$.subscribe(
           (enabled: boolean) => {
-            if (!enabled && !spring.isAtRest()) {
+            if (enabled) {
+              spring.setCurrentValue(initialValue$.read());
+              spring.setVelocity(initialVelocity$.read());
+              spring.setEndValue(destination$.read());
+            } else if (!spring.isAtRest()) {
               spring.setAtRest();
             }
           }
         ),
-        destination$.subscribe(spring.setEndValue.bind(spring)),
+        destination$.subscribe(
+          (destination: number) => {
+            if (enabled$.read()) {
+              spring.setEndValue(destination);
+            };
+          }
+        ),
       ];
 
       return function disconnect() {
