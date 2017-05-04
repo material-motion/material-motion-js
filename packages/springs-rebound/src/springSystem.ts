@@ -25,7 +25,7 @@ export let _reboundInternalSpringSystem = new SpringSystem();
 import {
   MotionObservable,
   Observer,
-  SpringProperties,
+  Spring,
   State,
   Subscription,
 } from 'material-motion';
@@ -39,7 +39,7 @@ export function numericSpringSystem({
   tension: tension$,
   friction: friction$,
   threshold: threshold$,
-}: SpringProperties<number>): MotionObservable<number> {
+}: Spring<number>): MotionObservable<number> {
   return new MotionObservable<number>(
     (observer: Observer<number>) => {
       const spring: ReboundSpring = _reboundInternalSpringSystem.createSpring();
@@ -82,7 +82,8 @@ export function numericSpringSystem({
         threshold$.subscribe(spring.setRestSpeedThreshold.bind(spring)),
 
         // properties that initialize the spring
-        initialVelocity$.subscribe(spring.setVelocity.bind(spring)),
+        // convert px/ms to px/s before passing to Rebound
+        initialVelocity$.scaledBy(1000).subscribe(spring.setVelocity.bind(spring)),
         initialValue$.subscribe(spring.setCurrentValue.bind(spring)),
 
         // properties that can start/stop the spring
