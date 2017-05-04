@@ -84,7 +84,9 @@ export function numericSpringSystem({
         // properties that initialize the spring
         // convert px/ms to px/s before passing to Rebound
         initialVelocity$.scaledBy(1000).subscribe(spring.setVelocity.bind(spring)),
-        initialValue$.subscribe(spring.setCurrentValue.bind(spring)),
+        initialValue$.subscribe(
+          (initialValue: number) => spring.setCurrentValue(initialValue, true)
+        ),
 
         // properties that can start/stop the spring
         enabled$.subscribe(
