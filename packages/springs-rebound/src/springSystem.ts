@@ -43,6 +43,7 @@ export function numericSpringSystem({
   return new MotionObservable<number>(
     (observer: Observer<number>) => {
       const spring: ReboundSpring = _reboundInternalSpringSystem.createSpring();
+      let initialized = false;
 
       state.write(State.AT_REST);
 
@@ -91,13 +92,27 @@ export function numericSpringSystem({
         // properties that can start/stop the spring
         enabled$.subscribe(
           (enabled: boolean) => {
-            if (!enabled && !spring.isAtRest()) {
-              spring.setAtRest();
+            if (initialized) {
+              if (enabled) {
+                  spring.setCurrentValue(initialValue$.read());
+                  spring.setVelocity(initialVelocity$.read());
+                  spring.setEndValue(destination$.read());
+              } else if (!spring.isAtRest()) {
+                spring.setAtRest();
+              }
             }
           }
         ),
-        destination$.subscribe(spring.setEndValue.bind(spring)),
+        destination$.subscribe(
+          (destination: number) => {
+            if (enabled$.read()) {
+              spring.setEndValue(destination);
+            };
+          }
+        ),
       ];
+
+      initialized = true;
 
       return function disconnect() {
         subscriptions.forEach(
