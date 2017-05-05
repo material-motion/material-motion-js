@@ -49,6 +49,7 @@ export {
   MotionMeasurable,
   MotionMemorable,
   MotionMergeable,
+  MotionMulticastable,
   MotionNextOperable,
   MotionOffsetable,
   MotionPluckable,
