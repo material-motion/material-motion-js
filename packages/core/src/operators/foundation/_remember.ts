@@ -49,16 +49,6 @@ export function withRemember<T, S extends Constructor<Observable<T> & Operable<T
 
       return new constructor(
         (observer: Observer<T>) => {
-          // If we already know about this observer, we don't
-          // have to do anything else.
-          if (observers.has(observer)) {
-            console.warn(
-              'observer is already subscribed; ignoring',
-              observer
-            );
-            return;
-          }
-
           // Whenever we have at least one subscription, we
           // should be subscribed to the parent stream (this).
           if (!observers.size) {
