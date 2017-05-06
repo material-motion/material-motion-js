@@ -125,6 +125,6 @@ export function dragSystem({
         }
       };
     }
-  );
+  )._multicast();
 }
 export default dragSystem;
