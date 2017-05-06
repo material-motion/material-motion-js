@@ -120,6 +120,6 @@ export function numericSpringSystem({
         );
       };
     }
-  );
+  )._multicast();
 }
 export default numericSpringSystem;
