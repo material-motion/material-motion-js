@@ -42,7 +42,7 @@ import {
 
 import {
   MotionObservable,
-} from '../../../observables/';
+} from '../../../observables/MotionObservable';
 
 describe('motionObservable._debounce',
   useMockedRAF(

@@ -23,30 +23,36 @@ import {
   Observer,
 } from './types';
 
-/**
- * A stream backed by `requestAnimationFrame`, called once per frame with that
- * frame's timestamp.
- *
- * Useful as a pulse for `_debounce` to ensure that UI work only happens once
- * per frame.  Since no rendering will happen until `requestAnimationFrame` is
- * called, it should be safe to `_debounce(frame$)` without missing a frame.
- */
-export const frame$ = new MotionObservable(
-  (observer: Observer<number>) => {
-    let queuedFrameID = 0;
+export var frame$: ObservableWithMotionOperators<number>;
+export function defineTimers() {
+  /**
+   * A stream backed by `requestAnimationFrame`, called once per frame with that
+   * frame's timestamp.
+   *
+   * Useful as a pulse for `_debounce` to ensure that UI work only happens once
+   * per frame.  Since no rendering will happen until `requestAnimationFrame` is
+   * called, it should be safe to `_debounce(frame$)` without missing a frame.
+   */
+  frame$ = new MotionObservable(
+    (observer: Observer<number>) => {
+      let queuedFrameID = 0;
 
-    function queueFrame(frameTimestamp?: number) {
-      if (frameTimestamp) {
-        observer.next(frameTimestamp);
+      function queueFrame(frameTimestamp?: number) {
+        if (frameTimestamp) {
+          observer.next(frameTimestamp);
+        }
+
+        queuedFrameID = requestAnimationFrame(queueFrame);
       }
 
-      queuedFrameID = requestAnimationFrame(queueFrame);
+      queueFrame();
+
+      return () => {
+        cancelAnimationFrame(queuedFrameID);
+      };
     }
-
-    queueFrame();
-
-    return () => {
-      cancelAnimationFrame(queuedFrameID);
-    };
-  }
-)._multicast();
+  )._multicast();
+}
+try {
+  defineTimers()
+} catch(error){}

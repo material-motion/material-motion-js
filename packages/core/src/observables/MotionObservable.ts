@@ -14,6 +14,8 @@
  *  under the License.
  */
 
+var importsDone = false;
+
 import {
   IndefiniteObservable,
   Observer,
@@ -31,32 +33,50 @@ import {
   withMotionOperators,
 } from '../operators';
 
-/**
- * `MotionObservable` is an extension of `IndefiniteObservable` that includes
- * a series of purely-declarative operators that are useful for building
- * animated interactions.  Those operators are specified in the
- * [Starmap](https://material-motion.github.io/material-motion/starmap/specifications/operators/)
- */
-export class OperableObservable<T> extends IndefiniteObservable<T> implements Operable<T> {
+import {
+  defineTimers,
+} from '../timers';
+
+export var OperableObservable;
+export var MotionObservable;
+export { MotionObservable as default };
+
+importsDone = true;
+
+if (importsDone) {
   /**
-   * Creates a new `MotionObservable` that dispatches whatever values it
-   * receives from the provided stream.
-   *
-   * This is useful for imbuing another type of `Observable`, like an
-   * `IndefiniteSubject`, with the operators present on `MotionObservable`.
+   * `MotionObservable` is an extension of `IndefiniteObservable` that includes
+   * a series of purely-declarative operators that are useful for building
+   * animated interactions.  Those operators are specified in the
+   * [Starmap](https://material-motion.github.io/material-motion/starmap/specifications/operators/)
    */
-  static from<T>(stream: Observable<T>): MotionObservable<T> {
-    return new MotionObservable<T>(
-      (observer: Observer<T>) => {
-        const subscription: Subscription = stream.subscribe(observer);
+  // export class OperableObservable<T> extends IndefiniteObservable<T> implements Operable<T> {
+  OperableObservable = class OperableObservable<T> extends IndefiniteObservable<T> implements Operable<T> {
+    /**
+     * Creates a new `MotionObservable` that dispatches whatever values it
+     * receives from the provided stream.
+     *
+     * This is useful for imbuing another type of `Observable`, like an
+     * `IndefiniteSubject`, with the operators present on `MotionObservable`.
+     */
+    static from<T>(stream: Observable<T>): MotionObservable<T> {
+      return new MotionObservable<T>(
+        (observer: Observer<T>) => {
+          const subscription: Subscription = stream.subscribe(observer);
 
-        return subscription.unsubscribe;
-      }
-    );
-  }
+          return subscription.unsubscribe;
+        }
+      );
+    }
 
-  _observableConstructor: Constructor<Observable<T>> = MotionObservable;
+    _observableConstructor: Constructor<Observable<T>> = MotionObservable;
+  };
+
+  try {
+    MotionObservable = withMotionOperators(OperableObservable);
+    defineTimers();
+  } catch (error) {}
 }
+
+export interface OperableObservable<T> extends IndefiniteObservable<T>, Operable<T> {}
 export interface MotionObservable<T> extends OperableObservable<T>, ObservableWithMotionOperators<T> {}
-export const MotionObservable = withMotionOperators(OperableObservable);
-export default MotionObservable;
