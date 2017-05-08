@@ -37,12 +37,14 @@ export default function useMockedRAF(closure) {
     before(
       () => {
         stub(window, 'requestAnimationFrame').callsFake(mockRAF.raf);
+        stub(window, 'cancelAnimationFrame').callsFake(mockRAF.cancel);
       }
     );
 
     after(
       () => {
         (window.requestAnimationFrame as SinonStub).restore();
+        (window.cancelAnimationFrame as SinonStub).restore();
       }
     );
 
