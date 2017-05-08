@@ -24,6 +24,10 @@ import {
   Subscription,
 } from '../../types';
 
+import {
+  MotionSubject,
+} from '../../observables/';
+
 export interface MotionMemorable<T> extends Observable<T> {
   _remember(): ObservableWithMotionOperators<T>;
 }
@@ -38,52 +42,9 @@ export function withRemember<T, S extends Constructor<Observable<T> & Operable<T
      * happen once per dispatch, sharing the resulting value with all observers.
      */
     _remember(): ObservableWithMotionOperators<T> {
-      // Keep track of all the observers who have subscribed,
-      // so we can notify them when we get new values.
-      const observers = new Set();
-      let subscription: Subscription | undefined;
-      let lastValue: T;
-      let hasStarted = false;
-
-      const constructor = this._observableConstructor as Constructor<ObservableWithMotionOperators<T>>;
-
-      return new constructor(
-        (observer: Observer<T>) => {
-          // Whenever we have at least one subscription, we
-          // should be subscribed to the parent stream (this).
-          if (!observers.size) {
-            subscription = this.subscribe(
-              (value: T) => {
-                // The parent stream has dispatched a value, so
-                // pass it along to all the children, and cache
-                // it for any observers that subscribe before
-                // the next dispatch.
-                observers.forEach(
-                  observer => observer.next(value)
-                );
-
-                hasStarted = true;
-                lastValue = value;
-              }
-            );
-          }
-
-          observers.add(observer);
-
-          if (hasStarted) {
-            observer.next(lastValue);
-          }
-
-          return () => {
-            observers.delete(observer);
-
-            if (!observers.size && subscription) {
-              subscription.unsubscribe();
-              subscription = undefined;
-            }
-          };
-        }
-      );
+      const result = new MotionSubject<T>();
+      this.subscribe(result);
+      return result;
     }
   };
 }
