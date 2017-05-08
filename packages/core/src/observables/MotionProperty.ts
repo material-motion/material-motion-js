@@ -14,6 +14,8 @@
  *  under the License.
  */
 
+var importsDone = false;
+
 import {
   MotionObservable,
 } from '../observables';
@@ -36,9 +38,20 @@ import {
   ReactiveProperty,
 } from './ReactiveProperty';
 
-export class OperableProperty<T> extends ReactiveProperty<T> implements Operable<T> {
-  _observableConstructor: Constructor<Observable<T>> = MotionObservable;
+export var OperableProperty;
+export var MotionProperty;
+export { MotionProperty as default };
+
+importsDone = true;
+
+if (importsDone) {
+  OperableProperty = class OperableProperty<T> extends ReactiveProperty<T> implements Operable<T> {
+    _observableConstructor: Constructor<Observable<T>> = MotionObservable;
+  };
+
+  try {
+    MotionProperty = withMotionOperators(OperableProperty);
+  } catch (error) {}
 }
+export interface OperableProperty<T> extends Operable<T>, ReactiveProperty<T> {}
 export interface MotionProperty<T> extends OperableProperty<T>, ObservableWithMotionOperators<T> {}
-export const MotionProperty = withMotionOperators(OperableProperty);
-export default MotionProperty;

@@ -14,6 +14,8 @@
  *  under the License.
  */
 
+var importsDone = false;
+
 import {
   MotionObservable,
 } from '../observables';
@@ -36,9 +38,21 @@ import {
   IndefiniteSubject,
 } from './IndefiniteSubject';
 
-export class OperableSubject<T> extends IndefiniteSubject<T> implements Operable<T> {
-  _observableConstructor: Constructor<Observable<T>> = MotionObservable;
+export var OperableSubject;
+export var MotionSubject;
+export { MotionSubject as default };
+
+importsDone = true;
+
+if (importsDone) {
+  OperableSubject = class OperableSubject<T> extends IndefiniteSubject<T> implements Operable<T> {
+    _observableConstructor: Constructor<Observable<T>> = MotionObservable;
+  };
+
+  try {
+    MotionSubject = withMotionOperators(OperableSubject);
+  } catch (error) {}
 }
+
+export interface OperableSubject<T> extends IndefiniteSubject<T>, Operable<T> {}
 export interface MotionSubject<T> extends OperableSubject<T>, ObservableWithMotionOperators<T> {}
-export const MotionSubject = withMotionOperators(OperableSubject);
-export default MotionSubject;
