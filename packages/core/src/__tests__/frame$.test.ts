@@ -40,18 +40,24 @@ import {
   useMockedRAF,
 } from 'material-motion-testing-utils';
 
+// has to be imported for `MotionObservable` to be defined in `getFrame$` - see
+// comment in `observables/proxies`
+import '../observables/MotionObservable';
+
 import {
-  frame$,
-} from '../timers';
+  getFrame$,
+} from '../getFrame$';
 
 describe('frame$',
   useMockedRAF(
     (mockRAF) => {
       let listener;
+      let frame$;
 
       beforeEach(
         () => {
           listener = stub();
+          frame$ = getFrame$();
         }
       );
 
