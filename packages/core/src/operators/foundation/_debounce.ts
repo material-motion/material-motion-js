@@ -15,10 +15,19 @@
  */
 
 import {
+  getFrame$,
+} from '../../getFrame$';
+
+import {
+  MotionObservable,
+} from '../../observables/proxies';
+
+import {
   Constructor,
   MotionNextOperable,
   NextChannel,
   ObservableWithMotionOperators,
+  Observer
 } from '../../types';
 
 export interface MotionDebounceable<T> {
@@ -29,31 +38,40 @@ export function withDebounce<T, S extends Constructor<MotionNextOperable<T>>>(su
     & Constructor<MotionDebounceable<T>> {
   return class extends superclass implements MotionDebounceable<T> {
     /**
-     * Limits the number of dispatches to one per frame.
+     * Throttles the upstream subscription to dispatch its latest value whenever
+     * `pulse$` dispatches.  If more than one value is received whilst awaiting
+     * the pulse, the most recent value is dispatched and the intermediaries are
+     * forgotten.
      *
-     * When it receives a value, it waits until the next frame to dispatch it.
-     * If more than one value is received whilst awaiting the frame, the most
-     * recent value is dispatched and the intermediaries are forgotten.
-     *
-     * Since no rendering will happen until `requestAnimationFrame` is called,
-     * it should be safe to `_debounce()` without missing a frame.
+     * By default, it will throttle to the framerate using
+     * `requestAnimationFrame`.
      */
-    _debounce(): ObservableWithMotionOperators<T> {
-      let queuedFrameID: number;
-      let lastValue: T;
+    _debounce(pulse$: ObservableWithMotionOperators<any> = getFrame$()): ObservableWithMotionOperators<T> {
+      return new MotionObservable<T>(
+        (observer: Observer<T>) => {
+          let awaitingDispatch = false;
+          let lastValue: T;
 
-      return this._nextOperator(
-        (value: T, dispatch: NextChannel<T>) => {
-          lastValue = value;
+          const valueSubscription = this.subscribe(
+            (value: T) => {
+              lastValue = value;
+              awaitingDispatch = true;
+            }
+          );
 
-          if (!queuedFrameID) {
-            queuedFrameID = requestAnimationFrame(
-              () => {
-                dispatch(lastValue);
-                queuedFrameID = 0;
+          const pulseSubscription = pulse$.subscribe(
+            () => {
+              if (awaitingDispatch) {
+                awaitingDispatch = false;
+                observer.next(lastValue);
               }
-            );
-          }
+            }
+          );
+
+          return () => {
+            valueSubscription.unsubscribe();
+            pulseSubscription.unsubscribe();
+          };
         }
       );
     }

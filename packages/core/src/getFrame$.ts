@@ -16,7 +16,7 @@
 
 import {
   MotionObservable,
-} from './observables';
+} from './observables/proxies';
 
 import {
   ObservableWithMotionOperators,
@@ -31,22 +31,29 @@ import {
  * per frame.  Since no rendering will happen until `requestAnimationFrame` is
  * called, it should be safe to `_debounce(frame$)` without missing a frame.
  */
-export const frame$ = new MotionObservable(
-  (observer: Observer<number>) => {
-    let queuedFrameID = 0;
+let frame$: MotionObservable<number>;
+export function getFrame$() {
+  if (!frame$) {
+    frame$ = new MotionObservable<number>(
+      (observer: Observer<number>) => {
+        let queuedFrameID = 0;
 
-    function queueFrame(frameTimestamp?: number) {
-      if (frameTimestamp) {
-        observer.next(frameTimestamp);
+        function queueFrame(frameTimestamp?: number) {
+          if (frameTimestamp) {
+            observer.next(frameTimestamp);
+          }
+
+          queuedFrameID = requestAnimationFrame(queueFrame);
+        }
+
+        queueFrame();
+
+        return () => {
+          cancelAnimationFrame(queuedFrameID);
+        };
       }
-
-      queuedFrameID = requestAnimationFrame(queueFrame);
-    }
-
-    queueFrame();
-
-    return () => {
-      cancelAnimationFrame(queuedFrameID);
-    };
+    )._multicast();
   }
-)._multicast();
+
+  return frame$;
+}
