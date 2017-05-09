@@ -17,7 +17,6 @@
 import {
   Constructor,
   Observable,
-  Operable,
 } from '../types';
 
 import {
@@ -140,7 +139,7 @@ export interface ObservableWithMotionOperators<T> extends
   MotionIgnorable<T>, MotionWindowable<T>, MotionTimestampable<T>,
   MotionVelocityMeasurable<T> {}
 
-export function withMotionOperators<T, S extends Constructor<Observable<T> & Operable<T>>>(superclass: S): S
+export function withMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
     & Constructor<ObservableWithMotionOperators<T>> {
 
   // TypeScript seems to dislike returning this function.  Calling the functions

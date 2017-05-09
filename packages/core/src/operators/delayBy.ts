@@ -15,27 +15,28 @@
  */
 
 import {
+  MotionObservable,
+} from '../observables/proxies';
+
+import {
   Constructor,
   Observable,
   ObservableWithMotionOperators,
   Observer,
-  Operable,
 } from '../types';
 
 export interface MotionDelayable<T> {
   delayBy(time: number): ObservableWithMotionOperators<T>;
 }
 
-export function withDelayBy<T, S extends Constructor<Observable<T> & Operable<T>>>(superclass: S): S & Constructor<MotionDelayable<T>> {
+export function withDelayBy<T, S extends Constructor<Observable<T>>>(superclass: S): S & Constructor<MotionDelayable<T>> {
   return class extends superclass implements MotionDelayable<T> {
     /**
      * Buffers upstream values for the specified number of milliseconds, then
      * dispatches them.
      */
     delayBy(time: number): ObservableWithMotionOperators<T> {
-      const constructor = this._observableConstructor as Constructor<ObservableWithMotionOperators<T>>;
-
-      return new constructor(
+      return new MotionObservable<T>(
         (observer: Observer<T>) => {
           let connected = true;
 
