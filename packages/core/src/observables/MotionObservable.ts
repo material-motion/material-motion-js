@@ -22,7 +22,6 @@ import {
 import {
   Constructor,
   Observable,
-  Operable,
   Subscription,
 } from '../types';
 
@@ -31,13 +30,11 @@ import {
   withMotionOperators,
 } from '../operators';
 
-/**
- * `MotionObservable` is an extension of `IndefiniteObservable` that includes
- * a series of purely-declarative operators that are useful for building
- * animated interactions.  Those operators are specified in the
- * [Starmap](https://material-motion.github.io/material-motion/starmap/specifications/operators/)
- */
-export class OperableObservable<T> extends IndefiniteObservable<T> implements Operable<T> {
+import {
+  fulfillProxies,
+} from './fulfillProxies';
+
+export class BaseMotionObservable<T> extends IndefiniteObservable<T> {
   /**
    * Creates a new `MotionObservable` that dispatches whatever values it
    * receives from the provided stream.
@@ -54,9 +51,19 @@ export class OperableObservable<T> extends IndefiniteObservable<T> implements Op
       }
     );
   }
-
-  _observableConstructor: Constructor<Observable<T>> = MotionObservable;
 }
-export interface MotionObservable<T> extends OperableObservable<T>, ObservableWithMotionOperators<T> {}
-export const MotionObservable = withMotionOperators(OperableObservable);
+
+/**
+ * `MotionObservable` is an extension of `IndefiniteObservable` that includes
+ * a series of purely-declarative operators that are useful for building
+ * animated interactions.  Those operators are specified in the
+ * [Starmap](https://material-motion.github.io/material-motion/starmap/specifications/operators/)
+ */
+export interface MotionObservable<T> extends IndefiniteObservable<T>, ObservableWithMotionOperators<T> {}
+export const MotionObservable = withMotionOperators(BaseMotionObservable);
 export default MotionObservable;
+
+// See explanation in `./proxies`
+try {
+  fulfillProxies();
+} catch (error) {}

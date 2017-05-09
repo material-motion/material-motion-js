@@ -136,10 +136,6 @@ export interface ScopedWritable<T> {
   write: Write<T>;
 }
 
-export interface Operable<T> {
-  _observableConstructor: Constructor<Observable<T>>;
-}
-
 export interface MotionElement {
   readonly scrollPosition: ScopedReadable<Point2D> & ScopedWritable<Point2D>;
   getEvent$(type: string): MotionObservable<Event>;

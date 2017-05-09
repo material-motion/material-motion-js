@@ -15,19 +15,22 @@
  */
 
 import {
+  MotionObservable,
+} from '../../observables/proxies';
+
+import {
   Constructor,
   NextOperation,
   Observable,
   ObservableWithMotionOperators,
   Observer,
-  Operable,
 } from '../../types';
 
 export interface MotionNextOperable<T> extends Observable<T> {
   _nextOperator<U>(operation: NextOperation<T, U>): ObservableWithMotionOperators<U>;
 }
 
-export function withNextOperator<T, S extends Constructor<Observable<T> & Operable<T>>>(superclass: S): S & Constructor<MotionNextOperable<T>> {
+export function withNextOperator<T, S extends Constructor<Observable<T>>>(superclass: S): S & Constructor<MotionNextOperable<T>> {
   return class extends superclass implements MotionNextOperable<T> {
     /**
      * `_nextOperator` is sugar for creating an operator that reads and writes
@@ -39,9 +42,7 @@ export function withNextOperator<T, S extends Constructor<Observable<T> & Operab
      * the result to the observer's `next` channel.
      */
     _nextOperator<U>(operation: NextOperation<T, U>): ObservableWithMotionOperators<U> {
-      const constructor = this._observableConstructor as Constructor<ObservableWithMotionOperators<T>>;
-
-      return new constructor(
+      return new MotionObservable<U>(
         (observer: Observer<U>) => {
           const subscription = this.subscribe(
             (value: T) => operation(value, observer.next)
