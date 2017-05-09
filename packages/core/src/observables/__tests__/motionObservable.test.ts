@@ -38,6 +38,10 @@ import {
 } from 'material-motion-testing-utils';
 
 import {
+  IndefiniteObservable,
+} from 'indefinite-observable';
+
+import {
   MotionObservable,
 } from '../';
 
@@ -45,26 +49,39 @@ describe('motionObservable',
   () => {
     let stream;
     let mockObserver;
-    let nextListener;
+    let listener;
 
     beforeEach(
       () => {
         mockObserver = createMockObserver();
         stream = new MotionObservable(mockObserver.connect);
 
-        nextListener = stub();
+        listener = stub();
       }
     );
 
     it('should pass values to observer.next',
       () => {
-        stream.subscribe({
-          next: nextListener,
-        });
+        stream.subscribe(listener);
 
         mockObserver.next(1);
 
-        expect(nextListener).to.have.been.calledWith(1);
+        expect(listener).to.have.been.calledWith(1);
+      }
+    );
+
+    it('should cast other observables to itself with MotionObservable.from',
+      () => {
+        MotionObservable.from(
+          new IndefiniteObservable(mockObserver.connect)
+        )._filter(
+          value => value < 2
+        ).subscribe(listener);
+
+        mockObserver.next(1);
+        mockObserver.next(3);
+
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(1);
       }
     );
   }
