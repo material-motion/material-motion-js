@@ -2,6 +2,7 @@
 
 [![Build Status](https://img.shields.io/circleci/project/github/material-motion/material-motion-js/develop.svg)](https://circleci.com/gh/material-motion/material-motion-js/)
 [![codecov](https://codecov.io/gh/material-motion/material-motion-js/branch/develop/graph/badge.svg)](https://codecov.io/gh/material-motion/material-motion-js)
+[![Chat](https://img.shields.io/discord/198544450366996480.svg)](https://discord.gg/material-motion)
 
 This repo houses the JavaScript implementation of Material Motion.  For more information about the project as a whole, check [the Starmap](https://material-motion.github.io/material-motion/starmap/).
 
