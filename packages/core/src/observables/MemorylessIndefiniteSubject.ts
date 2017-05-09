@@ -38,7 +38,7 @@ export class MemorylessIndefiniteSubject<T> implements Observable<T>, Observer<T
   /**
    * Passes the supplied value to any currently-subscribed observers.
    */
-  next = (value: T) => {
+  next(value: T) {
     // The parent stream has dispatched a value, so pass it along to all the
     // children, and cache it for any observers that subscribe before the next
     // dispatch.
@@ -55,7 +55,7 @@ export class MemorylessIndefiniteSubject<T> implements Observable<T>, Observer<T
    * Call the returned `unsubscribe` method to stop receiving values on this
    * particular observer.
    */
-  subscribe = (observerOrNext: ObserverOrNext<T>): Subscription => {
+  subscribe(observerOrNext: ObserverOrNext<T>): Subscription {
     const observer = wrapWithObserver<T>(observerOrNext);
 
     this._observers.add(observer);
@@ -72,7 +72,7 @@ export class MemorylessIndefiniteSubject<T> implements Observable<T>, Observer<T
    *
    * https://github.com/tc39/proposal-observable#observable
    */
-  [$$observable] = (): Observable<T> => {
+  [$$observable](): Observable<T> {
     return this;
   }
 }
