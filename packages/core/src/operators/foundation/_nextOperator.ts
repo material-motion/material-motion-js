@@ -20,6 +20,7 @@ import {
 
 import {
   Constructor,
+  NextChannel,
   NextOperation,
   Observable,
   ObservableWithMotionOperators,
@@ -44,8 +45,10 @@ export function withNextOperator<T, S extends Constructor<Observable<T>>>(superc
     _nextOperator<U>(operation: NextOperation<T, U>): ObservableWithMotionOperators<U> {
       return new MotionObservable<U>(
         (observer: Observer<U>) => {
+          const dispatch: NextChannel<U> = observer.next.bind(observer);
+
           const subscription = this.subscribe(
-            (value: T) => operation(value, observer.next)
+            (value: T) => operation(value, dispatch)
           );
 
           return subscription.unsubscribe;
