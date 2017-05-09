@@ -29,16 +29,21 @@ import {
 import {
   Constructor,
   Observable,
-  Operable,
 } from '../types';
 
 import {
   IndefiniteSubject,
 } from './IndefiniteSubject';
 
-export class OperableSubject<T> extends IndefiniteSubject<T> implements Operable<T> {
-  _observableConstructor: Constructor<Observable<T>> = MotionObservable;
-}
-export interface MotionSubject<T> extends OperableSubject<T>, ObservableWithMotionOperators<T> {}
-export const MotionSubject = withMotionOperators(OperableSubject);
+import {
+  fulfillProxies,
+} from './fulfillProxies';
+
+export interface MotionSubject<T> extends IndefiniteSubject<T>, ObservableWithMotionOperators<T> {}
+export const MotionSubject = withMotionOperators(IndefiniteSubject);
 export default MotionSubject;
+
+// See explanation in `./proxies`
+try {
+  fulfillProxies();
+} catch (error) {}

@@ -20,19 +20,18 @@ import {
   Observable,
   ObservableWithMotionOperators,
   Observer,
-  Operable,
   Subscription,
 } from '../../types';
 
 import {
   MotionSubject,
-} from '../../observables/';
+} from '../../observables/proxies';
 
 export interface MotionMemorable<T> extends Observable<T> {
   _remember(): ObservableWithMotionOperators<T>;
 }
 
-export function withRemember<T, S extends Constructor<Observable<T> & Operable<T>>>(superclass: S): S & Constructor<MotionMemorable<T>> {
+export function withRemember<T, S extends Constructor<Observable<T>>>(superclass: S): S & Constructor<MotionMemorable<T>> {
   return class extends superclass implements MotionMemorable<T> {
     /**
      * Remembers the most recently dispatched value and synchronously

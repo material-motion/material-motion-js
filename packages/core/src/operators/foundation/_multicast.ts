@@ -38,12 +38,15 @@
  */
 
 import {
+  MotionObservable,
+} from '../../observables/proxies';
+
+import {
   Constructor,
   NextOperation,
   Observable,
   ObservableWithMotionOperators,
   Observer,
-  Operable,
   Subscription,
 } from '../../types';
 
@@ -51,7 +54,7 @@ export interface MotionMulticastable<T> extends Observable<T> {
   _multicast(): ObservableWithMotionOperators<T>;
 }
 
-export function withMulticast<T, S extends Constructor<Observable<T> & Operable<T>>>(superclass: S): S & Constructor<MotionMulticastable<T>> {
+export function withMulticast<T, S extends Constructor<Observable<T>>>(superclass: S): S & Constructor<MotionMulticastable<T>> {
   return class extends superclass implements MotionMulticastable<T> {
     /**
      * Ensures that upstream operations are shared among all observers.  This is
@@ -64,9 +67,7 @@ export function withMulticast<T, S extends Constructor<Observable<T> & Operable<
       const observers = new Set();
       let subscription: Subscription | undefined;
 
-      const constructor = this._observableConstructor as Constructor<ObservableWithMotionOperators<T>>;
-
-      return new constructor(
+      return new MotionObservable<T>(
         (observer: Observer<T>) => {
           observers.add(observer);
 

@@ -15,18 +15,21 @@
  */
 
 import {
+  MotionObservable,
+} from '../observables/proxies';
+
+import {
   Constructor,
   ObservableWithFoundationalMotionOperators,
   ObservableWithMotionOperators,
   Observer,
-  Operable,
 } from '../types';
 
 export interface MotionSeedable<T> {
   startWith(initialValue: T): ObservableWithMotionOperators<T>;
 }
 
-export function withStartWith<T, S extends Constructor<ObservableWithFoundationalMotionOperators<T> & Operable<T>>>(superclass: S): S & Constructor<MotionSeedable<T>> {
+export function withStartWith<T, S extends Constructor<ObservableWithFoundationalMotionOperators<T>>>(superclass: S): S & Constructor<MotionSeedable<T>> {
   return class extends superclass implements MotionSeedable<T> {
     /**
      * Dispatches `initialValue` and passes through all subsequent values.
@@ -35,9 +38,7 @@ export function withStartWith<T, S extends Constructor<ObservableWithFoundationa
      * receive the most recent value.
      */
     startWith(initialValue: T): ObservableWithMotionOperators<T> {
-      const constructor = this._observableConstructor as Constructor<ObservableWithMotionOperators<T>>;
-
-      return new constructor(
+      return new MotionObservable<T>(
         (observer: Observer<T>) => {
           observer.next(initialValue);
           const subscription = this.subscribe(observer);
