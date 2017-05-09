@@ -24,12 +24,10 @@ export default function createMockObserver() {
 
 export class MockObserver {
   next?: Function;
-  state?: Function;
   disconnect = stub();
 
   connect = (observer) => {
-    this.next = observer.next;
-    this.state = observer.state;
+    this.next = observer.next.bind(observer);
 
     return this.disconnect;
   }
