@@ -17,7 +17,6 @@
 import {
   Constructor,
   Observable,
-  Operable,
 } from '../../types';
 
 import {
@@ -70,7 +69,7 @@ export interface ObservableWithFoundationalMotionOperators<T> extends
   MotionMemorable<T>, MotionMulticastable<T>, MotionDebounceable<T>,
   MotionReadable<T>, MotionFlattenable<T>, MotionTappable<T> {}
 
-export function withFoundationalMotionOperators<T, S extends Constructor<Observable<T> & Operable<T>>>(superclass: S): S
+export function withFoundationalMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
     & Constructor<ObservableWithFoundationalMotionOperators<T>> {
 
   return withRead(withDebounce(withRemember(withMulticast(withFilter(withMap(

@@ -15,35 +15,27 @@
  */
 
 import {
+  defineProxy as actuallyDefineProxy,
+} from './proxies';
+
+import {
   MotionObservable,
-} from '../observables';
-
-// ObservableWithMotionOperators isn't referenced in this file, but TypeScript
-// gets mad if you remove it. (MotionProperty is using MotionDebounceable from
-// an external module)
-import {
-  ObservableWithMotionOperators,
-  withMotionOperators,
-} from '../operators';
+} from './MotionObservable';
 
 import {
-  Constructor,
-  Observable,
-} from '../types';
+  MotionProperty,
+} from './MotionProperty';
 
 import {
-  ReactiveProperty,
-} from './ReactiveProperty';
+  MotionSubject,
+} from './MotionSubject';
 
-import {
-  fulfillProxies,
-} from './fulfillProxies';
-
-export interface MotionProperty<T> extends ReactiveProperty<T>, ObservableWithMotionOperators<T> {}
-export const MotionProperty = withMotionOperators(ReactiveProperty);
-export default MotionProperty;
 
 // See explanation in `./proxies`
-try {
-  fulfillProxies();
-} catch (error) {}
+export function fulfillProxies() {
+  if (MotionObservable && MotionProperty && MotionSubject) {
+    actuallyDefineProxy('MotionObservable', MotionObservable);
+    actuallyDefineProxy('MotionProperty', MotionProperty);
+    actuallyDefineProxy('MotionSubject', MotionSubject);
+  }
+}
