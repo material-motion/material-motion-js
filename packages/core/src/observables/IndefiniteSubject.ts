@@ -14,47 +14,54 @@
  *  under the License.
  */
 
-import $$observable from 'symbol-observable';
-
-import wrapWithObserver from 'indefinite-observable/dist/wrapWithObserver';
-
 import {
-  Observable,
-  Observer,
   ObserverOrNext,
   Subscription,
 } from 'indefinite-observable';
 
+import {
+  MemorylessIndefiniteSubject,
+} from './MemorylessIndefiniteSubject';
+
 /**
- * An IndefiniteSubject is both an Observer and an Observable.  Whenever it
- * receives a value on `next`, it forwards that value to any subscribed
+ * An `IndefiniteSubject` is both an `Observer` and an `Observable`.  Whenever
+ * it receives a value on `next`, it forwards that value to any subscribed
  * observers.
  *
- * IndefiniteSubject is a multicast Observable; it remembers the most recent
- * value dispatched and passes it to any new subscriber.
+ * `IndefiniteSubject` also remembers the most recent value dispatched and
+ * passes it to any new subscriber.
  */
-export class IndefiniteSubject<T> implements Observable<T>, Observer<T> {
-  // Keep track of all the observers who have subscribed, so we can notify them
-  // when we get new values.  Note: JavaScript's Set collection is ordered.
-  _observers: Set<Observer<T>> = new Set();
+export class IndefiniteSubject<T> extends MemorylessIndefiniteSubject<T> {
   _lastValue: T;
   _hasStarted: boolean = false;
+
+  constructor() {
+    /* We prefer arrow function properties over methods because they ensure that
+     * `this` is always bound to the instance.  Unfortunately, they are defined
+     * when a class is instantiated (not when it is defined).  This means
+     * overrides clobber their definitions on their superclass, which means
+     * `super.next()` will fail.
+     *
+     * So, to ensure that `this` is always bound to the instance correctly in
+     * the `next` and `subscribe` methods without losing access to `super.next`
+     * and `super.subscribe`, we still use arrow function properties, but we
+     * cache the values on super here before overriding them below.
+     */
+    super();
+    this._superNext = this.next;
+    this._superSubscribe = this.subscribe;
+  }
 
   /**
    * Passes the supplied value to any currently-subscribed observers.  If an
    * observer `subscribe`s before `next` is called again, it will immediately
    * receive `value`.
    */
-  next = (value: T) => {
+  next = (value: T): void => {
     this._hasStarted = true;
     this._lastValue = value;
 
-    // The parent stream has dispatched a value, so pass it along to all the
-    // children, and cache it for any observers that subscribe before the next
-    // dispatch.
-    this._observers.forEach(
-      (observer: Observer<T>) => observer.next(value)
-    );
+    this._superNext(value);
   }
 
   /**
@@ -66,28 +73,15 @@ export class IndefiniteSubject<T> implements Observable<T>, Observer<T> {
    * particular observer.
    */
   subscribe = (observerOrNext: ObserverOrNext<T>): Subscription => {
-    const observer = wrapWithObserver<T>(observerOrNext);
-
-    this._observers.add(observer);
+    const subscription = this._superSubscribe(observerOrNext);
 
     if (this._hasStarted) {
-      observer.next(this._lastValue);
+      observerOrNext.next
+        ? observerOrNext.next(this._lastValue)
+        : observerOrNext(this._lastValue);
     }
 
-    return {
-      unsubscribe: () => {
-        this._observers.delete(observer);
-      }
-    };
-  }
-
-  /**
-   * Tells other libraries that know about observables that we are one.
-   *
-   * https://github.com/tc39/proposal-observable#observable
-   */
-  [$$observable] = (): Observable<T> => {
-    return this;
+    return subscription;
   }
 }
 export default IndefiniteSubject;
