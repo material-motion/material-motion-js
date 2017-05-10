@@ -68,10 +68,10 @@ describe('numericSpringSystem',
 
     it('transitions from initialValue to destination',
       () => {
+        numericSpringSystem(spring).subscribe(listener);
+
         spring.initialValue.write(2);
         spring.destination.write(3);
-
-        numericSpringSystem(spring).subscribe(listener);
 
         expect(listener.firstCall).to.have.been.calledWith(2);
         expect(listener.lastCall).to.have.been.calledWith(3);
@@ -80,22 +80,13 @@ describe('numericSpringSystem',
 
     it('starts at rest',
       () => {
-        numericSpringSystem(spring).subscribe(listener);
-
         expect(spring.state.read()).to.equal(State.AT_REST);
-
-        // Rebound dispatches the current value whenever it's set.  Rather than
-        // add a bunch of logic to repress this, we just confirm it in the test.
-        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(spring.initialValue.read());
       }
     );
 
     it('becomes active before dispatching new values',
       () => {
         let tested;
-
-        spring.initialValue.write(0);
-        spring.destination.write(1);
 
         numericSpringSystem(spring).subscribe(
           value => {
@@ -106,6 +97,9 @@ describe('numericSpringSystem',
           }
         );
 
+        spring.initialValue.write(0);
+        spring.destination.write(1);
+
         expect(tested).to.equal(true);
       }
     );
@@ -115,14 +109,14 @@ describe('numericSpringSystem',
         let tested;
         let next;
 
-        spring.initialValue.write(0);
-        spring.destination.write(1);
-
         numericSpringSystem(spring).subscribe(
           value => {
             next = value;
           }
         );
+
+        spring.initialValue.write(0);
+        spring.destination.write(1);
 
         spring.state.subscribe(
           value => {
