@@ -20,7 +20,6 @@ import {
 } from 'indefinite-observable';
 
 import {
-  Constructor,
   Observable,
   Subscription,
 } from '../types';

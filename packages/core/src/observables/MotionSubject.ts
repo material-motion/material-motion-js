@@ -27,11 +27,6 @@ import {
 } from '../operators';
 
 import {
-  Constructor,
-  Observable,
-} from '../types';
-
-import {
   IndefiniteSubject,
 } from './IndefiniteSubject';
 
