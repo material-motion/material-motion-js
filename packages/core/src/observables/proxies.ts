@@ -51,8 +51,15 @@ import {
 } from './IndefiniteSubject';
 
 import {
+  MemorylessIndefiniteSubject,
+} from './MemorylessIndefiniteSubject';
+
+import {
   ReactiveProperty,
 } from './ReactiveProperty';
+
+export var MemorylessMotionSubject;
+export interface MemorylessMotionSubject<T> extends ObservableWithMotionOperators<T>, MemorylessIndefiniteSubject<T> {}
 
 export var MotionObservable;
 export interface MotionObservable<T> extends ObservableWithMotionOperators<T>, IndefiniteObservable<T> {}
@@ -65,6 +72,10 @@ export interface MotionSubject<T> extends ObservableWithMotionOperators<T>, Inde
 
 export function defineProxy(name: string, value: Constructor<ObservableWithMotionOperators<any>>) {
   switch (name) {
+    case 'MemorylessMotionSubject':
+      MemorylessMotionSubject = value;
+      break;
+
     case 'MotionObservable':
       MotionObservable = value;
       break;
