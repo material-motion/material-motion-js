@@ -17,6 +17,12 @@
 export * from './IndefiniteSubject';
 export { default as IndefiniteSubject } from './IndefiniteSubject';
 
+export * from './MemorylessIndefiniteSubject';
+export { default as MemorylessIndefiniteSubject } from './MemorylessIndefiniteSubject';
+
+export * from './MemorylessMotionSubject';
+export { default as MemorylessMotionSubject } from './MemorylessMotionSubject';
+
 export * from './MotionObservable';
 export { default as MotionObservable } from './MotionObservable';
 
