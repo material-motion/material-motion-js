@@ -53,6 +53,7 @@ export {
   MotionNextOperable,
   MotionOffsetable,
   MotionPluckable,
+  MotionReactiveNextOperable,
   MotionReadable,
   MotionRewritable,
   MotionRewriteRangeable,
@@ -103,6 +104,7 @@ export function isObservable(value:any): value is Observable<any> {
 }
 
 export type NextOperation<T, U> = (value: T, nextChannel: NextChannel<U>) => void;
+export type ReactiveNextOperation<T, U> = (nextChannel: NextChannel<U>, ...values: Array<any>) => void;
 
 export type Point2D = {
   x: number,

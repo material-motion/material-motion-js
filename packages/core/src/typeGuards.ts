@@ -14,9 +14,20 @@
  *  under the License.
  */
 
+import $$observable from 'symbol-observable';
+
 import {
+  Observable,
   Point2D,
 } from './types';
+
+/**
+ * Checks if an object is an observable by checking if it returns itself from
+ * [Symbol.observable]()
+ */
+export function isObservable(value: any): value is Observable<any> {
+  return value[$$observable] && value === value[$$observable]();
+}
 
 /**
  * Checks if an object has numeric values for both `x` and `y`.
