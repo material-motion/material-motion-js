@@ -23,6 +23,10 @@ import {
 // all here.  That ensures that they are defined and ready when the operators
 // try to use them.
 import {
+  MemorylessMotionSubject,
+} from './MemorylessMotionSubject';
+
+import {
   MotionObservable,
 } from './MotionObservable';
 
@@ -37,7 +41,8 @@ import {
 
 // See explanation in `./proxies`
 export function fulfillProxies() {
-  if (MotionObservable && MotionProperty && MotionSubject) {
+  if (MemorylessMotionSubject && MotionObservable && MotionProperty && MotionSubject) {
+    actuallyDefineProxy('MemorylessMotionSubject', MemorylessMotionSubject);
     actuallyDefineProxy('MotionObservable', MotionObservable);
     actuallyDefineProxy('MotionProperty', MotionProperty);
     actuallyDefineProxy('MotionSubject', MotionSubject);
