@@ -80,5 +80,27 @@ describe('motionObservable._nextOperator',
         );
       }
     );
+
+    it('should respect bound methods.',
+      () => {
+        const dictWithListener = {
+          listener: nextListener,
+        };
+
+        function callOwnListener(value) {
+          this.listener(value);
+        }
+
+        stream._nextOperator(
+          (value, nextChannel) => nextChannel(value)
+        ).subscribe({
+          next: callOwnListener.bind(dictWithListener)
+        });
+
+        mockObserver.next(1);
+
+        expect(nextListener).to.have.been.calledWith(1);
+      }
+    );
   }
 );
