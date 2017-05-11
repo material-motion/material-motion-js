@@ -38,11 +38,13 @@ import {
 } from 'material-motion-testing-utils';
 
 import {
+  MemorylessIndefiniteSubject,
   MotionObservable,
 } from '../../observables/';
 
 describe('motionObservable.scaledBy',
   () => {
+    const coefficientSubject = new MemorylessIndefiniteSubject();
     let stream;
     let mockObserver;
     let listener;
@@ -62,6 +64,17 @@ describe('motionObservable.scaledBy',
         mockObserver.next(3);
 
         expect(listener).to.have.been.calledWith(30);
+      }
+    );
+
+    it('should multiply values from a coefficient stream by the incoming value and dispatch the result',
+      () => {
+        stream.scaledBy(coefficientSubject).subscribe(listener);
+
+        mockObserver.next(3);
+        coefficientSubject.next(4);
+
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(12);
       }
     );
   }
