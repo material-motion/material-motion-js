@@ -53,6 +53,7 @@ export {
   MotionNextOperable,
   MotionOffsetable,
   MotionPluckable,
+  MotionReactiveMappable,
   MotionReactiveNextOperable,
   MotionReadable,
   MotionRewritable,
