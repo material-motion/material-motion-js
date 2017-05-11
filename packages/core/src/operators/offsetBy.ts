@@ -15,20 +15,38 @@
  */
 
 import {
+  isPoint2D,
+} from '../typeGuards';
+
+import {
   Constructor,
-  MotionMappable,
+  MotionReactiveMappable,
+  Observable,
   ObservableWithMotionOperators,
 } from '../types';
 
-export interface MotionOffsetable {
-  offsetBy(offset: number): ObservableWithMotionOperators<number>;
+export interface MotionOffsetable<T> {
+  offsetBy(offset$: T | Observable<T>): ObservableWithMotionOperators<T | Observable<T>>;
 }
 
-export function withOffsetBy<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionOffsetable> {
-  return class extends superclass implements MotionOffsetable {
-    offsetBy(offset: number): ObservableWithMotionOperators<number> {
-      return (this as any as MotionMappable<number>)._map(
-        (value: number) => value + offset
+export function withOffsetBy<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionOffsetable> {
+  return class extends superclass implements MotionOffsetable<T> {
+    /**
+     * Adds the offset to the incoming value and dispatches the result.
+     */
+    offsetBy(offset$: T | Observable<T>): ObservableWithMotionOperators<T | Observable<T>> {
+      return this._reactiveMap(
+        (value: T, offset: T) => {
+          if (isPoint2D(value)) {
+            return {
+              x: value.x + offset.x,
+              y: value.y + offset.y,
+            };
+          } else {
+            return value + offset;
+          }
+        },
+        offset$
       );
     }
   };
