@@ -31,18 +31,18 @@ try {
   window.addEventListener("test", () => {}, eventOptions);
 } catch (e) {}
 
-const eventListenerOptions = supportsPassiveListeners
-  ? { passive: true }
-  : false;
-
-export function getEventStreamFromElement(type: string, element: Element): MotionObservable<Event> {
+export function getEventStreamFromElement(type: string, element: Element, eventListenerOptions: AddEventListenerOptions = { passive: true }): MotionObservable<Event> {
   return new MotionObservable(
     (observer: Observer<Event>) => {
+      if (!supportsPassiveListeners) {
+        eventListenerOptions = false;
+      }
+
       element.addEventListener(type, observer.next, eventListenerOptions);
 
       return () => {
         element.removeEventListener(type, observer.next, eventListenerOptions);
-      }
+      };
     }
   );
 }
