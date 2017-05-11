@@ -308,44 +308,6 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
   whenRecognitionStateIsAnyOf(passingStates: Array<GestureRecognitionState>): MotionObservable<GestureRecognition<T>> {
     return this.whenRecognitionStateIs(...passingStates);
   }
-
-  /**
-   * Combines the translation from the incoming stream with the most recent
-   * position and passes the result to the observer.
-   *
-   * `initialPosition$` is `read()` whenever the upstream state is `BEGAN`.
-   */
-  translationAddedTo(initialPosition$: ExperimentalMotionObservable<Point2D>): ExperimentalMotionObservable<Point2D> {
-    let initialPosition: Point2D | undefined;
-
-    return this._nextOperator(
-      ({ recognitionState, translation }: TranslationGestureRecognition, dispatch: NextChannel<Point2D>) => {
-        switch (recognitionState) {
-          case GestureRecognitionState.BEGAN:
-            // We want a snapshot of initialPosition at this instant, so we use
-            // ... to clone its current value
-            initialPosition = { ...initialPosition$.read() };
-            break;
-
-          case GestureRecognitionState.CHANGED:
-            if (!initialPosition) {
-              initialPosition = { ...initialPosition$.read() };
-            }
-            break;
-
-          default:
-            initialPosition = undefined;
-        }
-
-        if (initialPosition) {
-          dispatch({
-            x: initialPosition.x + translation.x,
-            y: initialPosition.y + translation.y,
-          });
-        }
-      }
-    );
-  }
 }
 export default ExperimentalMotionObservable;
 
