@@ -52,9 +52,9 @@ export function dragSystem({
 }: Draggable): MotionObservable<Point2D> {
   return new MotionObservable<Point2D>(
     (observer: Observer<Point2D>) => {
-      let moveSubscription: Subscription;
+      let moveSubscription: Subscription | undefined;
       const downSubscription: Subscription = down$.subscribe(
-        (downEvent: PointerEvent) => {
+        (downEvent: PartialPointerEvent) => {
           const currentAxis = axis.read();
 
           // If we get a new down event while we're already listening for moves,
@@ -98,7 +98,7 @@ export function dragSystem({
                 if (atRest) {
                   // This would be a takeWhile if we were using an Observable
                   // implementation that supported completion.
-                  moveSubscription.unsubscribe();
+                  moveSubscription!.unsubscribe();
                   moveSubscription = undefined;
 
                   if (state.read() === GestureRecognitionState.POSSIBLE) {
