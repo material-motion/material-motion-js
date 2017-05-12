@@ -42,6 +42,8 @@ export type DraggableArgs = {
   down$: MotionObservable<PartialPointerEvent>,
   move$: MotionObservable<PartialPointerEvent>,
   up$: MotionObservable<PartialPointerEvent>,
+  click$: MotionObservable<MouseEvent>,
+  dragStart$: MotionObservable<DragEvent>,
   axis?: string,
   recognitionThreshold?: number,
   system?: DragSystem,
@@ -54,12 +56,16 @@ export class Draggable {
   down$: MotionObservable<PartialPointerEvent>;
   move$: MotionObservable<PartialPointerEvent>;
   up$: MotionObservable<PartialPointerEvent>;
+  click$: MotionObservable<MouseEvent>;
+  dragStart$: MotionObservable<DragEvent>;
   system: DragSystem;
 
   constructor({
     down$,
     move$,
     up$,
+    click$,
+    dragStart$,
     axis = Axis.ALL,
     recognitionThreshold = 16,
     system = dragSystem,
@@ -67,6 +73,8 @@ export class Draggable {
     this.down$ = down$;
     this.move$ = move$;
     this.up$ = up$;
+    this.click$ = click$;
+    this.dragStart$ = dragStart$;
 
     this.axis.write(axis);
     this.recognitionThreshold.write(recognitionThreshold);

@@ -38,6 +38,10 @@ import {
 } from 'material-motion-testing-utils';
 
 import {
+  GestureRecognitionState,
+} from '../../GestureRecognitionState';
+
+import {
   MotionObservable,
   createProperty,
 } from '../../observables/';
@@ -55,22 +59,28 @@ describe('dragSystem',
     let downObserver;
     let moveObserver;
     let upObserver;
+    let clickObserver;
+    let dragStartObserver;
     let listener;
 
     beforeEach(
       () => {
         axis = createProperty();
-        state = createProperty();
+        state = createProperty({ initialValue: GestureRecognitionState.POSSIBLE });
         recognitionThreshold = createProperty({ initialValue: 16 });
         downObserver = createMockObserver();
         moveObserver = createMockObserver();
         upObserver = createMockObserver();
+        clickObserver = createMockObserver();
+        dragStartObserver = createMockObserver();
         listener = stub();
 
         drag$ = dragSystem({
           down$: new MotionObservable(downObserver.connect),
           move$: new MotionObservable(moveObserver.connect),
           up$: new MotionObservable(upObserver.connect),
+          click$: new MotionObservable(clickObserver.connect),
+          dragStart$: new MotionObservable(dragStartObserver.connect),
           recognitionThreshold: recognitionThreshold,
           state: state,
           axis: axis,
@@ -79,7 +89,7 @@ describe('dragSystem',
       }
     );
 
-    it('should not repeat the same value for move and up',
+    it(`should not repeat the same value for move and up`,
       () => {
         downObserver.next({
           type: 'pointerdown',
@@ -105,9 +115,91 @@ describe('dragSystem',
         });
       }
     );
-    it('should set state to BEGAN when the recognitionThreshold is crossed');
-    it('should set state to CHANGED on the move after BEGAN');
-    it('should set state to ENDED on up, if recognized');
-    it('should set state to POSSIBLE after ENDED');
+
+    it(`should suppress dragStart`,
+      () => {
+        const dragStartEvent = {
+          preventDefault: stub(),
+        };
+
+        dragStartObserver.next(dragStartEvent);
+
+        expect(dragStartEvent.preventDefault).to.have.been.calledOnce;
+      }
+    );
+
+    it(`should suppress clicks if recognitionThreshold has been crossed`,
+      () => {
+        recognitionThreshold.write(15);
+
+        downObserver.next({
+          type: 'pointerdown',
+          pageX: 0,
+          pageY: 0,
+        });
+
+        moveObserver.next({
+          type: 'pointermove',
+          pageX: 20,
+          pageY: 0,
+        });
+
+        upObserver.next({
+          type: 'pointerup',
+          pageX: 20,
+          pageY: 0,
+        });
+
+        const clickEvent = {
+          preventDefault: stub(),
+          stopImmediatePropagation: stub(),
+        };
+
+        clickObserver.next(clickEvent);
+
+        expect(clickEvent.preventDefault).to.have.been.calledOnce;
+        expect(clickEvent.stopImmediatePropagation).to.have.been.calledOnce;
+      }
+    );
+
+    it(`should not suppress clicks if recognitionThreshold hasn't been crossed`,
+      () => {
+        recognitionThreshold.write(50);
+
+        downObserver.next({
+          type: 'pointerdown',
+          pageX: 0,
+          pageY: 0,
+        });
+
+        moveObserver.next({
+          type: 'pointermove',
+          pageX: 20,
+          pageY: 0,
+        });
+
+        upObserver.next({
+          type: 'pointerup',
+          pageX: 20,
+          pageY: 0,
+        });
+
+        const clickEvent = {
+          preventDefault: stub(),
+          stopImmediatePropagation: stub(),
+        };
+
+        clickObserver.next(clickEvent);
+
+        expect(clickEvent.preventDefault).not.to.have.been.called;
+        expect(clickEvent.stopImmediatePropagation).not.to.have.been.called;
+      }
+    );
+
+    it(`should set state to BEGAN when the recognitionThreshold is crossed`);
+    it(`should set state to CHANGED on the move after BEGAN`);
+    it(`should set state to ENDED on up, if recognized`);
+    it(`should set state to POSSIBLE after ENDED`);
+    it(`should only write to state once per event, even with multiple observers`);
   }
 );
