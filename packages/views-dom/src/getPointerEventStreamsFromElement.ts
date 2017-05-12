@@ -31,14 +31,29 @@ export type PointerEventStreams = {
   down$: MotionObservable<PartialPointerEvent>,
   move$: MotionObservable<PartialPointerEvent>,
   up$: MotionObservable<PartialPointerEvent>,
+  click$: MotionObservable<MouseEvent>,
+  dragStart$: MotionObservable<DragEvent>,
+};
+
+const notPassive = {
+  passive: false,
+  capture: true,
 };
 
 export function getPointerEventStreamsFromElement(element: Element): PointerEventStreams {
+  // These are streams that a gesture recognizer may want to interrupt when it
+  // recognizes a gesture is happening.
+  const preventableStreams = {
+    click$: getEventStreamFromElement('click', element, notPassive),
+    dragStart$: getEventStreamFromElement('dragstart', element, notPassive),
+  };
+
   if (window.PointerEvent) {
     return {
       down$: getEventStreamFromElement('pointerdown', element),
       move$: getEventStreamFromElement('pointermove', element),
       up$: getEventStreamFromElement('pointerup', element),
+      ...preventableStreams,
     };
   } else {
     return {
@@ -57,6 +72,7 @@ export function getPointerEventStreamsFromElement(element: Element): PointerEven
           getEventStreamFromElement('touchend', element)
         )
       ),
+      ...preventableStreams,
     };
   }
 }

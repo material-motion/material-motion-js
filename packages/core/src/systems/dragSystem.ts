@@ -46,6 +46,8 @@ export function dragSystem({
   down$,
   move$,
   up$,
+  click$,
+  dragStart$,
   state,
   axis,
   recognitionThreshold,
@@ -53,9 +55,35 @@ export function dragSystem({
   return new MotionObservable<Point2D>(
     (observer: Observer<Point2D>) => {
       let moveSubscription: Subscription | undefined;
+
+      // If we've recognized a drag, we'll prevent any children from receiving
+      // clicks.
+      let preventClicks: boolean = false;
+
+      // HTML's OS-integrated drag-and-drop will interrupt a PointerEvent stream
+      // without dispatching pointercancel; this is the best way I've found to
+      // prevent that.
+      //
+      // See also https://github.com/w3c/pointerevents/issues/205
+      const dragStartSubscription: Subscription = dragStart$.subscribe(
+        (dragStartEvent: DragEvent) => {
+          dragStartEvent.preventDefault();
+        }
+      );
+
+      const clickSubscription: Subscription = click$.subscribe(
+        (clickEvent: MouseEvent) => {
+          if (preventClicks) {
+            clickEvent.preventDefault();
+            clickEvent.stopImmediatePropagation();
+          }
+        }
+      );
+
       const downSubscription: Subscription = down$.subscribe(
         (downEvent: PartialPointerEvent) => {
           const currentAxis = axis.read();
+          preventClicks = false;
 
           // If we get a new down event while we're already listening for moves,
           // ignore it.
@@ -85,6 +113,7 @@ export function dragSystem({
                   case GestureRecognitionState.POSSIBLE:
                     if (Math.sqrt(translation.x ** 2 + translation.y ** 2) > recognitionThreshold.read()) {
                       state.write(GestureRecognitionState.BEGAN);
+                      preventClicks = true;
                     }
                     break;
 
@@ -119,6 +148,8 @@ export function dragSystem({
 
       return () => {
         downSubscription.unsubscribe();
+        clickSubscription.unsubscribe();
+        dragStartSubscription.unsubscribe();
 
         if (moveSubscription) {
           moveSubscription.unsubscribe();
