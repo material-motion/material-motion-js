@@ -38,10 +38,12 @@ export function getEventStreamFromElement(type: string, element: Element, eventL
         eventListenerOptions = eventListenerOptions.capture || false;
       }
 
-      element.addEventListener(type, observer.next, eventListenerOptions);
+      const next = observer.next.bind(observer);
+
+      element.addEventListener(type, next, eventListenerOptions);
 
       return () => {
-        element.removeEventListener(type, observer.next, eventListenerOptions);
+        element.removeEventListener(type, next, eventListenerOptions);
       };
     }
   );
