@@ -43,6 +43,8 @@ export function numericSpringSystem({
   return new MotionObservable<number>(
     (observer: Observer<number>) => {
       const spring: ReboundSpring = _reboundInternalSpringSystem.createSpring();
+      const initialVelocityInPxPerSecond$ = initialVelocity$.scaledBy(1000);
+
       let initialized = false;
 
       state.write(State.AT_REST);
@@ -83,8 +85,7 @@ export function numericSpringSystem({
         threshold$.subscribe(spring.setRestSpeedThreshold.bind(spring)),
 
         // properties that initialize the spring
-        // convert px/ms to px/s before passing to Rebound
-        initialVelocity$.scaledBy(1000).subscribe(spring.setVelocity.bind(spring)),
+        initialVelocityInPxPerSecond$.subscribe(spring.setVelocity.bind(spring)),
         initialValue$.subscribe(
           (initialValue: number) => spring.setCurrentValue(initialValue, true)
         ),
@@ -94,9 +95,11 @@ export function numericSpringSystem({
           (enabled: boolean) => {
             if (initialized) {
               if (enabled) {
-                  spring.setCurrentValue(initialValue$.read());
-                  spring.setVelocity(initialVelocity$.read());
-                  spring.setEndValue(destination$.read());
+                spring.setCurrentValue(initialValue$.read());
+                // initialVelocityInPxPerSecond$ isn't readable, so we have to
+                // scale by hand for now.
+                spring.setVelocity(1000 * initialVelocity$.read());
+                spring.setEndValue(destination$.read());
               } else if (!spring.isAtRest()) {
                 spring.setAtRest();
               }
