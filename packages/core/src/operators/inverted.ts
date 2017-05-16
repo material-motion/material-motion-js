@@ -15,6 +15,10 @@
  */
 
 import {
+  isBoolean,
+} from '../typeGuards';
+
+import {
   Constructor,
   MotionNextOperable,
   NextChannel,
@@ -31,34 +35,23 @@ export interface MotionInvertible<T> {
 export function withInverted<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionInvertible<T>> {
   return class extends superclass implements MotionInvertible<T> {
     /**
+     * Useful for getting the opposite of a boolean or the complementary
+     * percentage of a number between 0 and 1 (inclusive).
+     *
      * Dispatches:
-     * - false when it receives true,
-     * - true when it receives false,
-     * - 0 when it receives 1, and
-     * - 1 when it receives 0.
+     * - `false` when it receives `true`,
+     * - `true` when it receives `false`,
+     * - `1 - value` when it receives a numeric value
      */
     inverted(): ObservableWithMotionOperators<T> {
       type U = number | boolean;
+
       return (this as any as ObservableWithMotionOperators<U>)._nextOperator(
         (value: U, dispatch: NextChannel<U>) => {
-          switch (value) {
-            case 0:
-              dispatch(1);
-              break;
-
-             case 1:
-              dispatch(0);
-              break;
-
-             case false:
-              dispatch(true);
-              break;
-
-             case true:
-              dispatch(false);
-              break;
-
-            default:break;
+          if (isBoolean(value)) {
+            dispatch(!value);
+          } else {
+            dispatch(1 - value);
           }
         }
       );
