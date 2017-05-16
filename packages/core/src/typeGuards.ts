@@ -22,6 +22,13 @@ import {
 } from './types';
 
 /**
+ * Checks if an object is a Boolean.
+ */
+export function isBoolean(value: any): value is boolean {
+  return typeof value === 'boolean';
+}
+
+/**
  * Checks if an object is an observable by checking if it returns itself from
  * [Symbol.observable]()
  */
