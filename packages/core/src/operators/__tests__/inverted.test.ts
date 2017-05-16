@@ -94,5 +94,16 @@ describe('motionObservable.inverted',
         expect(listener).to.have.been.calledWith(1);
       }
     );
+
+    it('should dispatch .67 when it receives .33',
+      () => {
+        stream.inverted().subscribe(listener);
+
+        mockObserver.next(.33);
+
+        const valueInLastCall = listener.lastCall.args[0];
+        expect(valueInLastCall).to.be.closeTo(.67, .01);
+      }
+    );
   }
 );
