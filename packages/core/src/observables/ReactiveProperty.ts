@@ -19,23 +19,19 @@ import {
 } from '../observables/IndefiniteSubject';
 
 import {
-  Observable,
-  ObserverOrNext,
   ScopedReadable,
   ScopedWritable,
-  Subscription,
 } from '../types';
 
-export class ReactiveProperty<T> implements Observable<T>, ScopedReadable<T>, ScopedWritable<T> {
-  // ReactiveProperty delegates all of its reactive functionality to an internal
-  // instance of IndefiniteSubject.
-  //
-  // Rather than extending IndefiniteSubject, we're using an internal instance.
-  // This allows us to enforce that all reads and writes to the stream go
-  // through the methods exposed by ReactiveProperty.
-  _subject = new IndefiniteSubject<T>();
-
+/**
+ * A Subject that exposes its last value via `read()` and `write(nextValue)`.
+ *
+ * Writes will be broadcast to all observers.
+ */
+export class ReactiveProperty<T> extends IndefiniteSubject<T> {
   constructor(readableWritable?: ScopedReadable<T> & ScopedWritable<T>) {
+    super();
+
     // IndefiniteSubject caches the last value it dispatched as `_lastValue`.
     //
     // If the user supplies `read` and `write` functions, we replace
@@ -43,7 +39,7 @@ export class ReactiveProperty<T> implements Observable<T>, ScopedReadable<T>, Sc
     // user-supplied getter/setter.
     if (readableWritable) {
       Object.defineProperty(
-        this._subject,
+        this,
         '_lastValue',
         {
           get: readableWritable.read,
@@ -53,16 +49,12 @@ export class ReactiveProperty<T> implements Observable<T>, ScopedReadable<T>, Sc
     }
   }
 
-  read = (): T => {
-    return this._subject._lastValue;
+  read(): T {
+    return this._lastValue;
   }
 
-  write = (value: T) => {
-    this._subject.next(value);
-  }
-
-  subscribe = (observer: ObserverOrNext<T>): Subscription => {
-    return this._subject.subscribe(observer);
+  write(value: T): void {
+    this.next(value);
   }
 }
 export default ReactiveProperty;
