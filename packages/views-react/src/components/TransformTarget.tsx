@@ -32,16 +32,17 @@ export type TransformTargetArgs = {
   style: undefined | { [key: string]: string | number },
   children: React.ReactNode | undefined,
   domRef(ref: Element): void,
+  className?: string,
 };
 
 /**
  * Applies translate, rotate, and scale in the order specified by the CSS
- * Transforms 2 spec.  Also supports position and opacity.
+ * Transforms 2 spec.  Passes through other props to inline style - similar to
+ * jsxstyle, but without the stylesheet hoisting.
  *
  * https://drafts.csswg.org/css-transforms-2/
  */
 export default function TransformTarget({
-  position = 'static',
   translate = {
     x: 0,
     y: 0,
@@ -49,29 +50,28 @@ export default function TransformTarget({
   rotate = 0,
   scale = 1,
   opacity = 1,
+  className = '',
+  domRef,
+  position = 'static',
   touchAction,
   children,
-  domRef,
   ...propsPassthrough
 }: TransformTargetArgs): React.ReactElement<any> {
   return (
     <div
-      className = 'transform-target'
+      className = { className }
       ref = { domRef }
-      // We manually need to pass touch-action to both CSS and DOM attributes to
-      // support the Pointer Events Polyfill
-      is touch-action = { touchAction }
       style = {
         {
           ...propsPassthrough,
-          touchAction,
-          position,
           transform: `
             translate(${ applySuffix(translate.x || 0, 'px') }, ${ applySuffix(translate.y || 0, 'px') })
             rotate(${ applySuffix(rotate, 'rad') })
             scale(${ scale })
           `,
           opacity,
+          position,
+          touchAction,
         }
       }
     >
