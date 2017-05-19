@@ -200,10 +200,12 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
     // a bit simpler/more performant too.
     this._subscriptions[propName] = new IndefiniteObservable(
       (observer: Observer<any>) => {
-        this._domNode.addEventListener(eventType, observer.next);
+        const nextChannel = observer.next.bind(observer);
+
+        this._domNode.addEventListener(eventType, nextChannel);
 
         return () => {
-          this._domNode.removeEventListener(eventType, observer.next);
+          this._domNode.removeEventListener(eventType, nextChannel);
         };
       }
     ).subscribe(subject);
