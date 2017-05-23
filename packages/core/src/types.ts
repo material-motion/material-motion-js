@@ -74,7 +74,6 @@ export {
 
 import {
   Draggable,
-  Spring,
 } from './interactions';
 
 import {
@@ -151,7 +150,6 @@ export interface Timestamped<T> {
   timestamp: number,
 }
 
-export type SpringSystem<T extends number | Point2D> = (interaction: Spring<T>) => MotionObservable<T>;
 export type DragSystem = (interaction: Draggable) => MotionObservable<Point2D>;
 
 export type Dict<T> = {
