@@ -14,5 +14,5 @@
  *  under the License.
  */
 
-export * from './springSystem';
-export { default as springSystem } from './springSystem';
+export * from './NumericReboundSpring';
+export { default as NumericReboundSpring } from './NumericReboundSpring';
