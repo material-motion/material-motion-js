@@ -37,9 +37,9 @@ import {
 } from 'material-motion';
 
 import {
+  NumericReboundSpring,
   _reboundInternalSpringSystem,
-  numericSpringSystem,
-} from '../springSystem';
+} from '../NumericReboundSpring';
 
 declare function require(name: string);
 
@@ -49,9 +49,9 @@ require('chai').use(
 );
 
 // TODO: abstract these tests out into a shared compatibility suite, e.g.:
-//   testSpringSystem(reboundSpringSystem)
+//   testSpring(reboundSpring)
 // would run all the spring tests against the rebound adaptor
-describe('numericSpringSystem',
+describe('NumericReboundSpring',
   () => {
     let listener;
     let spring;
@@ -59,7 +59,7 @@ describe('numericSpringSystem',
     beforeEach(
       () => {
         _reboundInternalSpringSystem.setLooper(new SimulationLooper());
-        spring = new Spring();
+        spring = new NumericReboundSpring();
         listener = stub();
       }
     );
@@ -68,10 +68,10 @@ describe('numericSpringSystem',
 
     it('transitions from initialValue to destination',
       () => {
-        numericSpringSystem(spring).subscribe(listener);
+        spring.value$.subscribe(listener);
 
-        spring.initialValue.write(2);
-        spring.destination.write(3);
+        spring.initialValue = 2;
+        spring.destination = 3;
 
         expect(listener.firstCall).to.have.been.calledWith(2);
         expect(listener.lastCall).to.have.been.calledWith(3);
@@ -80,7 +80,7 @@ describe('numericSpringSystem',
 
     it('starts at rest',
       () => {
-        expect(spring.state.read()).to.equal(State.AT_REST);
+        expect(spring.state).to.equal(State.AT_REST);
       }
     );
 
@@ -88,17 +88,17 @@ describe('numericSpringSystem',
       () => {
         let tested;
 
-        numericSpringSystem(spring).subscribe(
+        spring.value$.subscribe(
           value => {
             if (value !== 0 && !tested) {
-              expect(spring.state.read()).to.equal(State.ACTIVE);
+              expect(spring.state).to.equal(State.ACTIVE);
               tested = true;
             }
           }
         );
 
-        spring.initialValue.write(0);
-        spring.destination.write(1);
+        spring.initialValue = 0;
+        spring.destination = 1;
 
         expect(tested).to.equal(true);
       }
@@ -109,16 +109,16 @@ describe('numericSpringSystem',
         let tested;
         let next;
 
-        numericSpringSystem(spring).subscribe(
+        spring.value$.subscribe(
           value => {
             next = value;
           }
         );
 
-        spring.initialValue.write(0);
-        spring.destination.write(1);
+        spring.initialValue = 0;
+        spring.destination = 1;
 
-        spring.state.subscribe(
+        spring.state$.subscribe(
           value => {
             if (next === 1 && !tested) {
               expect(value).to.equal(State.AT_REST);
