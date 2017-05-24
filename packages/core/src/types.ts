@@ -73,10 +73,6 @@ export {
 } from './operators'
 
 import {
-  Draggable,
-} from './interactions';
-
-import {
   MotionObservable,
 } from './observables/MotionObservable';
 
@@ -128,6 +124,14 @@ export type PartialPointerEvent = {
   type: 'pointerdown' | 'pointermove' | 'pointerup';
 };
 
+export type PointerEventStreams = {
+  down$: MotionObservable<PartialPointerEvent>,
+  move$: MotionObservable<PartialPointerEvent>,
+  up$: MotionObservable<PartialPointerEvent>,
+  click$: MotionObservable<MouseEvent>,
+  dragStart$: MotionObservable<DragEvent>,
+};
+
 export type Read<T> = () => T;
 export interface ScopedReadable<T> {
   read: Read<T>;
@@ -149,8 +153,6 @@ export interface Timestamped<T> {
   value: T,
   timestamp: number,
 }
-
-export type DragSystem = (interaction: Draggable) => MotionObservable<Point2D>;
 
 export type Dict<T> = {
   [index: string]: T,
