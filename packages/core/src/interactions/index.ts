@@ -17,4 +17,10 @@
 export * from './Draggable';
 export { default as Draggable } from './Draggable';
 
+export * from './Tossable';
+export { default as Tossable } from './Tossable';
+
+export * from './NumericSpring';
+export { default as NumericSpring } from './NumericSpring';
+
 export default undefined;
