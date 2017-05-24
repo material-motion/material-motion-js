@@ -26,7 +26,7 @@ import {
 } from '../types';
 
 export interface MotionOffsetable<T> {
-  offsetBy(offset$: T | Observable<T>): ObservableWithMotionOperators<T | Observable<T>>;
+  offsetBy(offset$: T | Observable<T>): ObservableWithMotionOperators<T>;
 }
 
 export function withOffsetBy<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionOffsetable> {
@@ -34,7 +34,7 @@ export function withOffsetBy<T, S extends Constructor<MotionReactiveMappable<T>>
     /**
      * Adds the offset to the incoming value and dispatches the result.
      */
-    offsetBy(offset$: T | Observable<T>): ObservableWithMotionOperators<T | Observable<T>> {
+    offsetBy(offset$: T | Observable<T>): ObservableWithMotionOperators<T> {
       return this._reactiveMap(
         (value: T, offset: T) => {
           if (isPoint2D(value)) {
