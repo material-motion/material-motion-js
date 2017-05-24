@@ -38,7 +38,7 @@ import {
 } from '../typeGuards';
 
 export interface MotionVelocityMeasurable<T> {
-  velocity(pulse?: MotionTimestampable<T> & Observable<any>): ObservableWithMotionOperators<T>;
+  velocity(pulse?: MotionTimestampable<any> & Observable<any>): ObservableWithMotionOperators<T>;
 }
 
 // These constants are exported for testing.
