@@ -134,8 +134,8 @@ export interface ObservableWithMotionOperators<T> extends
   MotionLoggable<T>, MotionDeduplicable<T>, MotionInvertible<T>,
   MotionMergeable<T>, MotionRewritable<T>, MotionRewriteToable,
   MotionRewriteRangeable, MotionThresholdable, MotionThresholdRangeable,
-  MotionUpperBoundable, MotionLowerBoundable, MotionOffsetable, MotionScalable,
-  MotionDelayable<T>, MotionMeasurable<T>, MotionSeedable<T>,
+  MotionUpperBoundable, MotionLowerBoundable, MotionOffsetable<T>,
+  MotionScalable, MotionDelayable<T>, MotionMeasurable<T>, MotionSeedable<T>,
   MotionIgnorable<T>, MotionWindowable<T>, MotionTimestampable<T>,
   MotionVelocityMeasurable<T> {}
 
