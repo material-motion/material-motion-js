@@ -15,6 +15,10 @@
  */
 
 import {
+  State,
+} from '../State';
+
+import {
   MotionObservable,
   MotionProperty,
   createProperty,
@@ -42,6 +46,15 @@ import {
 } from '../GestureRecognitionState';
 
 export class Draggable {
+  // TODO: type this to be the values in the State enum
+  readonly state$: MotionProperty<string> = createProperty<string>({
+    initialValue: State.AT_REST,
+  });
+
+  get state(): string {
+    return this.state$.read();
+  }
+
   // TODO: type this to be the values in the GestureRecognitionState enum
   readonly recognitionState$: MotionProperty<string> = createProperty<string>({
     initialValue: GestureRecognitionState.POSSIBLE,
@@ -115,6 +128,8 @@ export class Draggable {
 
         const downSubscription: Subscription = down$.subscribe(
           (downEvent: PartialPointerEvent) => {
+            this.state$.write(State.ACTIVE);
+
             const currentAxis = this.axis$.read();
             preventClicks = false;
 
@@ -168,6 +183,11 @@ export class Draggable {
                     } else {
                       this.recognitionState$.write(GestureRecognitionState.ENDED);
                     }
+
+                    // Doing the simple thing for now and setting AT_REST in up,
+                    // but it might be better on a delay to give time for clicks
+                    // to happen first.
+                    this.state$.write(State.AT_REST);
 
                     this.recognitionState$.write(GestureRecognitionState.POSSIBLE);
                   } else {
