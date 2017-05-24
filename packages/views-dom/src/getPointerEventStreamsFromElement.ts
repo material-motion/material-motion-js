@@ -17,6 +17,7 @@
 import {
   MotionObservable,
   PartialPointerEvent,
+  PointerEventStreams,
 } from 'material-motion';
 
 import {
@@ -26,14 +27,6 @@ import {
 import {
   getEventStreamFromElement,
 } from './getEventStreamFromElement';
-
-export type PointerEventStreams = {
-  down$: MotionObservable<PartialPointerEvent>,
-  move$: MotionObservable<PartialPointerEvent>,
-  up$: MotionObservable<PartialPointerEvent>,
-  click$: MotionObservable<MouseEvent>,
-  dragStart$: MotionObservable<DragEvent>,
-};
 
 const notPassive = {
   passive: false,

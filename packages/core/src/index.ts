@@ -18,7 +18,6 @@ export * from './types';
 export * from './typeGuards';
 export * from './observables';
 export * from './interactions';
-export * from './systems';
 
 export * from './MotionRuntime';
 export { default as MotionRuntime } from './MotionRuntime';

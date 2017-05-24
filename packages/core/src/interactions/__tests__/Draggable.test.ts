@@ -47,15 +47,12 @@ import {
 } from '../../observables/';
 
 import {
-  dragSystem,
-} from '../';
+  Draggable,
+} from '../Draggable';
 
-describe('dragSystem',
+describe('Draggable',
   () => {
-    let drag$;
-    let axis;
-    let state;
-    let recognitionThreshold;
+    let draggable;
     let downObserver;
     let moveObserver;
     let upObserver;
@@ -65,9 +62,6 @@ describe('dragSystem',
 
     beforeEach(
       () => {
-        axis = createProperty();
-        state = createProperty({ initialValue: GestureRecognitionState.POSSIBLE });
-        recognitionThreshold = createProperty({ initialValue: 16 });
         downObserver = createMockObserver();
         moveObserver = createMockObserver();
         upObserver = createMockObserver();
@@ -75,17 +69,14 @@ describe('dragSystem',
         dragStartObserver = createMockObserver();
         listener = stub();
 
-        drag$ = dragSystem({
+        draggable = new Draggable({
           down$: new MotionObservable(downObserver.connect),
           move$: new MotionObservable(moveObserver.connect),
           up$: new MotionObservable(upObserver.connect),
           click$: new MotionObservable(clickObserver.connect),
           dragStart$: new MotionObservable(dragStartObserver.connect),
-          recognitionThreshold: recognitionThreshold,
-          state: state,
-          axis: axis,
         });
-        drag$.subscribe(listener);
+        draggable.value$.subscribe(listener);
       }
     );
 
@@ -130,7 +121,7 @@ describe('dragSystem',
 
     it(`should suppress clicks if recognitionThreshold has been crossed`,
       () => {
-        recognitionThreshold.write(15);
+        draggable.recognitionThreshold = 15;
 
         downObserver.next({
           type: 'pointerdown',
@@ -164,7 +155,7 @@ describe('dragSystem',
 
     it(`should not suppress clicks if recognitionThreshold hasn't been crossed`,
       () => {
-        recognitionThreshold.write(50);
+        draggable.recognitionThreshold = 50;
 
         downObserver.next({
           type: 'pointerdown',
@@ -196,10 +187,10 @@ describe('dragSystem',
       }
     );
 
-    it(`should set state to BEGAN when the recognitionThreshold is crossed`);
-    it(`should set state to CHANGED on the move after BEGAN`);
-    it(`should set state to ENDED on up, if recognized`);
-    it(`should set state to POSSIBLE after ENDED`);
-    it(`should only write to state once per event, even with multiple observers`);
+    it(`should set recognitionState to BEGAN when the recognitionThreshold is crossed`);
+    it(`should set recognitionState to CHANGED on the move after BEGAN`);
+    it(`should set recognitionState to ENDED on up, if recognized`);
+    it(`should set recognitionState to POSSIBLE after ENDED`);
+    it(`should only write to recognitionState once per event, even with multiple observers`);
   }
 );

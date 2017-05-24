@@ -21,13 +21,16 @@ import {
 } from '../observables';
 
 import {
-  dragSystem,
-} from '../systems/dragSystem';
+  isPointerEvent,
+} from '../typeGuards';
 
 import {
-  DragSystem,
+  ObservableWithMotionOperators,
+  Observer,
   PartialPointerEvent,
   Point2D,
+  PointerEventStreams,
+  Subscription,
 } from '../types';
 
 import {
@@ -38,48 +41,155 @@ import {
   GestureRecognitionState,
 } from '../GestureRecognitionState';
 
-export type DraggableArgs = {
-  down$: MotionObservable<PartialPointerEvent>,
-  move$: MotionObservable<PartialPointerEvent>,
-  up$: MotionObservable<PartialPointerEvent>,
-  click$: MotionObservable<MouseEvent>,
-  dragStart$: MotionObservable<DragEvent>,
-  axis?: string,
-  recognitionThreshold?: number,
-  system?: DragSystem,
-};
-
 export class Draggable {
-  state: MotionProperty<string> = createProperty<string>({ initialValue: GestureRecognitionState.POSSIBLE });
-  recognitionThreshold: MotionProperty<number> = createProperty<number>();
-  axis: MotionProperty<string> = createProperty<string>();
-  down$: MotionObservable<PartialPointerEvent>;
-  move$: MotionObservable<PartialPointerEvent>;
-  up$: MotionObservable<PartialPointerEvent>;
-  click$: MotionObservable<MouseEvent>;
-  dragStart$: MotionObservable<DragEvent>;
-  system: DragSystem;
+  // TODO: type this to be the values in the GestureRecognitionState enum
+  readonly recognitionState$: MotionProperty<string> = createProperty<string>({
+    initialValue: GestureRecognitionState.POSSIBLE,
+  });
+
+  get recognitionState(): string {
+    return this.recognitionState$.read();
+  }
+
+  readonly recognitionThreshold$: MotionProperty<number> = createProperty<number>({
+    initialValue: 16,
+  });
+
+  get recognitionThreshold(): number {
+    return this.recognitionThreshold$.read();
+  }
+
+  set recognitionThreshold(value: number) {
+    this.recognitionThreshold$.write(value);
+  }
+
+  // TODO: type this to be the values in the Axis enum
+  readonly axis$: MotionProperty<string> = createProperty<string>({
+    initialValue: Axis.ALL,
+  });
+
+  get axis(): string {
+    return this.axis$.read();
+  }
+
+  set axis(value: string) {
+    this.axis$.write(value);
+  }
+
+  readonly value$: ObservableWithMotionOperators<Point2D>;
 
   constructor({
     down$,
     move$,
     up$,
     click$,
-    dragStart$,
-    axis = Axis.ALL,
-    recognitionThreshold = 16,
-    system = dragSystem,
-  }: DraggableArgs) {
-    this.down$ = down$;
-    this.move$ = move$;
-    this.up$ = up$;
-    this.click$ = click$;
-    this.dragStart$ = dragStart$;
+    dragStart$
+  }: PointerEventStreams) {
+    this.value$ = new MotionObservable<Point2D>(
+      (observer: Observer<Point2D>) => {
+        let moveSubscription: Subscription | undefined;
 
-    this.axis.write(axis);
-    this.recognitionThreshold.write(recognitionThreshold);
+        // If we've recognized a drag, we'll prevent any children from receiving
+        // clicks.
+        let preventClicks: boolean = false;
 
-    this.system = system;
+        // HTML's OS-integrated drag-and-drop will interrupt a PointerEvent stream
+        // without dispatching pointercancel; this is the best way I've found to
+        // prevent that.
+        //
+        // See also https://github.com/w3c/pointerevents/issues/205
+        const dragStartSubscription: Subscription = dragStart$.subscribe(
+          (dragStartEvent: DragEvent) => {
+            dragStartEvent.preventDefault();
+          }
+        );
+
+        const clickSubscription: Subscription = click$.subscribe(
+          (clickEvent: MouseEvent) => {
+            if (preventClicks) {
+              clickEvent.preventDefault();
+              clickEvent.stopImmediatePropagation();
+            }
+          }
+        );
+
+        const downSubscription: Subscription = down$.subscribe(
+          (downEvent: PartialPointerEvent) => {
+            const currentAxis = this.axis$.read();
+            preventClicks = false;
+
+            // If we get a new down event while we're already listening for moves,
+            // ignore it.
+            if (!moveSubscription) {
+              if (isPointerEvent(downEvent)) {
+                // The `as Element` is a workaround for
+                // https://github.com/Microsoft/TypeScript/issues/299
+                (downEvent.target as Element).setPointerCapture(downEvent.pointerId);
+              }
+
+              moveSubscription = move$.merge(up$)._filter(
+                (nextEvent: PartialPointerEvent) => nextEvent.pointerId === downEvent.pointerId
+              ).subscribe(
+                (nextEvent: PartialPointerEvent) => {
+                  const atRest = nextEvent.type.includes('up');
+
+                  const translation = {
+                    x: currentAxis !== Axis.Y
+                      ? nextEvent.pageX - downEvent.pageX
+                      : 0,
+                    y: currentAxis !== Axis.X
+                      ? nextEvent.pageY - downEvent.pageY
+                      : 0,
+                  };
+
+                  switch (this.recognitionState$.read()) {
+                    case GestureRecognitionState.POSSIBLE:
+                      if (Math.sqrt(translation.x ** 2 + translation.y ** 2) > this.recognitionThreshold$.read()) {
+                        this.recognitionState$.write(GestureRecognitionState.BEGAN);
+                        preventClicks = true;
+                      }
+                      break;
+
+                    case GestureRecognitionState.BEGAN:
+                      this.recognitionState$.write(GestureRecognitionState.CHANGED);
+                      break;
+
+                    default:break;
+                  }
+
+                  if (atRest) {
+                    // This would be a takeWhile if we were using an Observable
+                    // implementation that supported completion.
+                    moveSubscription!.unsubscribe();
+                    moveSubscription = undefined;
+
+                    if (this.recognitionState$.read() === GestureRecognitionState.POSSIBLE) {
+                      this.recognitionState$.write(GestureRecognitionState.FAILED);
+                    } else {
+                      this.recognitionState$.write(GestureRecognitionState.ENDED);
+                    }
+
+                    this.recognitionState$.write(GestureRecognitionState.POSSIBLE);
+                  } else {
+                    observer.next(translation);
+                  }
+                }
+              );
+            }
+          }
+        );
+
+        return () => {
+          downSubscription.unsubscribe();
+          clickSubscription.unsubscribe();
+          dragStartSubscription.unsubscribe();
+
+          if (moveSubscription) {
+            moveSubscription.unsubscribe();
+          }
+        };
+      }
+    )._multicast();
   }
 }
 export default Draggable;
