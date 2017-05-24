@@ -187,6 +187,8 @@ describe('Draggable',
       }
     );
 
+    it(`should set state to ACTIVE when it receives a pointerdown`);
+    it(`should set state to AT_REST when it receives a pointerup`);
     it(`should set recognitionState to BEGAN when the recognitionThreshold is crossed`);
     it(`should set recognitionState to CHANGED on the move after BEGAN`);
     it(`should set recognitionState to ENDED on up, if recognized`);
