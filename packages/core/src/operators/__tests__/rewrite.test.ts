@@ -39,18 +39,21 @@ import {
 
 import {
   MotionObservable,
+  MemorylessMotionSubject,
 } from '../../observables/';
 
 describe('motionObservable.rewrite',
   () => {
     let stream;
     let mockObserver;
+    let innerSubject;
     let listener;
 
     beforeEach(
       () => {
         mockObserver = createMockObserver();
         stream = new MotionObservable(mockObserver.connect);
+        innerSubject = new MemorylessMotionSubject();
         listener = stub();
       }
     );
@@ -62,6 +65,30 @@ describe('motionObservable.rewrite',
         mockObserver.next('b');
 
         expect(listener).to.have.been.calledWith(2);
+      }
+    );
+
+    it('should cast incoming values to strings if the dict is an object literal',
+      () => {
+        stream.rewrite({ true: 1, false: 2 }).subscribe(listener);
+
+        mockObserver.next(false);
+
+        expect(listener).to.have.been.calledWith(2);
+      }
+    );
+
+    it('should dispatch the matching value from an object literal of streams',
+      () => {
+        stream.rewrite({ a: innerSubject, b: 1 }).subscribe(listener);
+
+        innerSubject.next('q');
+
+        mockObserver.next('a');
+
+        innerSubject.next('z');
+
+        expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith('q').and.to.have.been.calledWith('z');
       }
     );
 
@@ -79,6 +106,26 @@ describe('motionObservable.rewrite',
         mockObserver.next(b);
 
         expect(listener).to.have.been.calledWith('b');
+      }
+    );
+
+    it('should dispatch the matching value from a Map of streams',
+      () => {
+        const dict = new Map();
+        const a = Symbol();
+        const b = innerSubject;
+
+        dict.set(a, 'a');
+        dict.set(b, innerSubject);
+
+        stream.rewrite(dict).subscribe(listener);
+
+        mockObserver.next(b);
+
+        innerSubject.next(1);
+        innerSubject.next(2);
+
+        expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(1).and.to.have.been.calledWith(2);
       }
     );
   }
