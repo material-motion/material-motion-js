@@ -37,6 +37,13 @@ export function isObservable(value: any): value is Observable<any> {
 }
 
 /**
+ * Checks if an object is a `Map` using `instanceof`.
+ */
+export function isMap(value: any): value is Map<any, any> {
+  return value instanceof Map;
+}
+
+/**
  * Checks if an object has numeric values for both `x` and `y`.
  */
 export function isPoint2D(value: any): value is Point2D {

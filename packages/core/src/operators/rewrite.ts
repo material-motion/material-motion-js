@@ -15,25 +15,44 @@
  */
 
 import {
+  isMap,
+} from '../typeGuards';
+
+import {
   Constructor,
   Dict,
-  MotionMappable,
+  MotionReactiveNextOperable,
+  NextChannel,
+  Observable,
   ObservableWithMotionOperators,
 } from '../types';
 
 export interface MotionRewritable<T> {
-  rewrite<U>(dict: Dict<U>): ObservableWithMotionOperators<U>;
-  rewrite<U>(dict: Map<T, U>): ObservableWithMotionOperators<U>;
+  rewrite<U, R extends U | Observable<U>>(dict: Dict<R> | Map<T, R>): ObservableWithMotionOperators<U>;
 }
 
-export function withRewrite<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionRewritable<T>> {
+export function withRewrite<T, S extends Constructor<MotionReactiveNextOperable<T>>>(superclass: S): S & Constructor<MotionRewritable<T>> {
   return class extends superclass implements MotionRewritable<T> {
-    rewrite<U>(dict: Dict<U>): ObservableWithMotionOperators<U>;
-    rewrite<U>(dict: Map<T, U>): ObservableWithMotionOperators<U> {
-      return this._map(
-        (key: T) => typeof dict.get === 'function'
-          ? dict.get(key)
-          : dict[key]
+    rewrite<U, R extends U | Observable<U>>(dict: Dict<R> | Map<T, R>): ObservableWithMotionOperators<U> {
+      let keys: Iterable<string> | Iterable<T>;
+      let values: Iterable<U | Observable<U>>;
+
+      if (isMap(dict)) {
+        keys = dict.keys();
+        values = dict.values();
+      } else {
+        keys = Object.keys(dict);
+        values = Object.values(dict);
+      }
+
+      const keyArray = Array.from(keys);
+
+      return this._reactiveNextOperator(
+        (dispatch: NextChannel<U>, key: string | T, ...valueArray: Array<U>) => {
+          const index = keyArray.indexOf(key);
+          dispatch(valueArray[index]);
+        },
+        ...values
       );
     }
   };
