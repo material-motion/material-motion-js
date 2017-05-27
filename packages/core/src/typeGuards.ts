@@ -29,6 +29,13 @@ export function isBoolean(value: any): value is boolean {
 }
 
 /**
+ * Checks if an object is a Number.
+ */
+export function isNumber(value: any): value is number {
+  return typeof value === 'number';
+}
+
+/**
  * Checks if an object is an observable by checking if it returns itself from
  * [Symbol.observable]()
  */
