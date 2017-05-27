@@ -17,6 +17,9 @@
 export * from './convertTouchEventsToPointerEvents';
 export { default as convertTouchEventsToPointerEvents } from './convertTouchEventsToPointerEvents';
 
+export * from './createCustomPropertyObserver';
+export { default as createCustomPropertyObserver } from './createCustomPropertyObserver';
+
 export * from './createMotionElementFromDOMNode';
 export { default as createMotionElementFromDOMNode } from './createMotionElementFromDOMNode';
 
