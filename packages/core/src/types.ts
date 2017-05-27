@@ -88,18 +88,6 @@ export interface Subject<T> extends Observable<T> {
   next(value: T): void;
 }
 
-export function isObservable(value:any): value is Observable<any> {
-  // According to the spec, all Observables should have a `$$observable` method
-  // that returns themselves:
-  //
-  // https://github.com/tc39/proposal-observable#observable
-  //
-  // A simpler (but less precise) test would just check for the existance of a
-  // `subscribe` method and presume that anything that had one was an
-  // Observable.
-  return value[$$observable] !== undefined && value[$$observable]() === value;
-}
-
 export type NextOperation<T, U> = (value: T, nextChannel: NextChannel<U>) => void;
 export type ReactiveNextOperation<T, U> = (nextChannel: NextChannel<U>, ...values: Array<any>) => void;
 
