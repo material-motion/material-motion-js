@@ -21,7 +21,6 @@ import {
   GestureRecognitionState,
   MotionObservable,
   Subscription,
-  dragSystem,
 } from 'material-motion';
 
 import {
@@ -32,7 +31,7 @@ export class QuickiePointerEventTest extends React.Component {
   state = {
     x: 0,
     y: 0,
-    state: GestureRecognitionState.POSSIBLE,
+    recognitionState: GestureRecognitionState.POSSIBLE,
     velocity: {
       x: 0,
       y: 0,
@@ -47,23 +46,22 @@ export class QuickiePointerEventTest extends React.Component {
         getPointerEventStreamsFromElement(element)
       );
 
-      const drag$ = dragSystem(draggable);
-      const velocity$ = drag$.velocity(
-        draggable.state._filter(
-          state => state === GestureRecognitionState.RECOGNIZED
+      const velocity$ = draggable.value$.velocity(
+        draggable.recognitionState$._filter(
+          recognitionState => recognitionState === GestureRecognitionState.RECOGNIZED
         )
       );
 
       subscriptions = [
-        drag$.subscribe(this.setState.bind(this)),
+        draggable.value$.subscribe(this.setState.bind(this)),
         velocity$.subscribe(
           (velocity: { x: number, y: number }) => this.setState({ velocity })
         ),
-        draggable.state.subscribe(
-          (state: GestureRecognitionState) => {
-            this.setState({ state });
+        draggable.recognitionState$.subscribe(
+          (recognitionState: string) => {
+            this.setState({ recognitionState });
 
-            if (state === GestureRecognitionState.RECOGNIZED) {
+            if (recognitionState === GestureRecognitionState.RECOGNIZED) {
               this.setState({
                 x: 0,
                 y: 0,
@@ -83,7 +81,7 @@ export class QuickiePointerEventTest extends React.Component {
       x,
       y,
       velocity,
-      state,
+      recognitionState,
     } = this.state;
 
     return (
@@ -116,7 +114,7 @@ export class QuickiePointerEventTest extends React.Component {
               State
             </td>
             <td>
-              { state }
+              { recognitionState }
             </td>
           </tr>
           <tr>
