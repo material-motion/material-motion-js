@@ -35,6 +35,7 @@ const notPassive = {
 
 export function getPointerEventStreamsFromElement(element: Element): PointerEventStreams {
   const commonStreams = {
+    click$: getEventStreamFromElement('click', element),
     // These are streams that a gesture recognizer may want to interrupt when it
     // recognizes a gesture is happening.
     capturedClick$: getEventStreamFromElement('click', element, notPassive),
