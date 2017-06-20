@@ -95,8 +95,8 @@ export class Draggable {
     down$,
     move$,
     up$,
-    click$,
-    dragStart$
+    capturedClick$,
+    capturedDragStart$
   }: PointerEventStreams) {
     this.value$ = new MotionObservable<Point2D>(
       (observer: Observer<Point2D>) => {
@@ -111,13 +111,13 @@ export class Draggable {
         // prevent that.
         //
         // See also https://github.com/w3c/pointerevents/issues/205
-        const dragStartSubscription: Subscription = dragStart$.subscribe(
+        const capturedDragStartSubscription: Subscription = capturedDragStart$.subscribe(
           (dragStartEvent: DragEvent) => {
             dragStartEvent.preventDefault();
           }
         );
 
-        const clickSubscription: Subscription = click$.subscribe(
+        const capturedClickSubscription: Subscription = capturedClick$.subscribe(
           (clickEvent: MouseEvent) => {
             if (preventClicks) {
               clickEvent.preventDefault();
@@ -201,8 +201,8 @@ export class Draggable {
 
         return () => {
           downSubscription.unsubscribe();
-          clickSubscription.unsubscribe();
-          dragStartSubscription.unsubscribe();
+          capturedClickSubscription.unsubscribe();
+          capturedDragStartSubscription.unsubscribe();
 
           if (moveSubscription) {
             moveSubscription.unsubscribe();

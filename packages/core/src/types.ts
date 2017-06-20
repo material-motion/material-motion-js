@@ -116,8 +116,8 @@ export type PointerEventStreams = {
   down$: MotionObservable<PartialPointerEvent>,
   move$: MotionObservable<PartialPointerEvent>,
   up$: MotionObservable<PartialPointerEvent>,
-  click$: MotionObservable<MouseEvent>,
-  dragStart$: MotionObservable<DragEvent>,
+  capturedClick$: MotionObservable<MouseEvent>,
+  capturedDragStart$: MotionObservable<DragEvent>,
 };
 
 export type Read<T> = () => T;

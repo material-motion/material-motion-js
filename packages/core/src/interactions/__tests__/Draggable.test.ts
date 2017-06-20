@@ -56,8 +56,8 @@ describe('Draggable',
     let downObserver;
     let moveObserver;
     let upObserver;
-    let clickObserver;
-    let dragStartObserver;
+    let capturedClickObserver;
+    let capturedDragStartObserver;
     let listener;
 
     beforeEach(
@@ -65,16 +65,16 @@ describe('Draggable',
         downObserver = createMockObserver();
         moveObserver = createMockObserver();
         upObserver = createMockObserver();
-        clickObserver = createMockObserver();
-        dragStartObserver = createMockObserver();
+        capturedClickObserver = createMockObserver();
+        capturedDragStartObserver = createMockObserver();
         listener = stub();
 
         draggable = new Draggable({
           down$: new MotionObservable(downObserver.connect),
           move$: new MotionObservable(moveObserver.connect),
           up$: new MotionObservable(upObserver.connect),
-          click$: new MotionObservable(clickObserver.connect),
-          dragStart$: new MotionObservable(dragStartObserver.connect),
+          capturedClick$: new MotionObservable(capturedClickObserver.connect),
+          capturedDragStart$: new MotionObservable(capturedDragStartObserver.connect),
         });
         draggable.value$.subscribe(listener);
       }
@@ -107,19 +107,19 @@ describe('Draggable',
       }
     );
 
-    it(`should suppress dragStart`,
+    it(`should suppress captured dragStart`,
       () => {
-        const dragStartEvent = {
+        const capturedDragStartEvent = {
           preventDefault: stub(),
         };
 
-        dragStartObserver.next(dragStartEvent);
+        capturedDragStartObserver.next(capturedDragStartEvent);
 
-        expect(dragStartEvent.preventDefault).to.have.been.calledOnce;
+        expect(capturedDragStartEvent.preventDefault).to.have.been.calledOnce;
       }
     );
 
-    it(`should suppress clicks if recognitionThreshold has been crossed`,
+    it(`should suppress captured clicks if recognitionThreshold has been crossed`,
       () => {
         draggable.recognitionThreshold = 15;
 
@@ -141,19 +141,19 @@ describe('Draggable',
           pageY: 0,
         });
 
-        const clickEvent = {
+        const capturedClickEvent = {
           preventDefault: stub(),
           stopImmediatePropagation: stub(),
         };
 
-        clickObserver.next(clickEvent);
+        capturedClickObserver.next(capturedClickEvent);
 
-        expect(clickEvent.preventDefault).to.have.been.calledOnce;
-        expect(clickEvent.stopImmediatePropagation).to.have.been.calledOnce;
+        expect(capturedClickEvent.preventDefault).to.have.been.calledOnce;
+        expect(capturedClickEvent.stopImmediatePropagation).to.have.been.calledOnce;
       }
     );
 
-    it(`should not suppress clicks if recognitionThreshold hasn't been crossed`,
+    it(`should not suppress captured clicks if recognitionThreshold hasn't been crossed`,
       () => {
         draggable.recognitionThreshold = 50;
 
@@ -175,15 +175,15 @@ describe('Draggable',
           pageY: 0,
         });
 
-        const clickEvent = {
+        const capturedClickEvent = {
           preventDefault: stub(),
           stopImmediatePropagation: stub(),
         };
 
-        clickObserver.next(clickEvent);
+        capturedClickObserver.next(capturedClickEvent);
 
-        expect(clickEvent.preventDefault).not.to.have.been.called;
-        expect(clickEvent.stopImmediatePropagation).not.to.have.been.called;
+        expect(capturedClickEvent.preventDefault).not.to.have.been.called;
+        expect(capturedClickEvent.stopImmediatePropagation).not.to.have.been.called;
       }
     );
 
