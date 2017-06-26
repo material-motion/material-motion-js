@@ -65,6 +65,11 @@ import {
 } from './merge';
 
 import {
+  MotionNormalizable,
+  withNormalizedBy,
+} from './normalizedBy';
+
+import {
   MotionPluckable,
   withPluck,
 } from './pluck';
@@ -130,14 +135,14 @@ import {
 } from './velocity';
 
 export interface ObservableWithMotionOperators<T> extends
-  ObservableWithFoundationalMotionOperators<T>, MotionPluckable<T, string>,
-  MotionLoggable<T>, MotionDeduplicable<T>, MotionInvertible<T>,
-  MotionMergeable<T>, MotionRewritable<T>, MotionRewriteToable,
-  MotionRewriteRangeable, MotionThresholdable, MotionThresholdRangeable,
-  MotionUpperBoundable, MotionLowerBoundable, MotionOffsetable<T>,
-  MotionScalable, MotionDelayable<T>, MotionMeasurable<T>, MotionSeedable<T>,
-  MotionIgnorable<T>, MotionWindowable<T>, MotionTimestampable<T>,
-  MotionVelocityMeasurable<T> {}
+  ObservableWithFoundationalMotionOperators<T>, MotionDeduplicable<T>,
+  MotionDelayable<T>, MotionIgnorable<T>, MotionInvertible<T>,
+  MotionLoggable<T>, MotionLowerBoundable, MotionMeasurable<T>,
+  MotionMergeable<T>, MotionNormalizable, MotionOffsetable<T>,
+  MotionPluckable<T, string>, MotionRewritable<T>, MotionRewriteRangeable,
+  MotionRewriteToable, MotionScalable, MotionSeedable<T>,
+  MotionThresholdRangeable, MotionThresholdable, MotionTimestampable<T>,
+  MotionUpperBoundable, MotionVelocityMeasurable<T>, MotionWindowable<T> {}
 
 export function withMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
     & Constructor<ObservableWithMotionOperators<T>> {
@@ -147,11 +152,11 @@ export function withMotionOperators<T, S extends Constructor<Observable<T>>>(sup
   // incompatible for some combinations);
   return withThresholdRange(withThreshold(withRewriteRange(withRewriteTo(withRewrite(
     withMerge(withInverted(withDedupe(withLog(withUpperBound(withLowerBound(
-      withOffsetBy(withScaledBy(withDelayBy(withDistanceFrom(withStartWith(
-        withIgnoreUntil(withVelocity(withSlidingWindow(withTimestamp(
-          withPluck(
+      withOffsetBy(withScaledBy(withNormalizedBy(withDelayBy(withDistanceFrom(
+        withStartWith(withIgnoreUntil(withVelocity(withSlidingWindow(
+          withTimestamp(withPluck(
             withFoundationalMotionOperators<T, S>(superclass)
-          )
+          ))
         ))))
       )))))
     )))))))
@@ -167,6 +172,7 @@ export * from './inverted';
 export * from './log';
 export * from './lowerBound';
 export * from './merge';
+export * from './normalizedBy';
 export * from './offsetBy';
 export * from './rewrite';
 export * from './rewriteRange';
