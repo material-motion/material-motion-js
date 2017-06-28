@@ -19,6 +19,10 @@ import {
 } from '../observables/MotionProperty';
 
 import {
+  State,
+} from '../State';
+
+import {
   ObservableWithMotionOperators,
 } from '../types';
 
@@ -57,8 +61,8 @@ export interface NumericSpring {
   readonly enabled$: MotionProperty<boolean>;
   enabled: boolean;
 
-  readonly state$: MotionProperty<string>;
-  readonly state: string;
+  readonly state$: MotionProperty<State>;
+  readonly state: State;
 
   value$: ObservableWithMotionOperators<number>;
 }

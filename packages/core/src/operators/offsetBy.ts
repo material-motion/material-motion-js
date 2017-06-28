@@ -29,7 +29,7 @@ export interface MotionOffsetable<T> {
   offsetBy(offset$: T | Observable<T>): ObservableWithMotionOperators<T>;
 }
 
-export function withOffsetBy<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionOffsetable> {
+export function withOffsetBy<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionOffsetable<T>> {
   return class extends superclass implements MotionOffsetable<T> {
     /**
      * Adds the offset to the incoming value and dispatches the result.

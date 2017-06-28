@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@types/sinon@^1.16.34":
+  version "1.16.36"
+  resolved "https://registry.yarnpkg.com/@types/sinon/-/sinon-1.16.36.tgz#74bb6ed7928597c1b3fb1b009005e94dc6eae357"
+
 mock-raf@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/mock-raf/-/mock-raf-1.0.0.tgz#a288145178893e2040b230f2182fee2049f16f25"
@@ -11,3 +15,7 @@ mock-raf@^1.0.0:
 object-assign@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-3.0.0.tgz#9bedd5ca0897949bca47e7ff408062d549f587f2"
+
+tslib@^1.2.0:
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.7.1.tgz#bc8004164691923a79fe8378bbeb3da2017538ec"
