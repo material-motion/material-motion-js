@@ -14,9 +14,9 @@
  *  under the License.
  */
 
-export const Axis = {
-  X: 'x',
-  Y: 'y',
-  ALL: 'all',
+export enum Axis {
+  X = 'x',
+  Y = 'y',
+  ALL = 'all',
 };
 export default Axis;

@@ -46,21 +46,19 @@ import {
 } from '../GestureRecognitionState';
 
 export class Draggable {
-  // TODO: type this to be the values in the State enum
-  readonly state$: MotionProperty<string> = createProperty<string>({
+  readonly state$: MotionProperty<State> = createProperty<State>({
     initialValue: State.AT_REST,
   });
 
-  get state(): string {
+  get state(): State {
     return this.state$.read();
   }
 
-  // TODO: type this to be the values in the GestureRecognitionState enum
-  readonly recognitionState$: MotionProperty<string> = createProperty<string>({
+  readonly recognitionState$: MotionProperty<GestureRecognitionState> = createProperty<GestureRecognitionState>({
     initialValue: GestureRecognitionState.POSSIBLE,
   });
 
-  get recognitionState(): string {
+  get recognitionState(): GestureRecognitionState {
     return this.recognitionState$.read();
   }
 
@@ -76,16 +74,15 @@ export class Draggable {
     this.recognitionThreshold$.write(value);
   }
 
-  // TODO: type this to be the values in the Axis enum
-  readonly axis$: MotionProperty<string> = createProperty<string>({
+  readonly axis$: MotionProperty<Axis> = createProperty<Axis>({
     initialValue: Axis.ALL,
   });
 
-  get axis(): string {
+  get axis(): Axis {
     return this.axis$.read();
   }
 
-  set axis(value: string) {
+  set axis(value: Axis) {
     this.axis$.write(value);
   }
 
