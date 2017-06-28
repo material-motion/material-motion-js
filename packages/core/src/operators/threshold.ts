@@ -33,14 +33,13 @@ export function withThreshold<T, S extends Constructor<MotionMappable<T>>>(super
     threshold(limit: number): ObservableWithMotionOperators<ThresholdSide> {
       return (this as any as ObservableWithMotionOperators<number>)._map(
         (value: number) => {
-          if (value === limit) {
-            return ThresholdSide.WITHIN;
-
-          } else if (value < limit) {
+          if (value < limit) {
             return ThresholdSide.BELOW;
 
           } else if (value > limit) {
             return ThresholdSide.ABOVE;
+          } else {
+            return ThresholdSide.WITHIN;
           }
         }
       );

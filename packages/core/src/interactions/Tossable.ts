@@ -47,12 +47,11 @@ export type TossableArgs = {
 };
 
 export class Tossable {
-  // TODO: type this to be the values in the State enum
-  readonly state$: MotionProperty<string> = createProperty<string>({
+  readonly state$: MotionProperty<State> = createProperty<State>({
     initialValue: State.AT_REST,
   });
 
-  get state(): string {
+  get state(): State {
     return this.state$.read();
   }
 

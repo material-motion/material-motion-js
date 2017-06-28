@@ -18,6 +18,7 @@ import $$observable from 'symbol-observable';
 
 import {
   Observable,
+  Observer,
   Point2D,
 } from './types';
 
@@ -55,6 +56,14 @@ export function isMap(value: any): value is Map<any, any> {
  */
 export function isPoint2D(value: any): value is Point2D {
   return typeof value.x === 'number' && typeof value.y === 'number';
+}
+
+/**
+ * Checks if a value is an `Observer` by checking if the value has a `next`
+ * method.
+ */
+export function isObserver<T = any>(value: any): value is Observer<T> {
+  return typeof value.next === 'function';
 }
 
 /**
