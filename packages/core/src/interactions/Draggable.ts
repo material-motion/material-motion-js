@@ -19,6 +19,7 @@ import {
 } from '../State';
 
 import {
+  MemorylessMotionSubject,
   MotionObservable,
   MotionProperty,
   createProperty,
@@ -78,6 +79,12 @@ export class Draggable {
     initialValue: Axis.ALL,
   });
 
+  readonly cancellation$: MemorylessMotionSubject<any> = new MemorylessMotionSubject();
+
+  cancel(): void {
+    this.cancellation$.next(undefined);
+  }
+
   get axis(): Axis {
     return this.axis$.read();
   }
@@ -98,6 +105,7 @@ export class Draggable {
     this.value$ = new MotionObservable<Point2D>(
       (observer: Observer<Point2D>) => {
         let moveSubscription: Subscription | undefined;
+        let cancellationSubscription: Subscription | undefined;
 
         // If we've recognized a drag, we'll prevent any children from receiving
         // clicks.
@@ -128,11 +136,12 @@ export class Draggable {
             this.state$.write(State.ACTIVE);
 
             const currentAxis = this.axis$.read();
-            preventClicks = false;
 
-            // If we get a new down event while we're already listening for moves,
-            // ignore it.
+            // If we get a new down event while we're already listening for
+            // moves, ignore it.
             if (!moveSubscription) {
+              preventClicks = false;
+
               if (isPointerEvent(downEvent)) {
                 // The `as Element` is a workaround for
                 // https://github.com/Microsoft/TypeScript/issues/299
@@ -196,6 +205,19 @@ export class Draggable {
           }
         );
 
+        cancellationSubscription = this.cancellation$.subscribe(
+          () => {
+            if (moveSubscription) {
+              moveSubscription!.unsubscribe();
+              moveSubscription = undefined;
+
+              this.recognitionState$.write(GestureRecognitionState.CANCELLED);
+              this.state$.write(State.AT_REST);
+              this.recognitionState$.write(GestureRecognitionState.POSSIBLE);
+            }
+          }
+        );
+
         return () => {
           downSubscription.unsubscribe();
           capturedClickSubscription.unsubscribe();
@@ -203,6 +225,10 @@ export class Draggable {
 
           if (moveSubscription) {
             moveSubscription.unsubscribe();
+          }
+
+          if (cancellationSubscription) {
+            cancellationSubscription.unsubscribe();
           }
         };
       }
