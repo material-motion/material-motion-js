@@ -20,6 +20,10 @@ import {
 } from 'indefinite-observable';
 
 import {
+  isObserver,
+} from '../typeGuards';
+
+import {
   MemorylessIndefiniteSubject,
 } from './MemorylessIndefiniteSubject';
 
@@ -59,7 +63,7 @@ export class IndefiniteSubject<T> extends MemorylessIndefiniteSubject<T> {
     const subscription = super.subscribe(observerOrNext);
 
     if (this._hasStarted) {
-      observerOrNext.next
+      isObserver(observerOrNext)
         ? observerOrNext.next(this._lastValue)
         : observerOrNext(this._lastValue);
     }

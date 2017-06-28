@@ -14,9 +14,9 @@
  *  under the License.
  */
 
-export const ThresholdSide = {
-  ABOVE: 'above',
-  WITHIN: 'within',
-  BELOW: 'below',
+export enum ThresholdSide {
+  ABOVE = 'above',
+  WITHIN = 'within',
+  BELOW = 'below',
 };
 export default ThresholdSide;

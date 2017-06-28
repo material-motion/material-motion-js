@@ -17,6 +17,7 @@
 import {
   Constructor,
   MotionNextOperable,
+  NextChannel,
   Observable,
   ObservableWithMotionOperators,
   Observer,

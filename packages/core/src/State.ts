@@ -14,8 +14,8 @@
  *  under the License.
  */
 
-export const State = {
-  AT_REST: 'at_rest',
-  ACTIVE: 'active',
+export enum State {
+  AT_REST = 'at_rest',
+  ACTIVE = 'active',
 };
 export default State;
