@@ -79,18 +79,28 @@ export class Draggable {
     initialValue: Axis.ALL,
   });
 
-  readonly cancellation$: MemorylessMotionSubject<any> = new MemorylessMotionSubject();
-
-  cancel(): void {
-    this.cancellation$.next(undefined);
-  }
-
   get axis(): Axis {
     return this.axis$.read();
   }
 
   set axis(value: Axis) {
     this.axis$.write(value);
+  }
+
+  readonly cancellation$: MemorylessMotionSubject<any> = new MemorylessMotionSubject();
+
+  cancel(): void {
+    this.cancellation$.next(undefined);
+  }
+
+  readonly enabled$: MemorylessMotionSubject<boolean> = new MemorylessMotionSubject();
+
+  enable(): void {
+    this.enabled$.next(true);
+  }
+
+  disable(): void {
+    this.enabled$.next(false);
   }
 
   readonly value$: ObservableWithMotionOperators<Point2D>;
@@ -104,8 +114,10 @@ export class Draggable {
   }: PointerEventStreams) {
     this.value$ = new MotionObservable<Point2D>(
       (observer: Observer<Point2D>) => {
+        let downSubscription: Subscription | undefined;
         let moveSubscription: Subscription | undefined;
         let cancellationSubscription: Subscription | undefined;
+        let enabledSubscription: Subscription | undefined;
 
         // If we've recognized a drag, we'll prevent any children from receiving
         // clicks.
@@ -131,84 +143,105 @@ export class Draggable {
           }
         );
 
-        const downSubscription: Subscription = down$.subscribe(
-          (downEvent: PartialPointerEvent) => {
-            this.state$.write(State.ACTIVE);
+        const subscribeToDown = () => {
+          return down$.subscribe(
+            (downEvent: PartialPointerEvent) => {
+              this.state$.write(State.ACTIVE);
 
-            const currentAxis = this.axis$.read();
+              const currentAxis = this.axis$.read();
 
-            // If we get a new down event while we're already listening for
-            // moves, ignore it.
-            if (!moveSubscription) {
-              preventClicks = false;
+              // If we get a new down event while we're already listening for
+              // moves, ignore it.
+              if (!moveSubscription) {
+                preventClicks = false;
 
-              if (isPointerEvent(downEvent)) {
-                // The `as Element` is a workaround for
-                // https://github.com/Microsoft/TypeScript/issues/299
-                (downEvent.target as Element).setPointerCapture(downEvent.pointerId);
-              }
+                if (isPointerEvent(downEvent)) {
+                  // The `as Element` is a workaround for
+                  // https://github.com/Microsoft/TypeScript/issues/299
+                  (downEvent.target as Element).setPointerCapture(downEvent.pointerId);
+                }
 
-              moveSubscription = move$.merge(up$)._filter(
-                (nextEvent: PartialPointerEvent) => nextEvent.pointerId === downEvent.pointerId
-              ).subscribe(
-                (nextEvent: PartialPointerEvent) => {
-                  const atRest = nextEvent.type.includes('up');
+                moveSubscription = move$.merge(up$)._filter(
+                  (nextEvent: PartialPointerEvent) => nextEvent.pointerId === downEvent.pointerId
+                ).subscribe(
+                  (nextEvent: PartialPointerEvent) => {
+                    const atRest = nextEvent.type.includes('up');
 
-                  const translation = {
-                    x: currentAxis !== Axis.Y
-                      ? nextEvent.pageX - downEvent.pageX
-                      : 0,
-                    y: currentAxis !== Axis.X
-                      ? nextEvent.pageY - downEvent.pageY
-                      : 0,
-                  };
+                    const translation = {
+                      x: currentAxis !== Axis.Y
+                        ? nextEvent.pageX - downEvent.pageX
+                        : 0,
+                      y: currentAxis !== Axis.X
+                        ? nextEvent.pageY - downEvent.pageY
+                        : 0,
+                    };
 
-                  switch (this.recognitionState$.read()) {
-                    case GestureRecognitionState.POSSIBLE:
-                      if (Math.sqrt(translation.x ** 2 + translation.y ** 2) > this.recognitionThreshold$.read()) {
-                        this.recognitionState$.write(GestureRecognitionState.BEGAN);
-                        preventClicks = true;
-                      }
-                      break;
+                    switch (this.recognitionState$.read()) {
+                      case GestureRecognitionState.POSSIBLE:
+                        if (Math.sqrt(translation.x ** 2 + translation.y ** 2) > this.recognitionThreshold$.read()) {
+                          this.recognitionState$.write(GestureRecognitionState.BEGAN);
+                          preventClicks = true;
+                        }
+                        break;
 
-                    case GestureRecognitionState.BEGAN:
-                      this.recognitionState$.write(GestureRecognitionState.CHANGED);
-                      break;
+                      case GestureRecognitionState.BEGAN:
+                        this.recognitionState$.write(GestureRecognitionState.CHANGED);
+                        break;
 
-                    default:break;
-                  }
-
-                  if (atRest) {
-                    // This would be a takeWhile if we were using an Observable
-                    // implementation that supported completion.
-                    moveSubscription!.unsubscribe();
-                    moveSubscription = undefined;
-
-                    if (this.recognitionState$.read() === GestureRecognitionState.POSSIBLE) {
-                      this.recognitionState$.write(GestureRecognitionState.FAILED);
-                    } else {
-                      this.recognitionState$.write(GestureRecognitionState.ENDED);
+                      default:break;
                     }
 
-                    // Doing the simple thing for now and setting AT_REST in up,
-                    // but it might be better on a delay to give time for clicks
-                    // to happen first.
-                    this.state$.write(State.AT_REST);
+                    if (atRest) {
+                      // This would be a takeWhile if we were using an Observable
+                      // implementation that supported completion.
+                      moveSubscription!.unsubscribe();
+                      moveSubscription = undefined;
 
-                    this.recognitionState$.write(GestureRecognitionState.POSSIBLE);
-                  } else {
-                    observer.next(translation);
+                      preventClicks = false;
+
+                      if (this.recognitionState$.read() === GestureRecognitionState.POSSIBLE) {
+                        this.recognitionState$.write(GestureRecognitionState.FAILED);
+                      } else {
+                        this.recognitionState$.write(GestureRecognitionState.ENDED);
+                      }
+
+                      // Doing the simple thing for now and setting AT_REST in up,
+                      // but it might be better on a delay to give time for clicks
+                      // to happen first.
+                      this.state$.write(State.AT_REST);
+
+                      this.recognitionState$.write(GestureRecognitionState.POSSIBLE);
+                    } else {
+                      observer.next(translation);
+                    }
                   }
-                }
-              );
+                );
+              }
+            }
+          );
+        };
+        downSubscription = subscribeToDown();
+
+        enabledSubscription = this.enabled$.subscribe(
+          (enabled) => {
+            if (enabled && !downSubscription) {
+              downSubscription = subscribeToDown();
+
+            } else if (!enabled && downSubscription) {
+              downSubscription.unsubscribe();
+              downSubscription = undefined;
+              preventClicks = false;
+              // moveSubscription handled by cancellation flow
             }
           }
         );
 
-        cancellationSubscription = this.cancellation$.subscribe(
+        cancellationSubscription = this.cancellation$.merge(
+          this.enabled$._filter(value => value)
+        ).subscribe(
           () => {
             if (moveSubscription) {
-              moveSubscription!.unsubscribe();
+              moveSubscription.unsubscribe();
               moveSubscription = undefined;
 
               this.recognitionState$.write(GestureRecognitionState.CANCELLED);
@@ -229,6 +262,10 @@ export class Draggable {
 
           if (cancellationSubscription) {
             cancellationSubscription.unsubscribe();
+          }
+
+          if (enabledSubscription) {
+            enabledSubscription.unsubscribe();
           }
         };
       }
