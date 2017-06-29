@@ -194,5 +194,8 @@ describe('Draggable',
     it(`should set recognitionState to ENDED on up, if recognized`);
     it(`should set recognitionState to POSSIBLE after ENDED`);
     it(`should only write to recognitionState once per event, even with multiple observers`);
+    it(`should stop listening for moves and dispatch CANCELLED when cancellation$ receives an event`);
+    it(`should ignore events when disabled`);
+    it(`should dispatch CANCELLED when disabled during an recognition`);
   }
 );
