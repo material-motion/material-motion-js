@@ -63,7 +63,7 @@ export class Tossable {
     const dragAtRest$ = draggable.state$.rewrite({
       [State.AT_REST]: true,
       [State.ACTIVE]: false,
-    });
+    }).dedupe();
 
     // Perhaps add isAnyOf and whenAnyOf operators…
     const dragActivePulse$ = dragAtRest$._filter(
