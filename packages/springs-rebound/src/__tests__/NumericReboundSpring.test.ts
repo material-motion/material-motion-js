@@ -130,5 +130,12 @@ describe('NumericReboundSpring',
         expect(tested).to.equal(true);
       }
     );
+
+    it(`uses the most recent destination if that's changed while disabled`);
+    it(`uses the cached destination if destination$ hasn't changed while disabled`);
+    it(`uses the most recent initialValue if that's changed while disabled`);
+    it(`uses the cached initialValue if initialValue$ hasn't changed while disabled`);
+    it(`uses the most recent initialVelocity if that's changed while disabled`);
+    it(`uses the cached initialVelocity if initialVelocity$ hasn't changed while disabled`);
   }
 );
