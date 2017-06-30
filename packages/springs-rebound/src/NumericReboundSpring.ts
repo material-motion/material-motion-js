@@ -133,6 +133,9 @@ export class NumericReboundSpring {
 
       let initialized = false;
 
+      let initialValueChangedWhileDisabled = false;
+      let initialVelocityChangedWhileDisabled = false;
+
       this.state$.write(State.AT_REST);
 
       spring.addListener({
@@ -170,9 +173,23 @@ export class NumericReboundSpring {
         this.threshold$.subscribe(spring.setRestSpeedThreshold.bind(spring)),
 
         // properties that initialize the spring
-        initialVelocityInPxPerSecond$.subscribe(spring.setVelocity.bind(spring)),
+        initialVelocityInPxPerSecond$.subscribe(
+          (initialVelocity: number) => {
+            if (this.enabled$.read()) {
+              spring.setVelocity(initialVelocity);
+            } else {
+              initialVelocityChangedWhileDisabled = true;
+            }
+          }
+        ),
         this.initialValue$.subscribe(
-          (initialValue: number) => spring.setCurrentValue(initialValue, true)
+          (initialValue: number) => {
+            if (this.enabled$.read()) {
+              spring.setCurrentValue(initialValue, true);
+            } else {
+              initialValueChangedWhileDisabled = true;
+            }
+          }
         ),
 
         // properties that can start/stop the spring
@@ -180,11 +197,33 @@ export class NumericReboundSpring {
           (enabled: boolean) => {
             if (initialized) {
               if (enabled) {
-                spring.setCurrentValue(this.initialValue$.read());
-                // initialVelocityInPxPerSecond$ isn't readable, so we have to
-                // scale by hand for now.
-                spring.setVelocity(1000 * this.initialVelocity$.read());
+                // For simple cases, the spring can manage its own state;
+                // however, we provide property APIs (like initialValue$) for
+                // situations where it should be managed externally.
+                //
+                // The ability to manage this state externally shouldn't require
+                // every author to do so; hence, we use dirty-checking to only
+                // initialize the spring's values if the author has used these
+                // features.
+                //
+                // There's probably a more elegant way to do this (queueing up
+                // changes as they come through and then applying the most
+                // recent one when enabled is set), but this is the simplest
+                // quick solution.
+                if (initialValueChangedWhileDisabled) {
+                  spring.setCurrentValue(this.initialValue$.read());
+                }
+
+                if (initialVelocityChangedWhileDisabled) {
+                  // initialVelocityInPxPerSecond$ isn't readable, so we have to
+                  // scale by hand for now.
+                  spring.setVelocity(1000 * this.initialVelocity$.read());
+                }
+
                 spring.setEndValue(this.destination$.read());
+
+                initialValueChangedWhileDisabled = false;
+                initialVelocityChangedWhileDisabled = false;
               } else if (!spring.isAtRest()) {
                 spring.setAtRest();
               }
