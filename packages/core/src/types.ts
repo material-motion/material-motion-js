@@ -43,6 +43,7 @@ export {
   MotionFlattenable,
   MotionIgnorable,
   MotionInvertible,
+  MotionIsAnyOfable,
   MotionLoggable,
   MotionLowerBoundable,
   MotionMappable,
