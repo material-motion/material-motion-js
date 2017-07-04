@@ -17,6 +17,7 @@
 export * from './types';
 export * from './typeGuards';
 export * from './observables';
+export * from './aggregators';
 export * from './interactions';
 
 export * from './MotionRuntime';
