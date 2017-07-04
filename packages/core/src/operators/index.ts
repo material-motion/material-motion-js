@@ -50,6 +50,11 @@ import {
 } from './inverted';
 
 import {
+  MotionIsAnyOfable,
+  withIsAnyOf,
+} from './isAnyOf';
+
+import {
   MotionLoggable,
   withLog,
 } from './log';
@@ -137,12 +142,13 @@ import {
 export interface ObservableWithMotionOperators<T> extends
   ObservableWithFoundationalMotionOperators<T>, MotionDeduplicable<T>,
   MotionDelayable<T>, MotionIgnorable<T>, MotionInvertible<T>,
-  MotionLoggable<T>, MotionLowerBoundable, MotionMeasurable<T>,
-  MotionMergeable<T>, MotionNormalizable, MotionOffsetable<T>,
-  MotionPluckable<T, string>, MotionRewritable<T>, MotionRewriteRangeable,
-  MotionRewriteToable, MotionScalable, MotionSeedable<T>,
-  MotionThresholdRangeable, MotionThresholdable, MotionTimestampable<T>,
-  MotionUpperBoundable, MotionVelocityMeasurable<T>, MotionWindowable<T> {}
+  MotionIsAnyOfable, MotionLoggable<T>, MotionLowerBoundable,
+  MotionMeasurable<T>, MotionMergeable<T>, MotionNormalizable,
+  MotionOffsetable<T>, MotionPluckable<T, string>, MotionRewritable<T>,
+  MotionRewriteRangeable, MotionRewriteToable, MotionScalable,
+  MotionSeedable<T>, MotionThresholdRangeable, MotionThresholdable,
+  MotionTimestampable<T>, MotionUpperBoundable, MotionVelocityMeasurable<T>,
+  MotionWindowable<T> {}
 
 export function withMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
     & Constructor<ObservableWithMotionOperators<T>> {
@@ -154,9 +160,9 @@ export function withMotionOperators<T, S extends Constructor<Observable<T>>>(sup
     withMerge(withInverted(withDedupe(withLog(withUpperBound(withLowerBound(
       withOffsetBy(withScaledBy(withNormalizedBy(withDelayBy(withDistanceFrom(
         withStartWith(withIgnoreUntil(withVelocity(withSlidingWindow(
-          withTimestamp(withPluck(
+          withTimestamp(withPluck(withIsAnyOf(
             withFoundationalMotionOperators<T, S>(superclass)
-          ))
+          )))
         ))))
       )))))
     )))))))
@@ -169,6 +175,7 @@ export * from './distanceFrom';
 export * from './foundation';
 export * from './ignoreUntil';
 export * from './inverted';
+export * from './isAnyOf';
 export * from './log';
 export * from './lowerBound';
 export * from './merge';
