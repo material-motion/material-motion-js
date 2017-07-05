@@ -14,7 +14,9 @@
  *  under the License.
  */
 
-import { expect } from 'chai';
+import { expect, use as useInChai } from 'chai';
+import * as sinonChai from 'sinon-chai';
+useInChai(sinonChai);
 
 import {
   beforeEach,
@@ -34,13 +36,6 @@ import {
 import {
   createMockObserver,
 } from 'material-motion-testing-utils';
-
-declare function require(name: string);
-
-// chai really doesn't like being imported as an ES2015 module; will be fixed in v4
-require('chai').use(
-  require('sinon-chai')
-);
 
 describe('motionRuntime',
   () => {
