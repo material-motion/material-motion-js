@@ -47,14 +47,16 @@ import {
 // would run all the spring tests against the rebound adaptor
 describe('NumericReboundSpring',
   () => {
-    let listener;
+    let valueListener;
+    let stateListener;
     let spring;
 
     beforeEach(
       () => {
         _reboundInternalSpringSystem.setLooper(new SimulationLooper());
         spring = new NumericReboundSpring();
-        listener = stub();
+        stateListener = stub();
+        valueListener = stub();
       }
     );
 
@@ -62,13 +64,13 @@ describe('NumericReboundSpring',
 
     it('transitions from initialValue to destination',
       () => {
-        spring.value$.subscribe(listener);
+        spring.value$.subscribe(valueListener);
 
         spring.initialValue = 2;
         spring.destination = 3;
 
-        expect(listener.firstCall).to.have.been.calledWith(2);
-        expect(listener.lastCall).to.have.been.calledWith(3);
+        expect(valueListener.firstCall).to.have.been.calledWith(2);
+        expect(valueListener.lastCall).to.have.been.calledWith(3);
       }
     );
 
@@ -125,8 +127,60 @@ describe('NumericReboundSpring',
       }
     );
 
-    it(`uses the most recent destination if that's changed while disabled`);
-    it(`uses the cached destination if destination$ hasn't changed while disabled`);
+    it('should ignore changes to initialValue while disabled',
+      () => {
+        spring.value$.subscribe(valueListener);
+        spring.state$.subscribe(stateListener);
+
+        spring.enabled = false;
+        spring.initialValue = 2;
+
+        expect(valueListener).not.to.have.been.called;
+        expect(stateListener).not.to.have.been.calledWith(State.ACTIVE);
+      }
+    );
+
+    it('should ignore changes to initialVelocity while disabled',
+      () => {
+        spring.value$.subscribe(valueListener);
+        spring.state$.subscribe(stateListener);
+
+        spring.enabled = false;
+        spring.initialVelocity = 2;
+
+        expect(valueListener).not.to.have.been.called;
+        expect(stateListener).not.to.have.been.calledWith(State.ACTIVE);
+      }
+    );
+
+    it(`transitions to destination when reenabled`,
+      () => {
+        spring.value$.subscribe(valueListener);
+
+        spring.initialValue = 2;
+        spring.enabled = false;
+        spring.destination = 3;
+        spring.enabled = true;
+
+        expect(valueListener.firstCall).to.have.been.calledWith(2);
+        expect(valueListener.lastCall).to.have.been.calledWith(3);
+      }
+    );
+
+    it(`transitions to destination when reenabled if initialValue has changed`,
+      () => {
+        spring.value$.subscribe(valueListener);
+
+        spring.destination = 0;
+        spring.enabled = false;
+        spring.initialValue = 2;
+        spring.enabled = true;
+
+        expect(valueListener.firstCall).to.have.been.calledWith(2);
+        expect(valueListener.lastCall).to.have.been.calledWith(0);
+      }
+    );
+
     it(`uses the most recent initialValue if that's changed while disabled`);
     it(`uses the cached initialValue if initialValue$ hasn't changed while disabled`);
     it(`uses the most recent initialVelocity if that's changed while disabled`);
