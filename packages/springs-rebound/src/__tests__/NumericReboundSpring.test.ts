@@ -14,7 +14,9 @@
  *  under the License.
  */
 
-import { expect } from 'chai';
+import { expect, use as useInChai } from 'chai';
+import * as sinonChai from 'sinon-chai';
+useInChai(sinonChai);
 
 import {
   beforeEach,
@@ -31,7 +33,6 @@ import {
 } from 'rebound';
 
 import {
-  Spring,
   State,
   createProperty,
 } from 'material-motion';
@@ -40,13 +41,6 @@ import {
   NumericReboundSpring,
   _reboundInternalSpringSystem,
 } from '../NumericReboundSpring';
-
-declare function require(name: string);
-
-// chai really doesn't like being imported as an ES2015 module; will be fixed in v4
-require('chai').use(
-  require('sinon-chai')
-);
 
 // TODO: abstract these tests out into a shared compatibility suite, e.g.:
 //   testSpring(reboundSpring)
