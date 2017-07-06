@@ -47,10 +47,9 @@ export function withDedupe<T, S extends Constructor<ObservableWithFoundationalMo
           // dispatching the result to the observer
           lastValue = value;
           dispatched = true;
-
           dispatch(value);
         }
-      )._remember();
+      )._multicast();
     }
   };
 }
