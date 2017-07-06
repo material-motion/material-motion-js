@@ -40,52 +40,91 @@ describe('motionObservable.dedupe',
   () => {
     let stream;
     let mockObserver;
-    let listener;
+    let listener1;
+    let listener2;
 
     beforeEach(
       () => {
         mockObserver = createMockObserver();
         stream = new MotionObservable(mockObserver.connect);
-        listener = stub();
+        listener1 = stub();
+        listener2 = stub();
       }
     );
 
     it('should dispatch the first value it receives',
       () => {
-        stream.dedupe().subscribe(listener);
+        stream.dedupe().subscribe(listener1);
 
         mockObserver.next();
 
-        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(undefined);
+        expect(listener1).to.have.been.calledOnce.and.to.have.been.calledWith(undefined);
       }
     );
 
     it('should suppress duplicate values',
       () => {
-        stream.dedupe().subscribe(listener);
+        stream.dedupe().subscribe(listener1);
 
         mockObserver.next(1);
         mockObserver.next(2);
         mockObserver.next(2);
         mockObserver.next(3);
 
-        expect(listener).to.have.been.calledThrice;
-        expect(listener).to.have.been.calledWith(1);
-        expect(listener).to.have.been.calledWith(2);
-        expect(listener).to.have.been.calledWith(3);
+        expect(listener1).to.have.been.calledThrice;
+        expect(listener1).to.have.been.calledWith(1);
+        expect(listener1).to.have.been.calledWith(2);
+        expect(listener1).to.have.been.calledWith(3);
       }
     );
 
     it('should pass through duplicate values if they are not back-to-back',
       () => {
-        stream.dedupe().subscribe(listener);
+        stream.dedupe().subscribe(listener1);
 
         mockObserver.next(1);
         mockObserver.next(2);
         mockObserver.next(3);
         mockObserver.next(2);
 
-        expect(listener).to.have.callCount(4);
+        expect(listener1).to.have.callCount(4);
+      }
+    );
+
+    it('should deduplicate correctly to multiple listeners',
+      () => {
+        const deduped = stream.dedupe();
+        deduped.subscribe(listener1);
+        deduped.subscribe(listener2);
+
+        mockObserver.next(1);
+        mockObserver.next(2);
+        expect(listener1).to.have.callCount(2);
+        expect(listener2).to.have.callCount(2);
+
+        mockObserver.next(2);
+        expect(listener1).to.have.callCount(2);
+        expect(listener2).to.have.callCount(2);
+
+        mockObserver.next(3);
+        expect(listener1).to.have.callCount(3);
+        expect(listener2).to.have.callCount(3);
+      }
+    );
+
+    it('should pass through correctly to multiple listeners',
+      () => {
+        const deduped = stream.dedupe();
+        deduped.subscribe(listener1);
+        deduped.subscribe(listener2);
+
+        mockObserver.next(1);
+        mockObserver.next(2);
+        mockObserver.next(3);
+        mockObserver.next(2);
+
+        expect(listener1).to.have.callCount(4);
+        expect(listener2).to.have.callCount(4);
       }
     );
 
