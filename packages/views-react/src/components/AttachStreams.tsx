@@ -52,7 +52,7 @@ export type AttachStreamsState = {
  * whatever DOM node the child tree eventually renders.
  */
 export class AttachStreams extends React.Component<AttachStreamsProps, AttachStreamsState> {
-  state = {
+  state: AttachStreamsState = {
     // The PEP polyfill doesn't handle nested touch-actions very well:
     //   https://github.com/jquery/PEP/issues/336
     // so only set touch-action if it isn't the default.
@@ -214,16 +214,25 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
   render() {
     const {
       usesPointerEvents,
+      textContent,
       ...props
     } = this.state;
 
-    props.domRef =  this._domRef;
+    if (textContent) {
+      return (
+        <div { ...props }>
+          { textContent }
+        </div>
+      );
+    } else {
+      props.domRef =  this._domRef;
 
-    if (this.state.usesPointerEvents) {
-      props.touchAction = 'none';
+      if (this.state.usesPointerEvents) {
+        props.touchAction = 'none';
+      }
+
+      return React.cloneElement(this.props.children, props);
     }
-
-    return React.cloneElement(this.props.children, props);
   }
 
   /**
