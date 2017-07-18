@@ -8,13 +8,20 @@ This repo houses the JavaScript implementation of Material Motion.  For more inf
 
 ## High-level Goals ##
 
+- To make gestural interactions as easy to reuse across applications as UI components already are.
+
 - To enable the motions and gestures [described in the Material Spec](https://material.google.com/motion/material-motion.html) to be easily implemented by application authors in the JS ecosystem.
 
 - To make prototyping new animated experiences simpler.
 
-- To allow authors to write views in terms of URLs, and have the system guide the transitions between them.
+- To yield a system that feels robust by default.  Fragile interactions erode user trust in the overall system: “should I enter my password in a glitchy app?”
 
-- To yield a system that feels robust by default.  Fragile transitions erode user trust in the overall system: “should I enter my password in a glitchy app?”
+- To allow interactions to be inspected and tweaked with visual tools.
+
+- To allow interactions to be easily ported across platforms.
+
+- To allow authors to write views in terms of URLs, and have the system guide the transitions between them.
+  - _Note:_ This is an eventual goal.  In the near term, Material Motion is focused specifically on aiding the creation of reusable gestural interactions.
 
 ## Organization ##
 
