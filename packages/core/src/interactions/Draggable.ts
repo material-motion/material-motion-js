@@ -19,6 +19,10 @@ import {
 } from '../State';
 
 import {
+  when,
+} from '../aggregators';
+
+import {
   MemorylessMotionSubject,
   MotionObservable,
   MotionProperty,
@@ -235,7 +239,7 @@ export class Draggable {
         );
 
         cancellationSubscription = this.cancellation$.merge(
-          this.enabled$._filter(value => value)
+          when(this.enabled$.inverted())
         ).subscribe(
           () => {
             if (moveSubscription) {

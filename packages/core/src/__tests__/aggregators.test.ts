@@ -29,6 +29,10 @@ import {
 } from 'sinon';
 
 import {
+  MemorylessMotionSubject,
+} from '../observables/MemorylessMotionSubject';
+
+import {
   MemorylessIndefiniteSubject,
 } from '../observables/MemorylessIndefiniteSubject';
 
@@ -36,6 +40,7 @@ import {
   allOf,
   anyOf,
   noneOf,
+  when,
 } from '../aggregators';
 
 describe('anyOf',
@@ -210,6 +215,36 @@ describe('noneOf',
         subject2.next(true);
 
         expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(false);
+      }
+    );
+  }
+);
+
+describe('when',
+  () => {
+    let subject;
+    let listener;
+
+    beforeEach(
+      () => {
+        subject = new MemorylessMotionSubject();
+        listener = stub();
+      }
+    );
+
+    it('should passthrough true',
+      () => {
+        when(subject).subscribe(listener);
+
+        subject.next(false);
+        subject.next('a');
+        subject.next(5);
+
+        expect(listener).not.to.have.been.called;
+
+        subject.next(true);
+
+        expect(listener).to.have.been.calledWith(true);
       }
     );
   }

@@ -19,6 +19,10 @@ import {
 } from '../State';
 
 import {
+  when,
+} from '../aggregators';
+
+import {
   MotionProperty,
   createProperty,
 } from '../observables/';
@@ -65,18 +69,13 @@ export class Tossable {
       [State.ACTIVE]: false,
     }).dedupe();
 
-    // Perhaps add isAnyOf and whenAnyOf operators…
-    const dragActivePulse$ = dragAtRest$._filter(
-      (isAtRest: boolean) => !isAtRest
-    );
+    const dragActivePulse$ = when(dragAtRest$.inverted());
 
     // Since drag starts at rest, this calls the observer immediately, which
     // sets velocity to undefined.  If `ignoreUntil` took a reactive pulse, this
-    // could be dragAtRest$._filter().ignoreUntil(dragActivePulse$).  Since it's
+    // could be when(dragAtRest$).ignoreUntil(dragActivePulse$).  Since it's
     // not, velocity manually starts with {0, 0}.
-    const dragAtRestPulse$ = dragAtRest$._filter(
-      (isAtRest: boolean) => isAtRest
-    );
+    const dragAtRestPulse$ = when(dragAtRest$);
 
     // maybe should be named velocityWhen?
     this.velocity$ = draggable.value$.startWith({ x: 0, y: 0 }).velocity(dragAtRestPulse$);
