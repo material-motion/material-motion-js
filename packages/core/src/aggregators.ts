@@ -81,3 +81,17 @@ export function allOf(streams: Array<MotionObservable<boolean>>): MotionObservab
 export function noneOf(streams: Array<MotionObservable<boolean>>): MotionObservable<boolean> {
   return anyOf(streams).inverted();
 };
+
+/**
+ * Accepts a single stream of booleans and dispatches whenever that stream
+ * dispatches `true`.  Useful in combination with the other aggregators, e.g.:
+ *
+ * when(
+ *   a.recognitionState$.isAnyOf([GestureRecognitionState.BEGAN])
+ * ).subscribe(b.cancellation$)
+ */
+export function when(stream: MotionObservable<boolean>): MotionObservable<boolean> {
+  return stream._filter(
+    value => value === true
+  );
+}
