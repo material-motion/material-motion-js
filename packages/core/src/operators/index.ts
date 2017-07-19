@@ -20,6 +20,11 @@ import {
 } from '../types';
 
 import {
+  MotionAppendUnitable,
+  withAppendUnit,
+} from './appendUnit';
+
+import {
   MotionDeduplicable,
   withDedupe,
 } from './dedupe';
@@ -140,15 +145,15 @@ import {
 } from './velocity';
 
 export interface ObservableWithMotionOperators<T> extends
-  ObservableWithFoundationalMotionOperators<T>, MotionDeduplicable<T>,
-  MotionDelayable<T>, MotionIgnorable<T>, MotionInvertible<T>,
-  MotionIsAnyOfable, MotionLoggable<T>, MotionLowerBoundable,
-  MotionMeasurable<T>, MotionMergeable<T>, MotionNormalizable,
-  MotionOffsetable<T>, MotionPluckable<T, string>, MotionRewritable<T>,
-  MotionRewriteRangeable, MotionRewriteToable, MotionScalable,
-  MotionSeedable<T>, MotionThresholdRangeable, MotionThresholdable,
-  MotionTimestampable<T>, MotionUpperBoundable, MotionVelocityMeasurable<T>,
-  MotionWindowable<T> {}
+  ObservableWithFoundationalMotionOperators<T>, MotionAppendUnitable,
+  MotionDeduplicable<T>, MotionDelayable<T>, MotionIgnorable<T>,
+  MotionInvertible<T>, MotionIsAnyOfable, MotionLoggable<T>,
+  MotionLowerBoundable, MotionMeasurable<T>, MotionMergeable<T>,
+  MotionNormalizable, MotionOffsetable<T>, MotionPluckable<T, string>,
+  MotionRewritable<T>, MotionRewriteRangeable, MotionRewriteToable,
+  MotionScalable, MotionSeedable<T>, MotionThresholdRangeable,
+  MotionThresholdable, MotionTimestampable<T>, MotionUpperBoundable,
+  MotionVelocityMeasurable<T>, MotionWindowable<T> {}
 
 export function withMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
     & Constructor<ObservableWithMotionOperators<T>> {
@@ -160,15 +165,16 @@ export function withMotionOperators<T, S extends Constructor<Observable<T>>>(sup
     withMerge(withInverted(withDedupe(withLog(withUpperBound(withLowerBound(
       withOffsetBy(withScaledBy(withNormalizedBy(withDelayBy(withDistanceFrom(
         withStartWith(withIgnoreUntil(withVelocity(withSlidingWindow(
-          withTimestamp(withPluck(withIsAnyOf(
+          withTimestamp(withPluck(withIsAnyOf(withAppendUnit(
             withFoundationalMotionOperators<T, S>(superclass)
-          )))
+          ))))
         ))))
       )))))
     )))))))
   ))));
 }
 
+export * from './appendUnit';
 export * from './dedupe';
 export * from './delayBy';
 export * from './distanceFrom';
