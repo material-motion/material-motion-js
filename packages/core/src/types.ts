@@ -36,6 +36,7 @@ export {
 } from 'indefinite-observable';
 
 export {
+  MotionAppendUnitable,
   MotionDebounceable,
   MotionDelayable,
   MotionDeduplicable,
