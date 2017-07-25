@@ -14,10 +14,6 @@
  *  under the License.
  */
 
-import {
-  MotionObservable,
-} from '../observables';
-
 // ObservableWithMotionOperators isn't referenced in this file, but TypeScript
 // gets mad if you remove it. (MotionProperty is using MotionDebounceable from
 // an external module)
