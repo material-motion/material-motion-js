@@ -16,7 +16,7 @@
 
 import {
   IndefiniteSubject,
-} from '../observables/IndefiniteSubject';
+} from './IndefiniteSubject';
 
 import {
   ScopedReadable,
