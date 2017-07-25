@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "bootstrap": "yarn; $( yarn bin )/lerna bootstrap --concurrency=1",
+    "bootstrap-ci": "yarn --non-interactive; $( yarn bin )/lerna bootstrap --concurrency=1",
     "build": "$( yarn bin )/lerna run build",
     "lint": "$( yarn bin)/lerna run lint",
     "test": "$( yarn bin )/karma start",
