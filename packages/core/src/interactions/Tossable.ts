@@ -43,7 +43,7 @@ import {
 export type TossableArgs = {
   draggable: Draggable,
   spring: NumericSpring,
-  location$: MotionProperty<Point2D>
+  location$: MotionProperty<Point2D>,
 };
 
 export class Tossable {
@@ -53,6 +53,54 @@ export class Tossable {
 
   get state(): State {
     return this.state$.read();
+  }
+
+  readonly resistanceAmount$: MotionProperty<number> = createProperty({
+    initialValue: 0,
+  });
+
+  get resistanceAmount(): number {
+    return this.resistanceAmount$.read();
+  }
+
+  set resistanceAmount(value: number) {
+    this.resistanceAmount$.write(value);
+  }
+
+  readonly resistanceOrigin$: MotionProperty<Point2D> = createProperty({
+    initialValue: { x: 0, y: 0 },
+  });
+
+  get resistanceOrigin(): Point2D {
+    return this.resistanceOrigin$.read();
+  }
+
+  set resistanceOrigin(value: Point2D) {
+    this.resistanceOrigin$.write(value);
+  }
+
+  readonly resistanceRadius$: MotionProperty<number> = createProperty({
+    initialValue: 0,
+  });
+
+  get resistanceRadius(): number {
+    return this.resistanceRadius$.read();
+  }
+
+  set resistanceRadius(value: number) {
+    this.resistanceRadius$.write(value);
+  }
+
+  readonly resistancelessRadius$: MotionProperty<number> = createProperty({
+    initialValue: 0,
+  });
+
+  get resistancelessRadius(): number {
+    return this.resistancelessRadius$.read();
+  }
+
+  set resistancelessRadius(value: number) {
+    this.resistancelessRadius$.write(value);
   }
 
   readonly value$: ObservableWithMotionOperators<Point2D>;
@@ -78,9 +126,6 @@ export class Tossable {
       (isAtRest: boolean) => isAtRest
     );
 
-    // maybe should be named velocityWhen?
-    this.velocity$ = draggable.value$.startWith({ x: 0, y: 0 }).velocity(dragAtRestPulse$);
-
     const firstAxis = draggable.axis$.read();
     draggable.axis$.subscribe(
       axis => {
@@ -94,7 +139,6 @@ export class Tossable {
     // ensure the spring initializes with the correct values; otherwise, it will
     // start from 0
     location$.pluck(firstAxis)._debounce(dragAtRestPulse$).subscribe(spring.initialValue$);
-    this.velocity$.pluck(firstAxis).subscribe(spring.initialVelocity$);
 
     // offsetBy will add the upstream value to the offset whenever the offset
     // changes.  Therefore, we need to debounce locationOnDown$ to make it wait
@@ -108,7 +152,50 @@ export class Tossable {
     // it would enable a user to catch a springing object without moving the
     // pointer.)
     const locationOnDown$ = location$._debounce(dragActivePulse$);
-    this.draggedLocation$ = draggable.value$.offsetBy(locationOnDown$._debounce(draggable.value$));
+
+    this.draggedLocation$ = draggable.value$.offsetBy(locationOnDown$._debounce(draggable.value$))._reactiveMap(
+      (
+        location: Point2D,
+        resistanceAmount: number,
+        resistanceOrigin: Point2D,
+        resistanceRadius: number,
+        resistancelessRadius: number
+      ) => {
+        if (!resistanceAmount) {
+          return location;
+        }
+
+        // We apply resistance radially, leading to all the trig below.  In most
+        // cases, the draggable element is probably axis locked, which means
+        // this code could potentially be optimized for those scenarios.
+        const locationFromOrigin: Point2D = {
+          x: location.x - resistanceOrigin.x,
+          y: location.y - resistanceOrigin.y,
+        };
+
+        let overflowRadius = Math.sqrt(locationFromOrigin.x ** 2 + locationFromOrigin.y ** 2) - resistancelessRadius;
+
+        if (overflowRadius < 0) {
+          return location;
+        }
+
+        const radiusWithResistance = resistanceRadius / resistanceAmount * Math.sin(overflowRadius / resistanceRadius * Math.PI / 2) + resistancelessRadius;
+        const angle = Math.atan2(locationFromOrigin.y, locationFromOrigin.x);
+
+        return {
+          x: resistanceOrigin.x + radiusWithResistance * Math.cos(angle),
+          y: resistanceOrigin.y + radiusWithResistance * Math.sin(angle),
+        };
+      },
+      this.resistanceAmount$,
+      this.resistanceOrigin$,
+      this.resistanceRadius$,
+      this.resistancelessRadius$,
+    );
+
+    // maybe should be named velocityWhen?
+    this.velocity$ = this.draggedLocation$.startWith({ x: 0, y: 0 }).velocity(dragAtRestPulse$);
+    this.velocity$.pluck(firstAxis).subscribe(spring.initialVelocity$);
 
     dragAtRest$.subscribe(spring.enabled$);
 
@@ -155,3 +242,48 @@ export class Tossable {
   }
 }
 export default Tossable;
+
+export type ApplyLinearResistanceToTossableArgs = {
+  tossable: Tossable,
+  min$: ObservableWithMotionOperators<number>,
+  max$: ObservableWithMotionOperators<number>,
+  amount$: ObservableWithMotionOperators<number>,
+  axis$: ObservableWithMotionOperators<number>,
+  length$: ObservableWithMotionOperators<number>,
+};
+export function applyLinearResistanceToTossable({
+  tossable,
+  min$,
+  max$,
+  amount$,
+  axis$,
+  length$,
+}: ApplyLinearResistanceToTossableArgs) {
+  length$.subscribe(tossable.resistanceRadius$);
+  amount$.subscribe(tossable.resistanceAmount$);
+  min$._reactiveMap(
+    (min: number, max: number) => Math.abs(max - min) / 2,
+    max$
+  ).subscribe(tossable.resistancelessRadius$);
+  axis$._reactiveMap(
+    (axis: Axis, min: number, max: number) => {
+      const linearCenter = min + (max - min) / 2;
+
+      if (axis === Axis.X) {
+        return {
+          x: linearCenter,
+          y: 0,
+        };
+      } else if (axis === Axis.Y) {
+        return {
+          x: 0,
+          y: linearCenter,
+        };
+      } else {
+        console.warn(`Cannot apply linear resistance if axis isn't locked`);
+      }
+    },
+    min$,
+    max$,
+  ).subscribe(tossable.resistanceOrigin$);
+}
