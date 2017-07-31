@@ -69,13 +69,12 @@ export class Tossable {
       [State.ACTIVE]: false,
     }).dedupe();
 
-    const dragActivePulse$ = when(dragAtRest$.inverted());
-
     // Since drag starts at rest, this calls the observer immediately, which
     // sets velocity to undefined.  If `ignoreUntil` took a reactive pulse, this
     // could be when(dragAtRest$).ignoreUntil(dragActivePulse$).  Since it's
     // not, velocity manually starts with {0, 0}.
     const dragAtRestPulse$ = when(dragAtRest$);
+    const dragActivePulse$ = when(dragAtRest$.inverted());
 
     // maybe should be named velocityWhen?
     this.velocity$ = draggable.value$.startWith({ x: 0, y: 0 }).velocity(dragAtRestPulse$);
