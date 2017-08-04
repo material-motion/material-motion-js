@@ -3,12 +3,11 @@ machine:
   node:
     version: 7.7.4
 
-  environment:
-    PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
-
 dependencies:
   override:
-    - yarn run bootstrap-ci
+    - yarn global add lerna
+    - echo "workspaces-experimental true" >> ~/.yarnrc
+    - lerna bootstrap -- --non-interactive
   cache_directories:
     - ~/.cache/yarn
 
