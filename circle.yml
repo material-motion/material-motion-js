@@ -8,7 +8,7 @@ machine:
 
 dependencies:
   override:
-    - yarn run bootstrap-ci
+    - lerna bootstrap -- --non-interactive
   cache_directories:
     - ~/.cache/yarn
 
