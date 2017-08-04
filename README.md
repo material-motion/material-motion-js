@@ -44,7 +44,8 @@ To get started, just run these commands:
 ```
 git clone git@github.com:material-motion/material-motion-js.git
 cd material-motion-js
-yarn run bootstrap
+yarn
+$( yarn bin )/lerna bootstrap
 ```
 
 They will check out the repo, install the dependencies for each package, and link the packages to one another.  Then, find the package you want to work on in `packages` and start coding!
