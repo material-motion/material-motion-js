@@ -15,6 +15,10 @@
  */
 
 import {
+  createProperty,
+} from '../observables/createProperty';
+
+import {
   MotionProperty,
 } from '../observables/MotionProperty';
 
@@ -26,44 +30,103 @@ import {
   ObservableWithMotionOperators,
 } from '../types';
 
-// The only spring support presently in Material Motion is provided by Rebound,
-// which adds an external dependency.  For that reason, it currently lives in an
-// external library.  However, some interactions (like Tossable) depend on being
-// provided something in the shape of that spring.  Thus, this interface exists.
-//
-// Other potential solutions:
-// - Move `springs-rebound` into `core`;
-// - Author a dependency-free springs implementation and add it here;
-// - Rename `core` to `motion-observables` and make a new package `interactions`
-//   that becomes the new `material-motion`.  It can depend on both
-//   `motion-observables` and `springs-rebound` without introducing a cyclic
-//   dependency;
+// Springs are a core primitive in Material Motion, yet, the implementations we
+// have are all from 3rd party libraries.  Thus, the common
+// getters/setters/properties live here, and each implementation can extend it
+// to implement its own `value$`.
+export abstract class NumericSpring {
+  readonly destination$: MotionProperty<number> = createProperty<number>({
+    initialValue: 0,
+  });
 
-export interface NumericSpring {
-  readonly destination$: MotionProperty<number>;
-  destination: number;
+  get destination(): number {
+    return this.destination$.read();
+  }
 
-  readonly initialValue$: MotionProperty<number>;
-  initialValue: number;
+  set destination(value: number) {
+    this.destination$.write(value);
+  }
 
-  readonly initialVelocity$: MotionProperty<number>;
-  initialVelocity: number;
+  readonly initialValue$: MotionProperty<number> = createProperty<number>({
+    initialValue: 0,
+  });
 
-  readonly tension$: MotionProperty<number>;
-  tension: number;
+  get initialValue(): number {
+    return this.initialValue$.read();
+  }
 
-  readonly friction$: MotionProperty<number>;
-  friction: number;
+  set initialValue(value: number) {
+    this.initialValue$.write(value);
+  }
 
-  readonly threshold$: MotionProperty<number>;
-  threshold: number;
+  readonly initialVelocity$: MotionProperty<number> = createProperty<number>({
+    initialValue: 0,
+  });
 
-  readonly enabled$: MotionProperty<boolean>;
-  enabled: boolean;
+  get initialVelocity(): number {
+    return this.initialVelocity$.read();
+  }
 
-  readonly state$: MotionProperty<State>;
-  readonly state: State;
+  set initialVelocity(value: number) {
+    this.initialVelocity$.write(value);
+  }
 
-  value$: ObservableWithMotionOperators<number>;
+  readonly tension$: MotionProperty<number> = createProperty<number>({
+    initialValue: 342,
+  });
+
+  get tension(): number {
+    return this.tension$.read();
+  }
+
+  set tension(value: number) {
+    this.tension$.write(value);
+  }
+
+  readonly friction$: MotionProperty<number> = createProperty<number>({
+    initialValue: 30,
+  });
+
+  get friction(): number {
+    return this.friction$.read();
+  }
+
+  set friction(value: number) {
+    this.friction$.write(value);
+  }
+
+  readonly threshold$: MotionProperty<number> = createProperty<number>({
+    initialValue: .001,
+  });
+
+  get threshold(): number {
+    return this.threshold$.read();
+  }
+
+  set threshold(value: number) {
+    this.threshold$.write(value);
+  }
+
+  readonly enabled$: MotionProperty<boolean> = createProperty<boolean>({
+    initialValue: true,
+  });
+
+  get enabled(): boolean {
+    return this.enabled$.read();
+  }
+
+  set enabled(value: boolean) {
+    this.enabled$.write(value);
+  }
+
+  readonly state$: MotionProperty<State> = createProperty<State>({
+    initialValue: State.AT_REST,
+  });
+
+  get state(): State {
+    return this.state$.read();
+  }
+
+  abstract value$: ObservableWithMotionOperators<number>;
 }
 export default NumericSpring;
