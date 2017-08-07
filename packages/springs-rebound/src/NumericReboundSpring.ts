@@ -22,111 +22,17 @@ import {
 
 import {
   MotionObservable,
-  MotionProperty,
-  ObservableWithMotionOperators,
+  NumericSpring,
   Observer,
   State,
   Subscription,
-  createProperty,
 } from 'material-motion';
 
 // Exported so we can switch out the timing loop in unit tests
 export let _reboundInternalSpringSystem = new SpringSystem();
 
-export class NumericReboundSpring {
-  readonly destination$: MotionProperty<number> = createProperty<number>({
-    initialValue: 0,
-  });
-
-  get destination(): number {
-    return this.destination$.read();
-  }
-
-  set destination(value: number) {
-    this.destination$.write(value);
-  }
-
-  readonly initialValue$: MotionProperty<number> = createProperty<number>({
-    initialValue: 0,
-  });
-
-  get initialValue(): number {
-    return this.initialValue$.read();
-  }
-
-  set initialValue(value: number) {
-    this.initialValue$.write(value);
-  }
-
-  readonly initialVelocity$: MotionProperty<number> = createProperty<number>({
-    initialValue: 0,
-  });
-
-  get initialVelocity(): number {
-    return this.initialVelocity$.read();
-  }
-
-  set initialVelocity(value: number) {
-    this.initialVelocity$.write(value);
-  }
-
-  readonly tension$: MotionProperty<number> = createProperty<number>({
-    initialValue: 342,
-  });
-
-  get tension(): number {
-    return this.tension$.read();
-  }
-
-  set tension(value: number) {
-    this.tension$.write(value);
-  }
-
-  readonly friction$: MotionProperty<number> = createProperty<number>({
-    initialValue: 30,
-  });
-
-  get friction(): number {
-    return this.friction$.read();
-  }
-
-  set friction(value: number) {
-    this.friction$.write(value);
-  }
-
-  readonly threshold$: MotionProperty<number> = createProperty<number>({
-    initialValue: .001,
-  });
-
-  get threshold(): number {
-    return this.threshold$.read();
-  }
-
-  set threshold(value: number) {
-    this.threshold$.write(value);
-  }
-
-  readonly enabled$: MotionProperty<boolean> = createProperty<boolean>({
-    initialValue: true,
-  });
-
-  get enabled(): boolean {
-    return this.enabled$.read();
-  }
-
-  set enabled(value: boolean) {
-    this.enabled$.write(value);
-  }
-
-  readonly state$: MotionProperty<string> = createProperty<string>({
-    initialValue: State.AT_REST,
-  });
-
-  get state(): State {
-    return this.state$.read();
-  }
-
-  value$: ObservableWithMotionOperators<number> = new MotionObservable<number>(
+export class NumericReboundSpring extends NumericSpring {
+  value$ = new MotionObservable<number>(
     (observer: Observer<number>) => {
       const spring: Spring = _reboundInternalSpringSystem.createSpring();
       const initialVelocityInPxPerSecond$ = this.initialVelocity$.scaledBy(1000);
