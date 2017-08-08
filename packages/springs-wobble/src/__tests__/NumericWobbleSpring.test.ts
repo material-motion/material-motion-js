@@ -14,7 +14,9 @@
  *  under the License.
  */
 
-import { expect } from 'chai';
+import { expect, use as useInChai } from 'chai';
+import * as sinonChai from 'sinon-chai';
+useInChai(sinonChai);
 
 import {
   beforeEach,
@@ -26,26 +28,55 @@ import {
   stub,
 } from 'sinon';
 
-import NumericWobbleSpring from '../NumericWobbleSpring';
+import {
+  Spring,
+} from 'wobble';
 
-declare function require(name: string);
+import {
+  State,
+} from 'material-motion';
 
-// chai really doesn't like being imported as an ES2015 module; will be fixed in v4
-require('chai').use(
-  require('sinon-chai')
-);
+import {
+  useMockedRAF,
+} from 'material-motion-testing-utils';
+
+import {
+  testNumericSpring,
+} from '../../../core/src/interactions/__tests__/NumericSpring.testSuite';
+
+import {
+  NumericWobbleSpring,
+} from '../NumericWobbleSpring';
 
 describe('NumericWobbleSpring',
-  () => {
-    beforeEach(
-      () => {
-      }
-    );
+  useMockedRAF(
+    (mockRAF) => {
+      testNumericSpring(
+        NumericWobbleSpring,
 
-    it('',
-      () => {
-      }
-    );
-  }
+        function exhaustValues(spring) {
+          let triesLeft = 50;
+          let hasBeenActive;
+          let isAtRest;
+
+          spring.state$.subscribe(
+            (state) => {
+              if (state === State.AT_REST && hasBeenActive) {
+                isAtRest = true;
+              }
+
+              if (state === State.ACTIVE) {
+                hasBeenActive = true;
+              }
+            }
+          );
+
+          while (!isAtRest && triesLeft > 0) {
+            mockRAF.step();
+            triesLeft--;
+          }
+        }
+      );
+    }
+  )
 );
-
