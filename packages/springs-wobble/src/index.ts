@@ -14,6 +14,5 @@
  *  under the License.
  */
 
-export * from './types';
 export * from './NumericWobbleSpring';
 export { default as NumericWobbleSpring } from './NumericWobbleSpring';
