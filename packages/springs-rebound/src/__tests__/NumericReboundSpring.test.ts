@@ -33,157 +33,22 @@ import {
 } from 'rebound';
 
 import {
-  State,
-  createProperty,
-} from 'material-motion';
+  testNumericSpring,
+} from '../../../core/src/interactions/__tests__/NumericSpring.testSuite';
 
 import {
   NumericReboundSpring,
   _reboundInternalSpringSystem,
 } from '../NumericReboundSpring';
 
-// TODO: abstract these tests out into a shared compatibility suite, e.g.:
-//   testSpring(reboundSpring)
-// would run all the spring tests against the rebound adaptor
 describe('NumericReboundSpring',
   () => {
-    let valueListener;
-    let stateListener;
-    let spring;
-
     beforeEach(
       () => {
         _reboundInternalSpringSystem.setLooper(new SimulationLooper());
-        spring = new NumericReboundSpring();
-        stateListener = stub();
-        valueListener = stub();
       }
     );
 
-    // TODO: test initialVelocity, tension, friction, enabled, and threshold
-
-    it('transitions from initialValue to destination',
-      () => {
-        spring.value$.subscribe(valueListener);
-
-        spring.initialValue = 2;
-        spring.destination = 3;
-
-        expect(valueListener.firstCall).to.have.been.calledWith(2);
-        expect(valueListener.lastCall).to.have.been.calledWith(3);
-      }
-    );
-
-    it('starts at rest',
-      () => {
-        expect(spring.state).to.equal(State.AT_REST);
-      }
-    );
-
-    it('becomes active before dispatching new values',
-      () => {
-        let tested;
-
-        spring.value$.subscribe(
-          value => {
-            if (value !== 0 && !tested) {
-              expect(spring.state).to.equal(State.ACTIVE);
-              tested = true;
-            }
-          }
-        );
-
-        spring.initialValue = 0;
-        spring.destination = 1;
-
-        expect(tested).to.equal(true);
-      }
-    );
-
-    it('comes to rest upon completion',
-      () => {
-        let tested;
-        let next;
-
-        spring.value$.subscribe(
-          value => {
-            next = value;
-          }
-        );
-
-        spring.initialValue = 0;
-        spring.destination = 1;
-
-        spring.state$.subscribe(
-          value => {
-            if (next === 1 && !tested) {
-              expect(value).to.equal(State.AT_REST);
-              tested = true;
-            }
-          }
-        );
-
-        expect(tested).to.equal(true);
-      }
-    );
-
-    it('should ignore changes to initialValue while disabled',
-      () => {
-        spring.value$.subscribe(valueListener);
-        spring.state$.subscribe(stateListener);
-
-        spring.enabled = false;
-        spring.initialValue = 2;
-
-        expect(valueListener).not.to.have.been.called;
-        expect(stateListener).not.to.have.been.calledWith(State.ACTIVE);
-      }
-    );
-
-    it('should ignore changes to initialVelocity while disabled',
-      () => {
-        spring.value$.subscribe(valueListener);
-        spring.state$.subscribe(stateListener);
-
-        spring.enabled = false;
-        spring.initialVelocity = 2;
-
-        expect(valueListener).not.to.have.been.called;
-        expect(stateListener).not.to.have.been.calledWith(State.ACTIVE);
-      }
-    );
-
-    it(`transitions to destination when reenabled`,
-      () => {
-        spring.value$.subscribe(valueListener);
-
-        spring.initialValue = 2;
-        spring.enabled = false;
-        spring.destination = 3;
-        spring.enabled = true;
-
-        expect(valueListener.firstCall).to.have.been.calledWith(2);
-        expect(valueListener.lastCall).to.have.been.calledWith(3);
-      }
-    );
-
-    it(`transitions to destination when reenabled if initialValue has changed`,
-      () => {
-        spring.value$.subscribe(valueListener);
-
-        spring.destination = 0;
-        spring.enabled = false;
-        spring.initialValue = 2;
-        spring.enabled = true;
-
-        expect(valueListener.firstCall).to.have.been.calledWith(2);
-        expect(valueListener.lastCall).to.have.been.calledWith(0);
-      }
-    );
-
-    it(`uses the most recent initialValue if that's changed while disabled`);
-    it(`uses the cached initialValue if initialValue$ hasn't changed while disabled`);
-    it(`uses the most recent initialVelocity if that's changed while disabled`);
-    it(`uses the cached initialVelocity if initialVelocity$ hasn't changed while disabled`);
+    testNumericSpring(NumericReboundSpring);
   }
 );
