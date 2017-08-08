@@ -44,7 +44,10 @@ import {
   NumericSpring,
 } from '../NumericSpring';
 
-export function testNumericSpring(Spring: Constructor<NumericSpring>) {
+export function testNumericSpring(
+  Spring: Constructor<NumericSpring>,
+  exhaustValues?: (spring: NumericSpring) => void = () => {}
+) {
   let valueListener;
   let stateListener;
   let spring: NumericSpring;
@@ -65,6 +68,8 @@ export function testNumericSpring(Spring: Constructor<NumericSpring>) {
 
       spring.initialValue = 2;
       spring.destination = 3;
+
+      exhaustValues(spring);
 
       expect(valueListener.firstCall).to.have.been.calledWith(2);
       expect(valueListener.lastCall).to.have.been.calledWith(3);
@@ -93,6 +98,8 @@ export function testNumericSpring(Spring: Constructor<NumericSpring>) {
       spring.initialValue = 0;
       spring.destination = 1;
 
+      exhaustValues(spring);
+
       expect(tested).to.equal(true);
     }
   );
@@ -120,6 +127,8 @@ export function testNumericSpring(Spring: Constructor<NumericSpring>) {
         }
       );
 
+      exhaustValues(spring);
+
       expect(tested).to.equal(true);
     }
   );
@@ -131,6 +140,8 @@ export function testNumericSpring(Spring: Constructor<NumericSpring>) {
 
       spring.enabled = false;
       spring.initialValue = 2;
+
+      exhaustValues(spring);
 
       expect(valueListener).not.to.have.been.called;
       expect(stateListener).not.to.have.been.calledWith(State.ACTIVE);
@@ -144,6 +155,8 @@ export function testNumericSpring(Spring: Constructor<NumericSpring>) {
 
       spring.enabled = false;
       spring.initialVelocity = 2;
+
+      exhaustValues(spring);
 
       expect(valueListener).not.to.have.been.called;
       expect(stateListener).not.to.have.been.calledWith(State.ACTIVE);
@@ -159,6 +172,8 @@ export function testNumericSpring(Spring: Constructor<NumericSpring>) {
       spring.destination = 3;
       spring.enabled = true;
 
+      exhaustValues(spring);
+
       expect(valueListener.firstCall).to.have.been.calledWith(2);
       expect(valueListener.lastCall).to.have.been.calledWith(3);
     }
@@ -172,6 +187,8 @@ export function testNumericSpring(Spring: Constructor<NumericSpring>) {
       spring.enabled = false;
       spring.initialValue = 2;
       spring.enabled = true;
+
+      exhaustValues(spring);
 
       expect(valueListener.firstCall).to.have.been.calledWith(2);
       expect(valueListener.lastCall).to.have.been.calledWith(0);
