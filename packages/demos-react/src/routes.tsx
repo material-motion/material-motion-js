@@ -23,6 +23,7 @@ import Router from 'react-router/BrowserRouter';
 
 // import ExampleMain from './example/components/ExampleMain';
 import QuickiePointerEventTest from './QuickiePointerEventTest';
+import SpringComparison from './SpringComparison';
 
 // To add a new demo, import the correct component above and add it to the links
 // list below.  Everything else is automatic.
@@ -33,6 +34,11 @@ const links = [
   //   component: ExampleMain,
   // },
   {
+    href: '/spring-comparison/',
+    name: 'SpringComparison',
+    component: SpringComparison,
+  },
+  {
     href: '/pointer-events/',
     name: 'QuickiePointerEventTest',
     component: QuickiePointerEventTest,
@@ -41,19 +47,33 @@ const links = [
 
 function Links() {
   return (
-    <ul>
-      {
-        links.map(
-          link => (
-            <li key = { link.href }>
-              <Link to = { link.href } >
-                { link.name }
-              </Link>
-            </li>
+    <div>
+      <h1
+        style = {
+          {
+            padding: 16,
+            margin: 0,
+            fontSize: 24,
+          }
+        }
+      >
+        Demos:
+      </h1>
+
+      <ul>
+        {
+          links.map(
+            link => (
+              <li key = { link.href }>
+                <Link to = { link.href } >
+                  { link.name }
+                </Link>
+              </li>
+            )
           )
-        )
-      }
-    </ul>
+        }
+      </ul>
+    </div>
   );
 }
 
@@ -61,18 +81,6 @@ export default function() {
   return (
     <Router>
       <div>
-        <h1
-          style = {
-            {
-              padding: 16,
-              margin: 0,
-              fontSize: 24,
-            }
-          }
-        >
-          Demos:
-        </h1>
-
         {
           links.map(
             link => (
