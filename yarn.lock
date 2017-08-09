@@ -3958,7 +3958,7 @@ pundle-dev@2.0.0-beta12, pundle-dev@^2.0.0-beta12:
     send "^0.14.1"
     ws "^1.1.1"
   optionalDependencies:
-    uws "^0.12.0"
+    uws "^8.14.0"
 
 pundle-fs@2.0.0-beta12, pundle-fs@^2.0.0-beta12:
   version "2.0.0-beta12"
