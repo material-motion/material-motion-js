@@ -62,8 +62,8 @@ export class NumericWobbleSpring extends NumericSpring {
       // order they are subscribed to; hence,
       const subscriptions: Array<Subscription> = [
         // properties that configure the spring
-        this.tension$._map(toValueWithKey('stiffness')).subscribe(updateSpringConfig),
-        this.friction$._map(toValueWithKey('damping')).subscribe(updateSpringConfig),
+        this.stiffness$._map(toValueWithKey('stiffness')).subscribe(updateSpringConfig),
+        this.damping$._map(toValueWithKey('damping')).subscribe(updateSpringConfig),
         this.threshold$._map(toValueWithKey('restDisplacementThreshold')).subscribe(updateSpringConfig),
 
         // properties that initialize the spring
