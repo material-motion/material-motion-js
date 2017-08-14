@@ -60,7 +60,7 @@ export function testNumericSpring(
     }
   );
 
-  // TODO: test initialVelocity, tension, friction, enabled, and threshold
+  // TODO: test initialVelocity, stiffness, damping, enabled, and threshold
 
   it('transitions from initialValue to destination',
     () => {
