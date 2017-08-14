@@ -71,28 +71,28 @@ export abstract class NumericSpring {
     this.initialVelocity$.write(value);
   }
 
-  readonly tension$: MotionProperty<number> = createProperty<number>({
+  readonly stiffness$: MotionProperty<number> = createProperty<number>({
     initialValue: 342,
   });
 
-  get tension(): number {
-    return this.tension$.read();
+  get stiffness(): number {
+    return this.stiffness$.read();
   }
 
-  set tension(value: number) {
-    this.tension$.write(value);
+  set stiffness(value: number) {
+    this.stiffness$.write(value);
   }
 
-  readonly friction$: MotionProperty<number> = createProperty<number>({
+  readonly damping$: MotionProperty<number> = createProperty<number>({
     initialValue: 30,
   });
 
-  get friction(): number {
-    return this.friction$.read();
+  get damping(): number {
+    return this.damping$.read();
   }
 
-  set friction(value: number) {
-    this.friction$.write(value);
+  set damping(value: number) {
+    this.damping$.write(value);
   }
 
   readonly threshold$: MotionProperty<number> = createProperty<number>({
