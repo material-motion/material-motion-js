@@ -64,16 +64,22 @@ export class NumericReboundSpring extends NumericSpring {
       // order they are subscribed to; hence,
       const subscriptions: Array<Subscription> = [
         // properties that configure the spring
-        this.tension$.subscribe(
-          (tension: number) => spring.setSpringConfig({
-            tension,
-            friction: spring.getSpringConfig().friction,
+        // (`stiffness` and `damping` are the names used in simulations that
+        // model dampened harmonic oscillators, like wobble.  Rebound's model is
+        // RK4, which uses `tension` and `friction`.  `stiffness != tension` and
+        // `damping != friction`, but they are similar enough that we can
+        // substitute one for the other now, and perhaps come up with a more
+        // accurate conversion later.)
+        this.stiffness$.subscribe(
+          (stiffness: number) => spring.setSpringConfig({
+            ...spring.getSpringConfig(),
+            tension: stiffness,
           })
         ),
-        this.friction$.subscribe(
-          (friction: number) => spring.setSpringConfig({
-            tension: spring.getSpringConfig().tension,
-            friction,
+        this.damping$.subscribe(
+          (damping: number) => spring.setSpringConfig({
+            ...spring.getSpringConfig(),
+            friction: damping,
           })
         ),
         this.threshold$.subscribe(spring.setRestSpeedThreshold.bind(spring)),
