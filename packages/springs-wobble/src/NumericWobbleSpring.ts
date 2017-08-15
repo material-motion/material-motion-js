@@ -40,19 +40,19 @@ export class NumericWobbleSpring extends NumericSpring {
 
       this.state$.write(State.AT_REST);
 
-      spring.onUpdate(
-        () => {
-          observer.next(spring.currentValue);
-        }
-      );
-
-      spring.onActive(
+      spring.onStart(
         () => {
           this.state$.write(State.ACTIVE);
         }
       );
 
-      spring.onAtRest(
+      spring.onUpdate(
+        () => {
+          observer.next(spring.currentValue);
+        }  
+      );  
+
+      spring.onStop(
         () => {
           this.state$.write(State.AT_REST);
         }
@@ -130,6 +130,7 @@ export class NumericWobbleSpring extends NumericSpring {
                 }
 
                 updateSpringConfig(springConfig);
+                spring.start();
 
                 initialValueChangedWhileDisabled = false;
                 initialVelocityChangedWhileDisabled = false;
@@ -144,6 +145,7 @@ export class NumericWobbleSpring extends NumericSpring {
           (destination: number) => {
             if (this.enabled$.read()) {
               updateSpringConfig({ toValue: destination });
+              spring.start();
             };
           }
         ),
