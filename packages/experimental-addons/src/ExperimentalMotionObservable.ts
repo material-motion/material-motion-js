@@ -42,51 +42,6 @@ export class ExperimentalMotionObservable<T> extends MotionObservable<T> {
     );
   }
 
-  static combineLatestFromDict<T extends Dict<any>>(dict: Dict<Observable<any> | any>) {
-    return new ExperimentalMotionObservable(
-      (observer: Observer<T>) => {
-        const outstandingKeys = new Set(Object.keys(dict));
-
-        const nextValue: T = {};
-        const subscriptions: Dict<Subscription> = {};
-
-        outstandingKeys.forEach(checkKey);
-
-        function checkKey(key) {
-          const maybeStream = dict[key];
-          if (isObservable(maybeStream)) {
-            subscriptions[key] = maybeStream.subscribe(
-              (value: any) => {
-                outstandingKeys.delete(key);
-
-                nextValue[key] = value;
-                dispatchNextValue();
-              }
-            );
-          } else {
-            outstandingKeys.delete(key);
-
-            nextValue[key] = maybeStream;
-            dispatchNextValue();
-          }
-        }
-
-        function dispatchNextValue() {
-          if (!outstandingKeys.size) {
-            observer.next(nextValue);
-          }
-        }
-
-        dispatchNextValue();
-
-        return function disconnect() {
-          Object.values(subscriptions).forEach(
-            subscription => subscription.unsubscribe()
-          );
-        };
-      }
-    );
-  }
   // If we don't explicitly provide a constructor, TypeScript won't remember the
   // signature
   constructor(connect: MotionConnect<T>) {
