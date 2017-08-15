@@ -14,7 +14,7 @@
   "dependencies": {
     "material-motion": "0.0.0",
     "tslib": "^1.2.0",
-    "wobble": "0.2.1"
+    "wobble": "1.0.0"
   },
   "devDependencies": {
     "material-motion-testing-utils": "0.0.0",
