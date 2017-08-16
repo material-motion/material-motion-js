@@ -19,6 +19,10 @@ import {
 } from '../../observables/proxies';
 
 import {
+  combineLatest
+} from '../../combineLatest';
+
+import {
   isObservable
 } from '../../typeGuards';
 
@@ -54,61 +58,9 @@ export function withReactiveNextOperator<T, S extends Constructor<Observable<T>>
       return new MotionObservable<U>(
         (observer: Observer<U>) => {
           const boundNext: NextChannel<U> = observer.next.bind(observer);
-
-          const subscriptions: Array<Subscription> = [];
-          const values: Array<any> = [];
-          let valueReceived = false;
-          let argumentsReceivedCount = 0;
-
-          subscriptions[0] = this.subscribe(
-            (value: T) => {
-              valueReceived = true;
-              values[0] = value;
-              dispatch();
-            }
+          return combineLatest([ this, ...args ]).subscribe(
+            (values) => operation(boundNext, ...values)
           );
-
-          args.forEach(
-            (argument: any, i: number) => {
-              // save 0 for the upstream value
-              const index = i + 1;
-
-              let received = false;
-
-              if (isObservable(argument)) {
-                subscriptions[index] = argument.subscribe(
-                  (value: any) => {
-                    // keep track of the number of received arguments, so we
-                    // know when it's time to dispatch
-                    if (!received) {
-                      argumentsReceivedCount++;
-                    }
-                    received = true;
-
-                    values[index] = value;
-                    dispatch();
-                  }
-                );
-
-              } else {
-                argumentsReceivedCount++;
-                values[index] = argument;
-                dispatch();
-              }
-            }
-          );
-
-          function dispatch() {
-            if (valueReceived && argumentsReceivedCount === args.length) {
-              operation(boundNext, ...values);
-            }
-          }
-
-          return () => {
-            subscriptions.forEach(
-              subscription => subscription.unsubscribe()
-            );
-          };
         }
       );
     }
