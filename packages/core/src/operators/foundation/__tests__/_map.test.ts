@@ -50,7 +50,7 @@ describe('motionObservable._map',
       }
     );
 
-    it('should transform the stream with the supplied predicate',
+    it('should transform the stream with the supplied function',
       () => {
         stream._map(
           x => x + 40
