@@ -18,6 +18,7 @@ import {
   Constructor,
   MotionNextOperable,
   NextChannel,
+  Observable,
   ObservableWithMotionOperators,
 } from '../types';
 
@@ -31,23 +32,39 @@ export function withRewriteRange<S extends Constructor<MotionNextOperable<number
      * Receives a value from upstream, linearly interpolates it between the given
      * ranges, and dispatches the result to the observer.
      */
-    rewriteRange({ fromStart, fromEnd, toStart = 0, toEnd = 1 }: RewriteRangeArgs): ObservableWithMotionOperators<number> {
-      return (this as any as ObservableWithMotionOperators<number>)._nextOperator(
-        (value: number, dispatch: NextChannel<number>) => {
+    rewriteRange({
+      fromStart: fromStart$ = 0,
+      fromEnd: fromEnd$ = 1,
+      toStart: toStart$ = 0,
+      toEnd: toEnd$ = 1,
+    }: RewriteRangeArgs): ObservableWithMotionOperators<number> {
+      return (this as any as ObservableWithMotionOperators<number>)._reactiveNextOperator(
+        (
+          dispatch: NextChannel<number>,
+          value: number,
+          fromStart: number,
+          fromEnd: number,
+          toStart: number,
+          toEnd: number,
+        ) => {
           const fromRange = fromStart - fromEnd;
           const fromProgress = (value - fromEnd) / fromRange;
           const toRange = toStart - toEnd;
 
           dispatch(toEnd + fromProgress * toRange);
-        }
+        },
+        fromStart$,
+        fromEnd$,
+        toStart$,
+        toEnd$,
       );
     }
   };
 }
 
 export type RewriteRangeArgs = {
-  fromStart: number,
-  fromEnd: number,
-  toStart: number,
-  toEnd: number,
+  fromStart?: number | Observable<number>,
+  fromEnd?: number | Observable<number>,
+  toStart?: number | Observable<number>,
+  toEnd?: number | Observable<number>,
 };
