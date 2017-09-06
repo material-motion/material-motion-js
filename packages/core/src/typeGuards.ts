@@ -20,6 +20,7 @@ import {
   Observable,
   Observer,
   Point2D,
+  Timestamped,
 } from './types';
 
 /**
@@ -86,4 +87,11 @@ export function isPointerEvent(value: any): value is PointerEvent {
  */
 export function isIterable(value: any): value is Iterable<any> {
   return value[Symbol.iterator] !== undefined;
+}
+
+/**
+ * Checks if value has a timestamp property.
+ */
+export function isTimestamped(value: any): value is Timestamped<any> {
+  return value && value.hasOwnProperty('timestamp');
 }

@@ -16,58 +16,90 @@
 
 import {
   isMap,
+  isObservable,
+  isTimestamped,
 } from '../typeGuards';
 
 import {
   Constructor,
   Dict,
   MotionReactiveNextOperable,
+  MotionTimestampable,
   NextChannel,
   Observable,
   ObservableWithMotionOperators,
+  Timestamped,
 } from '../types';
+
+import {
+  timestamp,
+} from './timestamp';
 
 export type RewritableOptions<U> = {
   defaultValue?: U | symbol,
+  dispatchOnKeyChange?: boolean,
 };
 export interface MotionRewritable<T> {
-  rewrite<U, R extends U | Observable<U>>(dict: Dict<R> | Map<T, R>, options: RewritableOptions<U>): ObservableWithMotionOperators<U>;
+  rewrite<U, R extends U | ObservableWithMotionOperators<U>>(dict: Dict<R> | Map<T, R>, options: RewritableOptions<U>): ObservableWithMotionOperators<U>;
 }
 
 export const SUPPRESS_FAILURES = Symbol();
 
-export function withRewrite<T, S extends Constructor<MotionReactiveNextOperable<T>>>(superclass: S): S & Constructor<MotionRewritable<T>> {
+export function withRewrite<T, S extends Constructor<MotionReactiveNextOperable<T> & MotionTimestampable<T>>>(superclass: S): S & Constructor<MotionRewritable<T>> {
   return class extends superclass implements MotionRewritable<T> {
-    rewrite<U, R extends U | Observable<U>>(dict: Dict<R> | Map<T, R>, { defaultValue = SUPPRESS_FAILURES }: RewritableOptions<U> = {}): ObservableWithMotionOperators<U> {
-      let keys: Iterable<string> | Iterable<T>;
-      let values: Iterable<U | Observable<U>>;
+    rewrite<U, R extends U | ObservableWithMotionOperators<U>>(dict: Dict<R> | Map<T, R>, { defaultValue = SUPPRESS_FAILURES, dispatchOnKeyChange = true }: RewritableOptions<U> = {}): ObservableWithMotionOperators<U> {
+      let keys: Array<string> | Array<T>;
+      let values: Array<U | ObservableWithMotionOperators<U> | Timestamped<U> | Timestamped<ObservableWithMotionOperators<U>>>;
       let castKeysToStrings = false;
 
       if (isMap(dict)) {
-        keys = dict.keys();
-        values = dict.values();
+        keys = Array.from(dict.keys());
+        values = Array.from(dict.values());
       } else {
         keys = Object.keys(dict);
         values = Object.values(dict);
         castKeysToStrings = true;
       }
 
-      const keyArray = Array.from(keys);
+      let upstream: MotionReactiveNextOperable<T> & MotionTimestampable<T> = this;
 
-      return this._reactiveNextOperator(
-        (dispatch: NextChannel<U>, key: string | T, ...valueArray: Array<U>) => {
+      if (!dispatchOnKeyChange) {
+        values = values.map(
+          value => isObservable(value)
+            ? value.timestamp()
+            : timestamp(value)
+        );
+        upstream = this.timestamp();
+      }
+
+      return upstream._reactiveNextOperator(
+        (dispatch: NextChannel<U>, currentKey: string | T | Timestamped<string | T>, ...currentValues: Array<U | Timestamped<U>>) => {
+          let key: string | T = isTimestamped(currentKey)
+            ? currentKey.value
+            : currentKey;
+
           if (castKeysToStrings) {
             key = key.toString();
           }
 
-          const index = keyArray.indexOf(key);
+          const index = keys.indexOf(key);
 
           if (index === -1) {
             if (defaultValue !== SUPPRESS_FAILURES) {
               dispatch(defaultValue as U);
             }
           } else {
-            dispatch(valueArray[index]);
+            const currentValue = currentValues[index];
+            const value = isTimestamped(currentValue)
+              ? currentValue.value
+              : currentValue;
+
+            // Prevent stale values from being dispatched by only forwarding
+            // values that are newer than the key, unless dispatchOnKeyChange is
+            // set (which will omit the timestamps).
+            if (!isTimestamped(currentValue) || currentValue.timestamp > (currentKey as Timestamped<T>).timestamp) {
+              dispatch(value);
+            }
           }
         },
         ...values
