@@ -27,15 +27,18 @@ import {
   ObservableWithMotionOperators,
 } from '../types';
 
+export type RewritableOptions<U> = {
+  defaultValue?: U | symbol,
+};
 export interface MotionRewritable<T> {
-  rewrite<U, R extends U | Observable<U>>(dict: Dict<R> | Map<T, R>, defaultValue?: U | symbol): ObservableWithMotionOperators<U>;
+  rewrite<U, R extends U | Observable<U>>(dict: Dict<R> | Map<T, R>, options: RewritableOptions<U>): ObservableWithMotionOperators<U>;
 }
 
-const SUPPRESS_FAILURES = Symbol();
+export const SUPPRESS_FAILURES = Symbol();
 
 export function withRewrite<T, S extends Constructor<MotionReactiveNextOperable<T>>>(superclass: S): S & Constructor<MotionRewritable<T>> {
   return class extends superclass implements MotionRewritable<T> {
-    rewrite<U, R extends U | Observable<U>>(dict: Dict<R> | Map<T, R>, defaultValue: U | symbol = SUPPRESS_FAILURES): ObservableWithMotionOperators<U> {
+    rewrite<U, R extends U | Observable<U>>(dict: Dict<R> | Map<T, R>, { defaultValue = SUPPRESS_FAILURES }: RewritableOptions<U> = {}): ObservableWithMotionOperators<U> {
       let keys: Iterable<string> | Iterable<T>;
       let values: Iterable<U | Observable<U>>;
       let castKeysToStrings = false;
