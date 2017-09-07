@@ -40,7 +40,7 @@ export function withIsAnyOf<T, S extends Constructor<MotionNextOperable<T>>>(sup
         (upstreamValue: any, ...possibilities: Array<any>) => {
           return possibilities.includes(upstreamValue);
         },
-        ...valuesOrValueStreams
+        valuesOrValueStreams
       );
     }
   };

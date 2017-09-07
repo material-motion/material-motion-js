@@ -46,7 +46,7 @@ export function withOffsetBy<T, S extends Constructor<MotionReactiveMappable<T>>
             return value + offset;
           }
         },
-        offset$
+        [ offset$, ]
       );
     }
   };

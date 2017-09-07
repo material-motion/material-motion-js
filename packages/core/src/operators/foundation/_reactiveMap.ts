@@ -22,7 +22,7 @@ import {
 } from '../../types';
 
 export interface MotionReactiveMappable<T> {
-  _reactiveMap<U>(transform: (upstreamValue: T, ...args: Array<any>) => U, ...args: Array<any>): ObservableWithMotionOperators<U>;
+  _reactiveMap<U>(transform: (upstreamValue: T, ...args: Array<any>) => U, args: Array<any>): ObservableWithMotionOperators<U>;
 }
 
 export function withReactiveMap<T, S extends Constructor<MotionReactiveNextOperable<T>>>(superclass: S): S & Constructor<MotionReactiveMappable<T>> {
@@ -32,12 +32,12 @@ export function withReactiveMap<T, S extends Constructor<MotionReactiveNextOpera
      * `_reactiveMap` calls `transform` and synchronously passes the result to
      * the observer.
      */
-    _reactiveMap<U>(transform: (upstreamValue: T, ...args: Array<any>) => U, ...args: Array<any>): ObservableWithMotionOperators<U> {
+    _reactiveMap<U>(transform: (upstreamValue: T, ...args: Array<any>) => U, args: Array<any>): ObservableWithMotionOperators<U> {
       return this._reactiveNextOperator(
         (dispatch: NextChannel<U>, upstreamValue: T, ...argValues: Array<any>) => {
           dispatch(transform(upstreamValue, ...argValues));
         },
-        ...args
+        args
       );
     }
   };
