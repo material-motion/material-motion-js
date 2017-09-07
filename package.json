@@ -11,6 +11,9 @@
   "workspaces": [
     "packages/*"
   ],
+  "resolutions": {
+    "uws": "8.14.1"
+  },
   "devDependencies": {
     "@types/chai": "^3.4.34",
     "@types/sinon": "^1.16.34",
