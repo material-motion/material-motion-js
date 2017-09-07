@@ -214,10 +214,12 @@ export class Tossable {
           y: resistanceOrigin.y + radiusWithResistance * Math.sin(angle),
         };
       },
-      this.resistanceOrigin$,
-      this.radiusUntilResistance$,
-      this.resistanceBasis$,
-      this.resistanceFactor$,
+      [
+        this.resistanceOrigin$,
+        this.radiusUntilResistance$,
+        this.resistanceBasis$,
+        this.resistanceFactor$,
+      ]
     );
 
     // maybe should be named velocityWhen?
@@ -290,7 +292,7 @@ export function applyLinearResistanceToTossable({
   factor$.subscribe(tossable.resistanceFactor$);
   min$._reactiveMap(
     (min: number, max: number) => Math.abs(max - min) / 2,
-    max$
+    [ max$, ]
   ).subscribe(tossable.radiusUntilResistance$);
   axis$._reactiveMap(
     (axis: Axis, min: number, max: number) => {
@@ -310,7 +312,6 @@ export function applyLinearResistanceToTossable({
         console.warn(`Cannot apply linear resistance if axis isn't locked`);
       }
     },
-    min$,
-    max$,
+    [ min$, max$, ],
   ).subscribe(tossable.resistanceOrigin$);
 }

@@ -27,14 +27,14 @@ export interface MotionScalable {
 
 export function withScaledBy<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionScalable> {
   return class extends superclass implements MotionScalable {
-     /**
-     * Multiplies the coefficient by the incoming value and dispatches the
-     * result.
-     */
+   /**
+    * Multiplies the coefficient by the incoming value and dispatches the
+    * result.
+    */
    scaledBy(coefficient$: number | Observable<number>): ObservableWithMotionOperators<number> {
       return (this as any as ObservableWithMotionOperators<number>)._reactiveMap(
         (value: number, coefficient: number) => coefficient * value,
-        coefficient$
+        [ coefficient$, ],
       );
     }
   };

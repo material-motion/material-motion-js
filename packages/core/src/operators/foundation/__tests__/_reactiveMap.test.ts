@@ -67,7 +67,7 @@ describe('motionObservable._reactiveMap',
       () => {
         subject._reactiveMap(
           (upstream, sideloaded) => upstream + sideloaded,
-          argSubject,
+          [ argSubject ],
         ).subscribe(listener);
 
         subject.next(40);
@@ -83,7 +83,7 @@ describe('motionObservable._reactiveMap',
       () => {
         subject._reactiveMap(
           (upstream, sideloaded) => upstream + sideloaded,
-          argSubject,
+          [ argSubject ],
         ).subscribe(listener);
 
         subject.next(40);
@@ -102,8 +102,7 @@ describe('motionObservable._reactiveMap',
       () => {
         subject._reactiveMap(
           (upstream, constant, sideloaded) => upstream + constant + sideloaded,
-          100,
-          argSubject,
+          [ 100, argSubject ],
         ).subscribe(listener);
 
         subject.next(40);
