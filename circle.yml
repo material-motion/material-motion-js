@@ -5,8 +5,14 @@ machine:
 
 dependencies:
   override:
+    # upgrade to current yarn
+    - yarn config set prefix "/home/ubuntu/.yarn"
+    - PATH=$( yarn global bin ):$PATH
+    - yarn global add yarn@1
+    - yarn config set prefix "/home/ubuntu/.yarn"
+
     - echo "workspaces-experimental true" >> ~/.yarnrc
-    - yarn global add lerna@2.0.0
+    - yarn global add lerna@2
     - lerna bootstrap -- --non-interactive
   cache_directories:
     - ~/.cache/yarn
