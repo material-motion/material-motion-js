@@ -14,6 +14,26 @@
  *  under the License.
  */
 
+import {
+  getEventStreamFromElement;
+} from './getEventStreamFromElement';
+
+// If/when we care about isomorphic dependents, we can check `typeof window`
+// here and export an empty stream if it's undefined.
+export const viewportDimensions$ = getEventStreamFromElement(
+  'resize', window as any as Element
+).startWith({})._map(
+  // Using _map instead of rewriteTo because it should be reevaluated on
+  // every resize.
+  () => (
+    {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    }
+  )
+)._remember();
+
+
 export * from './convertTouchEventsToPointerEvents';
 export { default as convertTouchEventsToPointerEvents } from './convertTouchEventsToPointerEvents';
 
@@ -28,4 +48,3 @@ export { default as getEventStreamFromElement } from './getEventStreamFromElemen
 
 export * from './getPointerEventStreamsFromElement';
 export { default as getPointerEventStreamsFromElement } from './getPointerEventStreamsFromElement';
-
