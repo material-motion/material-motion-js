@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "scripts": {
     "pundle": "../../node_modules/.bin/pundle",
-    "start": "yarn run pundle -- --dev",
+    "start": "yarn run pundle --dev",
     "clean": "rm -rf ./site/dist/*; mkdir -p ./site/dist/",
     "lint": "../../node_modules/.bin/tslint -c ../../tslint.json --project tsconfig.json --type-check",
     "build": "yarn run clean; yarn run pundle",
-    "deploy": "yarn run build; $( yarn bin )/firebase deploy"
+    "deploy": "yarn run build; ../../node_modules/.bin/firebase deploy"
   },
   "dependencies": {
     "jsxstyle": "1.0.2",
