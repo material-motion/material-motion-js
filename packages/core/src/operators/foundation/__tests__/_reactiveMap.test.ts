@@ -53,7 +53,7 @@ describe('motionObservable._reactiveMap',
 
     it('should call the transform function with each upstream value',
       () => {
-        subject._reactiveMap(listener).subscribe(() => {});
+        subject._reactiveMap(listener, []).subscribe(() => {});
 
         subject.next(2);
         expect(listener).to.have.been.calledWith(2);
@@ -67,7 +67,7 @@ describe('motionObservable._reactiveMap',
       () => {
         subject._reactiveMap(
           (upstream, sideloaded) => upstream + sideloaded,
-          argSubject,
+          [ argSubject ],
         ).subscribe(listener);
 
         subject.next(40);
@@ -83,7 +83,7 @@ describe('motionObservable._reactiveMap',
       () => {
         subject._reactiveMap(
           (upstream, sideloaded) => upstream + sideloaded,
-          argSubject,
+          [ argSubject ],
         ).subscribe(listener);
 
         subject.next(40);
@@ -102,8 +102,7 @@ describe('motionObservable._reactiveMap',
       () => {
         subject._reactiveMap(
           (upstream, constant, sideloaded) => upstream + constant + sideloaded,
-          100,
-          argSubject,
+          [ 100, argSubject ],
         ).subscribe(listener);
 
         subject.next(40);
