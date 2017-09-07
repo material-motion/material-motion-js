@@ -53,10 +53,7 @@ export function withRewriteRange<S extends Constructor<MotionNextOperable<number
 
           dispatch(toEnd + fromProgress * toRange);
         },
-        fromStart$,
-        fromEnd$,
-        toStart$,
-        toEnd$,
+        [ fromStart$, fromEnd$, toStart$, toEnd$, ],
       );
     }
   };

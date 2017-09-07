@@ -73,36 +73,45 @@ export function withRewrite<T, S extends Constructor<MotionReactiveNextOperable<
       }
 
       return upstream._reactiveNextOperator(
-        (dispatch: NextChannel<U>, currentKey: string | T | Timestamped<string | T>, ...currentValues: Array<U | Timestamped<U>>) => {
-          let key: string | T = isTimestamped(currentKey)
-            ? currentKey.value
-            : currentKey;
+        (dispatch: NextChannel<U>, currentKey: undefined | string | T | Timestamped<string | T>, ...currentValues: Array<undefined | U | Timestamped<U>>) => {
+          if (currentKey !== undefined) {
+            let key: string | T = isTimestamped(currentKey)
+              ? currentKey.value
+              : currentKey;
 
-          if (castKeysToStrings) {
-            key = key.toString();
-          }
-
-          const index = keys.indexOf(key);
-
-          if (index === -1) {
-            if (defaultValue !== SUPPRESS_FAILURES) {
-              dispatch(defaultValue as U);
+            if (castKeysToStrings) {
+              key = key.toString();
             }
-          } else {
-            const currentValue = currentValues[index];
-            const value = isTimestamped(currentValue)
-              ? currentValue.value
-              : currentValue;
 
-            // Prevent stale values from being dispatched by only forwarding
-            // values that are newer than the key, unless dispatchOnKeyChange is
-            // set (which will omit the timestamps).
-            if (!isTimestamped(currentValue) || currentValue.timestamp > (currentKey as Timestamped<T>).timestamp) {
-              dispatch(value);
+            const index = keys.indexOf(key);
+
+            if (index === -1) {
+              if (defaultValue !== SUPPRESS_FAILURES) {
+                dispatch(defaultValue as U);
+              }
+            } else {
+              const currentValue = currentValues[index];
+
+              // Wait until both the currentKey and currentValue have been
+              // defined before dispatching.  This also presumes that the author
+              // is not intentionally rewriting to undefined.
+              if (currentValue !== undefined) {
+                const value = isTimestamped(currentValue)
+                  ? currentValue.value
+                  : currentValue;
+
+                // Prevent stale values from being dispatched by only forwarding
+                // values that are newer than the key, unless dispatchOnKeyChange is
+                // set (which will omit the timestamps).
+                if (!isTimestamped(currentValue) || currentValue.timestamp > (currentKey as Timestamped<T>).timestamp) {
+                  dispatch(value);
+                }
+              }
             }
           }
         },
-        ...values
+        values,
+        { waitForAllValues: false }
       );
     }
   };
