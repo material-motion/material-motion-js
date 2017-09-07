@@ -33,7 +33,7 @@ export function withNormalizedBy<T, S extends Constructor<MotionReactiveMappable
    normalizedBy(denominator$: number | Observable<number>): ObservableWithMotionOperators<number> {
       return (this as any as ObservableWithMotionOperators<number>)._reactiveMap(
         (value: number, denominator: number) => value / denominator,
-        denominator$
+        [ denominator$, ]
       );
     }
   };

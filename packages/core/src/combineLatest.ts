@@ -29,7 +29,10 @@ import {
   isObservable,
 } from './typeGuards';
 
-export function combineLatest<T extends Dict<any> | Iterable<any>>(streams: T): MotionObservable<T> {
+export type CombineLatestOptions = {
+  waitForAllValues?: boolean,
+};
+export function combineLatest<T extends Dict<any> | Iterable<any>>(streams: T, { waitForAllValues = true }: CombineLatestOptions = {}): MotionObservable<T> {
   return new MotionObservable(
     (observer: Observer<T>) => {
       const outstandingKeys = new Set(Object.keys(streams));
@@ -42,7 +45,9 @@ export function combineLatest<T extends Dict<any> | Iterable<any>>(streams: T): 
 
       const subscriptions: Dict<Subscription> = {};
 
+      let initializing = true;
       outstandingKeys.forEach(checkKey);
+      initializing = false;
 
       function checkKey(key: string | number) {
         const maybeStream: any = streams[key];
@@ -64,7 +69,7 @@ export function combineLatest<T extends Dict<any> | Iterable<any>>(streams: T): 
       }
 
       function dispatchNextValue() {
-        if (!outstandingKeys.size) {
+        if (waitForAllValues ? outstandingKeys.size === 0 : !initializing) {
           observer.next(nextValue);
         }
       }

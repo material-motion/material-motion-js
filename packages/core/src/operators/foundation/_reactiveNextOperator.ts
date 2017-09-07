@@ -19,7 +19,8 @@ import {
 } from '../../observables/proxies';
 
 import {
-  combineLatest
+  CombineLatestOptions,
+  combineLatest,
 } from '../../combineLatest';
 
 import {
@@ -37,7 +38,7 @@ import {
 } from '../../types';
 
 export interface MotionReactiveNextOperable<T> extends Observable<T> {
-  _reactiveNextOperator<U>(operation: ReactiveNextOperation<T, U>, ...args: Array<any>): ObservableWithMotionOperators<U>;
+  _reactiveNextOperator<U>(operation: ReactiveNextOperation<T, U>, args: Array<any>, options?: CombineLatestOptions): ObservableWithMotionOperators<U>;
 }
 
 export function withReactiveNextOperator<T, S extends Constructor<Observable<T>>>(superclass: S): S & Constructor<MotionReactiveNextOperable<T>> {
@@ -54,11 +55,11 @@ export function withReactiveNextOperator<T, S extends Constructor<Observable<T>>
      * `_reactiveNextOperator` will not call `operation` until it has received
      * a value from every argument it is subscribed to.
      */
-    _reactiveNextOperator<U>(operation: ReactiveNextOperation<T, U>, ...args: Array<any>): ObservableWithMotionOperators<U> {
+    _reactiveNextOperator<U>(operation: ReactiveNextOperation<T, U>, args: Array<any>, options?: CombineLatestOptions): ObservableWithMotionOperators<U> {
       return new MotionObservable<U>(
         (observer: Observer<U>) => {
           const boundNext: NextChannel<U> = observer.next.bind(observer);
-          return combineLatest([ this, ...args ]).subscribe(
+          return combineLatest([ this, ...args ], options).subscribe(
             (values) => operation(boundNext, ...values)
           );
         }

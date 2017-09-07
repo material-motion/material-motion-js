@@ -55,7 +55,7 @@ export function anyOf(streams: Array<MotionObservable<boolean>>): MotionObservab
     (_, ...values) => {
       return values.some(isTrue);
     },
-    ...streams
+    streams
   );
 };
 
@@ -69,7 +69,7 @@ export function allOf(streams: Array<MotionObservable<boolean>>): MotionObservab
     (_, ...values) => {
       return values.every(isTrue);
     },
-    ...streams
+    streams
   );
 };
 
