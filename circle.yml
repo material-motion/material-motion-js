@@ -5,9 +5,20 @@ machine:
 
 dependencies:
   override:
+    # this has to come first or even `yarn global add yarn` will fail
     - echo "workspaces-experimental true" >> ~/.yarnrc
-    - yarn global add lerna@2.0.0
-    - lerna bootstrap -- --non-interactive
+
+    ## upgrade to current yarn
+    # set default yarn installation's install path
+    - yarn config set prefix "$HOME/.yarn"
+    - PATH=$( yarn global bin ):$PATH
+    # install the new yarn version
+    - yarn global add yarn@1
+    # set new yarn installation's install path
+    - yarn config set prefix "$HOME/.yarn"
+
+    # use the lerna version specified in package.json
+    - $( yarn bin )/lerna bootstrap -- --non-interactive --flat
   cache_directories:
     - ~/.cache/yarn
 
