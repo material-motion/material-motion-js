@@ -206,7 +206,7 @@ export class Tossable {
           return location;
         }
 
-        const radiusWithResistance = resistanceBasis / resistanceFactor * Math.sin(overflowRadius / resistanceBasis * Math.PI / 2) + radiusUntilResistance;
+        const radiusWithResistance = resistanceBasis / resistanceFactor * Math.sin(Math.min(1, overflowRadius / resistanceBasis) * Math.PI / 2) + radiusUntilResistance;
         const angle = Math.atan2(locationFromOrigin.y, locationFromOrigin.x);
 
         return {
