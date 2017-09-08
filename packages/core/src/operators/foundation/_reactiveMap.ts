@@ -17,25 +17,45 @@
 import {
   Constructor,
   MotionReactiveNextOperable,
+  MotionTappable,
   NextChannel,
   ObservableWithMotionOperators,
 } from '../../types';
 
+export type ReactiveMappableOptions = {
+  onlyDispatchWithUpstream?: boolean,
+};
 export interface MotionReactiveMappable<T> {
-  _reactiveMap<U>(transform: (upstreamValue: T, ...args: Array<any>) => U, args: Array<any>): ObservableWithMotionOperators<U>;
+  _reactiveMap<U>(
+    transform: (upstreamValue: T, ...args: Array<any>) => U,
+    args: Array<any>,
+    options?: ReactiveMappableOptions,
+  ): ObservableWithMotionOperators<U>;
 }
 
-export function withReactiveMap<T, S extends Constructor<MotionReactiveNextOperable<T>>>(superclass: S): S & Constructor<MotionReactiveMappable<T>> {
+export function withReactiveMap<T, S extends Constructor<MotionReactiveNextOperable<T> & MotionTappable<T>>>(superclass: S): S & Constructor<MotionReactiveMappable<T>> {
   return class extends superclass implements MotionReactiveMappable<T> {
     /**
      * Whenever the upstream value or an argument's value changes,
      * `_reactiveMap` calls `transform` and synchronously passes the result to
      * the observer.
+     *
+     * If the `onlyDispatchWithUpstream` option is set, `transform` is only
+     * called when the upstream value changes.
      */
-    _reactiveMap<U>(transform: (upstreamValue: T, ...args: Array<any>) => U, args: Array<any>): ObservableWithMotionOperators<U> {
-      return this._reactiveNextOperator(
+    _reactiveMap<U>(transform: (upstreamValue: T, ...args: Array<any>) => U, args: Array<any>, { onlyDispatchWithUpstream = false }: ReactiveMappableOptions = {}): ObservableWithMotionOperators<U> {
+      let upstreamChanged = false;
+
+      return this._tap(
+        () => {
+          upstreamChanged = true;
+        }
+      )._reactiveNextOperator(
         (dispatch: NextChannel<U>, upstreamValue: T, ...argValues: Array<any>) => {
-          dispatch(transform(upstreamValue, ...argValues));
+          if (upstreamChanged || !onlyDispatchWithUpstream) {
+            dispatch(transform(upstreamValue, ...argValues));
+          }
+          upstreamChanged = false;
         },
         args
       );
