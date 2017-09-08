@@ -16,27 +16,27 @@
 
 import {
   Constructor,
-  MotionNextOperable,
+  MotionReactiveNextOperable,
   NextChannel,
+  Observable,
   ObservableWithMotionOperators,
 } from '../types';
 
 export interface MotionRewriteToable {
-  rewriteTo<U>(value: U): ObservableWithMotionOperators<U>;
+  rewriteTo<U>(valueOrStream: U | Observable<U>): ObservableWithMotionOperators<U>;
 }
 
-export function withRewriteTo<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionRewriteToable> {
+export function withRewriteTo<T, S extends Constructor<MotionReactiveNextOperable<T>>>(superclass: S): S & Constructor<MotionRewriteToable> {
   return class extends superclass implements MotionRewriteToable {
     /**
      * Dispatches its argument every time it receives a value from upstream.
      */
-    rewriteTo<U>(value: U): ObservableWithMotionOperators<U> {
-      return this._nextOperator(
-        // TypeScript gets mad if you omit a variable, so we use `_` for variables
-        // we don't care bout
-        (_, dispatch: NextChannel<U>) => {
+    rewriteTo<U>(valueOrStream: U | Observable<U>): ObservableWithMotionOperators<U> {
+      return this._reactiveNextOperator(
+        (dispatch: NextChannel<U>, value: U) => {
           dispatch(value);
-        }
+        },
+        [ valueOrStream ],
       );
     }
   };
