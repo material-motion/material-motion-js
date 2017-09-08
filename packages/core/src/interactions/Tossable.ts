@@ -141,7 +141,15 @@ export class Tossable {
   readonly velocity$: ObservableWithMotionOperators<Point2D>;
   readonly draggedLocation$: ObservableWithMotionOperators<Point2D>;
 
+  readonly draggable: Draggable;
+  readonly spring: NumericSpring;
+  readonly location$: MotionProperty<Point2D>;
+
   constructor({ draggable, spring, location$ }: TossableArgs) {
+    this.draggable = draggable;
+    this.spring = spring;
+    this.location$ = location$;
+
     const dragAtRest$ = draggable.state$.rewrite({
       [State.AT_REST]: true,
       [State.ACTIVE]: false,

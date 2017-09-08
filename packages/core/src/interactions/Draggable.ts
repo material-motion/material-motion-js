@@ -109,6 +109,12 @@ export class Draggable {
 
   readonly value$: ObservableWithMotionOperators<Point2D>;
 
+  readonly down$: ObservableWithMotionOperators<PartialPointerEvent>;
+  readonly move$: ObservableWithMotionOperators<PartialPointerEvent>;
+  readonly up$: ObservableWithMotionOperators<PartialPointerEvent>;
+  readonly capturedClick$: ObservableWithMotionOperators<MouseEvent>;
+  readonly capturedDragStart$: ObservableWithMotionOperators<DragEvent>;
+
   constructor({
     down$,
     move$,
@@ -116,6 +122,12 @@ export class Draggable {
     capturedClick$,
     capturedDragStart$
   }: PointerEventStreams) {
+    this.down$ = down$;
+    this.move$ = move$;
+    this.up$ = up$;
+    this.capturedClick$ = capturedClick$;
+    this.capturedDragStart$ = capturedDragStart$;
+
     this.value$ = new MotionObservable<Point2D>(
       (observer: Observer<Point2D>) => {
         let downSubscription: Subscription | undefined;
