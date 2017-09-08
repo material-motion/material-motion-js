@@ -219,7 +219,10 @@ export class Tossable {
         this.radiusUntilResistance$,
         this.resistanceBasis$,
         this.resistanceFactor$,
-      ]
+      ],
+      {
+        onlyDispatchWithUpstream: true,
+      },
     );
 
     // maybe should be named velocityWhen?
