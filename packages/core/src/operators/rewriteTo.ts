@@ -16,27 +16,33 @@
 
 import {
   Constructor,
-  MotionReactiveNextOperable,
+  MotionReactiveMappable,
   NextChannel,
   Observable,
   ObservableWithMotionOperators,
 } from '../types';
 
+import {
+  ReactiveMappableOptions,
+} from './foundation/_reactiveMap';
+
 export interface MotionRewriteToable {
-  rewriteTo<U>(valueOrStream: U | Observable<U>): ObservableWithMotionOperators<U>;
+  rewriteTo<U>(
+    valueOrStream: U | Observable<U>,
+    options?: ReactiveMappableOptions,
+  ): ObservableWithMotionOperators<U>;
 }
 
-export function withRewriteTo<T, S extends Constructor<MotionReactiveNextOperable<T>>>(superclass: S): S & Constructor<MotionRewriteToable> {
+export function withRewriteTo<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionRewriteToable> {
   return class extends superclass implements MotionRewriteToable {
     /**
      * Dispatches its argument every time it receives a value from upstream.
      */
-    rewriteTo<U>(valueOrStream: U | Observable<U>): ObservableWithMotionOperators<U> {
-      return this._reactiveNextOperator(
-        (dispatch: NextChannel<U>, upstreamValue: T, value: U) => {
-          dispatch(value);
-        },
+    rewriteTo<U>(valueOrStream: U | Observable<U>, options: ReactiveMappableOptions = { onlyDispatchWithUpstream: true }): ObservableWithMotionOperators<U> {
+      return this._reactiveMap(
+        (upstreamValue: T, value: U) => value,
         [ valueOrStream ],
+        options,
       );
     }
   };
