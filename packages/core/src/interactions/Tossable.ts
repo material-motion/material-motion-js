@@ -19,6 +19,7 @@ import {
 } from '../State';
 
 import {
+  anyOf,
   when,
 } from '../aggregators';
 
@@ -245,22 +246,14 @@ export class Tossable {
 
     dragAtRest$.subscribe(spring.enabled$);
 
-    // Since the spring's state is triggered by draggable's we need to wait to
-    // see if the spring is going to be become active before declaring ourselves
-    // at rest.  There's probably a cleaner way to do this, but it works for
-    // now.
-    dragActivePulse$.rewriteTo(State.ACTIVE).merge(spring.state$).dedupe().subscribe(this.state$);
-    dragAtRestPulse$.subscribe(
-      () => {
-        requestAnimationFrame(
-          () => {
-            if (spring.state !== State.ACTIVE && this.state === State.ACTIVE) {
-              this.state$.write(State.AT_REST);
-            }
-          }
-        );
-      }
-    );
+    anyOf([
+      spring.state$.isAnyOf([ State.ACTIVE ])
+      draggable.state$.isAnyOf([ State.ACTIVE ])
+    ]).rewrite({
+      [true]: State.ACTIVE,
+      [false]: State.AT_REST,
+    }).dedupe().subscribe(this.state$);
+
     this.value$ = spring.enabled$.rewrite(
       {
         [true]: spring.value$._map(
