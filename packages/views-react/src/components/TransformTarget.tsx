@@ -20,6 +20,10 @@ import {
   Point2D,
 } from 'material-motion';
 
+import {
+  buildTransformString,
+} from 'material-motion-views-dom';
+
 export type TransformTargetArgs = {
   position: 'absolute' | 'fixed' | 'relative' | 'static' | 'sticky',
   touchAction: 'auto' | 'none' | 'pan-x' | 'pan-left' | 'pan-right' | 'pan-y'
@@ -64,11 +68,7 @@ export default function TransformTarget({
       style = {
         {
           ...propsPassthrough,
-          transform: `
-            translate(${ applySuffix(translate.x || 0, 'px') }, ${ applySuffix(translate.y || 0, 'px') })
-            rotate(${ applySuffix(rotate, 'rad') })
-            scale(${ scale })
-          `,
+          transform: buildTransformString({ translate, rotate, scale }),
           opacity,
           position,
           touchAction,
@@ -78,12 +78,4 @@ export default function TransformTarget({
       { children }
     </div>
   );
-}
-
-function applySuffix(value: number | string, suffix?: string): string {
-  if (typeof value === 'string') {
-    return value;
-  }
-
-  return value + suffix;
 }
