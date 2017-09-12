@@ -137,7 +137,6 @@ export class Tossable {
     this.resistanceFactor$.write(value);
   }
 
-  readonly resistanceProgress$: ObservableWithMotionOperators<number>;
   readonly value$: ObservableWithMotionOperators<Point2D>;
   readonly velocity$: ObservableWithMotionOperators<Point2D>;
   readonly draggedLocation$: ObservableWithMotionOperators<Point2D>;
@@ -190,7 +189,6 @@ export class Tossable {
     // pointer.)
     const locationOnDown$ = location$._debounce(dragActivePulse$);
 
-    this.resistanceProgress$ = new MemorylessMotionSubject<number>();
     this.draggedLocation$ = draggable.value$.offsetBy(locationOnDown$._debounce(draggable.value$))._reactiveMap(
       (
         location: Point2D,
@@ -214,8 +212,6 @@ export class Tossable {
 
         const overflowRadius = Math.sqrt(locationFromOrigin.x ** 2 + locationFromOrigin.y ** 2) - radiusUntilResistance;
         const resistanceProgress = Math.max(0, Math.min(1, overflowRadius / resistanceBasis));
-
-        (this.resistanceProgress$ as MemorylessMotionSubject<number>).next(resistanceProgress);
 
         if (overflowRadius < 0) {
           return location;
