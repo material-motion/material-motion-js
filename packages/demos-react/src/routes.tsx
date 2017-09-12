@@ -24,6 +24,7 @@ import Router from 'react-router/BrowserRouter';
 // import ExampleMain from './example/components/ExampleMain';
 import QuickiePointerEventTest from './QuickiePointerEventTest';
 import SpringComparison from './SpringComparison';
+import SwipeableDemo from './SwipeableDemo';
 
 // To add a new demo, import the correct component above and add it to the links
 // list below.  Everything else is automatic.
@@ -33,6 +34,11 @@ const links = [
   //   name: 'ExampleMain',
   //   component: ExampleMain,
   // },
+  {
+    href: '/swipe-away/',
+    name: 'SwipeableDemo',
+    component: SwipeableDemo,
+  },
   {
     href: '/spring-comparison/',
     name: 'SpringComparison',
