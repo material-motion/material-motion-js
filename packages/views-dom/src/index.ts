@@ -34,6 +34,9 @@ export const viewportDimensions$ = getEventStreamFromElement(
 )._remember();
 
 
+export * from './combineStyleStreams';
+export { default as combineStyleStreams } from './combineStyleStreams';
+
 export * from './convertTouchEventsToPointerEvents';
 export { default as convertTouchEventsToPointerEvents } from './convertTouchEventsToPointerEvents';
 
