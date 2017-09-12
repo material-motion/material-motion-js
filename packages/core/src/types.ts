@@ -138,6 +138,22 @@ export interface MotionElement {
   getEvent$(type: string): MotionObservable<Event>;
 }
 
+export type WillChangeStyleStreams = {
+  readonly willChange$: MotionObservable<string>,
+};
+
+export type TranslateStyleStreams = WillChangeStyleStreams & {
+  readonly translate$: MotionObservable<Point2D>,
+};
+
+export type ScaleStyleStreams = WillChangeStyleStreams & {
+  readonly scale$: MotionObservable<number>,
+};
+
+export type OpacityStyleStreams = WillChangeStyleStreams & {
+  readonly opacity$: MotionObservable<number>,
+};
+
 export type EqualityCheck = (a: any, b: any) => boolean;
 
 export interface Timestamped<T> {
