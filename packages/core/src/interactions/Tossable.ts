@@ -261,30 +261,37 @@ export class Tossable {
         );
       }
     );
+    this.value$ = spring.enabled$.rewrite(
+      {
+        [true]: spring.value$._map(
+          // This _map() call is a quick hack to make up for the lack of a Point2D
+          // spring.  When a Point2D spring is implemented, this should go away, and
+          // `spring` should be of that type.
+          (value: number) => {
+            switch (firstAxis) {
+              case Axis.X:
+                return {
+                  x: value,
+                  y: 0,
+                };
 
-    this.value$ = spring.value$._map(
-      // This _map() call is a quick hack to make up for the lack of a Point2D
-      // spring.  When a Point2D spring is implemented, this should go away, and
-      // `spring` should be of that type.
-      (value: number) => {
-        switch (firstAxis) {
-          case Axis.X:
-            return {
-              x: value,
-              y: 0,
-            };
+              case Axis.Y:
+                return {
+                  x: 0,
+                  y: value,
+                };
 
-          case Axis.Y:
-            return {
-              x: 0,
-              y: value,
-            };
-
-          default:
-            throw new Error(`Please set draggable.axis to "x" or "y" before using Tossable`);
-        }
-      }
-    ).merge(this.draggedLocation$)._debounce();
+              default:
+                throw new Error(`Please set draggable.axis to "x" or "y" before using Tossable`);
+            }
+          }
+        ),
+        [false]: this.draggedLocation$
+      },
+      {
+        dispatchOnKeyChange: false,
+      },
+    )._debounce();
   }
 }
 export default Tossable;
