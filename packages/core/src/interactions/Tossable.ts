@@ -150,17 +150,17 @@ export class Tossable {
     this.spring = spring;
     this.location$ = location$;
 
-    const dragAtRest$ = draggable.state$.rewrite({
+    const dragIsAtRest$ = draggable.state$.rewrite({
       [State.AT_REST]: true,
       [State.ACTIVE]: false,
     }).dedupe();
 
     // Since drag starts at rest, this calls the observer immediately, which
     // sets velocity to undefined.  If `ignoreUntil` took a reactive pulse, this
-    // could be when(dragAtRest$).ignoreUntil(dragActivePulse$).  Since it's
+    // could be whenDragIsAtRest$.ignoreUntil(whenDragIsActive$).  Since it's
     // not, velocity manually starts with {0, 0}.
-    const dragAtRestPulse$ = when(dragAtRest$);
-    const dragActivePulse$ = when(dragAtRest$.inverted());
+    const whenDragIsAtRest$ = when(dragIsAtRest$);
+    const whenDragIsActive$ = when(dragIsAtRest$.inverted());
 
     const firstAxis = draggable.axis$.read();
     draggable.axis$.subscribe(
@@ -174,7 +174,7 @@ export class Tossable {
     // This block needs to come before the one that sets spring enabled to
     // ensure the spring initializes with the correct values; otherwise, it will
     // start from 0
-    location$.pluck(firstAxis)._debounce(dragAtRestPulse$).subscribe(spring.initialValue$);
+    location$.pluck(firstAxis)._debounce(whenDragIsAtRest$).subscribe(spring.initialValue$);
 
     // offsetBy will add the upstream value to the offset whenever the offset
     // changes.  Therefore, we need to debounce locationOnDown$ to make it wait
@@ -187,7 +187,7 @@ export class Tossable {
     // set on down, rather than drag.  (That, in turn, would be more correct -
     // it would enable a user to catch a springing object without moving the
     // pointer.)
-    const locationOnDown$ = location$._debounce(dragActivePulse$);
+    const locationOnDown$ = location$._debounce(whenDragIsActive$);
 
     this.draggedLocation$ = draggable.value$.offsetBy(locationOnDown$._debounce(draggable.value$))._reactiveMap(
       (
@@ -237,10 +237,10 @@ export class Tossable {
     );
 
     // maybe should be named velocityWhen?
-    this.velocity$ = this.draggedLocation$.startWith({ x: 0, y: 0 }).velocity(dragAtRestPulse$);
+    this.velocity$ = this.draggedLocation$.startWith({ x: 0, y: 0 }).velocity(whenDragIsAtRest$);
     this.velocity$.pluck(firstAxis).subscribe(spring.initialVelocity$);
 
-    dragAtRest$.subscribe(spring.enabled$);
+    dragIsAtRest$.subscribe(spring.enabled$);
 
     anyOf([
       spring.state$.isAnyOf([ State.ACTIVE ])
