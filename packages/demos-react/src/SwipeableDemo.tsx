@@ -30,6 +30,7 @@ import {
 } from 'material-motion';
 
 import {
+  combineStyleStreams,
   getPointerEventStreamsFromElement,
   viewportDimensions$,
 } from 'material-motion-views-dom';
@@ -54,10 +55,13 @@ export function SwipeableDemo() {
       }
     >
       {
-        Array(20).fill(
-          <SwipeableCard
-            width$ = { width$ }
-          />
+        Array(20).fill('').map(
+          (_, i) => (
+            <SwipeableCard
+              key = { i }
+              width$ = { width$ }
+            />
+          )
         )
       }
     </ul>
@@ -66,8 +70,12 @@ export function SwipeableDemo() {
 export default SwipeableDemo;
 
 class SwipeableCard extends React.Component<{}, {}> {
+  containerStyle$ = createProperty({ initialValue: {} });
   location$ = createProperty({ initialValue: { x: 0, y: 0 }});
-  willChange$ = createProperty({ initialValue: '' });
+  locationWillChange$ = createProperty({ initialValue: '' });
+  iconStyle$ = createProperty({ initialValue: {} });
+  backgroundScale$ = createProperty({ initialValue: 0 });
+  backgroundScaleWillChange$ = createProperty({ initialValue: '' });
 
   setupInteractions = (element: HTMLLIElement) => {
     if (element) {
@@ -87,23 +95,83 @@ class SwipeableCard extends React.Component<{}, {}> {
       const swipeable = new Swipeable({ tossable, width$ });
 
       swipeable.styleStreamsByTargetName.item.translate$.subscribe(this.location$);
-      swipeable.styleStreamsByTargetName.item.willChange$.subscribe(this.willChange$);
+      swipeable.styleStreamsByTargetName.item.willChange$.subscribe(this.locationWillChange$);
+      swipeable.styleStreamsByTargetName.background.scale$.subscribe(this.backgroundScale$);
+      swipeable.styleStreamsByTargetName.background.willChange$.subscribe(this.backgroundScaleWillChange$);
+
+      combineStyleStreams({
+        display: 'flex',
+        flexDirection: swipeable.styleStreamsByTargetName.container.flexDirection$.startWith('row'),
+        position: 'relative',
+        overflow: 'hidden',
+      }).subscribe(this.containerStyle$);
+
+      combineStyleStreams({
+        filter: 'invert()',
+        scale: swipeable.styleStreamsByTargetName.icon.scale$.startWith(0),
+        willChange: swipeable.styleStreamsByTargetName.icon.willChange$,
+      }).subscribe(this.iconStyle$);
     }
   }
 
   render() {
     return (
       <AttachStreams
-        domRef = { this.setupInteractions }
-        translate = { this.location$ }
+        style = { this.containerStyle$ }
       >
-        <TransformTarget
-          component = 'li'
-          height = { 72 }
-          backgroundColor = '#FFFFFF'
-          border = '.5px solid #E0E0E0'
-          touchAction = 'none'
-        />
+        <li>
+          <div
+            style = {
+              {
+                position: 'absolute',
+                display: 'flex',
+                flexDirection: 'row',
+                width: 48,
+                height: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }
+            }
+          >
+            <AttachStreams
+              scale = { this.backgroundScale$ }
+              willChange = { this.backgroundScaleWillChange$ }
+            >
+              <TransformTarget
+                position = 'absolute'
+                width = '200vw'
+                height = '200vw'
+                borderRadius = '100vw'
+                backgroundColor = '#F44336'
+              />
+            </AttachStreams>
+
+            <AttachStreams
+              style = { this.iconStyle$ }
+            >
+              <img
+                src = 'https://www.gstatic.com/images/icons/material/system/svg/delete_48px.svg'
+                width = { 24 }
+                height = { 24 }
+              />
+            </AttachStreams>
+          </div>
+
+          <AttachStreams
+            domRef = { this.setupInteractions }
+            translate = { this.location$ }
+            willChange = { this.locationWillChange$ }
+          >
+            <TransformTarget
+              width = '100vw'
+              height = { 72 }
+              backgroundColor = '#FFFFFF'
+              border = '.5px solid #E0E0E0'
+              touchAction = 'none'
+              position = 'relative'
+            />
+          </AttachStreams>
+        </li>
       </AttachStreams>
     );
   }
