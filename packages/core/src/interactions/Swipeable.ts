@@ -15,6 +15,7 @@
  */
 
 import {
+  allOf,
   when,
 } from '../aggregators';
 
@@ -34,6 +35,10 @@ import {
 } from '../types';
 
 import {
+  NumericSpring,
+} from './NumericSpring';
+
+import {
   Tossable,
 } from './Tossable';
 
@@ -47,10 +52,16 @@ export type SwipeableArgs = {
 };
 
 export class Swipeable {
+  readonly iconSpring: NumericSpring = new NumericSpring();
+  readonly backgroundSpring: NumericSpring = new NumericSpring();
+
   readonly tossable: Tossable;
   readonly width$: ObservableWithMotionOperators<number>;
 
   readonly styleStreamsByTargetName: {
+    container: {
+      flexDirection$: ObservableWithMotionOperators<string>,
+    },
     item: TranslateStyleStreams,
     icon: ScaleStyleStreams,
     background: ScaleStyleStreams,
@@ -60,10 +71,6 @@ export class Swipeable {
     this.tossable = tossable;
     this.width$ = width$;
 
-    const draggable = tossable.draggable;
-    const spring = tossable.spring;
-    const draggedX$ = tossable.draggedLocation$.pluck('x');
-
     // How far the user must drag to trigger the action.
     tossable.resistanceBasis = 200;
 
@@ -72,14 +79,25 @@ export class Swipeable {
 
     const DISABLED_RESISTANCE_FACTOR = 0;
 
+    const draggable = tossable.draggable;
+    const spring = tossable.spring;
+    const draggedX$ = tossable.draggedLocation$.pluck('x');
+    const willChange$ = tossable.state$.rewrite({
+      [State.AT_REST]: '',
+      [State.ACTIVE]: 'transform',
+    });
+
     // How close the spring should be to the pointer before the interaction
     // becomes directly manipulable
     spring.threshold = 1;
 
-    when(tossable.state$.isAnyOf([ State.AT_REST ])).rewriteTo(
+    const tossableIsAtRest$ = tossable.state$.isAnyOf([ State.AT_REST ]);
+    when(tossableIsAtRest$).rewriteTo(
       tossable.resistanceBasis$.normalizedBy(PEEK_DISTANCE),
       onlyDispatchWithUpstream
     ).subscribe(tossable.resistanceFactor$);
+
+    const isDraggingRight$ = draggedX$.threshold(0).isAnyOf([ ThresholdSide.ABOVE ]);
 
     // I originally tried to introduce a `resistanceProgress$` to `Tossable`,
     // but that breaks down when `resistanceFactor` changes.  Because we want
@@ -99,13 +117,23 @@ export class Swipeable {
     whenThresholdCrossed$.rewriteTo(draggedX$, onlyDispatchWithUpstream).subscribe(spring.initialValue$);
     draggedX$.subscribe(spring.destination$);
 
+    whenThresholdFirstCrossed$.rewriteTo(1).subscribe(this.iconSpring.destination$);
+    const resetIconScale$ = when(allOf([ tossableIsAtRest$, thresholdMet$.inverted() ])).rewriteTo(0);
+    resetIconScale$.subscribe(this.iconSpring.initialValue$);
+    resetIconScale$.subscribe(this.iconSpring.destination$);
+
+    thresholdMet$.rewrite({
+      [true]: 1,
+      [false]: 0,
+    }).subscribe(this.backgroundSpring.destination$);
+
     // This needs to also take velocity into consideration; right now, it only
     // cares about final position.
     when(draggable.state$.isAnyOf([ State.AT_REST ])).rewriteTo(
       thresholdMet$.rewrite({
-        [true]: width$.scaledBy(draggedX$.threshold(0).rewrite({
-          [ThresholdSide.ABOVE]: 1,
-          [ThresholdSide.BELOW]: -1,
+        [true]: width$.scaledBy(isDraggingRight$.rewrite({
+          [true]: 1,
+          [false]: -1,
         })),
         [false]: 0,
       }),
@@ -113,12 +141,23 @@ export class Swipeable {
     ).subscribe(spring.destination$);
 
     this.styleStreamsByTargetName = {
+      container: {
+        flexDirection$: isDraggingRight$.rewrite({
+          [true]: 'row',
+          [false]: 'row-reverse',
+        }),
+      },
       item: {
         translate$: tossable.value$,
-        willChange$: tossable.state$.rewrite({
-          [State.AT_REST]: '',
-          [State.ACTIVE]: 'transform',
-        }),
+        willChange$,
+      },
+      icon: {
+        scale$: this.iconSpring.value$.merge(resetIconScale$),
+        willChange$,
+      },
+      background: {
+        scale$: this.backgroundSpring.value$,
+        willChange$,
       },
     };
   }
