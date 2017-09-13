@@ -21,16 +21,13 @@ import {
   Draggable,
   MemorylessMotionSubject,
   MotionProperty,
+  NumericSpring,
   ObservableWithMotionOperators,
   PointerEventStreams,
   Swipeable,
   Tossable,
   createProperty,
 } from 'material-motion';
-
-import {
-  NumericWobbleSpring,
-} from 'material-motion-springs-wobble';
 
 import {
   getPointerEventStreamsFromElement,
@@ -81,7 +78,7 @@ class SwipeableCard extends React.Component<{}, {}> {
       const pointerStreams = getPointerEventStreamsFromElement(element);
       const draggable = new Draggable(pointerStreams);
       draggable.axis = Axis.X;
-      const spring = new NumericWobbleSpring();
+      const spring = new NumericSpring();
       const tossable = new Tossable({
         draggable,
         spring,
