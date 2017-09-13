@@ -29,6 +29,8 @@ import {
 import {
   ObservableWithMotionOperators,
   Point2D,
+  ScaleStyleStreams,
+  TranslateStyleStreams,
 } from '../types';
 
 import {
@@ -45,10 +47,14 @@ export type SwipeableArgs = {
 };
 
 export class Swipeable {
-  readonly value$: ObservableWithMotionOperators<Point2D>;
-
   readonly tossable: Tossable;
   readonly width$: ObservableWithMotionOperators<number>;
+
+  readonly styleStreamsByTargetName: {
+    item: TranslateStyleStreams,
+    icon: ScaleStyleStreams,
+    background: ScaleStyleStreams,
+  };
 
   constructor({ tossable, width$ }: SwipeableArgs) {
     this.tossable = tossable;
@@ -106,7 +112,15 @@ export class Swipeable {
       onlyDispatchWithUpstream
     ).subscribe(spring.destination$);
 
-    this.value$ = tossable.value$;
+    this.styleStreamsByTargetName = {
+      item: {
+        translate$: tossable.value$,
+        willChange$: tossable.state$.rewrite({
+          [State.AT_REST]: '',
+          [State.ACTIVE]: 'transform',
+        }),
+      },
+    };
   }
 }
 export default Swipeable;
