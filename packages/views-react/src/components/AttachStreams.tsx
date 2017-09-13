@@ -225,7 +225,11 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
         </div>
       );
     } else {
-      props.domRef =  this._domRef;
+      if (typeof this.props.children.type === 'string') {
+        props.ref =  this._domRef;
+      } else {
+        props.domRef =  this._domRef;
+      }
 
       if (this.state.usesPointerEvents) {
         props.touchAction = 'none';
