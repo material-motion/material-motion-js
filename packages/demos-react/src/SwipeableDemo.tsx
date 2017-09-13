@@ -70,6 +70,7 @@ export default SwipeableDemo;
 
 class SwipeableCard extends React.Component<{}, {}> {
   location$ = createProperty({ initialValue: { x: 0, y: 0 }});
+  willChange$ = createProperty({ initialValue: '' });
 
   setupInteractions = (element: HTMLLIElement) => {
     if (element) {
@@ -88,7 +89,8 @@ class SwipeableCard extends React.Component<{}, {}> {
       });
       const swipeable = new Swipeable({ tossable, width$ });
 
-      swipeable.value$.subscribe(this.location$);
+      swipeable.styleStreamsByTargetName.item.translate$.subscribe(this.location$);
+      swipeable.styleStreamsByTargetName.item.willChange$.subscribe(this.willChange$);
     }
   }
 
