@@ -20,6 +20,11 @@ import {
 } from '../aggregators';
 
 import {
+  createProperty,
+  MotionProperty,
+} from '../observables';
+
+import {
   State,
 } from '../State';
 
@@ -46,6 +51,12 @@ const onlyDispatchWithUpstream = {
   onlyDispatchWithUpstream: true,
 };
 
+export enum SwipeState {
+  NONE = 'none',
+  LEFT = 'left',
+  RIGHT = 'right',
+};
+
 export type SwipeableArgs = {
   tossable: Tossable,
   width$: ObservableWithMotionOperators<number>,
@@ -54,6 +65,9 @@ export type SwipeableArgs = {
 export class Swipeable {
   readonly iconSpring: NumericSpring = new NumericSpring();
   readonly backgroundSpring: NumericSpring = new NumericSpring();
+
+  // Should `State` be called `MotionState` so `state$` can be reserved for interactions?
+  readonly swipeState$: MotionProperty<SwipeState> = createProperty({ initialValue: SwipeState.NONE });
 
   readonly tossable: Tossable;
   readonly width$: ObservableWithMotionOperators<number>;
@@ -106,8 +120,8 @@ export class Swipeable {
     // `resistanceProgress`. Thus, we independently calculate the threshold
     // here.
 
-    const thresholdMet$ = draggedX$.distanceFrom(0).threshold(PEEK_DISTANCE).isAnyOf([ThresholdSide.ABOVE, ThresholdSide.WITHIN]);
-    const whenThresholdCrossed$ = when(thresholdMet$.dedupe());
+    const isThresholdMet$ = draggedX$.distanceFrom(0).threshold(PEEK_DISTANCE).isAnyOf([ThresholdSide.ABOVE, ThresholdSide.WITHIN]);
+    const whenThresholdCrossed$ = when(isThresholdMet$.dedupe());
     const whenThresholdFirstCrossed$ = when(tossable.resistanceFactor$.dedupe().isAnyOf([ DISABLED_RESISTANCE_FACTOR ]));
 
     whenThresholdFirstCrossed$.subscribe(spring.enabled$);
@@ -118,11 +132,11 @@ export class Swipeable {
     draggedX$.subscribe(spring.destination$);
 
     whenThresholdFirstCrossed$.rewriteTo(1).subscribe(this.iconSpring.destination$);
-    const resetIconScale$ = when(allOf([ tossableIsAtRest$, thresholdMet$.inverted() ])).rewriteTo(0);
+    const resetIconScale$ = when(allOf([ tossableIsAtRest$, isThresholdMet$.inverted() ])).rewriteTo(0);
     resetIconScale$.subscribe(this.iconSpring.initialValue$);
     resetIconScale$.subscribe(this.iconSpring.destination$);
 
-    thresholdMet$.rewrite({
+    isThresholdMet$.rewrite({
       [true]: 1,
       [false]: 0,
     }).subscribe(this.backgroundSpring.destination$);
@@ -130,15 +144,21 @@ export class Swipeable {
     // This needs to also take velocity into consideration; right now, it only
     // cares about final position.
     when(draggable.state$.isAnyOf([ State.AT_REST ])).rewriteTo(
-      thresholdMet$.rewrite({
-        [true]: width$.scaledBy(isDraggingRight$.rewrite({
-          [true]: 1,
-          [false]: -1,
-        })),
-        [false]: 0,
+      isThresholdMet$.rewrite({
+        [true]: isDraggingRight$.rewrite({
+          [true]: SwipeState.RIGHT,
+          [false]: SwipeState.LEFT,
+        }),
+        [false]: SwipeState.NONE,
       }),
-      onlyDispatchWithUpstream
-    ).subscribe(spring.destination$);
+       onlyDispatchWithUpstream
+    ).subscribe(this.swipeState$);
+
+    this.swipeState$.rewrite({
+      [SwipeState.NONE]: 0,
+      [SwipeState.LEFT]: width$.scaledBy(-1),
+      [SwipeState.RIGHT]: width$,
+    }).subscribe(spring.destination$);
 
     this.styleStreamsByTargetName = {
       container: {
