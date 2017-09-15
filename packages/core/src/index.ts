@@ -21,9 +21,6 @@ export * from './aggregators';
 export * from './combineLatest';
 export * from './interactions';
 
-export * from './MotionRuntime';
-export { default as MotionRuntime } from './MotionRuntime';
-
 export * from './State';
 export { default as State } from './State';
 
