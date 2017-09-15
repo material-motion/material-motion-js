@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "jsxstyle": "1.0.2",
-    "material-motion-experimental-addons": "0.0.0",
     "material-motion": "0.0.0",
     "material-motion-views-dom": "0.0.0",
     "material-motion-views-react": "0.0.0",
