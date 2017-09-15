@@ -18,6 +18,7 @@ import * as React from 'react';
 
 import {
   Axis,
+  Direction,
   Draggable,
   MemorylessMotionSubject,
   MotionProperty,
@@ -101,7 +102,10 @@ class SwipeableCard extends React.Component<{}, {}> {
 
       combineStyleStreams({
         display: 'flex',
-        flexDirection: swipeable.styleStreamsByTargetName.container.flexDirection$.startWith('row'),
+        flexDirection: swipeable.direction$.rewrite({
+          [Direction.LEFT]: 'row-reverse',
+          [Direction.RIGHT]: 'row',
+        }),
         position: 'relative',
         overflow: 'hidden',
       }).subscribe(this.containerStyle$);
