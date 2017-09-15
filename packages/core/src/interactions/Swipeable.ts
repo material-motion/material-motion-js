@@ -25,6 +25,10 @@ import {
 } from '../observables';
 
 import {
+  Direction,
+} from '../Direction';
+
+import {
   State,
 } from '../State';
 
@@ -68,14 +72,12 @@ export class Swipeable {
 
   // Should `State` be called `MotionState` so `state$` can be reserved for interactions?
   readonly swipeState$: MotionProperty<SwipeState> = createProperty({ initialValue: SwipeState.NONE });
+  readonly direction$: ObservableWithMotionOperators<Direction>;
 
   readonly tossable: Tossable;
   readonly width$: ObservableWithMotionOperators<number>;
 
   readonly styleStreamsByTargetName: {
-    container: {
-      flexDirection$: ObservableWithMotionOperators<string>,
-    },
     item: TranslateStyleStreams,
     icon: ScaleStyleStreams,
     background: ScaleStyleStreams,
@@ -111,7 +113,10 @@ export class Swipeable {
       onlyDispatchWithUpstream
     ).subscribe(tossable.resistanceFactor$);
 
-    const isDraggingRight$ = draggedX$.threshold(0).isAnyOf([ ThresholdSide.ABOVE ]);
+    this.direction$ = draggedX$.threshold(0).isAnyOf([ ThresholdSide.ABOVE ]).rewrite({
+      [true]: Direction.RIGHT,
+      [false]: Direction.LEFT
+    });
 
     // I originally tried to introduce a `resistanceProgress$` to `Tossable`,
     // but that breaks down when `resistanceFactor` changes.  Because we want
@@ -145,10 +150,7 @@ export class Swipeable {
     // cares about final position.
     when(draggable.state$.isAnyOf([ State.AT_REST ])).rewriteTo(
       isThresholdMet$.rewrite({
-        [true]: isDraggingRight$.rewrite({
-          [true]: SwipeState.RIGHT,
-          [false]: SwipeState.LEFT,
-        }),
+        [true]: this.direction$,
         [false]: SwipeState.NONE,
       }),
        onlyDispatchWithUpstream
@@ -161,12 +163,6 @@ export class Swipeable {
     }).subscribe(spring.destination$);
 
     this.styleStreamsByTargetName = {
-      container: {
-        flexDirection$: isDraggingRight$.rewrite({
-          [true]: 'row',
-          [false]: 'row-reverse',
-        }),
-      },
       item: {
         translate$: tossable.value$,
         willChange$,
