@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "indefinite-observable": "1.0.1",
-    "material-motion-experimental-addons": "0.0.0",
     "material-motion": "0.0.0",
     "tslib": "^1.2.0"
   },
