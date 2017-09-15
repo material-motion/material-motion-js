@@ -30,6 +30,9 @@ export { default as State } from './State';
 export * from './Axis';
 export { default as Axis } from './Axis';
 
+export * from './Direction';
+export { default as Direction } from './Direction';
+
 export * from './GestureRecognitionState';
 export { default as GestureRecognitionState } from './GestureRecognitionState';
 
