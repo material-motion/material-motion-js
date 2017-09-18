@@ -119,6 +119,8 @@ export type PointerEventStreams = {
   down$: MotionObservable<PartialPointerEvent>,
   move$: MotionObservable<PartialPointerEvent>,
   up$: MotionObservable<PartialPointerEvent>,
+  cancel$: MotionObservable<PartialPointerEvent>,
+  contextMenu$: MotionObservable<PartialPointerEvent>,
   capturedClick$: MotionObservable<MouseEvent>,
   capturedDragStart$: MotionObservable<DragEvent>,
 };
@@ -152,6 +154,14 @@ export type ScaleStyleStreams = WillChangeStyleStreams & {
 
 export type OpacityStyleStreams = WillChangeStyleStreams & {
   readonly opacity$: MotionObservable<number>,
+};
+
+export type BoxShadowStyleStreams = {
+  readonly boxShadow$: MotionObservable<string>,
+};
+
+export type BorderRadiusStyleStreams = {
+  readonly borderRadius$: MotionObservable<number | string | Array<number> | Array<string>>,
 };
 
 export type EqualityCheck = (a: any, b: any) => boolean;

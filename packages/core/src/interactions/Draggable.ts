@@ -112,6 +112,8 @@ export class Draggable {
   readonly down$: ObservableWithMotionOperators<PartialPointerEvent>;
   readonly move$: ObservableWithMotionOperators<PartialPointerEvent>;
   readonly up$: ObservableWithMotionOperators<PartialPointerEvent>;
+  readonly cancel$: ObservableWithMotionOperators<PartialPointerEvent>;
+  readonly contextMenu$: ObservableWithMotionOperators<PartialPointerEvent>;
   readonly capturedClick$: ObservableWithMotionOperators<MouseEvent>;
   readonly capturedDragStart$: ObservableWithMotionOperators<DragEvent>;
 
@@ -119,12 +121,16 @@ export class Draggable {
     down$,
     move$,
     up$,
+    cancel$,
+    contextMenu$,
     capturedClick$,
     capturedDragStart$
   }: PointerEventStreams) {
     this.down$ = down$;
     this.move$ = move$;
     this.up$ = up$;
+    this.cancel$ = cancel$;
+    this.contextMenu$ = contextMenu$;
     this.capturedClick$ = capturedClick$;
     this.capturedDragStart$ = capturedDragStart$;
 
@@ -251,7 +257,9 @@ export class Draggable {
         );
 
         cancellationSubscription = this.cancellation$.merge(
-          when(this.enabled$.inverted())
+          when(this.enabled$.inverted()),
+          cancel$,
+          contextMenu$,
         ).subscribe(
           () => {
             if (moveSubscription) {

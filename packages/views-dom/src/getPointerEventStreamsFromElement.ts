@@ -35,6 +35,8 @@ const notPassive = {
 
 export function getPointerEventStreamsFromElement(element: Element): PointerEventStreams {
   const commonStreams = {
+    contextMenu$: getEventStreamFromElement('click', element),
+
     // These are streams that a gesture recognizer may want to interrupt when it
     // recognizes a gesture is happening.
     capturedClick$: getEventStreamFromElement('click', element, notPassive),
@@ -46,6 +48,7 @@ export function getPointerEventStreamsFromElement(element: Element): PointerEven
       down$: getEventStreamFromElement('pointerdown', element),
       move$: getEventStreamFromElement('pointermove', element),
       up$: getEventStreamFromElement('pointerup', element),
+      cancel$: getEventStreamFromElement('pointercancel', element),
       ...commonStreams,
     };
   } else {
@@ -64,6 +67,9 @@ export function getPointerEventStreamsFromElement(element: Element): PointerEven
         convertTouchEventsToPointerEvents(
           getEventStreamFromElement('touchend', element)
         )
+      ),
+      cancel$: convertTouchEventsToPointerEvents(
+        getEventStreamFromElement('touchcancel', element)
       ),
       ...commonStreams,
     };
