@@ -32,7 +32,7 @@ const TOUCH_TYPE_TO_POINTER_TYPE: Dict<string> = {
 export function convertTouchEventsToPointerEvents(touchEvent$: MotionObservable<TouchEvent>): MotionObservable<PartialPointerEvent> {
   return touchEvent$._map(
     ({ type, targetTouches, changedTouches }: TouchEvent) => Array.from(
-      type === 'touchend'
+      ['touchend', 'touchcancel'].includes(type)
         ? changedTouches
         : targetTouches,
       ({ pageX, pageY, identifier }: Touch) => (

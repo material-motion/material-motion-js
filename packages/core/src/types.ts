@@ -119,6 +119,8 @@ export type PointerEventStreams = {
   down$: MotionObservable<PartialPointerEvent>,
   move$: MotionObservable<PartialPointerEvent>,
   up$: MotionObservable<PartialPointerEvent>,
+  cancel$: MotionObservable<PartialPointerEvent>,
+  contextMenu$: MotionObservable<PartialPointerEvent>,
   capturedClick$: MotionObservable<MouseEvent>,
   capturedDragStart$: MotionObservable<DragEvent>,
 };
