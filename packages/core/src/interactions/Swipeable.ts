@@ -74,6 +74,10 @@ export class Swipeable {
   readonly swipeState$: MotionProperty<SwipeState> = createProperty({ initialValue: SwipeState.NONE });
   readonly direction$: ObservableWithMotionOperators<Direction>;
 
+  // There should probably be an Interaction interface that requires this of all
+  // interactions
+  readonly state$: ObservableWithMotionOperators<string>;
+
   readonly tossable: Tossable;
   readonly width$: ObservableWithMotionOperators<number>;
 
@@ -86,6 +90,8 @@ export class Swipeable {
   constructor({ tossable, width$ }: SwipeableArgs) {
     this.tossable = tossable;
     this.width$ = width$;
+
+    this.state$ = this.tossable.state$;
 
     // How far the user must drag to trigger the action.
     tossable.resistanceBasis = 200;
