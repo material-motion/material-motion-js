@@ -169,7 +169,7 @@ describe('convertTouchEventsToPointerEvents',
 
         mockObserver.next({
           type: 'touchcancel',
-          targetTouches: [
+          changedTouches: [
             {
               pageX: 0,
               pageY: 0,

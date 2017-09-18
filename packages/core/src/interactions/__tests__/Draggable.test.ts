@@ -51,6 +51,8 @@ describe('Draggable',
     let downObserver;
     let moveObserver;
     let upObserver;
+    let cancelObserver;
+    let contextMenuObserver;
     let capturedClickObserver;
     let capturedDragStartObserver;
     let listener;
@@ -60,6 +62,8 @@ describe('Draggable',
         downObserver = createMockObserver();
         moveObserver = createMockObserver();
         upObserver = createMockObserver();
+        cancelObserver = createMockObserver();
+        contextMenuObserver = createMockObserver();
         capturedClickObserver = createMockObserver();
         capturedDragStartObserver = createMockObserver();
         listener = stub();
@@ -68,6 +72,8 @@ describe('Draggable',
           down$: new MotionObservable(downObserver.connect),
           move$: new MotionObservable(moveObserver.connect),
           up$: new MotionObservable(upObserver.connect),
+          cancel$: new MotionObservable(cancelObserver.connect),
+          contextMenu$: new MotionObservable(contextMenuObserver.connect),
           capturedClick$: new MotionObservable(capturedClickObserver.connect),
           capturedDragStart$: new MotionObservable(capturedDragStartObserver.connect),
         });
@@ -192,5 +198,7 @@ describe('Draggable',
     it(`should stop listening for moves and dispatch CANCELLED when cancellation$ receives an event`);
     it(`should ignore events when disabled`);
     it(`should dispatch CANCELLED when disabled during an recognition`);
+    it(`should dispatch CANCELLED when cancel$ dispatches during an recognition`);
+    it(`should dispatch CANCELLED when contextMenu$ dispatches during an recognition`);
   }
 );
