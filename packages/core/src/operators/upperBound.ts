@@ -16,19 +16,21 @@
 
 import {
   Constructor,
-  MotionMappable,
+  MotionReactiveMappable,
+  Observable,
   ObservableWithMotionOperators,
 } from '../types';
 
 export interface MotionUpperBoundable {
-  upperBound(limit: number): ObservableWithMotionOperators<number>;
+  upperBound(limit$: number | Observable<number>): ObservableWithMotionOperators<number>;
 }
 
-export function withUpperBound<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionUpperBoundable> {
+export function withUpperBound<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionUpperBoundable> {
   return class extends superclass implements MotionUpperBoundable {
-    upperBound(limit: number): ObservableWithMotionOperators<number> {
-      return (this as any as ObservableWithMotionOperators<number>)._map(
-        (value: number) => Math.min(value, limit)
+    upperBound(limit$: number | Observable<number>): ObservableWithMotionOperators<number> {
+      return (this as any as ObservableWithMotionOperators<number>)._reactiveMap(
+        (value: number, limit) => Math.min(value, limit),
+        [ limit$ ],
       );
     }
   };
