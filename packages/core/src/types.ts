@@ -156,6 +156,14 @@ export type OpacityStyleStreams = WillChangeStyleStreams & {
   readonly opacity$: MotionObservable<number>,
 };
 
+export type BoxShadowStyleStreams = {
+  readonly boxShadow$: MotionObservable<string>,
+};
+
+export type BorderRadiusStyleStreams = {
+  readonly borderRadius$: MotionObservable<number | string | Array<number> | Array<string>>,
+};
+
 export type EqualityCheck = (a: any, b: any) => boolean;
 
 export interface Timestamped<T> {
