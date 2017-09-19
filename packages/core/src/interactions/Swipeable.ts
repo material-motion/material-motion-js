@@ -100,6 +100,7 @@ export class Swipeable {
     const PEEK_DISTANCE = 48;
 
     const DISABLED_RESISTANCE_FACTOR = 0;
+    const ICON_SPRING_INITIAL_VALUE = 0.67;
 
     const draggable = tossable.draggable;
     const spring = tossable.spring;
@@ -112,6 +113,8 @@ export class Swipeable {
     // How close the spring should be to the pointer before the interaction
     // becomes directly manipulable
     spring.threshold = 1;
+
+    this.iconSpring.initialValue = ICON_SPRING_INITIAL_VALUE;
 
     const tossableIsAtRest$ = tossable.state$.isAnyOf([ State.AT_REST ]);
     when(tossableIsAtRest$).rewriteTo(
@@ -142,15 +145,15 @@ export class Swipeable {
     whenThresholdCrossed$.rewriteTo(draggedX$, onlyDispatchWithUpstream).subscribe(spring.initialValue$);
     draggedX$.subscribe(spring.destination$);
 
-    whenThresholdFirstCrossed$.rewriteTo(1).subscribe(this.iconSpring.destination$);
-    const resetIconScale$ = when(allOf([ tossableIsAtRest$, isThresholdMet$.inverted() ])).rewriteTo(0);
-    resetIconScale$.subscribe(this.iconSpring.initialValue$);
-    resetIconScale$.subscribe(this.iconSpring.destination$);
-
     isThresholdMet$.rewrite({
       [true]: 1,
       [false]: 0,
     }).subscribe(this.backgroundSpring.destination$);
+
+    isThresholdMet$.rewrite({
+      [true]: 1,
+      [false]: ICON_SPRING_INITIAL_VALUE,
+    }).subscribe(this.iconSpring.destination$);
 
     // This needs to also take velocity into consideration; right now, it only
     // cares about final position.
@@ -174,7 +177,7 @@ export class Swipeable {
         willChange$,
       },
       icon: {
-        scale$: this.iconSpring.value$.merge(resetIconScale$),
+        scale$: this.iconSpring.value$,
         willChange$,
       },
       background: {
