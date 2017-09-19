@@ -37,9 +37,12 @@ export function combineStyleStreams(styleStreams: Partial<OpacityStyleStreams & 
     stripStreamSuffices(styleStreams as Dict<Observable<any>>),
     { waitForAllValues: false }
   )._debounce()._map(
-    ({ opacity = 1, scale = 1, translate, willChange = '', ...passthrough }) => (
+    ({ opacity = 1, scale = 1, translate, borderRadius = '', willChange = '', ...passthrough }) => (
       {
         ...passthrough,
+        borderRadius: Array.isArray(borderRadius)
+          ? borderRadius.map(appendPixels).join(' ' )
+          : borderRadius,
         opacity,
         transform: buildTransformString({ translate, scale }),
         willChange,
@@ -51,8 +54,8 @@ export default combineStyleStreams;
 
 export function buildTransformString({ translate = { x: 0, y: 0 }, rotate = 0, scale = 1 }: Partial<{ translate: Point2D, rotate: number, scale: number }>): string {
   return `
-    translate(${ applySuffix(translate.x, 'px') }, ${ applySuffix(translate.y, 'px') })
-    rotate(${ applySuffix(rotate, 'rad') })
+    translate(${ appendPixels(translate.x) }, ${ appendPixels(translate.y) })
+    rotate(${ appendRadians(rotate) })
     scale(${ scale })
   `;
 }
@@ -63,6 +66,15 @@ function applySuffix(value: number | string, suffix: string = ''): string {
   }
 
   return value + suffix;
+}
+
+// Poor-man's currying
+function appendPixels(value: number): string {
+  return applySuffix(value, 'px');
+}
+
+function appendRadians(value: number): string {
+  return applySuffix(value, 'rad');
 }
 
 function stripStreamSuffices(dictWithSufficies: Dict<Observable<any>>): Dict<Observable<any>> {
