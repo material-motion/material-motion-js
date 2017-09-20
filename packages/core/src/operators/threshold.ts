@@ -16,7 +16,8 @@
 
 import {
   Constructor,
-  MotionMappable,
+  MotionReactiveMappable,
+  Observable,
   ObservableWithMotionOperators,
 } from '../types';
 
@@ -24,15 +25,22 @@ import {
   ThresholdRegion,
 } from '../ThresholdRegion';
 
+import {
+  ReactiveMappableOptions,
+} from './foundation/_reactiveMap';
+
 export interface MotionThresholdable {
-  threshold(limit: number): ObservableWithMotionOperators<ThresholdRegion>;
+  threshold(
+    limit$: number | Observable<number>,
+    options?: ReactiveMappableOptions,
+  ): ObservableWithMotionOperators<ThresholdRegion>;
 }
 
-export function withThreshold<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionThresholdable> {
+export function withThreshold<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionThresholdable> {
   return class extends superclass implements MotionThresholdable {
-    threshold(limit: number): ObservableWithMotionOperators<ThresholdRegion> {
-      return (this as any as ObservableWithMotionOperators<number>)._map(
-        (value: number) => {
+    threshold(limit$: number | Observable<number>, options?: ReactiveMappableOptions): ObservableWithMotionOperators<ThresholdRegion> {
+      return (this as any as ObservableWithMotionOperators<number>)._reactiveMap(
+        (value: number, limit: number) => {
           if (value < limit) {
             return ThresholdRegion.BELOW;
 
@@ -41,7 +49,9 @@ export function withThreshold<T, S extends Constructor<MotionMappable<T>>>(super
           } else {
             return ThresholdRegion.WITHIN;
           }
-        }
+        },
+        [ limit$, ],
+        options,
       );
     }
   };
