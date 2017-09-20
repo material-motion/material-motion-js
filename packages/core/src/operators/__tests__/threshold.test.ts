@@ -37,8 +37,8 @@ import {
 } from '../../observables/';
 
 import {
-  ThresholdSide,
-} from '../../ThresholdSide';
+  ThresholdRegion,
+} from '../../ThresholdRegion';
 
 describe('motionObservable.threshold',
   () => {
@@ -60,7 +60,7 @@ describe('motionObservable.threshold',
 
         mockObserver.next(3);
 
-        expect(listener).to.have.been.calledWith(ThresholdSide.BELOW);
+        expect(listener).to.have.been.calledWith(ThresholdRegion.BELOW);
       }
     );
 
@@ -70,7 +70,7 @@ describe('motionObservable.threshold',
 
         mockObserver.next(7);
 
-        expect(listener).to.have.been.calledWith(ThresholdSide.WITHIN);
+        expect(listener).to.have.been.calledWith(ThresholdRegion.WITHIN);
       }
     );
 
@@ -80,7 +80,7 @@ describe('motionObservable.threshold',
 
         mockObserver.next(10);
 
-        expect(listener).to.have.been.calledWith(ThresholdSide.ABOVE);
+        expect(listener).to.have.been.calledWith(ThresholdRegion.ABOVE);
       }
     );
   }
