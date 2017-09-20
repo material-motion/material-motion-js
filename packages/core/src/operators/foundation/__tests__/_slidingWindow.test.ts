@@ -34,9 +34,9 @@ import {
 
 import {
   MotionObservable,
-} from '../../observables/';
+} from '../../../observables/';
 
-describe('motionObservable.slidingWindow',
+describe('motionObservable._slidingWindow',
   () => {
     let stream;
     let mockObserver;
@@ -52,7 +52,7 @@ describe('motionObservable.slidingWindow',
 
     it(`should not dispatch items as it receives them`,
       () => {
-        stream.slidingWindow(3).subscribe(listener);
+        stream._slidingWindow(3).subscribe(listener);
 
         mockObserver.next(1);
 
@@ -62,7 +62,7 @@ describe('motionObservable.slidingWindow',
 
     it(`should dispatch when the array is the correct length`,
       () => {
-        stream.slidingWindow(3).subscribe(listener);
+        stream._slidingWindow(3).subscribe(listener);
 
         mockObserver.next(1);
         mockObserver.next(2);
@@ -74,7 +74,7 @@ describe('motionObservable.slidingWindow',
 
     it(`should remove old items as new ones are received`,
       () => {
-        stream.slidingWindow(3).subscribe(listener);
+        stream._slidingWindow(3).subscribe(listener);
 
         mockObserver.next(1);
         mockObserver.next(2);
@@ -87,7 +87,7 @@ describe('motionObservable.slidingWindow',
 
     it(`should have a default size of 2`,
       () => {
-        stream.slidingWindow().subscribe(listener);
+        stream._slidingWindow().subscribe(listener);
 
         mockObserver.next(1);
         mockObserver.next(2);
