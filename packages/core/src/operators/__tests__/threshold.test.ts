@@ -33,6 +33,7 @@ import {
 } from 'material-motion-testing-utils';
 
 import {
+  MemorylessMotionSubject,
   MotionObservable,
 } from '../../observables/';
 
@@ -42,6 +43,7 @@ import {
 
 describe('motionObservable.threshold',
   () => {
+    const limitSubject = new MemorylessMotionSubject();
     let stream;
     let mockObserver;
     let listener;
@@ -81,6 +83,40 @@ describe('motionObservable.threshold',
         mockObserver.next(10);
 
         expect(listener).to.have.been.calledWith(ThresholdRegion.ABOVE);
+      }
+    );
+
+    it('should support reactive limits',
+      () => {
+        stream.threshold(limitSubject).subscribe(listener);
+
+        mockObserver.next(10);
+
+        limitSubject.next(5);
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(ThresholdRegion.ABOVE);
+
+        limitSubject.next(15);
+        expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(ThresholdRegion.BELOW);
+
+        limitSubject.next(10);
+        expect(listener).to.have.been.calledThrice.and.to.have.been.calledWith(ThresholdRegion.WITHIN);
+      }
+    );
+
+    it('should support reactive limits and onlyDispatchWithUpstream',
+      () => {
+        stream.threshold(limitSubject, { onlyDispatchWithUpstream: true }).subscribe(listener);
+
+        mockObserver.next(10);
+
+        limitSubject.next(5);
+        limitSubject.next(15);
+
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(ThresholdRegion.ABOVE);
+
+        mockObserver.next(12);
+
+        expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(ThresholdRegion.BELOW);
       }
     );
   }
