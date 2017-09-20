@@ -189,7 +189,7 @@ export class Tossable {
     // pointer.)
     const locationOnDown$ = location$._debounce(whenDragIsActive$);
 
-    this.draggedLocation$ = draggable.value$.offsetBy(locationOnDown$._debounce(draggable.value$))._reactiveMap(
+    this.draggedLocation$ = draggable.value$.addedBy(locationOnDown$._debounce(draggable.value$))._reactiveMap(
       (
         location: Point2D,
         resistanceOrigin: Point2D,
