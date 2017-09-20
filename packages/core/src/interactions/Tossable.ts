@@ -16,7 +16,7 @@
 
 import {
   State,
-} from '../State';
+} from '../constants';
 
 import {
   anyOf,

@@ -34,7 +34,7 @@ import {
 
 import {
   GestureRecognitionState,
-} from '../../GestureRecognitionState';
+} from '../../constants';
 
 import {
   MotionObservable,

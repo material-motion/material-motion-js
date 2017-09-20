@@ -14,12 +14,19 @@
  *  under the License.
  */
 
-export * from './constants';
-export * from './types';
-export * from './typeGuards';
-export * from './observables';
-export * from './aggregators';
-export * from './combineLatest';
-export * from './interactions';
+export * from './Axis';
+export { default as Axis } from './Axis';
+
+export * from './Direction';
+export { default as Direction } from './Direction';
+
+export * from './GestureRecognitionState';
+export { default as GestureRecognitionState } from './GestureRecognitionState';
+
+export * from './State';
+export { default as State } from './State';
+
+export * from './ThresholdRegion';
+export { default as ThresholdRegion } from './ThresholdRegion';
 
 export default undefined;
