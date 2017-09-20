@@ -33,11 +33,13 @@ import {
 } from 'material-motion-testing-utils';
 
 import {
+  MemorylessMotionSubject,
   MotionObservable,
 } from '../../observables/';
 
 describe('motionObservable.rewriteTo',
   () => {
+    const valueSubject = new MemorylessMotionSubject();
     let stream;
     let mockObserver;
     let listener;
@@ -60,6 +62,37 @@ describe('motionObservable.rewriteTo',
         mockObserver.next({a: '1234'});
 
         expect(listener).to.have.callCount(4).and.to.always.have.been.calledWith('banana');
+      }
+    );
+
+    it('should support reactive arguments',
+      () => {
+        stream.rewriteTo(valueSubject).subscribe(listener);
+
+        mockObserver.next();
+        mockObserver.next(false);
+
+        valueSubject.next(12);
+        valueSubject.next(15);
+
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(12);
+
+        mockObserver.next({});
+
+        expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(15);
+      }
+    );
+
+    it('should support reactive arguments and onlyDispatchWithUpstream',
+      () => {
+        stream.rewriteTo(valueSubject, { onlyDispatchWithUpstream: false }).subscribe(listener);
+
+        mockObserver.next(false);
+
+        valueSubject.next(12);
+        valueSubject.next(15);
+
+        expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(12).and.to.have.been.calledWith(15);
       }
     );
   }
