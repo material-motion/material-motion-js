@@ -33,7 +33,7 @@ export { default as Direction } from './Direction';
 export * from './GestureRecognitionState';
 export { default as GestureRecognitionState } from './GestureRecognitionState';
 
-export * from './ThresholdSide';
-export { default as ThresholdSide } from './ThresholdSide';
+export * from './ThresholdRegion';
+export { default as ThresholdRegion } from './ThresholdRegion';
 
 export default undefined;

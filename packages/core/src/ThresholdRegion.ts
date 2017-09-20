@@ -14,9 +14,9 @@
  *  under the License.
  */
 
-export enum ThresholdSide {
+export enum ThresholdRegion {
   ABOVE = 'above',
   WITHIN = 'within',
   BELOW = 'below',
 };
-export default ThresholdSide;
+export default ThresholdRegion;
