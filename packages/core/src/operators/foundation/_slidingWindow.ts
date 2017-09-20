@@ -21,10 +21,10 @@ import {
   Observable,
   ObservableWithMotionOperators,
   Observer,
-} from '../types';
+} from '../../types';
 
 export interface MotionWindowable<T> {
-  slidingWindow(length: number): ObservableWithMotionOperators<Array<T>>;
+  _slidingWindow(length: number): ObservableWithMotionOperators<Array<T>>;
 }
 
 export function withSlidingWindow<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionWindowable<T>> {
@@ -36,7 +36,7 @@ export function withSlidingWindow<T, S extends Constructor<MotionNextOperable<T>
      * Reuses the same array on each dispatch, so if you want to compare
      * dispatches, make a copy of each as you receive it.
      */
-    slidingWindow(length: number = 2): ObservableWithMotionOperators<Array<T>> {
+    _slidingWindow(length: number = 2): ObservableWithMotionOperators<Array<T>> {
       const result: Array<T> = [];
 
       return this._nextOperator(
