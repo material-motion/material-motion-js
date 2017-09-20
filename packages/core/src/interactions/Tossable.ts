@@ -15,8 +15,9 @@
  */
 
 import {
+  Axis,
   State,
-} from '../State';
+} from '../enums';
 
 import {
   anyOf,
@@ -33,10 +34,6 @@ import {
   ObservableWithMotionOperators,
   Point2D,
 } from '../types';
-
-import {
-  Axis,
-} from '../Axis';
 
 import {
   Draggable,
