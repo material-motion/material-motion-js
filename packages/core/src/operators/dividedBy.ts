@@ -15,24 +15,37 @@
  */
 
 import {
+  isPoint2D,
+} from '../typeGuards';
+
+import {
   Constructor,
   MotionReactiveMappable,
   Observable,
   ObservableWithMotionOperators,
 } from '../types';
 
-export interface MotionDivisible {
-  dividedBy(denominator$: number | Observable<number>): ObservableWithMotionOperators<number>;
+export interface MotionDivisible<T> {
+  dividedBy<T>(denominator$: T | Observable<T>): ObservableWithMotionOperators<T>;
 }
 
-export function withDividedBy<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionDivisible> {
-  return class extends superclass implements MotionDivisible {
-     /**
+export function withDividedBy<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionDivisible<T>> {
+  return class extends superclass implements MotionDivisible<T> {
+    /**
      * Divides the incoming value by the denominator and dispatches the result.
      */
-   dividedBy(denominator$: number | Observable<number>): ObservableWithMotionOperators<number> {
-      return (this as any as ObservableWithMotionOperators<number>)._reactiveMap(
-        (value: number, denominator: number) => value / denominator,
+    dividedBy(denominator$: T | Observable<T>): ObservableWithMotionOperators<T> {
+      return this._reactiveMap(
+        (value: T, denominator: T) => {
+          if (isPoint2D(value)) {
+            return {
+              x: value.x / denominator.x,
+              y: value.y / denominator.y,
+            };
+          } else {
+            return value / denominator;
+          }
+        },
         [ denominator$, ]
       );
     }

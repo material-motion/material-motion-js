@@ -15,25 +15,38 @@
  */
 
 import {
+  isPoint2D,
+} from '../typeGuards';
+
+import {
   Constructor,
   MotionReactiveMappable,
   Observable,
   ObservableWithMotionOperators,
 } from '../types';
 
-export interface MotionMultipliable {
-  multipliedBy(coefficient$: number | Observable<number>): ObservableWithMotionOperators<number>;
+export interface MotionMultipliable<T> {
+  multipliedBy(coefficient$: T | Observable<T>): ObservableWithMotionOperators<T>;
 }
 
-export function withMultipliedBy<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionMultipliable> {
-  return class extends superclass implements MotionMultipliable {
-   /**
-    * Multiplies the coefficient by the incoming value and dispatches the
-    * result.
-    */
-   multipliedBy(coefficient$: number | Observable<number>): ObservableWithMotionOperators<number> {
-      return (this as any as ObservableWithMotionOperators<number>)._reactiveMap(
-        (value: number, coefficient: number) => coefficient * value,
+export function withMultipliedBy<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionMultipliable<T>> {
+  return class extends superclass implements MotionMultipliable<T> {
+    /**
+     * Multiplies the incoming value by the coefficient and dispatches the
+     * result.
+     */
+    multipliedBy(coefficient$: T | Observable<T>): ObservableWithMotionOperators<T> {
+      return this._reactiveMap(
+        (value: T, coefficient: T) => {
+          if (isPoint2D(value)) {
+            return {
+              x: value.x * coefficient.x,
+              y: value.y * coefficient.y,
+            };
+          } else {
+            return value * coefficient;
+          }
+        },
         [ coefficient$, ],
       );
     }

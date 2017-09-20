@@ -72,5 +72,16 @@ describe('motionObservable.multipliedBy',
         expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(12);
       }
     );
+
+    it('should multiply point values from a coefficient stream by the incoming value and dispatch the result',
+      () => {
+        stream.multipliedBy(coefficientSubject).subscribe(listener);
+
+        mockObserver.next({ x: 3, y: 4 });
+        coefficientSubject.next({ x: 4, y: 10 });
+
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({ x: 12, y: 40 });
+      }
+    );
   }
 );
