@@ -20,21 +20,15 @@ import {
 } from '../aggregators';
 
 import {
+  Direction,
+  State,
+  ThresholdRegion,
+} from '../enums';
+
+import {
   MotionProperty,
   createProperty,
 } from '../observables';
-
-import {
-  Direction,
-} from '../Direction';
-
-import {
-  State,
-} from '../State';
-
-import {
-  ThresholdRegion,
-} from '../ThresholdRegion';
 
 import {
   ObservableWithMotionOperators,

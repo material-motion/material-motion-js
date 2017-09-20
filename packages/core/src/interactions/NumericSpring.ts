@@ -33,7 +33,7 @@ import {
 
 import {
   State,
-} from '../State';
+} from '../enums';
 
 import {
   ObservableWithMotionOperators,

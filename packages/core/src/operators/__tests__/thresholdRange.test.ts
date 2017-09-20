@@ -39,7 +39,7 @@ import {
 
 import {
   ThresholdRegion,
-} from '../../ThresholdRegion';
+} from '../../enums';
 
 describe('motionObservable.thresholdRange',
   () => {
