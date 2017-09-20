@@ -16,7 +16,8 @@
 
 import {
   Constructor,
-  MotionMappable,
+  MotionReactiveMappable,
+  Observable,
   ObservableWithMotionOperators,
 } from '../types';
 
@@ -24,18 +25,26 @@ import {
   ThresholdRegion,
 } from '../ThresholdRegion';
 
+import {
+  ReactiveMappableOptions,
+} from './foundation/_reactiveMap';
+
 export interface MotionThresholdRangeable {
-  thresholdRange(start: number, end: number): ObservableWithMotionOperators<ThresholdRegion>;
+  thresholdRange(
+    start$: number | Observable<number>,
+    end$: number | Observable<number>,
+    options?: ReactiveMappableOptions,
+  ): ObservableWithMotionOperators<ThresholdRegion>;
 }
 
-export function withThresholdRange<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionThresholdRangeable> {
+export function withThresholdRange<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionThresholdRangeable> {
   return class extends superclass implements MotionThresholdRangeable {
-    thresholdRange(start: number, end: number): ObservableWithMotionOperators<ThresholdRegion> {
-      const lowerLimit = Math.min(start, end);
-      const upperLimit = Math.max(start, end);
+    thresholdRange(start$: number | Observable<number>, end$: number | Observable<number>, options?: ReactiveMappableOptions): ObservableWithMotionOperators<ThresholdRegion> {
+      return (this as any as ObservableWithMotionOperators<number>)._reactiveMap(
+        (value: number, start: number, end: number) => {
+          const lowerLimit = Math.min(start, end);
+          const upperLimit = Math.max(start, end);
 
-      return (this as any as ObservableWithMotionOperators<number>)._map(
-        (value: number) => {
           if (value < lowerLimit) {
             return ThresholdRegion.BELOW;
 
@@ -45,7 +54,9 @@ export function withThresholdRange<T, S extends Constructor<MotionMappable<T>>>(
           } else {
             return ThresholdRegion.WITHIN;
           }
-        }
+        },
+        [ start$, end$, ],
+        options,
       );
     }
   };
