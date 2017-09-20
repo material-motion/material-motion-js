@@ -25,8 +25,15 @@ import {
   ObservableWithMotionOperators,
 } from '../types';
 
+import {
+  ReactiveMappableOptions,
+} from './foundation/_reactiveMap';
+
 export interface MotionDivisible<T> {
-  dividedBy<T>(denominator$: T | Observable<T>): ObservableWithMotionOperators<T>;
+  dividedBy<T>(
+    denominator$: T | Observable<T>,
+    options?: ReactiveMappableOptions
+  ): ObservableWithMotionOperators<T>;
 }
 
 export function withDividedBy<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionDivisible<T>> {
@@ -34,7 +41,7 @@ export function withDividedBy<T, S extends Constructor<MotionReactiveMappable<T>
     /**
      * Divides the incoming value by the denominator and dispatches the result.
      */
-    dividedBy(denominator$: T | Observable<T>): ObservableWithMotionOperators<T> {
+    dividedBy(denominator$: T | Observable<T>, options?: ReactiveMappableOptions): ObservableWithMotionOperators<T> {
       return this._reactiveMap(
         (value: T, denominator: T) => {
           if (isPoint2D(value)) {
@@ -46,7 +53,8 @@ export function withDividedBy<T, S extends Constructor<MotionReactiveMappable<T>
             return value / denominator;
           }
         },
-        [ denominator$, ]
+        [ denominator$, ],
+        options
       );
     }
   };
