@@ -15,12 +15,14 @@
  */
 
 import {
-  State,
-} from '../State';
-
-import {
   when,
 } from '../aggregators';
+
+import {
+  Axis,
+  GestureRecognitionState,
+  State,
+} from '../enums';
 
 import {
   MemorylessMotionSubject,
@@ -41,14 +43,6 @@ import {
   PointerEventStreams,
   Subscription,
 } from '../types';
-
-import {
-  Axis,
-} from '../Axis';
-
-import {
-  GestureRecognitionState,
-} from '../GestureRecognitionState';
 
 export class Draggable {
   readonly state$: MotionProperty<State> = createProperty<State>({
