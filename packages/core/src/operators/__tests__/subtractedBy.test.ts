@@ -37,9 +37,9 @@ import {
   MemorylessMotionSubject,
 } from '../../observables/';
 
-describe('motionObservable.offsetBy',
+describe('motionObservable.subtractedBy',
   () => {
-    const offsetSubject = new MemorylessMotionSubject();
+    const amountSubject = new MemorylessMotionSubject();
     let stream;
     let mockObserver;
     let listener;
@@ -52,47 +52,47 @@ describe('motionObservable.offsetBy',
       }
     );
 
-    it('should add the offset constant to an incoming numeric value and dispatch the result',
+    it('should subtract the amount constant to an incoming numeric value and dispatch the result',
       () => {
-        stream.offsetBy(10).subscribe(listener);
+        stream.subtractedBy(10).subscribe(listener);
 
         mockObserver.next(3);
 
-        expect(listener).to.have.been.calledWith(13);
+        expect(listener).to.have.been.calledWith(-7);
       }
     );
 
-    it('should add the offset constant to an incoming Point2D value and dispatch the result',
+    it('should subtract the amount constant to an incoming Point2D value and dispatch the result',
       () => {
-        stream.offsetBy({x: 10, y: 20 }).subscribe(listener);
+        stream.subtractedBy({x: 10, y: 20 }).subscribe(listener);
 
         mockObserver.next({x: 100, y: -40 });
 
-        expect(listener).to.have.been.calledWith({x: 110, y: -20 });
+        expect(listener).to.have.been.calledWith({x: 90, y: -60 });
       }
     );
 
-    it('should add values from the offset stream to an incoming numeric value and dispatch the result',
+    it('should subtract values from the amount stream to an incoming numeric value and dispatch the result',
       () => {
-        stream.offsetBy(offsetSubject).subscribe(listener);
+        stream.subtractedBy(amountSubject).subscribe(listener);
 
         mockObserver.next(3);
-        offsetSubject.next(10);
-        offsetSubject.next(20);
+        amountSubject.next(10);
+        amountSubject.next(20);
 
-        expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(13).and.to.have.been.calledWith(23);
+        expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(-7).and.to.have.been.calledWith(-17);
       }
     );
 
-    it('should add values from the offset stream to an incoming Point2D value and dispatch the result',
+    it('should subtract values from the amount stream to an incoming Point2D value and dispatch the result',
       () => {
-        stream.offsetBy(offsetSubject).subscribe(listener);
+        stream.subtractedBy(amountSubject).subscribe(listener);
 
         mockObserver.next({x: 100, y: -40 });
         mockObserver.next({x: 10, y: 0 });
-        offsetSubject.next({x: 0, y: 15 });
+        amountSubject.next({x: 0, y: 15 });
 
-        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({x: 10, y: 15 });
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({x: 10, y: -15 });
       }
     );
   }
