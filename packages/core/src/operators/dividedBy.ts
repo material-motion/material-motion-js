@@ -21,20 +21,19 @@ import {
   ObservableWithMotionOperators,
 } from '../types';
 
-export interface MotionScalable {
-  scaledBy(coefficient$: number | Observable<number>): ObservableWithMotionOperators<number>;
+export interface MotionDivisible {
+  dividedBy(denominator$: number | Observable<number>): ObservableWithMotionOperators<number>;
 }
 
-export function withScaledBy<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionScalable> {
-  return class extends superclass implements MotionScalable {
-   /**
-    * Multiplies the coefficient by the incoming value and dispatches the
-    * result.
-    */
-   scaledBy(coefficient$: number | Observable<number>): ObservableWithMotionOperators<number> {
+export function withDividedBy<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionDivisible> {
+  return class extends superclass implements MotionDivisible {
+     /**
+     * Divides the incoming value by the denominator and dispatches the result.
+     */
+   dividedBy(denominator$: number | Observable<number>): ObservableWithMotionOperators<number> {
       return (this as any as ObservableWithMotionOperators<number>)._reactiveMap(
-        (value: number, coefficient: number) => coefficient * value,
-        [ coefficient$, ],
+        (value: number, denominator: number) => value / denominator,
+        [ denominator$, ]
       );
     }
   };
