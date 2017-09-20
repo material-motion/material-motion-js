@@ -37,7 +37,7 @@ import {
   MotionObservable,
 } from '../../observables/';
 
-describe('motionObservable.normalizedBy',
+describe('motionObservable.dividedBy',
   () => {
     const denominatorSubject = new MemorylessIndefiniteSubject();
     let stream;
@@ -54,7 +54,7 @@ describe('motionObservable.normalizedBy',
 
     it('should divide the incoming value by the denominator and dispatch the result',
       () => {
-        stream.normalizedBy(5).subscribe(listener);
+        stream.dividedBy(5).subscribe(listener);
 
         mockObserver.next(10);
 
@@ -64,7 +64,7 @@ describe('motionObservable.normalizedBy',
 
     it('should divide values from a denominator stream and dispatch the result',
       () => {
-        stream.normalizedBy(denominatorSubject).subscribe(listener);
+        stream.dividedBy(denominatorSubject).subscribe(listener);
 
         mockObserver.next(30);
         denominatorSubject.next(5);

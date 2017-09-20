@@ -37,7 +37,7 @@ import {
   MotionObservable,
 } from '../../observables/';
 
-describe('motionObservable.scaledBy',
+describe('motionObservable.multipliedBy',
   () => {
     const coefficientSubject = new MemorylessIndefiniteSubject();
     let stream;
@@ -54,7 +54,7 @@ describe('motionObservable.scaledBy',
 
     it('should multiply the coefficient by the incoming value and dispatch the result',
       () => {
-        stream.scaledBy(10).subscribe(listener);
+        stream.multipliedBy(10).subscribe(listener);
 
         mockObserver.next(3);
 
@@ -64,7 +64,7 @@ describe('motionObservable.scaledBy',
 
     it('should multiply values from a coefficient stream by the incoming value and dispatch the result',
       () => {
-        stream.scaledBy(coefficientSubject).subscribe(listener);
+        stream.multipliedBy(coefficientSubject).subscribe(listener);
 
         mockObserver.next(3);
         coefficientSubject.next(4);
