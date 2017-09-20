@@ -25,28 +25,28 @@ import {
   ObservableWithMotionOperators,
 } from '../types';
 
-export interface MotionOffsetable<T> {
-  offsetBy(offset$: T | Observable<T>): ObservableWithMotionOperators<T>;
+export interface MotionAddable<T> {
+  addedBy(amount$: T | Observable<T>): ObservableWithMotionOperators<T>;
 }
 
-export function withOffsetBy<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionOffsetable<T>> {
-  return class extends superclass implements MotionOffsetable<T> {
+export function withAddedBy<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionAddable<T>> {
+  return class extends superclass implements MotionAddable<T> {
     /**
-     * Adds the offset to the incoming value and dispatches the result.
+     * Adds the amount to the incoming value and dispatches the result.
      */
-    offsetBy(offset$: T | Observable<T>): ObservableWithMotionOperators<T> {
+    addedBy(amount$: T | Observable<T>): ObservableWithMotionOperators<T> {
       return this._reactiveMap(
-        (value: T, offset: T) => {
+        (value: T, amount: T) => {
           if (isPoint2D(value)) {
             return {
-              x: value.x + offset.x,
-              y: value.y + offset.y,
+              x: value.x + amount.x,
+              y: value.y + amount.y,
             };
           } else {
-            return value + offset;
+            return value + amount;
           }
         },
-        [ offset$, ]
+        [ amount$, ]
       );
     }
   };

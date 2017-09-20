@@ -118,7 +118,7 @@ export class Swipeable {
 
     const tossableIsAtRest$ = tossable.state$.isAnyOf([ State.AT_REST ]);
     when(tossableIsAtRest$).rewriteTo(
-      tossable.resistanceBasis$.normalizedBy(PEEK_DISTANCE),
+      tossable.resistanceBasis$.dividedBy(PEEK_DISTANCE),
       onlyDispatchWithUpstream
     ).subscribe(tossable.resistanceFactor$);
 
@@ -167,7 +167,7 @@ export class Swipeable {
 
     this.swipeState$.rewrite({
       [SwipeState.NONE]: 0,
-      [SwipeState.LEFT]: width$.scaledBy(-1),
+      [SwipeState.LEFT]: width$.multipliedBy(-1),
       [SwipeState.RIGHT]: width$,
     }).subscribe(spring.destination$);
 
