@@ -70,22 +70,28 @@ import {
 } from './_read';
 
 import {
+  MotionWindowable,
+  withSlidingWindow,
+} from './_slidingWindow';
+
+import {
   MotionTappable,
   withTap,
 } from './_tap';
 
 export interface ObservableWithFoundationalMotionOperators<T> extends
-  MotionReactiveNextOperable<T>, MotionNextOperable<T>,
-  MotionReactiveMappable<T>, MotionMappable<T>, MotionFilterable<T>,
-  MotionMemorable<T>, MotionMulticastable<T>, MotionDebounceable<T>,
-  MotionReadable<T>, MotionFlattenable<T>, MotionTappable<T> {}
+  MotionDebounceable<T>, MotionFilterable<T>, MotionFlattenable<T>,
+  MotionMappable<T>, MotionMemorable<T>, MotionMulticastable<T>,
+  MotionNextOperable<T>, MotionReactiveMappable<T>,
+  MotionReactiveNextOperable<T>, MotionReadable<T>, MotionTappable<T>,
+  MotionWindowable<T> {}
 
 export function withFoundationalMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
     & Constructor<ObservableWithFoundationalMotionOperators<T>> {
 
   return withRead(withDebounce(withRemember(withMulticast(withFilter(withMap(
     withTap(withReactiveMap(withReactiveNextOperator(withFlattenIterables(
-      withNextOperator<T, S>(superclass)
+      withSlidingWindow(withNextOperator<T, S>(superclass))
     ))))
   ))))));
 }
@@ -100,4 +106,5 @@ export * from './_reactiveMap';
 export * from './_reactiveNextOperator';
 export * from './_remember';
 export * from './_read';
+export * from './_slidingWindow';
 export * from './_tap';

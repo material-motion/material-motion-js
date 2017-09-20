@@ -79,7 +79,7 @@ export function withVelocity<T, S extends Constructor<Observable<T> & MotionTime
         (observer: Observer<T>) => {
           let records: Array<Timestamped<T>> = [];
 
-          const trailingSubscription = this.timestamp().slidingWindow(MAXIMUM_INCOMING_DISPATCHES).subscribe(
+          const trailingSubscription = this.timestamp()._slidingWindow(MAXIMUM_INCOMING_DISPATCHES).subscribe(
             nextRecords => records = nextRecords
           );
 
