@@ -215,12 +215,16 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
     const {
       usesPointerEvents,
       textContent,
+      domRef,
       ...props
     } = this.state;
 
     if (textContent) {
       return (
-        <div { ...props }>
+        <div
+          ref = { this._domRef }
+          { ...props }
+        >
           { textContent }
         </div>
       );
