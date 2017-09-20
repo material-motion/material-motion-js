@@ -25,8 +25,15 @@ import {
   ObservableWithMotionOperators,
 } from '../types';
 
+import {
+  ReactiveMappableOptions,
+} from './foundation/_reactiveMap';
+
 export interface MotionSubtractable<T> {
-  subtractedBy(amount$: T | Observable<T>): ObservableWithMotionOperators<T>;
+  subtractedBy(
+    amount$: T | Observable<T>,
+    options?: ReactiveMappableOptions
+  ): ObservableWithMotionOperators<T>;
 }
 
 export function withSubtractedBy<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionSubtractable<T>> {
@@ -34,7 +41,7 @@ export function withSubtractedBy<T, S extends Constructor<MotionReactiveMappable
     /**
      * Subtracts the amount from the incoming value and dispatches the result.
      */
-    subtractedBy(amount$: T | Observable<T>): ObservableWithMotionOperators<T> {
+    subtractedBy(amount$: T | Observable<T>, options?: ReactiveMappableOptions): ObservableWithMotionOperators<T> {
       return this._reactiveMap(
         (value: T, amount: T) => {
           if (isPoint2D(value)) {
@@ -46,7 +53,8 @@ export function withSubtractedBy<T, S extends Constructor<MotionReactiveMappable
             return value - amount;
           }
         },
-        [ amount$, ]
+        [ amount$, ],
+        options
       );
     }
   };

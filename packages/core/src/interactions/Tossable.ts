@@ -176,20 +176,9 @@ export class Tossable {
     // start from 0
     location$.pluck(firstAxis)._debounce(whenDragIsAtRest$).subscribe(spring.initialValue$);
 
-    // offsetBy will add the upstream value to the offset whenever the offset
-    // changes.  Therefore, we need to debounce locationOnDown$ to make it wait
-    // for draggable.value$ to dispatch.  Otherwise, the ending value of the
-    // last drag will be added to the start value of this one.
-    //
-    // Perhaps offsetBy (and _reactiveMap/_reactiveNextOperator) should accept a
-    // flag that denotes whether they should wait for both to change before
-    // dispatching.  That would simplify this, and enable spring.enabled to be
-    // set on down, rather than drag.  (That, in turn, would be more correct -
-    // it would enable a user to catch a springing object without moving the
-    // pointer.)
     const locationOnDown$ = location$._debounce(whenDragIsActive$);
 
-    this.draggedLocation$ = draggable.value$.addedBy(locationOnDown$._debounce(draggable.value$))._reactiveMap(
+    this.draggedLocation$ = draggable.value$.addedBy(locationOnDown$, { onlyDispatchWithUpstream: true })._reactiveMap(
       (
         location: Point2D,
         resistanceOrigin: Point2D,
