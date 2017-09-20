@@ -23,7 +23,7 @@ import {
 
 import {
   ThresholdRegion,
-} from '../ThresholdRegion';
+} from '../enums';
 
 import {
   ReactiveMappableOptions,

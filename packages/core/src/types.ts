@@ -82,7 +82,7 @@ import {
 
 import {
   State,
-} from './State';
+} from './enums';
 
 export type Constructor<T> = new(...args: Array<any>) => T;
 export type Predicate<T> = (value: T) => boolean;
