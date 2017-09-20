@@ -72,5 +72,16 @@ describe('motionObservable.dividedBy',
         expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(6);
       }
     );
+
+    it('should divide point values from a denominator stream and dispatch the result',
+      () => {
+        stream.dividedBy(denominatorSubject).subscribe(listener);
+
+        mockObserver.next({ x: 30, y: 60 });
+        denominatorSubject.next({ x: 2, y: 3 });
+
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({ x: 15, y: 20 });
+      }
+    );
   }
 );
