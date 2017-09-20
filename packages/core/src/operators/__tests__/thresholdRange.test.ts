@@ -37,8 +37,8 @@ import {
 } from '../../observables/';
 
 import {
-  ThresholdSide,
-} from '../../ThresholdSide';
+  ThresholdRegion,
+} from '../../ThresholdRegion';
 
 describe('motionObservable.thresholdRange',
   () => {
@@ -60,7 +60,7 @@ describe('motionObservable.thresholdRange',
 
         mockObserver.next(9);
 
-        expect(listener).to.have.been.calledWith(ThresholdSide.BELOW);
+        expect(listener).to.have.been.calledWith(ThresholdRegion.BELOW);
       }
     );
 
@@ -70,7 +70,7 @@ describe('motionObservable.thresholdRange',
 
         mockObserver.next(9);
 
-        expect(listener).to.have.been.calledWith(ThresholdSide.BELOW);
+        expect(listener).to.have.been.calledWith(ThresholdRegion.BELOW);
       }
     );
 
@@ -80,7 +80,7 @@ describe('motionObservable.thresholdRange',
 
         mockObserver.next(10);
 
-        expect(listener).to.have.been.calledWith(ThresholdSide.WITHIN);
+        expect(listener).to.have.been.calledWith(ThresholdRegion.WITHIN);
       }
     );
 
@@ -90,7 +90,7 @@ describe('motionObservable.thresholdRange',
 
         mockObserver.next(15);
 
-        expect(listener).to.have.been.calledWith(ThresholdSide.WITHIN);
+        expect(listener).to.have.been.calledWith(ThresholdRegion.WITHIN);
       }
     );
 
@@ -100,7 +100,7 @@ describe('motionObservable.thresholdRange',
 
         mockObserver.next(15);
 
-        expect(listener).to.have.been.calledWith(ThresholdSide.WITHIN);
+        expect(listener).to.have.been.calledWith(ThresholdRegion.WITHIN);
       }
     );
 
@@ -110,7 +110,7 @@ describe('motionObservable.thresholdRange',
 
         mockObserver.next(20);
 
-        expect(listener).to.have.been.calledWith(ThresholdSide.WITHIN);
+        expect(listener).to.have.been.calledWith(ThresholdRegion.WITHIN);
       }
     );
 
@@ -120,7 +120,7 @@ describe('motionObservable.thresholdRange',
 
         mockObserver.next(21);
 
-        expect(listener).to.have.been.calledWith(ThresholdSide.ABOVE);
+        expect(listener).to.have.been.calledWith(ThresholdRegion.ABOVE);
       }
     );
 
@@ -130,7 +130,7 @@ describe('motionObservable.thresholdRange',
 
         mockObserver.next(21);
 
-        expect(listener).to.have.been.calledWith(ThresholdSide.ABOVE);
+        expect(listener).to.have.been.calledWith(ThresholdRegion.ABOVE);
       }
     );
   }

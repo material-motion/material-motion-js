@@ -21,29 +21,29 @@ import {
 } from '../types';
 
 import {
-  ThresholdSide,
-} from '../ThresholdSide';
+  ThresholdRegion,
+} from '../ThresholdRegion';
 
 export interface MotionThresholdRangeable {
-  thresholdRange(start: number, end: number): ObservableWithMotionOperators<ThresholdSide>;
+  thresholdRange(start: number, end: number): ObservableWithMotionOperators<ThresholdRegion>;
 }
 
 export function withThresholdRange<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionThresholdRangeable> {
   return class extends superclass implements MotionThresholdRangeable {
-    thresholdRange(start: number, end: number): ObservableWithMotionOperators<ThresholdSide> {
+    thresholdRange(start: number, end: number): ObservableWithMotionOperators<ThresholdRegion> {
       const lowerLimit = Math.min(start, end);
       const upperLimit = Math.max(start, end);
 
       return (this as any as ObservableWithMotionOperators<number>)._map(
         (value: number) => {
           if (value < lowerLimit) {
-            return ThresholdSide.BELOW;
+            return ThresholdRegion.BELOW;
 
           } else if (value > upperLimit) {
-            return ThresholdSide.ABOVE;
+            return ThresholdRegion.ABOVE;
 
           } else {
-            return ThresholdSide.WITHIN;
+            return ThresholdRegion.WITHIN;
           }
         }
       );
