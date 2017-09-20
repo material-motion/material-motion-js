@@ -20,6 +20,11 @@ import {
 } from '../types';
 
 import {
+  MotionAddable,
+  withAddedBy,
+} from './addedBy';
+
+import {
   MotionAppendUnitable,
   withAppendUnit,
 } from './appendUnit';
@@ -38,6 +43,11 @@ import {
   MotionMeasurable,
   withDistanceFrom,
 } from './distanceFrom';
+
+import {
+  MotionDivisible,
+  withDividedBy,
+} from './dividedBy';
 
 import {
   ObservableWithFoundationalMotionOperators,
@@ -75,19 +85,14 @@ import {
 } from './merge';
 
 import {
-  MotionNormalizable,
-  withNormalizedBy,
-} from './normalizedBy';
+  MotionMultipliable,
+  withMultipliedBy,
+} from './multipliedBy';
 
 import {
   MotionPluckable,
   withPluck,
 } from './pluck';
-
-import {
-  MotionOffsetable,
-  withOffsetBy,
-} from './offsetBy';
 
 import {
   MotionRewritable,
@@ -105,14 +110,14 @@ import {
 } from './rewriteTo';
 
 import {
-  MotionScalable,
-  withScaledBy,
-} from './scaledBy';
-
-import {
   MotionSeedable,
   withStartWith,
 } from './startWith';
+
+import {
+  MotionSubtractable,
+  withSubtractedBy,
+} from './subtractedBy';
 
 import {
   MotionThresholdable,
@@ -140,15 +145,15 @@ import {
 } from './velocity';
 
 export interface ObservableWithMotionOperators<T> extends
-  ObservableWithFoundationalMotionOperators<T>, MotionAppendUnitable,
-  MotionDeduplicable<T>, MotionDelayable<T>, MotionIgnorable<T>,
-  MotionInvertible<T>, MotionIsAnyOfable, MotionLoggable<T>,
-  MotionLowerBoundable, MotionMeasurable<T>, MotionMergeable<T>,
-  MotionNormalizable, MotionOffsetable<T>, MotionPluckable<T, string>,
+  ObservableWithFoundationalMotionOperators<T>, MotionAddable<T>,
+  MotionAppendUnitable, MotionDeduplicable<T>, MotionDelayable<T>,
+  MotionDivisible, MotionIgnorable<T>, MotionInvertible<T>, MotionIsAnyOfable,
+  MotionLoggable<T>, MotionLowerBoundable, MotionMeasurable<T>,
+  MotionMergeable<T>, MotionMultipliable, MotionPluckable<T, string>,
   MotionRewritable<T>, MotionRewriteRangeable, MotionRewriteToable,
-  MotionScalable, MotionSeedable<T>, MotionThresholdRangeable,
+  MotionSeedable<T>, MotionSubtractable, MotionThresholdRangeable,
   MotionThresholdable, MotionTimestampable<T>, MotionUpperBoundable,
-  MotionVelocityMeasurable<T>
+  MotionVelocityMeasurable<T> {}
 
 export function withMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
     & Constructor<ObservableWithMotionOperators<T>> {
@@ -156,23 +161,25 @@ export function withMotionOperators<T, S extends Constructor<Observable<T>>>(sup
   // TypeScript seems to dislike returning this function.  Calling the functions
   // themselves in a constant works fine (except it gets mad about the Ts being
   // incompatible for some combinations);
-  return withThresholdRange(withThreshold(withRewriteRange(withRewriteTo(withRewrite(
-    withMerge(withInverted(withDedupe(withLog(withUpperBound(withLowerBound(
-      withOffsetBy(withScaledBy(withNormalizedBy(withDelayBy(withDistanceFrom(
-        withStartWith(withIgnoreUntil(withVelocity(withTimestamp(withPluck(
-          withIsAnyOf(withAppendUnit(withFoundationalMotionOperators<T, S>(
-            superclass
-          )))
-        )))))
-      )))))
-    )))))))
+  return withThresholdRange(withThreshold(withRewriteRange(withRewriteTo(
+    withRewrite(withMerge(withInverted(withDedupe(withLog(withUpperBound(
+      withLowerBound(withAddedBy(withSubtractedBy(withMultipliedBy(
+        withDividedBy(withDelayBy(withDistanceFrom(withStartWith(
+          withIgnoreUntil(withVelocity(withTimestamp(withPluck(withIsAnyOf(
+            withAppendUnit(withFoundationalMotionOperators<T, S>(superclass))
+          )))))
+        ))))
+      ))))
+    ))))))
   ))));
 }
 
+export * from './addedBy';
 export * from './appendUnit';
 export * from './dedupe';
 export * from './delayBy';
 export * from './distanceFrom';
+export * from './dividedBy';
 export * from './foundation';
 export * from './ignoreUntil';
 export * from './inverted';
@@ -180,14 +187,13 @@ export * from './isAnyOf';
 export * from './log';
 export * from './lowerBound';
 export * from './merge';
-export * from './normalizedBy';
-export * from './offsetBy';
+export * from './multipliedBy';
+export * from './pluck';
 export * from './rewrite';
 export * from './rewriteRange';
 export * from './rewriteTo';
-export * from './pluck';
-export * from './scaledBy';
 export * from './startWith';
+export * from './subtractedBy';
 export * from './threshold';
 export * from './thresholdRange';
 export * from './timestamp';
