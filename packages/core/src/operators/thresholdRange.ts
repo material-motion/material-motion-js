@@ -23,7 +23,7 @@ import {
 
 import {
   ThresholdRegion,
-} from '../ThresholdRegion';
+} from '../constants';
 
 import {
   ReactiveMappableOptions,

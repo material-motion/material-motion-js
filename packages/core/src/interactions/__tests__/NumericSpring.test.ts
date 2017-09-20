@@ -34,7 +34,7 @@ import {
 
 import {
   State,
-} from '../../State';
+} from '../../constants';
 
 import {
   createProperty,
