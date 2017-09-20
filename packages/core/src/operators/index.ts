@@ -147,11 +147,11 @@ import {
 export interface ObservableWithMotionOperators<T> extends
   ObservableWithFoundationalMotionOperators<T>, MotionAddable<T>,
   MotionAppendUnitable, MotionDeduplicable<T>, MotionDelayable<T>,
-  MotionDivisible, MotionIgnorable<T>, MotionInvertible<T>, MotionIsAnyOfable,
+  MotionDivisible<T>, MotionIgnorable<T>, MotionInvertible<T>, MotionIsAnyOfable,
   MotionLoggable<T>, MotionLowerBoundable, MotionMeasurable<T>,
-  MotionMergeable<T>, MotionMultipliable, MotionPluckable<T, string>,
+  MotionMergeable<T>, MotionMultipliable<T>, MotionPluckable<T, string>,
   MotionRewritable<T>, MotionRewriteRangeable, MotionRewriteToable,
-  MotionSeedable<T>, MotionSubtractable, MotionThresholdRangeable,
+  MotionSeedable<T>, MotionSubtractable<T>, MotionThresholdRangeable,
   MotionThresholdable, MotionTimestampable<T>, MotionUpperBoundable,
   MotionVelocityMeasurable<T> {}
 
