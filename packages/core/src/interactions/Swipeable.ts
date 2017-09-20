@@ -33,8 +33,8 @@ import {
 } from '../State';
 
 import {
-  ThresholdSide,
-} from '../ThresholdSide';
+  ThresholdRegion,
+} from '../ThresholdRegion';
 
 import {
   ObservableWithMotionOperators,
@@ -122,7 +122,7 @@ export class Swipeable {
       onlyDispatchWithUpstream
     ).subscribe(tossable.resistanceFactor$);
 
-    this.direction$ = draggedX$.threshold(0).isAnyOf([ ThresholdSide.ABOVE ]).rewrite({
+    this.direction$ = draggedX$.threshold(0).isAnyOf([ ThresholdRegion.ABOVE ]).rewrite({
       [true]: Direction.RIGHT,
       [false]: Direction.LEFT
     });
@@ -134,7 +134,7 @@ export class Swipeable {
     // `resistanceProgress`. Thus, we independently calculate the threshold
     // here.
 
-    const isThresholdMet$ = draggedX$.distanceFrom(0).threshold(PEEK_DISTANCE).isAnyOf([ThresholdSide.ABOVE, ThresholdSide.WITHIN]);
+    const isThresholdMet$ = draggedX$.distanceFrom(0).threshold(PEEK_DISTANCE).isAnyOf([ThresholdRegion.ABOVE, ThresholdRegion.WITHIN]);
     const whenThresholdCrossed$ = when(isThresholdMet$.dedupe());
     const whenThresholdFirstCrossed$ = when(tossable.resistanceFactor$.dedupe().isAnyOf([ DISABLED_RESISTANCE_FACTOR ]));
 
