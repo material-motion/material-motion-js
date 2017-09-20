@@ -68,6 +68,25 @@ export class Swipeable {
   readonly swipeState$: MotionProperty<SwipeState> = createProperty({ initialValue: SwipeState.NONE });
   readonly direction$: ObservableWithMotionOperators<Direction>;
 
+  /**
+   * If an item is swiped past the threshold, it will animate by its own width
+   * + destinationMargin, in the direction of the swipe.
+   *
+   * This ensures that decoration that might overflow an item's bounds (like a
+   * shadow) isn't visible when it's been swiped away.
+   */
+  readonly destinationMargin$: MotionProperty<number> = createProperty({
+    initialValue: 0,
+  });
+
+  get destinationMargin(): number {
+    return this.destinationMargin$.read();
+  }
+
+  set destinationMargin(value: number) {
+    this.destinationMargin$.write(value);
+  }
+
   // There should probably be an Interaction interface that requires this of all
   // interactions
   readonly state$: ObservableWithMotionOperators<string>;
@@ -159,10 +178,12 @@ export class Swipeable {
        onlyDispatchWithUpstream
     ).subscribe(this.swipeState$);
 
+    const destinationDistance$ = width$.addedBy(this.destinationMargin$);
+
     this.swipeState$.rewrite({
       [SwipeState.NONE]: 0,
-      [SwipeState.LEFT]: width$.multipliedBy(-1),
-      [SwipeState.RIGHT]: width$,
+      [SwipeState.LEFT]: destinationDistance$.multipliedBy(-1),
+      [SwipeState.RIGHT]: destinationDistance$,
     }).subscribe(spring.destination$);
 
     this.styleStreamsByTargetName = {
