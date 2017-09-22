@@ -67,6 +67,9 @@ export class Swipeable {
   // Should `State` be called `MotionState` so `state$` can be reserved for interactions?
   readonly swipeState$: MotionProperty<SwipeState> = createProperty({ initialValue: SwipeState.NONE });
   readonly direction$: ObservableWithMotionOperators<Direction>;
+  readonly isThresholdMet$: ObservableWithMotionOperators<boolean>;
+  readonly whenThresholdCrossed$: ObservableWithMotionOperators<boolean>;
+  readonly whenThresholdFirstCrossed$: ObservableWithMotionOperators<boolean>;
 
   /**
    * If an item is swiped past the threshold, it will animate by its own width
@@ -147,23 +150,23 @@ export class Swipeable {
     // `resistanceProgress`. Thus, we independently calculate the threshold
     // here.
 
-    const isThresholdMet$ = draggedX$.distanceFrom(0).threshold(PEEK_DISTANCE).isAnyOf([ThresholdRegion.ABOVE, ThresholdRegion.WITHIN]);
-    const whenThresholdCrossed$ = when(isThresholdMet$.dedupe());
-    const whenThresholdFirstCrossed$ = when(tossable.resistanceFactor$.dedupe().isAnyOf([ DISABLED_RESISTANCE_FACTOR ]));
+    this.isThresholdMet$ = draggedX$.distanceFrom(0).threshold(PEEK_DISTANCE).isAnyOf([ThresholdRegion.ABOVE, ThresholdRegion.WITHIN]);
+    this.whenThresholdCrossed$ = when(this.isThresholdMet$.dedupe());
+    this.whenThresholdFirstCrossed$ = when(tossable.resistanceFactor$.dedupe().isAnyOf([ DISABLED_RESISTANCE_FACTOR ]));
 
-    whenThresholdFirstCrossed$.subscribe(spring.enabled$);
+    this.whenThresholdFirstCrossed$.subscribe(spring.enabled$);
     when(spring.state$.isAnyOf([ State.AT_REST ])).rewriteTo(false).subscribe(spring.enabled$);
 
-    whenThresholdCrossed$.rewriteTo(DISABLED_RESISTANCE_FACTOR).subscribe(tossable.resistanceFactor$);
-    whenThresholdCrossed$.rewriteTo(draggedX$, onlyDispatchWithUpstream).subscribe(spring.initialValue$);
+    this.whenThresholdCrossed$.rewriteTo(DISABLED_RESISTANCE_FACTOR).subscribe(tossable.resistanceFactor$);
+    this.whenThresholdCrossed$.rewriteTo(draggedX$, onlyDispatchWithUpstream).subscribe(spring.initialValue$);
     draggedX$.subscribe(spring.destination$);
 
-    isThresholdMet$.rewrite({
+    this.isThresholdMet$.rewrite({
       [true]: 1,
       [false]: 0,
     }).subscribe(this.backgroundSpring.destination$);
 
-    isThresholdMet$.rewrite({
+    this.isThresholdMet$.rewrite({
       [true]: 1,
       [false]: ICON_SPRING_INITIAL_VALUE,
     }).subscribe(this.iconSpring.destination$);
@@ -171,7 +174,7 @@ export class Swipeable {
     // This needs to also take velocity into consideration; right now, it only
     // cares about final position.
     when(draggable.state$.isAnyOf([ State.AT_REST ])).rewriteTo(
-      isThresholdMet$.rewrite({
+      this.isThresholdMet$.rewrite({
         [true]: this.direction$,
         [false]: SwipeState.NONE,
       }),
