@@ -61,6 +61,19 @@ export type SwipeableArgs = {
 };
 
 export class Swipeable {
+  // How far the background peeks through at max resistance.
+  //
+  // 72dp is the width of a Material column, which is a nice threshold.  In a
+  // list of items with avatars, it ensures a centered swipe icon will align
+  // with the center of the avatars.
+  //
+  // Incidentally, 72dp is also a common height for a swipeable row.  We could
+  // set this to be an instance property that matches the height of the
+  // swipeable row.  That would mean that the background is squared at maximum
+  // resistance, but also risks making the resistance factor inconsistent when
+  // the row height varies.
+  static VISUAL_THRESHOLD = 72;
+
   readonly iconSpring: NumericSpring = new NumericSpring();
   readonly backgroundSpring: NumericSpring = new NumericSpring();
 
@@ -109,11 +122,13 @@ export class Swipeable {
 
     this.state$ = this.tossable.state$;
 
-    // How far the user must drag to trigger the action.
-    tossable.resistanceBasis = 200;
-
-    // How far the background peeks through at max resistance.
-    const PEEK_DISTANCE = 48;
+    // How far the user must drag to trigger the action.  It should never be
+    // so large that a swipe is impossible, which means either (or both):
+    // it should be low enough that swipes are still easy on small screens, or
+    // it should be bounded by some proportion of viewport width.
+    //
+    // The coefficient in this equation is the resistance factor.
+    tossable.resistanceBasis = 2.5 * Swipeable.VISUAL_THRESHOLD;
 
     const DISABLED_RESISTANCE_FACTOR = 0;
     const ICON_SPRING_INITIAL_VALUE = 0.67;
@@ -134,7 +149,7 @@ export class Swipeable {
 
     const tossableIsAtRest$ = tossable.state$.isAnyOf([ State.AT_REST ]);
     when(tossableIsAtRest$).rewriteTo(
-      tossable.resistanceBasis$.dividedBy(PEEK_DISTANCE),
+      tossable.resistanceBasis$.dividedBy(Swipeable.VISUAL_THRESHOLD),
       onlyDispatchWithUpstream
     ).subscribe(tossable.resistanceFactor$);
 
@@ -150,7 +165,7 @@ export class Swipeable {
     // `resistanceProgress`. Thus, we independently calculate the threshold
     // here.
 
-    this.isThresholdMet$ = draggedX$.distanceFrom(0).threshold(PEEK_DISTANCE).isAnyOf([ThresholdRegion.ABOVE, ThresholdRegion.WITHIN]);
+    this.isThresholdMet$ = draggedX$.distanceFrom(0).threshold(Swipeable.VISUAL_THRESHOLD).isAnyOf([ThresholdRegion.ABOVE, ThresholdRegion.WITHIN]);
     this.whenThresholdCrossed$ = when(this.isThresholdMet$.dedupe());
     this.whenThresholdFirstCrossed$ = when(tossable.resistanceFactor$.dedupe().isAnyOf([ DISABLED_RESISTANCE_FACTOR ]));
 
