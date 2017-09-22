@@ -37,6 +37,7 @@ export function withRewriteRange<S extends Constructor<MotionNextOperable<number
       fromEnd: fromEnd$ = 1,
       toStart: toStart$ = 0,
       toEnd: toEnd$ = 1,
+      bound: bound$ = false,
     }: RewriteRangeArgs): ObservableWithMotionOperators<number> {
       return (this as any as ObservableWithMotionOperators<number>)._reactiveNextOperator(
         (
@@ -46,14 +47,24 @@ export function withRewriteRange<S extends Constructor<MotionNextOperable<number
           fromEnd: number,
           toStart: number,
           toEnd: number,
+          bound: boolean,
         ) => {
           const fromRange = fromStart - fromEnd;
           const fromProgress = (value - fromEnd) / fromRange;
           const toRange = toStart - toEnd;
 
-          dispatch(toEnd + fromProgress * toRange);
+          const result = toEnd + fromProgress * toRange;
+
+          if (bound) {
+            const lowerBound = Math.min(toStart, toEnd);
+            const upperBound = Math.max(toStart, toEnd);
+
+            dispatch(Math.max(lowerBound, Math.min(result, upperBound)))
+          } else {
+            dispatch(result);
+          }
         },
-        [ fromStart$, fromEnd$, toStart$, toEnd$, ],
+        [ fromStart$, fromEnd$, toStart$, toEnd$, bound$ ],
       );
     }
   };
@@ -64,4 +75,5 @@ export type RewriteRangeArgs = {
   fromEnd?: number | Observable<number>,
   toStart?: number | Observable<number>,
   toEnd?: number | Observable<number>,
+  bound?: boolean | Observable<boolean>,
 };
