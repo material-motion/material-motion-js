@@ -31,7 +31,7 @@ import {
 } from './_reactiveMap';
 
 export interface MotionMathOperable<T> {
-  _mathOperator<U extends T & (Point2D | number)>(
+  _mathOperator<U extends T & (number | Point2D)>(
     operation: (upstream: number, parameter: number) => number,
     amount$: U | Observable<U>,
     options?: ReactiveMappableOptions,
@@ -43,7 +43,7 @@ export function withMathOperator<T, S extends Constructor<MotionReactiveMappable
     /**
      * Applies the operation to each dimension and dispatches the result.
      */
-    _mathOperator<U extends T & (Point2D | number)>(operation: (upstream: number, parameter: number) => number, amount$: U | Observable<U>, options?: ReactiveMappableOptions): ObservableWithMotionOperators<U> {
+    _mathOperator<U extends T & (number | Point2D)>(operation: (upstream: number, parameter: number) => number, amount$: U | Observable<U>, options?: ReactiveMappableOptions): ObservableWithMotionOperators<U> {
       return (this as any as MotionReactiveMappable<U>)._reactiveMap(
         (value: U, amount: U) => {
           if (isPoint2D(value)) {
