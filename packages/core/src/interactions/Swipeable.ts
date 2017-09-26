@@ -136,7 +136,7 @@ export class Swipeable {
     const draggable = tossable.draggable;
     const spring = tossable.spring;
     const draggedX$ = tossable.draggedLocation$.pluck('x');
-    const willChange$ = tossable.state$.rewrite({
+    const willChange$ = tossable.state$.rewrite<string, string>({
       [State.AT_REST]: '',
       [State.ACTIVE]: 'transform',
     });
