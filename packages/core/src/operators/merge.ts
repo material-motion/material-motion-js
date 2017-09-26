@@ -40,7 +40,7 @@ export function withMerge<T, S extends Constructor<Observable<T>>>(superclass: S
      * streams provided as arguments.
      */
     merge(...otherStreams: Array<Observable<any>>): ObservableWithMotionOperators<any> {
-      return new MotionObservable<any>(
+      return new MotionObservable(
         (observer: Observer<any>) => {
           const subscriptions = [this, ...otherStreams].map(
             stream => stream.subscribe(observer)

@@ -34,7 +34,7 @@ import {
 let frame$: MotionObservable<number>;
 export function getFrame$() {
   if (!frame$) {
-    frame$ = new MotionObservable<number>(
+    frame$ = new MotionObservable(
       (observer: Observer<number>) => {
         let queuedFrameID = 0;
 

@@ -25,11 +25,8 @@ import {
   ObservableWithMotionOperators,
 } from '../types';
 
-// TODO: figure out the right way to cast T to boolean | number without
-// constraining T on streams that don't support inverted.  Same in rewriteRange.
-
 export interface MotionInvertible<T> {
-  inverted(): ObservableWithMotionOperators<T>;
+  inverted<U extends T & (boolean | number)>(): ObservableWithMotionOperators<U>;
 }
 
 export function withInverted<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionInvertible<T>> {
@@ -43,15 +40,13 @@ export function withInverted<T, S extends Constructor<MotionNextOperable<T>>>(su
      * - `true` when it receives `false`,
      * - `1 - value` when it receives a numeric value
      */
-    inverted(): ObservableWithMotionOperators<T> {
-      type U = number | boolean;
-
-      return (this as any as ObservableWithMotionOperators<U>)._nextOperator(
+    inverted<U extends T & (boolean | number)>(): ObservableWithMotionOperators<U> {
+      return (this as any as MotionNextOperable<U>)._nextOperator(
         (value: U, dispatch: NextChannel<U>) => {
           if (isBoolean(value)) {
-            dispatch(!value);
+            dispatch(!value as U);
           } else {
-            dispatch(1 - value);
+            dispatch((1 - (value as number)) as U);
           }
         }
       );

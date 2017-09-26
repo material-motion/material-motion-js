@@ -41,7 +41,7 @@ export function withRemember<T, S extends Constructor<Observable<T>>>(superclass
      * happen once per dispatch, sharing the resulting value with all observers.
      */
     _remember(): ObservableWithMotionOperators<T> {
-      const result = new MotionSubject<T>();
+      const result = new MotionSubject();
       this.subscribe(result);
       return result;
     }
