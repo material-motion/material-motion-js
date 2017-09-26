@@ -20,6 +20,8 @@ import {
 
 import {
   Dict,
+  Observable,
+  ObservableWithMotionOperators,
   Observer,
   Subscription,
 } from './types';
@@ -32,15 +34,19 @@ import {
 export type CombineLatestOptions = {
   waitForAllValues?: boolean,
 };
-export function combineLatest<T extends Dict<any> | Iterable<any>>(streams: T, { waitForAllValues = true }: CombineLatestOptions = {}): MotionObservable<T> {
+export function combineLatest<V, T extends Array<V | Observable<V>>, U extends Array<V>>(streams: T, options?: CombineLatestOptions): ObservableWithMotionOperators<U>;
+export function combineLatest<V, T extends Dict<V | Observable<V>>, U extends Dict<V>>(streams: T, options?: CombineLatestOptions): ObservableWithMotionOperators<U>;
+export function combineLatest<V, T extends Dict<V | Observable<V>> | Array<V | Observable<V>>, U extends Dict<V> | Array<V>>(streams: T, { waitForAllValues = true }: CombineLatestOptions = {}): ObservableWithMotionOperators<U> {
   return new MotionObservable(
-    (observer: Observer<T>) => {
+    (observer: Observer<U>) => {
       const outstandingKeys = new Set(Object.keys(streams));
 
-      let nextValue: T = {};
+      let nextValue: U;
 
       if (isIterable(streams)) {
-        nextValue = [];
+        nextValue = [] as Array<V> as U;
+      } else {
+        nextValue = {} as Dict<V> as U;
       }
 
       const subscriptions: Dict<Subscription> = {};
@@ -49,21 +55,28 @@ export function combineLatest<T extends Dict<any> | Iterable<any>>(streams: T, {
       outstandingKeys.forEach(checkKey);
       initializing = false;
 
-      function checkKey(key: string | number) {
-        const maybeStream: any = streams[key];
+      // TypeScript doesn't know whether the index signature for `streams` (and
+      // hence, `nextValue` and `outstandingKeys`) is a string or a number.
+      // Thus, it throws an error at a simple `streams[key]`.  Since we know
+      // that whichever it is, `key` can index into all three collections, we
+      // cast each to `Dict<V>` and `key` to `string`.  Then, TypeScript will
+      // happily index into the collections using `key`.
+      function checkKey(key: string) {
+        const maybeStream: any = (streams as Dict<V>)[key];
+
         if (isObservable(maybeStream)) {
           subscriptions[key] = maybeStream.subscribe(
             (value: any) => {
               outstandingKeys.delete(key);
 
-              nextValue[key] = value;
+              (nextValue as Dict<V>)[key] = value as V;
               dispatchNextValue();
             }
           );
         } else {
           outstandingKeys.delete(key);
 
-          nextValue[key] = maybeStream;
+          (nextValue as Dict<V>)[key] = maybeStream as V;
           dispatchNextValue();
         }
       }
@@ -84,4 +97,3 @@ export function combineLatest<T extends Dict<any> | Iterable<any>>(streams: T, {
     }
   );
 }
-
