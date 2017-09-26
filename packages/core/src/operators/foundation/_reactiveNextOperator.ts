@@ -61,7 +61,7 @@ export function withReactiveNextOperator<T, S extends Constructor<Observable<T>>
           const boundNext: NextChannel<U> = observer.next.bind(observer);
           return combineLatest([ this, ...args ], options).subscribe(
             (values) => operation(boundNext, ...values)
-          );
+          ).unsubscribe;
         }
       );
     }

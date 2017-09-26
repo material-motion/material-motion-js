@@ -26,25 +26,25 @@ import {
   isIterable,
 } from '../../typeGuards';
 
-export interface MotionFlattenable<T> extends Observable<Iterable<T>> {
-  _flattenIterables(): ObservableWithMotionOperators<T>;
+export interface MotionFlattenable<T> {
+  _flattenIterables<U>(): ObservableWithMotionOperators<U>;
 }
 
-export function withFlattenIterables<T, S extends Constructor<MotionNextOperable<Iterable<T>>>>(superclass: S): S & Constructor<MotionFlattenable<T>> {
+export function withFlattenIterables<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionFlattenable<T>> {
   return class extends superclass implements MotionFlattenable<T> {
     /**
-     * Iterables over every value it receives from upstream and dispatches each
+     * Iterates over every value it receives from upstream and dispatches each
      * individually.
      */
-    _flattenIterables(): ObservableWithMotionOperators<T> {
+    _flattenIterables<U>(): ObservableWithMotionOperators<U> {
       return this._nextOperator(
-        (values: Iterable<T>, dispatch: NextChannel<T>) => {
+        (values: T | Iterable<U>, dispatch: NextChannel<U>) => {
           if (isIterable(values)) {
             for (const value of values) {
               dispatch(value);
             }
           } else {
-            dispatch(values);
+            dispatch(values as any as U);
           }
         }
       );
