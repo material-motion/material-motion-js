@@ -26,7 +26,7 @@ export interface MotionRewriteRangeable {
   rewriteRange(kwargs: RewriteRangeArgs): ObservableWithMotionOperators<number>;
 }
 
-export function withRewriteRange<S extends Constructor<MotionNextOperable<number>>>(superclass: S): S & Constructor<MotionRewriteRangeable> {
+export function withRewriteRange<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionRewriteRangeable> {
   return class extends superclass implements MotionRewriteRangeable {
     /**
      * Receives a value from upstream, linearly interpolates it between the given

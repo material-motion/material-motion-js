@@ -48,7 +48,7 @@ export function withDebounce<T, S extends Constructor<MotionNextOperable<T>>>(su
      * `requestAnimationFrame`.
      */
     _debounce(pulse$: Observable<any> = getFrame$()): ObservableWithMotionOperators<T> {
-      return new MotionObservable(
+      return new MotionObservable<T>(
         (observer: Observer<T>) => {
           let awaitingDispatch = false;
           let lastValue: T;

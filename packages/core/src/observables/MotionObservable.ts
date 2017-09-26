@@ -15,6 +15,7 @@
  */
 
 import {
+  Connect,
   IndefiniteObservable,
   Observer,
 } from 'indefinite-observable';
@@ -58,8 +59,7 @@ export class BaseMotionObservable<T> extends IndefiniteObservable<T> {
  * animated interactions.  Those operators are specified in the
  * [Starmap](https://material-motion.github.io/material-motion/starmap/specifications/operators/)
  */
-export interface MotionObservable<T> extends IndefiniteObservable<T>, ObservableWithMotionOperators<T> {}
-export const MotionObservable = withMotionOperators(BaseMotionObservable);
+export class MotionObservable<T> extends withMotionOperators<T, new (connect: Connect<T>) => BaseMotionObservable<T>>(BaseMotionObservable) {}
 export default MotionObservable;
 
 // See explanation in `./proxies`

@@ -30,8 +30,7 @@ import {
   fulfillProxies,
 } from './fulfillProxies';
 
-export interface MotionSubject<T> extends IndefiniteSubject<T>, ObservableWithMotionOperators<T> {}
-export const MotionSubject = withMotionOperators(IndefiniteSubject);
+export class MotionSubject<T> extends withMotionOperators<T, new () => IndefiniteSubject<T>>(IndefiniteSubject) {}
 export default MotionSubject;
 
 // See explanation in `./proxies`
