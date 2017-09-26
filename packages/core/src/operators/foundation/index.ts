@@ -40,6 +40,11 @@ import {
 } from './_map';
 
 import {
+  MotionMathOperable,
+  withMathOperator,
+} from './_mathOperator';
+
+import {
   MotionMulticastable,
   withMulticast,
 } from './_multicast';
@@ -81,18 +86,18 @@ import {
 
 export interface ObservableWithFoundationalMotionOperators<T> extends
   MotionDebounceable<T>, MotionFilterable<T>, MotionFlattenable<T>,
-  MotionMappable<T>, MotionMemorable<T>, MotionMulticastable<T>,
-  MotionNextOperable<T>, MotionReactiveMappable<T>,
+  MotionMappable<T>, MotionMathOperable<T>, MotionMemorable<T>,
+  MotionMulticastable<T>, MotionNextOperable<T>, MotionReactiveMappable<T>,
   MotionReactiveNextOperable<T>, MotionReadable<T>, MotionTappable<T>,
   MotionWindowable<T> {}
 
 export function withFoundationalMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
     & Constructor<ObservableWithFoundationalMotionOperators<T>> {
 
-  return withRead(withDebounce(withRemember(withMulticast(withFilter(withMap(
-    withTap(withReactiveMap(withReactiveNextOperator(withFlattenIterables(
-      withSlidingWindow(withNextOperator<T, S>(superclass))
-    ))))
+  return withRead(withDebounce(withRemember(withMulticast(withFilter(
+    withMathOperator(withMap(withTap(withReactiveMap(withReactiveNextOperator(
+      withFlattenIterables(withSlidingWindow(withNextOperator<T, S>(superclass))
+    )))))
   ))))));
 }
 
@@ -100,6 +105,7 @@ export * from './_debounce';
 export * from './_filter';
 export * from './_flattenIterables';
 export * from './_map';
+export * from './_mathOperator';
 export * from './_multicast';
 export * from './_nextOperator';
 export * from './_reactiveMap';
