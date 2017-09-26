@@ -30,8 +30,7 @@ import {
   fulfillProxies,
 } from './fulfillProxies';
 
-export interface MotionProperty<T> extends ReactiveProperty<T>, ObservableWithMotionOperators<T> {}
-export const MotionProperty = withMotionOperators(ReactiveProperty);
+export class MotionProperty<T> extends withMotionOperators<T, new () => ReactiveProperty<T>>(ReactiveProperty) {}
 export default MotionProperty;
 
 // See explanation in `./proxies`

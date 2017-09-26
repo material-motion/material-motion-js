@@ -147,7 +147,7 @@ export class Tossable {
     this.spring = spring;
     this.location$ = location$;
 
-    const dragIsAtRest$ = draggable.state$.rewrite({
+    const dragIsAtRest$ = draggable.state$.rewrite<boolean, boolean>({
       [State.AT_REST]: true,
       [State.ACTIVE]: false,
     }).dedupe();
@@ -159,7 +159,9 @@ export class Tossable {
     const whenDragIsAtRest$ = when(dragIsAtRest$);
     const whenDragIsActive$ = when(dragIsAtRest$.inverted());
 
-    const firstAxis = draggable.axis$.read();
+    // TypeScript can't compare Axis and 'x' | 'y' (for instance, in pluck), so
+    // we help it out.
+    const firstAxis = draggable.axis$.read() as 'x' | 'y';
     draggable.axis$.subscribe(
       axis => {
         if (axis !== firstAxis) {
@@ -175,7 +177,7 @@ export class Tossable {
 
     const locationOnDown$ = location$._debounce(whenDragIsActive$);
 
-    this.draggedLocation$ = draggable.value$.addedBy(locationOnDown$, { onlyDispatchWithUpstream: true })._reactiveMap(
+    this.draggedLocation$ = draggable.value$.addedBy<Point2D>(locationOnDown$, { onlyDispatchWithUpstream: true })._reactiveMap(
       (
         location: Point2D,
         resistanceOrigin: Point2D,
@@ -236,7 +238,7 @@ export class Tossable {
       false: State.AT_REST,
     }).dedupe().subscribe(this.state$);
 
-    this.value$ = spring.enabled$.rewrite(
+    this.value$ = spring.enabled$.rewrite<Point2D, ObservableWithMotionOperators<Point2D>>(
       {
         true: spring.value$._map(
           // This _map() call is a quick hack to make up for the lack of a Point2D
