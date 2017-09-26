@@ -38,7 +38,7 @@ import {
 } from '../typeGuards';
 
 export interface MotionVelocityMeasurable<T> {
-  velocity(pulse?: MotionTimestampable<any> & Observable<any>): ObservableWithMotionOperators<T>;
+  velocity<U extends T & (Point2D | number)>(pulse?: MotionTimestampable<any> & Observable<any>): ObservableWithMotionOperators<U>;
 }
 
 // These constants are exported for testing.
@@ -74,9 +74,9 @@ export function withVelocity<T, S extends Constructor<Observable<T> & MotionTime
      * `pulse` dispatches a value.  This is useful for ensuring that velocity
      * is only calculated when it will be used.
      */
-    velocity(pulse: MotionTimestampable<any> & Observable<any> = this): ObservableWithMotionOperators<T> {
-      return new MotionObservable<T>(
-        (observer: Observer<T>) => {
+    velocity<U extends T & (Point2D | number)>(pulse: MotionTimestampable<any> & Observable<any> = this): ObservableWithMotionOperators<U> {
+      return new MotionObservable(
+        (observer: Observer<U>) => {
           let records: Array<Timestamped<T>> = [];
 
           const trailingSubscription = this.timestamp()._slidingWindow(MAXIMUM_INCOMING_DISPATCHES).subscribe(
@@ -93,10 +93,10 @@ export function withVelocity<T, S extends Constructor<Observable<T> & MotionTime
                 observer.next({
                   x: calculateVelocity(recentRecords, pluckX, pluckTimestamp),
                   y: calculateVelocity(recentRecords, pluckY, pluckTimestamp),
-                });
+                } as U);
               } else {
                 observer.next(
-                  calculateVelocity(recentRecords, pluckValue, pluckTimestamp)
+                  calculateVelocity(recentRecords, pluckValue, pluckTimestamp) as U
                 );
               }
             }

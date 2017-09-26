@@ -28,7 +28,7 @@ export interface MotionUpperBoundable {
 export function withUpperBound<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionUpperBoundable> {
   return class extends superclass implements MotionUpperBoundable {
     upperBound(limit$: number | Observable<number>): ObservableWithMotionOperators<number> {
-      return (this as any as ObservableWithMotionOperators<number>)._reactiveMap(
+      return (this as any as MotionReactiveMappable<number>)._reactiveMap(
         (value: number, limit) => Math.min(value, limit),
         [ limit$ ],
       );
