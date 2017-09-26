@@ -43,7 +43,7 @@ export function withNextOperator<T, S extends Constructor<Observable<T>>>(superc
      * the result to the observer's `next` channel.
      */
     _nextOperator<U>(operation: NextOperation<T, U>): ObservableWithMotionOperators<U> {
-      return new MotionObservable<U>(
+      return new MotionObservable(
         (observer: Observer<U>) => {
           const dispatch: NextChannel<U> = observer.next.bind(observer);
 

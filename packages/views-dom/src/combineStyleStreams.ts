@@ -18,10 +18,8 @@ import {
   Dict,
   Observable,
   ObservableWithMotionOperators,
-  OpacityStyleStreams,
   Point2D,
-  ScaleStyleStreams,
-  TranslateStyleStreams,
+  StyleStreams,
   combineLatest,
 } from 'material-motion';
 
@@ -32,23 +30,31 @@ export type StyleDict = {
   willChange?: string,
 };
 
-export function combineStyleStreams(styleStreams: Partial<OpacityStyleStreams & ScaleStyleStreams & TranslateStyleStreams>): ObservableWithMotionOperators<StyleDict> {
+export type PrimitiveStyleDict = {
+  opacity: number,
+  scale: number,
+  translate: Point2D,
+  borderRadius: string,
+  willChange: string,
+};
+
+export function combineStyleStreams(styleStreams: Partial<StyleStreams>): ObservableWithMotionOperators<StyleDict> {
   return combineLatest(
-    stripStreamSuffices(styleStreams as Dict<Observable<any>>),
+    stripStreamSuffices(styleStreams as StyleStreams),
     { waitForAllValues: false }
   )._debounce()._map(
-    ({ opacity = 1, scale = 1, translate, borderRadius = '', willChange = '', ...passthrough }) => (
+    ({ opacity = 1, scale = 1, translate = { x: 0, y: 0 }, borderRadius = '', willChange = '', ...passthrough }: PrimitiveStyleDict) => (
       {
         ...passthrough,
         borderRadius: Array.isArray(borderRadius)
           ? borderRadius.map(appendPixels).join(' ' )
           : borderRadius,
-        opacity,
+        opacity: opacity.toFixed(3),
         transform: buildTransformString({ translate, scale }),
         willChange,
       }
     )
-  );
+  ) as ObservableWithMotionOperators<StyleDict>;
 }
 export default combineStyleStreams;
 

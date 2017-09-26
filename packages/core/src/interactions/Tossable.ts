@@ -232,13 +232,13 @@ export class Tossable {
       spring.state$.isAnyOf([ State.ACTIVE ]),
       draggable.state$.isAnyOf([ State.ACTIVE ])
     ]).rewrite({
-      [true]: State.ACTIVE,
-      [false]: State.AT_REST,
+      true: State.ACTIVE,
+      false: State.AT_REST,
     }).dedupe().subscribe(this.state$);
 
     this.value$ = spring.enabled$.rewrite(
       {
-        [true]: spring.value$._map(
+        true: spring.value$._map(
           // This _map() call is a quick hack to make up for the lack of a Point2D
           // spring.  When a Point2D spring is implemented, this should go away, and
           // `spring` should be of that type.
@@ -261,7 +261,7 @@ export class Tossable {
             }
           }
         ),
-        [false]: this.draggedLocation$
+        false: this.draggedLocation$
       },
       {
         dispatchOnKeyChange: false,
@@ -275,7 +275,7 @@ export type ApplyLinearResistanceToTossableArgs = {
   tossable: Tossable,
   min$: ObservableWithMotionOperators<number>,
   max$: ObservableWithMotionOperators<number>,
-  axis$: ObservableWithMotionOperators<number>,
+  axis$: ObservableWithMotionOperators<Axis>,
   basis$: ObservableWithMotionOperators<number>,
   factor$: ObservableWithMotionOperators<number>,
 };
