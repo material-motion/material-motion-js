@@ -20,6 +20,7 @@ import {
 
 import {
   Dict,
+  Observable,
   Observer,
   Subscription,
 } from './types';
@@ -32,15 +33,18 @@ import {
 export type CombineLatestOptions = {
   waitForAllValues?: boolean,
 };
-export function combineLatest<T extends Dict<any> | Iterable<any>>(streams: T, { waitForAllValues = true }: CombineLatestOptions = {}): MotionObservable<T> {
+export function combineLatest<V, T extends Iterable<V | Observable<V>>, U extends Array<V>>(streams: T, options?: CombineLatestOptions): MotionObservable<U>;
+export function combineLatest<V, T extends Dict<V | Observable<V>>, U extends Dict<V>>(streams: T, { waitForAllValues = true }: CombineLatestOptions = {}): MotionObservable<U> {
   return new MotionObservable(
-    (observer: Observer<T>) => {
+    (observer: Observer<U>) => {
       const outstandingKeys = new Set(Object.keys(streams));
 
-      let nextValue: T = {};
+      let nextValue: U;
 
       if (isIterable(streams)) {
         nextValue = [];
+      } else {
+        nextValue = {};
       }
 
       const subscriptions: Dict<Subscription> = {};
@@ -49,7 +53,7 @@ export function combineLatest<T extends Dict<any> | Iterable<any>>(streams: T, {
       outstandingKeys.forEach(checkKey);
       initializing = false;
 
-      function checkKey(key: string | number) {
+      function checkKey(key: string) {
         const maybeStream: any = streams[key];
         if (isObservable(maybeStream)) {
           subscriptions[key] = maybeStream.subscribe(
@@ -84,4 +88,3 @@ export function combineLatest<T extends Dict<any> | Iterable<any>>(streams: T, {
     }
   );
 }
-
