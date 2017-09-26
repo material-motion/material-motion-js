@@ -27,6 +27,7 @@ import {
 } from 'indefinite-observable';
 
 export {
+  Connect,
   Disconnect,
   NextChannel,
   Observable,

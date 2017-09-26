@@ -31,8 +31,7 @@ import {
   fulfillProxies,
 } from './fulfillProxies';
 
-export interface MemorylessMotionSubject<T> extends MemorylessIndefiniteSubject<T>, ObservableWithMotionOperators<T> {}
-export const MemorylessMotionSubject = withMotionOperators(MemorylessIndefiniteSubject);
+export class MemorylessMotionSubject<T> extends withMotionOperators<T, new () => MemorylessIndefiniteSubject<T>>(MemorylessIndefiniteSubject) {}
 export default MemorylessMotionSubject;
 
 // See explanation in `./proxies`
