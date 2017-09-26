@@ -15,7 +15,7 @@
  */
 
 import {
-  getEventStreamFromElement;
+  getEventStreamFromElement,
 } from './getEventStreamFromElement';
 
 // If/when we care about isomorphic dependents, we can check `typeof window`
@@ -42,9 +42,6 @@ export { default as convertTouchEventsToPointerEvents } from './convertTouchEven
 
 export * from './createCustomPropertyObserver';
 export { default as createCustomPropertyObserver } from './createCustomPropertyObserver';
-
-export * from './createMotionElementFromDOMNode';
-export { default as createMotionElementFromDOMNode } from './createMotionElementFromDOMNode';
 
 export * from './getEventStreamFromElement';
 export { default as getEventStreamFromElement } from './getEventStreamFromElement';
