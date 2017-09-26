@@ -244,7 +244,7 @@ export class NumericSpring {
 
                 initialValueChangedWhileDisabled = false;
                 initialVelocityChangedWhileDisabled = false;
-              } else if (spring.normalizedVelocity !== 0) {
+              } else {
                 spring.stop();
               }
             }
