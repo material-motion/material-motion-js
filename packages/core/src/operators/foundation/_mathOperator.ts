@@ -44,7 +44,7 @@ export function withMathOperator<T, S extends Constructor<MotionReactiveMappable
      * Applies the operation to each dimension and dispatches the result.
      */
     _mathOperator<U extends T & (Point2D | number)>(operation: (upstream: number, parameter: number) => number, amount$: U | Observable<U>, options?: ReactiveMappableOptions): ObservableWithMotionOperators<U> {
-      return (this as any as ObservableWithMotionOperators<U>)._reactiveMap(
+      return (this as any as MotionReactiveMappable<U>)._reactiveMap(
         (value: U, amount: U) => {
           if (isPoint2D(value)) {
             return {

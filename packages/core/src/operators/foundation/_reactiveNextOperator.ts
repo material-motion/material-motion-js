@@ -56,7 +56,7 @@ export function withReactiveNextOperator<T, S extends Constructor<Observable<T>>
      * a value from every argument it is subscribed to.
      */
     _reactiveNextOperator<U>(operation: ReactiveNextOperation<T, U>, args: Array<any>, options?: CombineLatestOptions): ObservableWithMotionOperators<U> {
-      return new MotionObservable<U>(
+      return new MotionObservable(
         (observer: Observer<U>) => {
           const boundNext: NextChannel<U> = observer.next.bind(observer);
           return combineLatest([ this, ...args ], options).subscribe(
