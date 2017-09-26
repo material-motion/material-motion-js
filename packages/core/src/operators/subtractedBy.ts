@@ -31,6 +31,18 @@ import {
 } from './foundation/_reactiveMap';
 
 export interface MotionSubtractable<T> {
+  // Since number literals get their own types, `U extends T & number` will
+  // resolve to `5` if the upstream value is `5`.  This would break
+  // `$.addedBy(5).multipliedBy(4)`, because `multipliedBy` could only take `5`.
+  //
+  // To work around this, we overload the method signature.  When `T` is a
+  // number, we explicitly return an `Observable<number>`.  Otherwise, we can
+  // use the type variable `U`.
+  subtractedBy<U extends T & number>(
+    amount$: U | Observable<U>,
+    options?: ReactiveMappableOptions,
+  ): ObservableWithMotionOperators<number>;
+
   subtractedBy<U extends T & (Point2D | number)>(
     amount$: U | Observable<U>,
     options?: ReactiveMappableOptions,
