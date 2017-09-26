@@ -31,7 +31,7 @@ export function withAppendUnit<T, S extends Constructor<MotionMappable<T>>>(supe
      * unit to the upstream values.
      */
     appendUnit(unit: string): ObservableWithMotionOperators<string> {
-      return (this as any as ObservableWithMotionOperators<T>)._map(
+      return this._map(
         (value: T) => value + unit
       );
     }

@@ -20,7 +20,7 @@ import {
 
 import {
   Constructor,
-  MotionNextOperable,
+  MotionReactiveMappable,
   NextChannel,
   ObservableWithMotionOperators,
 } from '../types';
@@ -29,14 +29,14 @@ export interface MotionIsAnyOfable {
   isAnyOf(valuesOrValueStreams: Array<any>): ObservableWithMotionOperators<boolean>;
 }
 
-export function withIsAnyOf<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionIsAnyOfable> {
-  return class extends superclass implements MotionIsAnyOfable<T> {
+export function withIsAnyOf<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionIsAnyOfable> {
+  return class extends superclass implements MotionIsAnyOfable {
     /**
      * Dispatches `true` when it receives a value that matches any of the
      * provided values and `false` otherwise.
      */
     isAnyOf(valuesOrValueStreams: Array<any>): ObservableWithMotionOperators<boolean> {
-      return (this as any as ObservableWithMotionOperators<any>)._reactiveMap(
+      return this._reactiveMap(
         (upstreamValue: any, ...possibilities: Array<any>) => {
           return possibilities.includes(upstreamValue);
         },
