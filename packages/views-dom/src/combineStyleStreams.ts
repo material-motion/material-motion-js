@@ -26,7 +26,7 @@ import {
 } from 'material-motion';
 
 export type StyleDict = {
-  opacity?: string,
+  opacity?: number,
   touchAction?: string,
   transform?: string,
   willChange?: string,
@@ -37,7 +37,7 @@ export function combineStyleStreams(styleStreams: Partial<OpacityStyleStreams & 
     stripStreamSuffices(styleStreams as Dict<Observable<any>>),
     { waitForAllValues: false }
   )._debounce()._map(
-    ({ opacity = 1, scale = 1, translate, borderRadius = '', willChange = '', ...passthrough }) => (
+    ({ opacity = 1, scale = 1, translate = { x: 0, y: 0 }, borderRadius = '', willChange = '', ...passthrough }) => (
       {
         ...passthrough,
         borderRadius: Array.isArray(borderRadius)

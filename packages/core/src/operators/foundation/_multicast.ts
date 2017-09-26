@@ -36,7 +36,7 @@ export function withMulticast<T, S extends Constructor<Observable<T>>>(superclas
      * side effects that may occur upstream only happen once.
      */
     _multicast(): ObservableWithMotionOperators<T> {
-      const result = new MemorylessMotionSubject<T>();
+      const result = new MemorylessMotionSubject();
       this.subscribe(result);
       return result;
     }

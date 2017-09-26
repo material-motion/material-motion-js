@@ -78,8 +78,8 @@ export {
 } from './operators'
 
 import {
-  MotionObservable,
-} from './observables/MotionObservable';
+  ObservableWithMotionOperators,
+} from './operators';
 
 import {
   State,
@@ -118,13 +118,13 @@ export type PartialPointerEvent = {
 };
 
 export type PointerEventStreams = {
-  down$: MotionObservable<PartialPointerEvent>,
-  move$: MotionObservable<PartialPointerEvent>,
-  up$: MotionObservable<PartialPointerEvent>,
-  cancel$: MotionObservable<PartialPointerEvent>,
-  contextMenu$: MotionObservable<PartialPointerEvent>,
-  capturedClick$: MotionObservable<MouseEvent>,
-  capturedDragStart$: MotionObservable<DragEvent>,
+  down$: ObservableWithMotionOperators<PartialPointerEvent>,
+  move$: ObservableWithMotionOperators<PartialPointerEvent>,
+  up$: ObservableWithMotionOperators<PartialPointerEvent>,
+  cancel$: ObservableWithMotionOperators<PartialPointerEvent>,
+  contextMenu$: ObservableWithMotionOperators<PartialPointerEvent>,
+  capturedClick$: ObservableWithMotionOperators<MouseEvent>,
+  capturedDragStart$: ObservableWithMotionOperators<DragEvent>,
 };
 
 export type Read<T> = () => T;
@@ -143,27 +143,27 @@ export interface MotionElement {
 }
 
 export type WillChangeStyleStreams = {
-  readonly willChange$: MotionObservable<string>,
+  readonly willChange$: ObservableWithMotionOperators<string>,
 };
 
 export type TranslateStyleStreams = WillChangeStyleStreams & {
-  readonly translate$: MotionObservable<Point2D>,
+  readonly translate$: ObservableWithMotionOperators<Point2D>,
 };
 
 export type ScaleStyleStreams = WillChangeStyleStreams & {
-  readonly scale$: MotionObservable<number>,
+  readonly scale$: ObservableWithMotionOperators<number>,
 };
 
 export type OpacityStyleStreams = WillChangeStyleStreams & {
-  readonly opacity$: MotionObservable<number>,
+  readonly opacity$: ObservableWithMotionOperators<number>,
 };
 
 export type BoxShadowStyleStreams = {
-  readonly boxShadow$: MotionObservable<string>,
+  readonly boxShadow$: ObservableWithMotionOperators<string>,
 };
 
 export type BorderRadiusStyleStreams = {
-  readonly borderRadius$: MotionObservable<number | string | Array<number> | Array<string>>,
+  readonly borderRadius$: ObservableWithMotionOperators<number | string | Array<number> | Array<string>>,
 };
 
 export type EqualityCheck = (a: any, b: any) => boolean;

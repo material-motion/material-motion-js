@@ -15,6 +15,10 @@
  */
 
 import {
+  ObservableWithMotionOperators,
+} from './operators';
+
+import {
   MotionObservable,
 } from './observables/MotionObservable';
 
@@ -50,7 +54,7 @@ function isTrue(value: any): boolean {
  * the most recent dispatch from at least one of them is true.  Inert until it
  * has received a value from each stream in the array.
  */
-export function anyOf(streams: Array<MotionObservable<boolean>>): MotionObservable<boolean> {
+export function anyOf(streams: Array<ObservableWithMotionOperators<boolean>>): ObservableWithMotionOperators<boolean> {
   return emptyStream._reactiveMap(
     (_, ...values) => {
       return values.some(isTrue);
@@ -64,7 +68,7 @@ export function anyOf(streams: Array<MotionObservable<boolean>>): MotionObservab
  * the most recent dispatch from each of them is true.  Inert until it has
  * received a value from each stream in the array.
  */
-export function allOf(streams: Array<MotionObservable<boolean>>): MotionObservable<boolean> {
+export function allOf(streams: Array<ObservableWithMotionOperators<boolean>>): ObservableWithMotionOperators<boolean> {
   return emptyStream._reactiveMap(
     (_, ...values) => {
       return values.every(isTrue);
@@ -78,7 +82,7 @@ export function allOf(streams: Array<MotionObservable<boolean>>): MotionObservab
  * the most recent dispatch from each of them is false.  Inert until it has
  * received a value from each stream in the array.
  */
-export function noneOf(streams: Array<MotionObservable<boolean>>): MotionObservable<boolean> {
+export function noneOf(streams: Array<ObservableWithMotionOperators<boolean>>): ObservableWithMotionOperators<boolean> {
   return anyOf(streams).inverted();
 };
 
@@ -90,7 +94,7 @@ export function noneOf(streams: Array<MotionObservable<boolean>>): MotionObserva
  *   a.recognitionState$.isAnyOf([GestureRecognitionState.BEGAN])
  * ).subscribe(b.cancellation$)
  */
-export function when(stream: MotionObservable<boolean>): MotionObservable<boolean> {
+export function when(stream: ObservableWithMotionOperators<boolean>): ObservableWithMotionOperators<boolean> {
   return stream._filter(
     value => value === true
   );

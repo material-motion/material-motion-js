@@ -16,7 +16,7 @@
 
 import {
   Dict,
-  MotionObservable,
+  ObservableWithMotionOperators,
   PartialPointerEvent,
 } from 'material-motion';
 
@@ -29,7 +29,7 @@ const TOUCH_TYPE_TO_POINTER_TYPE: Dict<string> = {
   'touchcancel': 'pointercancel',
 };
 
-export function convertTouchEventsToPointerEvents(touchEvent$: MotionObservable<TouchEvent>): MotionObservable<PartialPointerEvent> {
+export function convertTouchEventsToPointerEvents(touchEvent$: ObservableWithMotionOperators<TouchEvent>): ObservableWithMotionOperators<PartialPointerEvent> {
   return touchEvent$._map(
     ({ type, targetTouches, changedTouches }: TouchEvent) => Array.from(
       ['touchend', 'touchcancel'].includes(type)
