@@ -31,7 +31,20 @@ import {
 } from './_reactiveMap';
 
 export interface MotionMathOperable<T> {
-  _mathOperator<U extends T & (Point2D | number)>(
+  // Since number literals get their own types, `U extends T and number` will
+  // resolve to `5` if the upstream value is `5`.  This would break
+  // `$.addedBy(5).multipliedBy(4)`, because `multipliedBy` could only take `5`.
+  //
+  // To work around this, we overload `_mathOperator`.  When `T` is a number, we
+  // explicitly return an `Observable<number>`.  Otherwise, we can use the type
+  // variable `U`.
+  _mathOperator<U extends T & number>(
+    operation: (upstream: number, parameter: number) => number,
+    amount$: U | Observable<U>,
+    options?: ReactiveMappableOptions,
+  ): ObservableWithMotionOperators<number>;
+
+  _mathOperator<U extends T & Point2D>(
     operation: (upstream: number, parameter: number) => number,
     amount$: U | Observable<U>,
     options?: ReactiveMappableOptions,
@@ -43,7 +56,8 @@ export function withMathOperator<T, S extends Constructor<MotionReactiveMappable
     /**
      * Applies the operation to each dimension and dispatches the result.
      */
-    _mathOperator<U extends T & (Point2D | number)>(operation: (upstream: number, parameter: number) => number, amount$: U | Observable<U>, options?: ReactiveMappableOptions): ObservableWithMotionOperators<U> {
+    _mathOperator<U extends T & number>(operation: (upstream: number, parameter: number) => number, amount$: U | Observable<U>, options?: ReactiveMappableOptions): ObservableWithMotionOperators<number>;
+    _mathOperator<U extends T & Point2D>(operation: (upstream: number, parameter: number) => number, amount$: U | Observable<U>, options?: ReactiveMappableOptions): ObservableWithMotionOperators<U> {
       return (this as any as MotionReactiveMappable<U>)._reactiveMap(
         (value: U, amount: U) => {
           if (isPoint2D(value)) {
