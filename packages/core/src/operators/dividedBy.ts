@@ -31,7 +31,20 @@ import {
 } from './foundation/_reactiveMap';
 
 export interface MotionDivisible<T> {
-  dividedBy<U extends T & (Point2D | number)>(
+  // Since number literals get their own types, `U extends T & number` will
+  // resolve to `5` if the upstream value is `5`.  This would break
+  // `$.dividedBy(5).multipliedBy(4)`, because `multipliedBy` could only take
+  // `5`.
+  //
+  // To work around this, we overload the method signature.  When `T` is a
+  // number, we explicitly return an `Observable<number>`.  Otherwise, we can
+  // use the type variable `U`.
+  dividedBy<U extends T & number>(
+    denominator$: U | Observable<U>,
+    options?: ReactiveMappableOptions,
+  ): ObservableWithMotionOperators<number>;
+
+  dividedBy<U extends T & Point2D>(
     denominator$: U | Observable<U>,
     options?: ReactiveMappableOptions,
   ): ObservableWithMotionOperators<U>;
