@@ -61,14 +61,14 @@ export function withRewrite<T, S extends Constructor<MotionReactiveNextOperable<
         castKeysToStrings = true;
       }
 
-      let upstream: MotionReactiveNextOperable<T> & MotionTimestampable<T> = this;
+      let upstream: MotionReactiveNextOperable<T | Timestamped<T>> = this;
 
       if (!dispatchOnKeyChange) {
         values = values.map(
           value => isObservable(value)
             ? value.timestamp()
             : timestamp(value)
-        );
+        ) as Array<Timestamped<U>>;
         upstream = this.timestamp();
       }
 
@@ -83,7 +83,10 @@ export function withRewrite<T, S extends Constructor<MotionReactiveNextOperable<
               key = key.toString();
             }
 
-            const index = keys.indexOf(key);
+            // TypeScript can't do Array<string | T>.indexOf(string | T), so we
+            // force it to pick one.  Doesn't matter, since the result is a
+            // number either way.
+            const index = (keys as Array<T>).indexOf(key as T);
 
             if (index === -1) {
               if (defaultValue !== SUPPRESS_FAILURES) {

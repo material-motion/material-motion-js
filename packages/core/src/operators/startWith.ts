@@ -38,7 +38,7 @@ export function withStartWith<T, S extends Constructor<ObservableWithFoundationa
      * receive the most recent value.
      */
     startWith(initialValue: T): ObservableWithMotionOperators<T> {
-      return new MotionObservable<T>(
+      return new MotionObservable(
         (observer: Observer<T>) => {
           observer.next(initialValue);
           const subscription = this.subscribe(observer);

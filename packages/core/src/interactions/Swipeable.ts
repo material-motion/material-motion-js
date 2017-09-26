@@ -154,8 +154,8 @@ export class Swipeable {
     ).subscribe(tossable.resistanceFactor$);
 
     this.direction$ = draggedX$.threshold(0).isAnyOf([ ThresholdRegion.ABOVE ]).rewrite({
-      [true]: Direction.RIGHT,
-      [false]: Direction.LEFT
+      true: Direction.RIGHT,
+      false: Direction.LEFT
     });
 
     // I originally tried to introduce a `resistanceProgress$` to `Tossable`,
@@ -177,21 +177,21 @@ export class Swipeable {
     draggedX$.subscribe(spring.destination$);
 
     this.isThresholdMet$.rewrite({
-      [true]: 1,
-      [false]: 0,
+      true: 1,
+      false: 0,
     }).subscribe(this.backgroundSpring.destination$);
 
     this.isThresholdMet$.rewrite({
-      [true]: 1,
-      [false]: ICON_SPRING_INITIAL_VALUE,
+      true: 1,
+      false: ICON_SPRING_INITIAL_VALUE,
     }).subscribe(this.iconSpring.destination$);
 
     // This needs to also take velocity into consideration; right now, it only
     // cares about final position.
     when(draggable.state$.isAnyOf([ State.AT_REST ])).rewriteTo(
       this.isThresholdMet$.rewrite({
-        [true]: this.direction$,
-        [false]: SwipeState.NONE,
+        true: this.direction$,
+        false: SwipeState.NONE,
       }),
        onlyDispatchWithUpstream
     ).subscribe(this.swipeState$);

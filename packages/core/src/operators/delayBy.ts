@@ -36,7 +36,7 @@ export function withDelayBy<T, S extends Constructor<Observable<T>>>(superclass:
      * dispatches them.
      */
     delayBy(time: number): ObservableWithMotionOperators<T> {
-      return new MotionObservable<T>(
+      return new MotionObservable(
         (observer: Observer<T>) => {
           let connected = true;
 

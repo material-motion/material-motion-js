@@ -31,10 +31,10 @@ import {
  * per frame.  Since no rendering will happen until `requestAnimationFrame` is
  * called, it should be safe to `_debounce(frame$)` without missing a frame.
  */
-let frame$: MotionObservable<number>;
+let frame$: ObservableWithMotionOperators<number>;
 export function getFrame$() {
   if (!frame$) {
-    frame$ = new MotionObservable<number>(
+    frame$ = new MotionObservable(
       (observer: Observer<number>) => {
         let queuedFrameID = 0;
 
