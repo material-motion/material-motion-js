@@ -35,7 +35,7 @@ export function getEventStreamFromElement(type: string, element: Element, eventL
   return new MotionObservable(
     (observer: Observer<Event>) => {
       if (!supportsPassiveListeners) {
-        eventListenerOptions = eventListenerOptions.capture || false;
+        eventListenerOptions = eventListenerOptions.capture || (false as any as AddEventListenerOptions);
       }
 
       const next = observer.next.bind(observer);
