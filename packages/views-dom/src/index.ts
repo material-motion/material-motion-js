@@ -15,6 +15,10 @@
  */
 
 import {
+  ObservableWithMotionOperators,
+} from 'material-motion';
+
+import {
   getEventStreamFromElement,
 } from './getEventStreamFromElement';
 
@@ -22,7 +26,7 @@ import {
 // here and export an empty stream if it's undefined.
 export const viewportDimensions$ = getEventStreamFromElement(
   'resize', window as any as Element
-).startWith({})._map(
+).startWith({} as Event)._map(
   // Using _map instead of rewriteTo because it should be reevaluated on
   // every resize.
   () => (
