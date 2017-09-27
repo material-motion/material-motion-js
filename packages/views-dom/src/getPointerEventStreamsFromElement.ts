@@ -28,48 +28,48 @@ import {
   getEventStreamFromElement,
 } from './getEventStreamFromElement';
 
-const notPassive = {
+const notPassive: AddEventListenerOptions = {
   passive: false,
   capture: true,
 };
 
 export function getPointerEventStreamsFromElement(element: Element): PointerEventStreams {
   const commonStreams = {
-    contextMenu$: getEventStreamFromElement('click', element),
+    contextMenu$: getEventStreamFromElement<PointerEvent>('click', element),
 
     // These are streams that a gesture recognizer may want to interrupt when it
     // recognizes a gesture is happening.
-    capturedClick$: getEventStreamFromElement('click', element, notPassive),
-    capturedDragStart$: getEventStreamFromElement('dragstart', element, notPassive),
+    capturedClick$: getEventStreamFromElement<MouseEvent>('click', element, notPassive),
+    capturedDragStart$: getEventStreamFromElement<DragEvent>('dragstart', element, notPassive),
   };
 
-  if (window.PointerEvent) {
+  if (typeof PointerEvent !== 'undefined') {
     return {
-      down$: getEventStreamFromElement('pointerdown', element),
-      move$: getEventStreamFromElement('pointermove', element),
-      up$: getEventStreamFromElement('pointerup', element),
-      cancel$: getEventStreamFromElement('pointercancel', element),
+      down$: getEventStreamFromElement<PointerEvent>('pointerdown', element),
+      move$: getEventStreamFromElement<PointerEvent>('pointermove', element),
+      up$: getEventStreamFromElement<PointerEvent>('pointerup', element),
+      cancel$: getEventStreamFromElement<PointerEvent>('pointercancel', element),
       ...commonStreams,
     };
   } else {
     return {
-      down$: getEventStreamFromElement('mousedown', element).merge(
+      down$: getEventStreamFromElement<MouseEvent>('mousedown', element).merge(
         convertTouchEventsToPointerEvents(
-          getEventStreamFromElement('touchstart', element)
+          getEventStreamFromElement<TouchEvent>('touchstart', element)
         )
       ),
-      move$: getEventStreamFromElement('mousemove', element).merge(
+      move$: getEventStreamFromElement<MouseEvent>('mousemove', element).merge(
         convertTouchEventsToPointerEvents(
-          getEventStreamFromElement('touchmove', element)
+          getEventStreamFromElement<TouchEvent>('touchmove', element)
         )
       ),
-      up$: getEventStreamFromElement('mouseup', element).merge(
+      up$: getEventStreamFromElement<MouseEvent>('mouseup', element).merge(
         convertTouchEventsToPointerEvents(
-          getEventStreamFromElement('touchend', element)
+          getEventStreamFromElement<TouchEvent>('touchend', element)
         )
       ),
       cancel$: convertTouchEventsToPointerEvents(
-        getEventStreamFromElement('touchcancel', element)
+        getEventStreamFromElement<TouchEvent>('touchcancel', element)
       ),
       ...commonStreams,
     };

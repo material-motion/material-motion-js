@@ -44,6 +44,6 @@ export function convertTouchEventsToPointerEvents(touchEvent$: ObservableWithMot
         }
       )
     )
-  )._flattenIterables();
+  )._flattenIterables<PartialPointerEvent>();
 }
 export default convertTouchEventsToPointerEvents;

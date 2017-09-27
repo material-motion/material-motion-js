@@ -30,7 +30,7 @@ import {
 
 export type AttachStreamsProps = StreamDict<any> & {
   children: React.ReactElement<{ domRef(element: Element): void }>,
-  domRef?: (element: Element) => void,
+  domRef?: (element: Element | null) => void,
 };
 export type AttachStreamsState = {
   [index:string]: any,
@@ -58,7 +58,7 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
     // so only set touch-action if it isn't the default.
     usesPointerEvents: false,
   };
-  private _subscriptions:SubscriptionDict = {};
+  private _subscriptions: SubscriptionDict = {};
   private _domNode: Element;
 
   /**
@@ -70,8 +70,8 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
    *
    * const SomeComponent = ({ domRef }) => <div ref = { domRef } />;
    */
-  private _domRef = (ref: Element) => {
-    this._domNode = ref;
+  private _domRef = (ref: Element | null) => {
+    this._domNode = ref!;
 
     if (this._domNode) {
       Object.entries(this.props).forEach(
@@ -81,7 +81,7 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
           //
           // Same presumption is made in `_subscribeToProps`.
           if (isEventHandlerName(propName)) {
-            this._subscribeToEvent$(propName, stream as Subject);
+            this._subscribeToEvent$(propName, stream as Subject<Event>);
           }
         }
       );
@@ -108,7 +108,7 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
    * props and unsubscribing from any props that are no longer present.
    */
   componentWillReceiveProps(nextProps: AttachStreamsProps) {
-    const newStreams: StreamDict = {};
+    const newStreams: StreamDict<any> = {};
 
     Object.entries(nextProps).forEach(
       ([propName, stream]) => {
@@ -118,7 +118,7 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
             delete this._subscriptions[propName];
           }
 
-          newStreams[propName] = stream;
+          newStreams[propName] = stream!;
         }
       }
     );
@@ -145,7 +145,7 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
    * Otherwise, `AttachStreams` will subscribe to the stream and pass any values
    * the stream dispatches as props to its `children` component.
    */
-  private _subscribeToProps(props) {
+  private _subscribeToProps(props: Partial<AttachStreamsProps>) {
     let usesPointerEvents: boolean = false;
 
     Object.entries(props).forEach(
@@ -153,7 +153,7 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
         if (propName === 'children') {
           return;
 
-        } else if (stream.subscribe === undefined) {
+        } else if (stream!.subscribe === undefined) {
           // This prop isn't a stream, so pass it through unmolested
           this.setState({
             [propName]: stream
@@ -161,7 +161,7 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
 
         } else if (isEventHandlerName(propName)) {
           if (this._domNode) {
-            this._subscribeToEvent$(propName, stream as Subject);
+            this._subscribeToEvent$(propName, stream as Subject<any>);
           }
 
           if (propName.includes('onPointer')) {
@@ -169,7 +169,7 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
           }
 
         } else {
-          this._subscriptions[propName] = stream.subscribe(
+          this._subscriptions[propName] = stream!.subscribe(
             (value: any) => {
               const nextState = {
                 [propName]: value,
@@ -192,7 +192,7 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
    * we subscribe to that actual DOM's event system for any prop that looks like
    * an event listener (e.g. starts with `on`).
    */
-  private _subscribeToEvent$(propName: string, subject: Subject) {
+  private _subscribeToEvent$(propName: string, subject: Subject<any>) {
     const eventType = propName.replace('on', '').toLowerCase();
 
     // Using `observable.subscribe` for consistency, but this could just as

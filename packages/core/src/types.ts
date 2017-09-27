@@ -115,7 +115,10 @@ export type PartialPointerEvent = {
   pageX: number;
   pageY: number;
   pointerId?: number; // Can be undefined for MouseEvent
-  type: 'pointerdown' | 'pointermove' | 'pointerup';
+  // Uses string rather than ('pointerdown' | 'pointermove' | 'pointerup')
+  // because the PointerEvent.type is a string and it makes life easier if we
+  // match that.
+  type: string;
 };
 
 export type PointerEventStreams = {
@@ -180,4 +183,4 @@ export type Dict<T> = {
 export type NumericDict = Dict<number>;
 export type StreamDict<T> = Dict<Observable<T>>;
 export type SubjectDict<T> = Dict<Subject<T>>;
-export type SubscriptionDict<T> = Dict<Subscription>;
+export type SubscriptionDict = Dict<Subscription>;
