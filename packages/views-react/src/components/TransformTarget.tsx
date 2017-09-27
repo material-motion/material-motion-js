@@ -35,7 +35,7 @@ export type TransformTargetArgs = {
   opacity: number,
   style: undefined | { [key: string]: string | number },
   children: React.ReactNode | undefined,
-  domRef(ref: Element): void,
+  domRef(ref: Element | null): void,
   className?: string,
 };
 
