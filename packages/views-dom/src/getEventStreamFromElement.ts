@@ -16,6 +16,7 @@
 
 import {
   MotionObservable,
+  ObservableWithMotionOperators,
   Observer,
 } from 'material-motion';
 
@@ -31,19 +32,24 @@ try {
   window.addEventListener("test", () => {}, eventOptions);
 } catch (e) {}
 
-export function getEventStreamFromElement(type: string, element: Element, eventListenerOptions: AddEventListenerOptions = { passive: true }): MotionObservable<Event> {
-  return new MotionObservable(
+export function getEventStreamFromElement<U extends Event = Event>(type: string, element: Element, eventListenerOptions: AddEventListenerOptions = { passive: true }): ObservableWithMotionOperators<U> {
+  return new MotionObservable<Event>(
     (observer: Observer<Event>) => {
       if (!supportsPassiveListeners) {
-        eventListenerOptions = eventListenerOptions.capture || (false as any as AddEventListenerOptions);
+        eventListenerOptions = (eventListenerOptions.capture || false) as any as AddEventListenerOptions;
       }
 
       const next = observer.next.bind(observer);
 
-      element.addEventListener(type, next, eventListenerOptions);
+      // For some reason, TypeScript has an interface for
+      // AddEventListenerOptions, but its addEventListener signature hasn't been
+      // updated to use it, so for now, we manually cast to boolean.
+      //
+      // https://github.com/Microsoft/TypeScript/issues/18136
+      element.addEventListener(type, next, eventListenerOptions as any as boolean);
 
       return () => {
-        element.removeEventListener(type, next, eventListenerOptions);
+        element.removeEventListener(type, next, eventListenerOptions as any as boolean);
       };
     }
   );
