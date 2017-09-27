@@ -15,6 +15,7 @@
     "uws": "8.14.1"
   },
   "devDependencies": {
+    "@bazel/typescript": "^0.2.2",
     "@types/chai": "^3.4.34",
     "@types/sinon": "^1.16.34",
     "@types/sinon-chai": "^2.7.28",
@@ -47,6 +48,7 @@
     "sinon": "2.1.0",
     "sinon-chai": "^2.11.0",
     "ts-loader": "2.0.3",
+    "tsickle": "^0.24.1",
     "tslint": "4.5.1",
     "typescript": "2.4",
     "webpack": "2.3.1"
