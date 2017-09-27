@@ -7,3 +7,8 @@ node_modules
 # package/distribute
 **/dist/*
 *.js.map
+bazel-bin
+bazel-genfiles
+bazel-material-motion-js
+bazel-out
+bazel-testlogs
