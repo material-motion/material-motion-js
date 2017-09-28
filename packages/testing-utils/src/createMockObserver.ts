@@ -15,18 +15,22 @@
  */
 
 import {
+  Observer,
+} from 'indefinite-observable';
+
+import {
   stub,
 } from 'sinon';
 
-export default function createMockObserver() {
-  return new MockObserver();
+export default function createMockObserver<T>() {
+  return new MockObserver<T>();
 }
 
-export class MockObserver {
+export class MockObserver<T> {
   next?: Function;
   disconnect = stub();
 
-  connect = (observer) => {
+  connect = (observer: Observer<T>) => {
     this.next = observer.next.bind(observer);
 
     return this.disconnect;

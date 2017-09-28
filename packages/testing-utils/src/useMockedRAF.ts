@@ -26,11 +26,20 @@ import {
 
 import * as createMockRAF from 'mock-raf';
 
+export interface MockRAF {
+  now(): number,
+  raf: typeof requestAnimationFrame,
+  cancel: typeof cancelAnimationFrame,
+  step(options?: { time?: number, count?: number, }): void,
+}
+
+export type MockedRAFClosure = (mockRAF: MockRAF) => void;
+
 /**
  * Replaces window.requestAnimationFrame with a mock for the duration of a mocha
  * testing suite.
  */
-export default function useMockedRAF(closure) {
+export default function useMockedRAF(closure: MockedRAFClosure) {
   return () => {
     const mockRAF = createMockRAF();
 
