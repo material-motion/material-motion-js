@@ -59,7 +59,7 @@ import {
   ReactiveProperty,
 } from './ReactiveProperty';
 
-
+/* tslint:disable */
 export var MemorylessMotionSubject: new<T>() => ObservableWithMotionOperators<T> & MemorylessIndefiniteSubject<T>;
 export interface MemorylessMotionSubject<T> extends ObservableWithMotionOperators<T>, MemorylessIndefiniteSubject<T> {}
 
@@ -71,7 +71,7 @@ export interface MotionProperty<T> extends ObservableWithMotionOperators<T>, Rea
 
 export var MotionSubject: new<T>() => ObservableWithMotionOperators<T> & IndefiniteSubject<T>;
 export interface MotionSubject<T> extends ObservableWithMotionOperators<T>, IndefiniteSubject<T> {}
-
+/* tslint:enable */
 
 export function defineProxy(name: string, value: any) {
   switch (name) {
