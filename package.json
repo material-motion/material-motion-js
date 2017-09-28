@@ -2,10 +2,10 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "build": "$( yarn bin )/lerna run build",
-    "lint": "$( yarn bin)/lerna run lint",
-    "test": "$( yarn bin )/karma start",
-    "ci": "yarn run lint; yarn run build; yarn run test -- --single-run"
+    "build": "lerna run build",
+    "lint": "lerna run lint",
+    "test": "karma start",
+    "ci": "lerna run lint-ci; yarn run build; yarn run test -- --single-run"
   },
   "lerna": "2.0.0",
   "workspaces": [
@@ -48,6 +48,7 @@
     "sinon-chai": "^2.11.0",
     "ts-loader": "2.0.3",
     "tslint": "4.5.1",
+    "tslint-junit-formatter": "5.1.0",
     "typescript": "2.4",
     "webpack": "2.3.1"
   }

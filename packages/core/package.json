@@ -7,7 +7,7 @@
   "typescript:main": "src/index.ts",
   "scripts": {
     "lint": "../../node_modules/.bin/tslint -c ../../tslint.json --project tsconfig.json --type-check",
-    "clean": "rm -rf ./dist/*; mkdir -p ./dist/",
+    "lint-ci": "yarn run lint --out $CIRCLE_TEST_REPORTS/tslint/core.xml --formatters-dir ../../node_modules/tslint-junit-formatter/formatters --format junit",
     "build": "yarn run clean; ../../node_modules/.bin/tsc",
     "test": "node ../../tools/test.js --only core"
   },
