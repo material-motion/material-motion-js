@@ -41,7 +41,7 @@ const emptyStream = new MotionObservable(
   (observer: Observer<any>) => {
     observer.next(undefined);
 
-    return () => {}
+    return () => {};
   }
 );
 

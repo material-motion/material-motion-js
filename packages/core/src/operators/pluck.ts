@@ -53,7 +53,7 @@ export function createPlucker<K extends string>(path: K) {
   return function plucker<T extends Record<K, any>>(value: T): T[K] {
     let result: T[K] = value;
 
-    for (let pathSegment of pathSegments) {
+    for (const pathSegment of pathSegments) {
       result = result[pathSegment];
     }
 
