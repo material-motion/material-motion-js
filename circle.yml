@@ -1,7 +1,7 @@
 # From https://circleci.com/docs/yarn/
 machine:
   node:
-    version: 7.7.4
+    version: 8.0.0
 
 dependencies:
   override:
