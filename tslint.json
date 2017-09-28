@@ -10,7 +10,7 @@
     "interface-name": [true, "never-prefix"],
     "jsdoc-format": true,
     "label-position": true,
-    "match-default-export-name": true,
+    "match-default-export-name": false,
     "new-parens": true,
     "no-angle-bracket-type-assertion": true,
     "no-conditional-assignment": true,
