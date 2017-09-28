@@ -1,7 +1,7 @@
 # From https://circleci.com/docs/yarn/
 machine:
   node:
-    version: 7.7.4
+    version: 8.0.0
 
 dependencies:
   override:
@@ -19,6 +19,9 @@ dependencies:
 
     # use the lerna version specified in package.json
     - $( yarn bin )/lerna bootstrap -- --non-interactive --flat
+
+    # ensure the tslint folder exists so our artifacts can be written to it.
+    - mkdir -p $CIRCLE_TEST_REPORTS/tslint/
   cache_directories:
     - ~/.cache/yarn
 
