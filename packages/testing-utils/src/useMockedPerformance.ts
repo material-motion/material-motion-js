@@ -46,7 +46,7 @@ export default function useMockedPerformance(closure: PerformanceClosure) {
 
     after(
       () => {
-        (performance.now as SinonStub).restore();
+        (performance.now as SinonStub).restore(); // tslint:disable-line: no-unbound-method
       }
     );
 
