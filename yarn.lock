@@ -5521,9 +5521,9 @@ winston@^1.0.1:
     pkginfo "0.3.x"
     stack-trace "0.0.x"
 
-wobble@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/wobble/-/wobble-1.1.0.tgz#94e387ec0aca68b2db12f285b615acbafec93852"
+wobble@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/wobble/-/wobble-1.2.0.tgz#ed8cab9bcbd3f6617af40d18c51f43cff83bd1c6"
 
 wordwrap@0.0.2:
   version "0.0.2"
