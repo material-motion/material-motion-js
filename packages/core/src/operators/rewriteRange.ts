@@ -59,7 +59,7 @@ export function withRewriteRange<T, S extends Constructor<MotionNextOperable<T>>
             const lowerBound = Math.min(toStart, toEnd);
             const upperBound = Math.max(toStart, toEnd);
 
-            dispatch(Math.max(lowerBound, Math.min(result, upperBound)))
+            dispatch(Math.max(lowerBound, Math.min(result, upperBound)));
           } else {
             dispatch(result);
           }

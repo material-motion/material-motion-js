@@ -52,8 +52,8 @@ export default function useMockedRAF(closure: MockedRAFClosure) {
 
     after(
       () => {
-        (window.requestAnimationFrame as SinonStub).restore();
-        (window.cancelAnimationFrame as SinonStub).restore();
+        (window.requestAnimationFrame as SinonStub).restore(); // tslint:disable-line: no-unbound-method
+        (window.cancelAnimationFrame as SinonStub).restore(); // tslint:disable-line: no-unbound-method
       }
     );
 
