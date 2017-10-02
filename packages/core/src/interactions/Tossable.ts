@@ -33,6 +33,7 @@ import {
 import {
   ObservableWithMotionOperators,
   Point2D,
+  TranslateStyleStreams,
 } from '../types';
 
 import {
@@ -46,7 +47,6 @@ import {
 export type TossableArgs = {
   draggable: Draggable,
   spring: NumericSpring,
-  location$: MotionProperty<Point2D>,
 };
 
 export class Tossable {
@@ -134,18 +134,21 @@ export class Tossable {
     this.resistanceFactor$.write(value);
   }
 
-  readonly value$: ObservableWithMotionOperators<Point2D>;
+  readonly location$: MotionProperty<Point2D> = createProperty({
+    initialValue: { x: 0, y: 0 },
+  });
+
   readonly velocity$: ObservableWithMotionOperators<Point2D>;
   readonly draggedLocation$: ObservableWithMotionOperators<Point2D>;
 
   readonly draggable: Draggable;
   readonly spring: NumericSpring;
-  readonly location$: MotionProperty<Point2D>;
 
-  constructor({ draggable, spring, location$ }: TossableArgs) {
+  readonly styleStreams: TranslateStyleStreams;
+
+  constructor({ draggable, spring }: TossableArgs) {
     this.draggable = draggable;
     this.spring = spring;
-    this.location$ = location$;
 
     const dragIsAtRest$ = draggable.state$.rewrite<boolean, boolean>({
       [State.AT_REST]: true,
@@ -173,9 +176,9 @@ export class Tossable {
     // This block needs to come before the one that sets spring enabled to
     // ensure the spring initializes with the correct values; otherwise, it will
     // start from 0
-    location$.pluck(firstAxis)._debounce(whenDragIsAtRest$).subscribe(spring.initialValue$);
+    this.location$.pluck(firstAxis)._debounce(whenDragIsAtRest$).subscribe(spring.initialValue$);
 
-    const locationOnDown$ = location$._debounce(whenDragIsActive$);
+    const locationOnDown$ = this.location$._debounce(whenDragIsActive$);
 
     this.draggedLocation$ = draggable.value$.addedBy<Point2D>(locationOnDown$, { onlyDispatchWithUpstream: true })._reactiveMap(
       (
@@ -238,7 +241,7 @@ export class Tossable {
       false: State.AT_REST,
     }).dedupe().subscribe(this.state$);
 
-    this.value$ = spring.enabled$.rewrite<Point2D, ObservableWithMotionOperators<Point2D>>(
+    spring.enabled$.rewrite<Point2D, ObservableWithMotionOperators<Point2D>>(
       {
         true: spring.value$._map(
           // This _map() call is a quick hack to make up for the lack of a Point2D
@@ -268,7 +271,16 @@ export class Tossable {
       {
         dispatchOnKeyChange: false,
       },
-    )._debounce();
+    )._debounce().subscribe(this.location$);
+
+    this.styleStreams = {
+      translate$: this.location$,
+
+      willChange$: this.state$.rewrite<string, string>({
+        [State.ACTIVE]: 'transform',
+        [State.AT_REST]: '',
+      }),
+    };
   }
 }
 export default Tossable;

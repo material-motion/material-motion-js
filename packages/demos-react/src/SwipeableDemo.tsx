@@ -72,8 +72,8 @@ export default SwipeableDemo;
 
 class SwipeableCard extends React.Component<{}, {}> {
   containerStyle$ = createProperty({ initialValue: {} });
-  location$ = createProperty({ initialValue: { x: 0, y: 0 }});
-  locationWillChange$ = createProperty({ initialValue: '' });
+  translate$ = createProperty({ initialValue: { x: 0, y: 0 }});
+  translateWillChange$ = createProperty({ initialValue: '' });
   iconStyle$ = createProperty({ initialValue: {} });
   backgroundScale$ = createProperty({ initialValue: 0 });
   backgroundScaleWillChange$ = createProperty({ initialValue: '' });
@@ -91,12 +91,11 @@ class SwipeableCard extends React.Component<{}, {}> {
       const tossable = new Tossable({
         draggable,
         spring,
-        location$: this.location$,
       });
       const swipeable = new Swipeable({ tossable, width$ });
 
-      swipeable.styleStreamsByTargetName.item.translate$.subscribe(this.location$);
-      swipeable.styleStreamsByTargetName.item.willChange$.subscribe(this.locationWillChange$);
+      swipeable.styleStreamsByTargetName.item.translate$.subscribe(this.translate$);
+      swipeable.styleStreamsByTargetName.item.willChange$.subscribe(this.translateWillChange$);
       swipeable.styleStreamsByTargetName.background.scale$.subscribe(this.backgroundScale$);
       swipeable.styleStreamsByTargetName.background.willChange$.subscribe(this.backgroundScaleWillChange$);
 
@@ -163,8 +162,8 @@ class SwipeableCard extends React.Component<{}, {}> {
 
           <AttachStreams
             domRef = { this.setupInteractions }
-            translate = { this.location$ }
-            willChange = { this.locationWillChange$ }
+            translate = { this.translate$ }
+            willChange = { this.translateWillChange$ }
           >
             <TransformTarget
               width = '100vw'
