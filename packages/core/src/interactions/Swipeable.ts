@@ -136,10 +136,6 @@ export class Swipeable {
     const draggable = tossable.draggable;
     const spring = tossable.spring;
     const draggedX$ = tossable.draggedLocation$.pluck('x');
-    const willChange$ = tossable.state$.rewrite<string, string>({
-      [State.AT_REST]: '',
-      [State.ACTIVE]: 'transform',
-    });
 
     // How close the spring should be to the pointer before the interaction
     // becomes directly manipulable
@@ -205,17 +201,14 @@ export class Swipeable {
     }).subscribe(spring.destination$);
 
     this.styleStreamsByTargetName = {
-      item: {
-        translate$: tossable.value$,
-        willChange$,
-      },
+      item: tossable.styleStreams,
       icon: {
         scale$: this.iconSpring.value$,
-        willChange$,
+        willChange$: tossable.styleStreams.willChange$,
       },
       background: {
         scale$: this.backgroundSpring.value$,
-        willChange$,
+        willChange$: tossable.styleStreams.willChange$,
       },
     };
   }
