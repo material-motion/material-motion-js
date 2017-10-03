@@ -85,6 +85,20 @@ describe('NumericSpring',
         }
       );
 
+      it('passes through initialValue',
+        () => {
+          spring.value$.subscribe(valueListener);
+          spring.state$.subscribe(stateListener);
+
+          spring.initialValue = 2;
+
+          exhaustValues(spring);
+
+          expect(valueListener).to.have.been.calledWith(2);
+          expect(stateListener).not.to.have.been.calledWith(State.ACTIVE);
+        }
+      );
+
       it('becomes active before dispatching new values',
         () => {
           let tested;
