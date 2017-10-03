@@ -202,6 +202,7 @@ export class NumericSpring {
             // Punting on this for now and forcing authors to deal with it.
             if (this.enabled$.read()) {
               updateSpringConfig({ fromValue: initialValue });
+              observer.next(initialValue);
             } else {
               initialValueChangedWhileDisabled = true;
             }
@@ -232,7 +233,9 @@ export class NumericSpring {
                 };
 
                 if (initialValueChangedWhileDisabled) {
-                  springConfig.fromValue = this.initialValue$.read();
+                  const initialValue = this.initialValue$.read();
+                  springConfig.fromValue = initialValue;
+                  observer.next(initialValue);
                 }
 
                 if (initialVelocityChangedWhileDisabled) {
@@ -269,7 +272,7 @@ export class NumericSpring {
         );
       };
     }
-  )._multicast();
+  )._remember();
 }
 export default NumericSpring;
 

@@ -74,7 +74,8 @@ describe('NumericSpring',
 
           exhaustValues(spring);
 
-          expect(valueListener.firstCall).to.have.been.calledWith(2);
+          // firstCall is 0, since that's the default.
+          expect(valueListener.secondCall).to.have.been.calledWith(2);
           expect(valueListener.lastCall).to.have.been.calledWith(3);
         }
       );
@@ -82,6 +83,20 @@ describe('NumericSpring',
       it('starts at rest',
         () => {
           expect(spring.state).to.equal(State.AT_REST);
+        }
+      );
+
+      it('passes through initialValue',
+        () => {
+          spring.value$.subscribe(valueListener);
+          spring.state$.subscribe(stateListener);
+
+          spring.initialValue = 2;
+
+          exhaustValues(spring);
+
+          expect(valueListener).to.have.been.calledWith(2);
+          expect(stateListener).not.to.have.been.calledWith(State.ACTIVE);
         }
       );
 
@@ -141,12 +156,16 @@ describe('NumericSpring',
           spring.value$.subscribe(valueListener);
           spring.state$.subscribe(stateListener);
 
+          expect(valueListener).to.have.been.calledOnce;
+
           spring.enabled = false;
           spring.initialValue = 2;
 
           exhaustValues(spring);
 
-          expect(valueListener).not.to.have.been.called;
+          // value$ is remembered, so you get once call synchronously upon
+          // subscription
+          expect(valueListener).to.have.been.calledOnce;
           expect(stateListener).not.to.have.been.calledWith(State.ACTIVE);
         }
       );
@@ -156,12 +175,16 @@ describe('NumericSpring',
           spring.value$.subscribe(valueListener);
           spring.state$.subscribe(stateListener);
 
+          expect(valueListener).to.have.been.calledOnce;
+
           spring.enabled = false;
           spring.initialVelocity = 2;
 
           exhaustValues(spring);
 
-          expect(valueListener).not.to.have.been.called;
+          // value$ is remembered, so you get once call synchronously upon
+          // subscription
+          expect(valueListener).to.have.been.calledOnce;
           expect(stateListener).not.to.have.been.calledWith(State.ACTIVE);
         }
       );
@@ -177,7 +200,8 @@ describe('NumericSpring',
 
           exhaustValues(spring);
 
-          expect(valueListener.firstCall).to.have.been.calledWith(2);
+          // firstCall is 0, since that's the default.
+          expect(valueListener.secondCall).to.have.been.calledWith(2);
           expect(valueListener.lastCall).to.have.been.calledWith(3);
         }
       );
@@ -193,7 +217,8 @@ describe('NumericSpring',
 
           exhaustValues(spring);
 
-          expect(valueListener.firstCall).to.have.been.calledWith(2);
+          // firstCall is 0, since that's the default.
+          expect(valueListener.secondCall).to.have.been.calledWith(2);
           expect(valueListener.lastCall).to.have.been.calledWith(0);
         }
       );
