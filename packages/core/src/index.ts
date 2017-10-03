@@ -19,6 +19,7 @@ export * from './types';
 export * from './typeGuards';
 export * from './observables';
 export * from './aggregators';
+export * from './subscribe';
 export * from './combineLatest';
 export * from './interactions';
 
