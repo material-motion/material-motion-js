@@ -20,6 +20,11 @@ import {
 } from '../aggregators';
 
 import {
+  subscribe,
+} from '../subscribe';
+
+import {
+  Axis,
   Direction,
   State,
   ThresholdRegion,
@@ -122,6 +127,8 @@ export class Swipeable {
 
     this.state$ = this.tossable.state$;
 
+    tossable.draggable.axis = Axis.X;
+
     // How far the user must drag to trigger the action.  It should never be
     // so large that a swipe is impossible, which means either (or both):
     // it should be low enough that swipes are still easy on small screens, or
@@ -144,10 +151,13 @@ export class Swipeable {
     this.iconSpring.initialValue = ICON_SPRING_INITIAL_VALUE;
 
     const tossableIsAtRest$ = tossable.state$.isAnyOf([ State.AT_REST ]);
-    when(tossableIsAtRest$).rewriteTo(
-      tossable.resistanceBasis$.dividedBy(Swipeable.VISUAL_THRESHOLD),
-      onlyDispatchWithUpstream
-    ).subscribe(tossable.resistanceFactor$);
+    subscribe({
+      sink: tossable.resistanceFactor$,
+      to: when(tossableIsAtRest$).rewriteTo(
+        tossable.resistanceBasis$.dividedBy(Swipeable.VISUAL_THRESHOLD),
+        onlyDispatchWithUpstream
+      )
+    });
 
     this.direction$ = draggedX$.threshold(0).isAnyOf([ ThresholdRegion.ABOVE ]).rewrite({
       true: Direction.RIGHT,
@@ -165,40 +175,67 @@ export class Swipeable {
     this.whenThresholdCrossed$ = when(this.isThresholdMet$.dedupe());
     this.whenThresholdFirstCrossed$ = when(tossable.resistanceFactor$.dedupe().isAnyOf([ DISABLED_RESISTANCE_FACTOR ]));
 
-    this.whenThresholdFirstCrossed$.subscribe(spring.enabled$);
-    when(spring.state$.isAnyOf([ State.AT_REST ])).rewriteTo(false).subscribe(spring.enabled$);
+    subscribe({
+      sink: spring.enabled$,
+      to: this.whenThresholdFirstCrossed$.merge(
+        when(spring.state$.isAnyOf([ State.AT_REST ])).rewriteTo(false)
+      ),
+    });
 
-    this.whenThresholdCrossed$.rewriteTo(DISABLED_RESISTANCE_FACTOR).subscribe(tossable.resistanceFactor$);
-    this.whenThresholdCrossed$.rewriteTo(draggedX$, onlyDispatchWithUpstream).subscribe(spring.initialValue$);
-    draggedX$.subscribe(spring.destination$);
+    subscribe({
+      sink: tossable.resistanceFactor$,
+      to: this.whenThresholdCrossed$.rewriteTo(DISABLED_RESISTANCE_FACTOR),
+    });
 
-    this.isThresholdMet$.rewrite({
-      true: 1,
-      false: 0,
-    }).subscribe(this.backgroundSpring.destination$);
+    subscribe({
+      sink: spring.initialValue$,
+      to: this.whenThresholdCrossed$.rewriteTo(draggedX$, onlyDispatchWithUpstream),
+    });
 
-    this.isThresholdMet$.rewrite({
-      true: 1,
-      false: ICON_SPRING_INITIAL_VALUE,
-    }).subscribe(this.iconSpring.destination$);
+    subscribe({
+      sink: spring.destination$,
+      to: draggedX$,
+    });
+
+    subscribe({
+      sink: this.backgroundSpring.destination$,
+      to: this.isThresholdMet$.rewrite({
+        true: 1,
+        false: 0,
+      }),
+    });
+
+    subscribe({
+      sink: this.iconSpring.destination$,
+      to: this.isThresholdMet$.rewrite({
+        true: 1,
+        false: ICON_SPRING_INITIAL_VALUE,
+      }),
+    });
 
     // This needs to also take velocity into consideration; right now, it only
     // cares about final position.
-    when(draggable.state$.isAnyOf([ State.AT_REST ])).rewriteTo(
-      this.isThresholdMet$.rewrite({
-        true: this.direction$,
-        false: SwipeState.NONE,
-      }),
-       onlyDispatchWithUpstream
-    ).subscribe(this.swipeState$);
+    subscribe({
+      sink: this.swipeState$,
+      to: when(draggable.state$.isAnyOf([ State.AT_REST ])).rewriteTo(
+        this.isThresholdMet$.rewrite({
+          true: this.direction$,
+          false: SwipeState.NONE,
+        }),
+        onlyDispatchWithUpstream
+      ),
+    });
 
     const destinationDistance$ = width$.addedBy(this.destinationMargin$);
 
-    this.swipeState$.rewrite({
-      [SwipeState.NONE]: 0,
-      [SwipeState.LEFT]: destinationDistance$.multipliedBy(-1),
-      [SwipeState.RIGHT]: destinationDistance$,
-    }).subscribe(spring.destination$);
+    subscribe({
+      sink: spring.destination$,
+      to: this.swipeState$.rewrite({
+        [SwipeState.NONE]: 0,
+        [SwipeState.LEFT]: destinationDistance$.multipliedBy(-1),
+        [SwipeState.RIGHT]: destinationDistance$,
+      })
+    });
 
     this.styleStreamsByTargetName = {
       item: tossable.styleStreams,
