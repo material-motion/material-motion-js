@@ -20,6 +20,9 @@ export { default as Performance } from './Performance';
 export * from './createMockObserver';
 export { default as createMockObserver } from './createMockObserver';
 
+export * from './exhaustValues';
+export { default as exhaustValues } from './exhaustValues';
+
 export * from './useMockedRAF';
 export { default as useMockedRAF } from './useMockedRAF';
 
