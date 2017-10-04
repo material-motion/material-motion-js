@@ -16,7 +16,7 @@
 
 import {
   PartialSpringConfig,
-  Spring,
+  Spring as WobbleSpring,
 } from 'wobble';
 
 import {
@@ -38,14 +38,19 @@ import {
 import {
   ObservableWithMotionOperators,
   Observer,
+  Spring,
   Subscription,
 } from '../types';
+
+export const DEFAULT_STIFFNESS: number = 342;
+export const DEFAULT_DAMPING: number = 30;
+export const DEFAULT_THRESHOLD: number = .001;
 
 // Springs are a core primitive in Material Motion, yet, the implementations we
 // have are all from 3rd party libraries.  Thus, the common
 // getters/setters/properties live here, and each implementation can extend it
 // to implement its own `value$`.
-export class NumericSpring {
+export class NumericSpring implements Spring<number> {
   readonly destination$: MotionProperty<number> = createProperty<number>({
     initialValue: 0,
   });
@@ -83,7 +88,7 @@ export class NumericSpring {
   }
 
   readonly stiffness$: MotionProperty<number> = createProperty<number>({
-    initialValue: 342,
+    initialValue: DEFAULT_STIFFNESS,
   });
 
   get stiffness(): number {
@@ -95,7 +100,7 @@ export class NumericSpring {
   }
 
   readonly damping$: MotionProperty<number> = createProperty<number>({
-    initialValue: 30,
+    initialValue: DEFAULT_DAMPING,
   });
 
   get damping(): number {
@@ -107,7 +112,7 @@ export class NumericSpring {
   }
 
   readonly threshold$: MotionProperty<number> = createProperty<number>({
-    initialValue: .001,
+    initialValue: DEFAULT_THRESHOLD,
   });
 
   get threshold(): number {
@@ -140,7 +145,7 @@ export class NumericSpring {
 
   value$ = new MotionObservable<number>(
     (observer: Observer<number>) => {
-      const spring: Spring = new Spring();
+      const spring: WobbleSpring = new WobbleSpring();
       const updateSpringConfig = spring.updateConfig.bind(spring);
 
       let initialized = false;
