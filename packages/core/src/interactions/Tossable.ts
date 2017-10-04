@@ -37,6 +37,10 @@ import {
 } from '../types';
 
 import {
+  subscribe,
+} from '../subscribe';
+
+import {
   Draggable,
 } from './Draggable';
 
@@ -165,7 +169,10 @@ export class Tossable {
     // This block needs to come before the one that sets spring enabled to
     // ensure the spring initializes with the correct values; otherwise, it will
     // start from 0
-    this.location$._debounce(whenDragIsAtRest$).subscribe(spring.initialValue$);
+    subscribe({
+      sink: spring.initialValue$,
+      to: this.location$._debounce(whenDragIsAtRest$)
+    });
 
     const locationOnDown$ = this.location$._debounce(whenDragIsActive$);
 
@@ -218,27 +225,39 @@ export class Tossable {
 
     // maybe should be named velocityWhen?
     this.velocity$ = this.draggedLocation$.startWith({ x: 0, y: 0 }).velocity(whenDragIsAtRest$);
-    this.velocity$.subscribe(spring.initialVelocity$);
+    subscribe({
+      sink: spring.initialVelocity$,
+      to: this.velocity$,
+    });
 
-    dragIsAtRest$.subscribe(spring.enabled$);
+    subscribe({
+      sink: spring.enabled$,
+      to: dragIsAtRest$,
+    });
 
-    anyOf([
-      spring.state$.isAnyOf([ State.ACTIVE ]),
-      draggable.state$.isAnyOf([ State.ACTIVE ])
-    ]).rewrite({
-      true: State.ACTIVE,
-      false: State.AT_REST,
-    }).dedupe().subscribe(this.state$);
+    subscribe({
+      sink: this.state$,
+      to: anyOf([
+        spring.state$.isAnyOf([ State.ACTIVE ]),
+        draggable.state$.isAnyOf([ State.ACTIVE ])
+      ]).rewrite({
+        true: State.ACTIVE,
+        false: State.AT_REST,
+      }).dedupe(),
+    });
 
-    spring.enabled$.rewrite<Point2D, ObservableWithMotionOperators<Point2D>>(
-      {
-        true: spring.value$,
-        false: this.draggedLocation$
-      },
-      {
-        dispatchOnKeyChange: false,
-      },
-    )._debounce().subscribe(this.location$);
+    subscribe({
+      sink: this.location$,
+      to: spring.enabled$.rewrite<Point2D, ObservableWithMotionOperators<Point2D>>(
+        {
+          true: spring.value$,
+          false: this.draggedLocation$
+        },
+        {
+          dispatchOnKeyChange: false,
+        },
+      )._debounce(),
+    });
 
     this.styleStreams = {
       translate$: this.location$,
@@ -268,30 +287,45 @@ export function applyLinearResistanceToTossable({
   basis$,
   factor$,
 }: ApplyLinearResistanceToTossableArgs) {
-  basis$.subscribe(tossable.resistanceBasis$);
-  factor$.subscribe(tossable.resistanceFactor$);
-  min$._reactiveMap(
-    (min: number, max: number) => Math.abs(max - min) / 2,
-    [ max$, ]
-  ).subscribe(tossable.radiusUntilResistance$);
-  axis$._reactiveMap(
-    (axis: Axis, min: number, max: number) => {
-      const linearCenter = min + (max - min) / 2;
+  subscribe({
+    sink: tossable.resistanceBasis$,
+    to: basis$,
+  });
 
-      if (axis === Axis.X) {
-        return {
-          x: linearCenter,
-          y: 0,
-        };
-      } else if (axis === Axis.Y) {
-        return {
-          x: 0,
-          y: linearCenter,
-        };
-      } else {
-        console.warn(`Cannot apply linear resistance if axis isn't locked`);
-      }
-    },
-    [ min$, max$, ],
-  ).subscribe(tossable.resistanceOrigin$);
+  subscribe({
+    sink: tossable.resistanceFactor$,
+    to: factor$,
+  });
+
+  subscribe({
+    sink: tossable.radiusUntilResistance$,
+    to: min$._reactiveMap(
+      (min: number, max: number) => Math.abs(max - min) / 2,
+      [ max$, ]
+    ),
+  });
+
+  subscribe({
+    sink: tossable.resistanceOrigin$,
+    to: axis$._reactiveMap(
+      (axis: Axis, min: number, max: number) => {
+        const linearCenter = min + (max - min) / 2;
+
+        if (axis === Axis.X) {
+          return {
+            x: linearCenter,
+            y: 0,
+          };
+        } else if (axis === Axis.Y) {
+          return {
+            x: 0,
+            y: linearCenter,
+          };
+        } else {
+          console.warn(`Cannot apply linear resistance if axis isn't locked`);
+        }
+      },
+      [ min$, max$, ],
+    ),
+  });
 }
