@@ -29,6 +29,7 @@ import {
 } from 'sinon';
 
 import {
+  exhaustValues,
   useMockedRAF,
 } from 'material-motion-testing-utils';
 
@@ -72,7 +73,10 @@ describe('NumericSpring',
           spring.initialValue = 2;
           spring.destination = 3;
 
-          exhaustValues(spring);
+          exhaustValues({
+            state$: spring.state$,
+            mockRAF
+          });
 
           // firstCall is 0, since that's the default.
           expect(valueListener.secondCall).to.have.been.calledWith(2);
@@ -93,7 +97,10 @@ describe('NumericSpring',
 
           spring.initialValue = 2;
 
-          exhaustValues(spring);
+          exhaustValues({
+            state$: spring.state$,
+            mockRAF
+          });
 
           expect(valueListener).to.have.been.calledWith(2);
           expect(stateListener).not.to.have.been.calledWith(State.ACTIVE);
@@ -116,7 +123,10 @@ describe('NumericSpring',
           spring.initialValue = 0;
           spring.destination = 1;
 
-          exhaustValues(spring);
+          exhaustValues({
+            state$: spring.state$,
+            mockRAF
+          });
 
           expect(tested).to.equal(true);
         }
@@ -145,7 +155,10 @@ describe('NumericSpring',
             }
           );
 
-          exhaustValues(spring);
+          exhaustValues({
+            state$: spring.state$,
+            mockRAF
+          });
 
           expect(tested).to.equal(true);
         }
@@ -161,7 +174,10 @@ describe('NumericSpring',
           spring.enabled = false;
           spring.initialValue = 2;
 
-          exhaustValues(spring);
+          exhaustValues({
+            state$: spring.state$,
+            mockRAF
+          });
 
           // value$ is remembered, so you get once call synchronously upon
           // subscription
@@ -180,7 +196,10 @@ describe('NumericSpring',
           spring.enabled = false;
           spring.initialVelocity = 2;
 
-          exhaustValues(spring);
+          exhaustValues({
+            state$: spring.state$,
+            mockRAF
+          });
 
           // value$ is remembered, so you get once call synchronously upon
           // subscription
@@ -198,7 +217,10 @@ describe('NumericSpring',
           spring.destination = 3;
           spring.enabled = true;
 
-          exhaustValues(spring);
+          exhaustValues({
+            state$: spring.state$,
+            mockRAF
+          });
 
           // firstCall is 0, since that's the default.
           expect(valueListener.secondCall).to.have.been.calledWith(2);
@@ -215,7 +237,10 @@ describe('NumericSpring',
           spring.initialValue = 2;
           spring.enabled = true;
 
-          exhaustValues(spring);
+          exhaustValues({
+            state$: spring.state$,
+            mockRAF
+          });
 
           // firstCall is 0, since that's the default.
           expect(valueListener.secondCall).to.have.been.calledWith(2);
@@ -227,29 +252,6 @@ describe('NumericSpring',
       it(`uses the cached initialValue if initialValue$ hasn't changed while disabled`);
       it(`uses the most recent initialVelocity if that's changed while disabled`);
       it(`uses the cached initialVelocity if initialVelocity$ hasn't changed while disabled`);
-
-      function exhaustValues(spring) {
-        let triesLeft = 50;
-        let hasBeenActive: boolean;
-        let isAtRest;
-
-        spring.state$.subscribe(
-          (state) => {
-            if (state === State.ACTIVE) {
-              hasBeenActive = true;
-            }
-
-            if (state === State.AT_REST && hasBeenActive) {
-              isAtRest = true;
-            }
-          }
-        );
-
-        while (!isAtRest && triesLeft > 0) {
-          mockRAF.step();
-          triesLeft--;
-        }
-      }
     }
   )
 );
