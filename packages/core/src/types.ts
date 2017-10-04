@@ -101,6 +101,34 @@ export type Point2D = {
   y: number,
 };
 
+export interface Spring<T> {
+  readonly destination$: ObservableWithMotionOperators<T>;
+  destination: T;
+
+  readonly initialValue$: ObservableWithMotionOperators<T>;
+  initialValue: T;
+
+  readonly initialVelocity$: ObservableWithMotionOperators<T>;
+  initialVelocity: T;
+
+  readonly stiffness$: ObservableWithMotionOperators<number>;
+  stiffness: number;
+
+  readonly damping$: ObservableWithMotionOperators<number>;
+  damping: number;
+
+  readonly threshold$: ObservableWithMotionOperators<number>;
+  threshold: number;
+
+  readonly enabled$: ObservableWithMotionOperators<boolean>;
+  enabled: boolean;
+
+  readonly state$: ObservableWithMotionOperators<State>;
+  readonly state: State;
+
+  value$: ObservableWithMotionOperators<T>;
+}
+
 /**
  * There are 2 competing input events on the Web: `PointerEvent`s and
  * `TouchEvent`s. Our gesture system only needs 4 properties: x, y, type and an
