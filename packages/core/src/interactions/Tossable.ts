@@ -41,12 +41,12 @@ import {
 } from './Draggable';
 
 import {
-  NumericSpring,
-} from './NumericSpring';
+  Point2DSpring,
+} from './Point2DSpring';
 
 export type TossableArgs = {
   draggable: Draggable,
-  spring: NumericSpring,
+  spring: Point2DSpring,
 };
 
 export class Tossable {
@@ -142,7 +142,7 @@ export class Tossable {
   readonly draggedLocation$: ObservableWithMotionOperators<Point2D>;
 
   readonly draggable: Draggable;
-  readonly spring: NumericSpring;
+  readonly spring: Point2DSpring;
 
   readonly styleStreams: TranslateStyleStreams;
 
@@ -162,21 +162,10 @@ export class Tossable {
     const whenDragIsAtRest$ = when(dragIsAtRest$);
     const whenDragIsActive$ = when(dragIsAtRest$.inverted());
 
-    // TypeScript can't compare Axis and 'x' | 'y' (for instance, in pluck), so
-    // we help it out.
-    const firstAxis = draggable.axis$.read() as 'x' | 'y';
-    draggable.axis$.subscribe(
-      axis => {
-        if (axis !== firstAxis) {
-          throw new Error(`Tossable doesn't yet support changing axis`);
-        }
-      }
-    );
-
     // This block needs to come before the one that sets spring enabled to
     // ensure the spring initializes with the correct values; otherwise, it will
     // start from 0
-    this.location$.pluck(firstAxis)._debounce(whenDragIsAtRest$).subscribe(spring.initialValue$);
+    this.location$._debounce(whenDragIsAtRest$).subscribe(spring.initialValue$);
 
     const locationOnDown$ = this.location$._debounce(whenDragIsActive$);
 
@@ -229,7 +218,7 @@ export class Tossable {
 
     // maybe should be named velocityWhen?
     this.velocity$ = this.draggedLocation$.startWith({ x: 0, y: 0 }).velocity(whenDragIsAtRest$);
-    this.velocity$.pluck(firstAxis).subscribe(spring.initialVelocity$);
+    this.velocity$.subscribe(spring.initialVelocity$);
 
     dragIsAtRest$.subscribe(spring.enabled$);
 
@@ -243,29 +232,7 @@ export class Tossable {
 
     spring.enabled$.rewrite<Point2D, ObservableWithMotionOperators<Point2D>>(
       {
-        true: spring.value$._map(
-          // This _map() call is a quick hack to make up for the lack of a Point2D
-          // spring.  When a Point2D spring is implemented, this should go away, and
-          // `spring` should be of that type.
-          (value: number) => {
-            switch (firstAxis) {
-              case Axis.X:
-                return {
-                  x: value,
-                  y: 0,
-                };
-
-              case Axis.Y:
-                return {
-                  x: 0,
-                  y: value,
-                };
-
-              default:
-                throw new Error(`Please set draggable.axis to "x" or "y" before using Tossable`);
-            }
-          }
-        ),
+        true: spring.value$,
         false: this.draggedLocation$
       },
       {
