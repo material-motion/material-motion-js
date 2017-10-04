@@ -29,24 +29,18 @@ import {
 } from 'sinon';
 
 import {
-  createMockObserver,
-} from 'material-motion-testing-utils';
-
-import {
-  MotionObservable,
+  MemorylessMotionSubject,
 } from '../../observables/';
 
 describe('motionObservable.dedupe',
   () => {
-    let stream;
-    let mockObserver;
+    let subject;
     let listener1;
     let listener2;
 
     beforeEach(
       () => {
-        mockObserver = createMockObserver();
-        stream = new MotionObservable(mockObserver.connect);
+        subject = new MemorylessMotionSubject();
         listener1 = stub();
         listener2 = stub();
       }
@@ -54,9 +48,9 @@ describe('motionObservable.dedupe',
 
     it('should dispatch the first value it receives',
       () => {
-        stream.dedupe().subscribe(listener1);
+        subject.dedupe().subscribe(listener1);
 
-        mockObserver.next();
+        subject.next();
 
         expect(listener1).to.have.been.calledOnce.and.to.have.been.calledWith(undefined);
       }
@@ -64,12 +58,12 @@ describe('motionObservable.dedupe',
 
     it('should suppress duplicate values',
       () => {
-        stream.dedupe().subscribe(listener1);
+        subject.dedupe().subscribe(listener1);
 
-        mockObserver.next(1);
-        mockObserver.next(2);
-        mockObserver.next(2);
-        mockObserver.next(3);
+        subject.next(1);
+        subject.next(2);
+        subject.next(2);
+        subject.next(3);
 
         expect(listener1).to.have.been.calledThrice;
         expect(listener1).to.have.been.calledWith(1);
@@ -80,12 +74,12 @@ describe('motionObservable.dedupe',
 
     it('should pass through duplicate values if they are not back-to-back',
       () => {
-        stream.dedupe().subscribe(listener1);
+        subject.dedupe().subscribe(listener1);
 
-        mockObserver.next(1);
-        mockObserver.next(2);
-        mockObserver.next(3);
-        mockObserver.next(2);
+        subject.next(1);
+        subject.next(2);
+        subject.next(3);
+        subject.next(2);
 
         expect(listener1).to.have.callCount(4);
       }
@@ -93,20 +87,20 @@ describe('motionObservable.dedupe',
 
     it('should deduplicate correctly to multiple listeners',
       () => {
-        const deduped = stream.dedupe();
+        const deduped = subject.dedupe();
         deduped.subscribe(listener1);
         deduped.subscribe(listener2);
 
-        mockObserver.next(1);
-        mockObserver.next(2);
+        subject.next(1);
+        subject.next(2);
         expect(listener1).to.have.callCount(2);
         expect(listener2).to.have.callCount(2);
 
-        mockObserver.next(2);
+        subject.next(2);
         expect(listener1).to.have.callCount(2);
         expect(listener2).to.have.callCount(2);
 
-        mockObserver.next(3);
+        subject.next(3);
         expect(listener1).to.have.callCount(3);
         expect(listener2).to.have.callCount(3);
       }
@@ -114,17 +108,37 @@ describe('motionObservable.dedupe',
 
     it('should pass through correctly to multiple listeners',
       () => {
-        const deduped = stream.dedupe();
+        const deduped = subject.dedupe();
         deduped.subscribe(listener1);
         deduped.subscribe(listener2);
 
-        mockObserver.next(1);
-        mockObserver.next(2);
-        mockObserver.next(3);
-        mockObserver.next(2);
+        subject.next(1);
+        subject.next(2);
+        subject.next(3);
+        subject.next(2);
 
         expect(listener1).to.have.callCount(4);
         expect(listener2).to.have.callCount(4);
+      }
+    );
+
+    it('should work correctly when upstream is synchronous',
+      () => {
+        // The original implementation of `dedupe()` used `_multicast()` to handle
+        // multiple observers.  This skipped the first emission when upstream
+        // was synchronous, because downstream wouldn't yet have any observers
+        // when it tried to emit.
+        //
+        // This test prevents that regression.
+
+        const deduped = subject._remember().dedupe();
+        subject.next(false);
+
+        deduped.subscribe(listener1);
+        deduped.subscribe(listener2);
+
+        expect(listener1).to.have.been.calledWith(false);
+        expect(listener2).to.have.been.calledWith(false);
       }
     );
 
