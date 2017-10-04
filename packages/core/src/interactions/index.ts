@@ -20,6 +20,9 @@ export { default as Draggable } from './Draggable';
 export * from './NumericSpring';
 export { default as NumericSpring } from './NumericSpring';
 
+export * from './Point2DSpring';
+export { default as Point2DSpring } from './Point2DSpring';
+
 export * from './Swipeable';
 export { default as Swipeable } from './Swipeable';
 
