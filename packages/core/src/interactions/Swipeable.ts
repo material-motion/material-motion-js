@@ -20,6 +20,10 @@ import {
 } from '../aggregators';
 
 import {
+  combineLatest,
+} from '../combineLatest';
+
+import {
   subscribe,
 } from '../subscribe';
 
@@ -189,12 +193,12 @@ export class Swipeable {
 
     subscribe({
       sink: spring.initialValue$,
-      to: this.whenThresholdCrossed$.rewriteTo(draggedX$, onlyDispatchWithUpstream),
+      to: this.whenThresholdCrossed$.rewriteTo(tossable.draggedLocation$, onlyDispatchWithUpstream),
     });
 
     subscribe({
       sink: spring.destination$,
-      to: draggedX$,
+      to: tossable.draggedLocation$,
     });
 
     subscribe({
@@ -230,10 +234,13 @@ export class Swipeable {
 
     subscribe({
       sink: spring.destination$,
-      to: this.swipeState$.rewrite({
-        [SwipeState.NONE]: 0,
-        [SwipeState.LEFT]: destinationDistance$.multipliedBy(-1),
-        [SwipeState.RIGHT]: destinationDistance$,
+      to: combineLatest({
+        x: this.swipeState$.rewrite({
+          [SwipeState.NONE]: 0,
+          [SwipeState.LEFT]: destinationDistance$.multipliedBy(-1),
+          [SwipeState.RIGHT]: destinationDistance$,
+        }),
+        y: 0,
       })
     });
 
