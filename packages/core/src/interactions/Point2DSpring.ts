@@ -182,32 +182,32 @@ export class Point2DSpring implements Spring<Point2D> {
   constructor() {
     subscribe({
       sink: this.xSpring.destination$,
-      to: this.destination$.pluck('x'),
+      source: this.destination$.pluck('x'),
     });
 
     subscribe({
       sink: this.ySpring.destination$,
-      to: this.destination$.pluck('y'),
+      source: this.destination$.pluck('y'),
     });
 
     subscribe({
       sink: this.xSpring.initialValue$,
-      to: this.initialValue$.pluck('x'),
+      source: this.initialValue$.pluck('x'),
     });
 
     subscribe({
       sink: this.ySpring.initialValue$,
-      to: this.initialValue$.pluck('y'),
+      source: this.initialValue$.pluck('y'),
     });
 
     subscribe({
       sink: this.xSpring.initialVelocity$,
-      to: this.initialVelocity$.pluck('x'),
+      source: this.initialVelocity$.pluck('x'),
     });
 
     subscribe({
       sink: this.ySpring.initialVelocity$,
-      to: this.initialVelocity$.pluck('y'),
+      source: this.initialVelocity$.pluck('y'),
     });
 
     subscribe({
@@ -215,7 +215,7 @@ export class Point2DSpring implements Spring<Point2D> {
         this.xSpring.stiffness$,
         this.ySpring.stiffness$,
       ],
-      to: this.stiffness$,
+      source: this.stiffness$,
     });
 
     subscribe({
@@ -223,7 +223,7 @@ export class Point2DSpring implements Spring<Point2D> {
         this.xSpring.damping$,
         this.ySpring.damping$,
       ],
-      to: this.damping$,
+      source: this.damping$,
     });
 
     subscribe({
@@ -231,7 +231,7 @@ export class Point2DSpring implements Spring<Point2D> {
         this.xSpring.threshold$,
         this.ySpring.threshold$,
       ],
-      to: this.threshold$,
+      source: this.threshold$,
     });
 
     subscribe({
@@ -239,7 +239,7 @@ export class Point2DSpring implements Spring<Point2D> {
         this.xSpring.enabled$,
         this.ySpring.enabled$,
       ],
-      to: this.enabled$,
+      source: this.enabled$,
     });
   }
 }

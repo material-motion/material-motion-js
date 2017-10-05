@@ -172,7 +172,7 @@ export class Tossable {
     // start from 0
     subscribe({
       sink: spring.initialValue$,
-      to: this.location$._debounce(whenDragIsAtRest$)
+      source: this.location$._debounce(whenDragIsAtRest$)
     });
 
     const locationOnDown$ = this.location$._debounce(whenDragIsActive$);
@@ -228,17 +228,17 @@ export class Tossable {
     this.velocity$ = this.draggedLocation$.startWith({ x: 0, y: 0 }).velocity(whenDragIsAtRest$);
     subscribe({
       sink: spring.initialVelocity$,
-      to: this.velocity$,
+      source: this.velocity$,
     });
 
     subscribe({
       sink: spring.enabled$,
-      to: dragIsAtRest$,
+      source: dragIsAtRest$,
     });
 
     subscribe({
       sink: this.state$,
-      to: anyOf([
+      source: anyOf([
         spring.state$.isAnyOf([ State.ACTIVE ]),
         draggable.state$.isAnyOf([ State.ACTIVE ])
       ]).rewrite({
@@ -249,7 +249,7 @@ export class Tossable {
 
     subscribe({
       sink: this.location$,
-      to: spring.enabled$.rewrite<Point2D, ObservableWithMotionOperators<Point2D>>(
+      source: spring.enabled$.rewrite<Point2D, ObservableWithMotionOperators<Point2D>>(
         {
           true: spring.value$,
           false: this.draggedLocation$
@@ -290,17 +290,17 @@ export function applyLinearResistanceToTossable({
 }: ApplyLinearResistanceToTossableArgs) {
   subscribe({
     sink: tossable.resistanceBasis$,
-    to: basis$,
+    source: basis$,
   });
 
   subscribe({
     sink: tossable.resistanceFactor$,
-    to: factor$,
+    source: factor$,
   });
 
   subscribe({
     sink: tossable.radiusUntilResistance$,
-    to: min$._reactiveMap(
+    source: min$._reactiveMap(
       (min: number, max: number) => Math.abs(max - min) / 2,
       [ max$, ]
     ),
@@ -308,7 +308,7 @@ export function applyLinearResistanceToTossable({
 
   subscribe({
     sink: tossable.resistanceOrigin$,
-    to: axis$._reactiveMap(
+    source: axis$._reactiveMap(
       (axis: Axis, min: number, max: number) => {
         const linearCenter = min + (max - min) / 2;
 
