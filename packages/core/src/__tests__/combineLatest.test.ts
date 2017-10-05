@@ -147,5 +147,29 @@ describe('combineLatest',
         expect(listener).not.to.have.been.called;
       }
     );
+
+    it('should dispatch a new dictionary for each change',
+      () => {
+        combineLatest({ a: subject1, b: subject2 }).subscribe(listener);
+
+        subject1.next(1);
+        subject2.next(2);
+        subject2.next(2);
+
+        expect(listener.firstCall.args[0]).not.to.equal(listener.lastCall.args[0]);
+      }
+    );
+
+    it('should dispatch a new array for each change',
+      () => {
+        combineLatest([ subject1, subject2 ]).subscribe(listener);
+
+        subject1.next(1);
+        subject2.next(2);
+        subject2.next(2);
+
+        expect(listener.firstCall.args[0]).not.to.equal(listener.lastCall.args[0]);
+      }
+    );
   }
 );

@@ -83,7 +83,13 @@ export function combineLatest<V, T extends Dict<V | Observable<V>> | Array<V | O
 
       function dispatchNextValue() {
         if (waitForAllValues ? outstandingKeys.size === 0 : !initializing) {
-          observer.next(nextValue);
+          observer.next(
+            (
+              Array.isArray(nextValue)
+                ? [ ...nextValue ] as Array<V>
+                : { ...(nextValue as Dict<V>) }
+            ) as U
+          );
         }
       }
 
