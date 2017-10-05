@@ -62,13 +62,6 @@ describe('Point2DSpring',
         () => {
           spring = new Point2DSpring();
 
-          // spring.value$ recycles the object it dispatches.  Here, we force it
-          // to create a new object for each dispatch, to make tests easier to
-          // write.
-          (spring.value$ as any) = spring.value$._map(
-            ({ x, y }) => ({ x, y })
-          );
-
           stateListener = stub();
           valueListener = stub();
         }
