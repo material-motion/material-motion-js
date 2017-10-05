@@ -50,26 +50,6 @@ describe('motionObservable.inverted',
       }
     );
 
-    it('should dispatch false when it receives true',
-      () => {
-        stream.inverted().subscribe(listener);
-
-        mockObserver.next(true);
-
-        expect(listener).to.have.been.calledWith(false);
-      }
-    );
-
-    it('should dispatch true when it receives false',
-      () => {
-        stream.inverted().subscribe(listener);
-
-        mockObserver.next(false);
-
-        expect(listener).to.have.been.calledWith(true);
-      }
-    );
-
     it('should dispatch 0 when it receives 1',
       () => {
         stream.inverted().subscribe(listener);

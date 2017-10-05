@@ -21,6 +21,7 @@ import {
 
 import {
   anyOf,
+  not,
   when,
 } from '../aggregators';
 
@@ -164,7 +165,7 @@ export class Tossable {
     // could be whenDragIsAtRest$.ignoreUntil(whenDragIsActive$).  Since it's
     // not, velocity manually starts with {0, 0}.
     const whenDragIsAtRest$ = when(dragIsAtRest$);
-    const whenDragIsActive$ = when(dragIsAtRest$.inverted());
+    const whenDragIsActive$ = when(not(dragIsAtRest$));
 
     // This block needs to come before the one that sets spring enabled to
     // ensure the spring initializes with the correct values; otherwise, it will

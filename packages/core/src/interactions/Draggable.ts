@@ -16,6 +16,7 @@
 
 import {
   when,
+  not,
 } from '../aggregators';
 
 import {
@@ -251,7 +252,7 @@ export class Draggable {
         );
 
         cancellationSubscription = this.cancellation$.merge(
-          when(this.enabled$.inverted()),
+          when(not(this.enabled$)),
           cancel$,
           contextMenu$,
         ).subscribe(

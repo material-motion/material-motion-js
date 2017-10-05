@@ -83,7 +83,16 @@ export function allOf(streams: Array<ObservableWithMotionOperators<boolean>>): O
  * received a value from each stream in the array.
  */
 export function noneOf(streams: Array<ObservableWithMotionOperators<boolean>>): ObservableWithMotionOperators<boolean> {
-  return anyOf(streams).inverted();
+  return not(anyOf(streams));
+};
+
+/**
+ * Accepts an stream of booleans and returns a stream of where each value is the
+ * opposite of what was received. Inert until it has received a value from each
+ * stream in the array.
+ */
+export function not(stream: ObservableWithMotionOperators<boolean>): ObservableWithMotionOperators<boolean> {
+  return stream._map(value => !value);
 };
 
 /**

@@ -40,6 +40,7 @@ import {
   allOf,
   anyOf,
   noneOf,
+  not,
   when,
 } from '../aggregators';
 
@@ -215,6 +216,41 @@ describe('noneOf',
         subject2.next(true);
 
         expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(false);
+      }
+    );
+  }
+);
+
+describe('not',
+  () => {
+    let subject;
+    let listener;
+
+    beforeEach(
+      () => {
+        subject = new MemorylessMotionSubject();
+        listener = stub();
+      }
+    );
+
+
+    it('should dispatch false when it receives true',
+      () => {
+        not(subject).subscribe(listener);
+
+        subject.next(true);
+
+        expect(listener).to.have.been.calledWith(false);
+      }
+    );
+
+    it('should dispatch true when it receives false',
+      () => {
+        not(subject).subscribe(listener);
+
+        subject.next(false);
+
+        expect(listener).to.have.been.calledWith(true);
       }
     );
   }
