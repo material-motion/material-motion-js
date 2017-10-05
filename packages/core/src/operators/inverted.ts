@@ -26,7 +26,7 @@ import {
 } from '../types';
 
 export interface MotionInvertible<T> {
-  inverted<U extends T & (boolean | number)>(): ObservableWithMotionOperators<U>;
+  inverted<U extends T & number>(): ObservableWithMotionOperators<U>;
 }
 
 export function withInverted<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionInvertible<T>> {
@@ -40,14 +40,10 @@ export function withInverted<T, S extends Constructor<MotionNextOperable<T>>>(su
      * - `true` when it receives `false`,
      * - `1 - value` when it receives a numeric value
      */
-    inverted<U extends T & (boolean | number)>(): ObservableWithMotionOperators<U> {
+    inverted<U extends T & number>(): ObservableWithMotionOperators<U> {
       return (this as any as MotionNextOperable<U>)._nextOperator(
         (value: U, dispatch: NextChannel<U>) => {
-          if (isBoolean(value)) {
-            dispatch(!value as U);
-          } else {
-            dispatch((1 - (value as number)) as U);
-          }
+          dispatch((1 - (value as number)) as U);
         }
       );
     }
