@@ -157,7 +157,7 @@ export class Swipeable {
     const tossableIsAtRest$ = tossable.state$.isAnyOf([ State.AT_REST ]);
     subscribe({
       sink: tossable.resistanceFactor$,
-      to: when(tossableIsAtRest$).rewriteTo(
+      source: when(tossableIsAtRest$).rewriteTo(
         tossable.resistanceBasis$.dividedBy(Swipeable.VISUAL_THRESHOLD),
         onlyDispatchWithUpstream
       )
@@ -181,29 +181,29 @@ export class Swipeable {
 
     subscribe({
       sink: spring.enabled$,
-      to: this.whenThresholdFirstCrossed$.merge(
+      source: this.whenThresholdFirstCrossed$.merge(
         when(spring.state$.isAnyOf([ State.AT_REST ])).rewriteTo(false)
       ),
     });
 
     subscribe({
       sink: tossable.resistanceFactor$,
-      to: this.whenThresholdCrossed$.rewriteTo(DISABLED_RESISTANCE_FACTOR),
+      source: this.whenThresholdCrossed$.rewriteTo(DISABLED_RESISTANCE_FACTOR),
     });
 
     subscribe({
       sink: spring.initialValue$,
-      to: this.whenThresholdCrossed$.rewriteTo(tossable.draggedLocation$, onlyDispatchWithUpstream),
+      source: this.whenThresholdCrossed$.rewriteTo(tossable.draggedLocation$, onlyDispatchWithUpstream),
     });
 
     subscribe({
       sink: spring.destination$,
-      to: tossable.draggedLocation$,
+      source: tossable.draggedLocation$,
     });
 
     subscribe({
       sink: this.backgroundSpring.destination$,
-      to: this.isThresholdMet$.rewrite({
+      source: this.isThresholdMet$.rewrite({
         true: 1,
         false: 0,
       }),
@@ -211,7 +211,7 @@ export class Swipeable {
 
     subscribe({
       sink: this.iconSpring.destination$,
-      to: this.isThresholdMet$.rewrite({
+      source: this.isThresholdMet$.rewrite({
         true: 1,
         false: ICON_SPRING_INITIAL_VALUE,
       }),
@@ -221,7 +221,7 @@ export class Swipeable {
     // cares about final position.
     subscribe({
       sink: this.swipeState$,
-      to: when(draggable.state$.isAnyOf([ State.AT_REST ])).rewriteTo(
+      source: when(draggable.state$.isAnyOf([ State.AT_REST ])).rewriteTo(
         this.isThresholdMet$.rewrite({
           true: this.direction$,
           false: SwipeState.NONE,
@@ -234,7 +234,7 @@ export class Swipeable {
 
     subscribe({
       sink: spring.destination$,
-      to: combineLatest({
+      source: combineLatest({
         x: this.swipeState$.rewrite({
           [SwipeState.NONE]: 0,
           [SwipeState.LEFT]: destinationDistance$.multipliedBy(-1),
