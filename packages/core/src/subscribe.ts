@@ -22,43 +22,44 @@ import {
 
 export type SubscribeArgsSingular<T> = {
   sink: Observer<T>,
-  to: Observable<T>,
+  source: Observable<T>,
 };
 
 export type SubscribeArgsPlural<T> = {
   sinks: Array<Observer<T>>,
-  to: Observable<T>,
+  source: Observable<T>,
 };
 
 /**
- * `subscribe({ sink, to: input$ })` is sugar for `input$.subscribe(sink)`.
+ * `subscribe({ sink, source })` is sugar for `source.subscribe(sink)`.
  *
  * When programming, you generally declare a variable in terms of an expression:
  *
  *     const result = 1 + 2 + 3;
  *
  * You declare the output you are affecting and then the expression that defines
- * it.  Traditionally, Observables invert this flow:
+ * it.  Observables typically invert this flow:
  *
  *     `1$.addedBy(2).addedBy(3).subscribe(result$);`
  *
- * `subscribe({ sink, to: input$ })` corrects this, making declarations easier
- * to read by identifying the output before the expression that writes to it:
+ * `subscribe({ sink, source: input$ })` corrects this, making declarations
+ * easier to read by identifying the output before the expression that writes to
+ * it:
  *
  *     subscribe({
  *       sink: result$,
- *       to: 1$.addedBy(2).addedBy(3)
+ *       source: 1$.addedBy(2).addedBy(3)
  *     });
  */
-export function subscribe<T>({ sink, to }: SubscribeArgsSingular<T>): Subscription;
-export function subscribe<T>({ sinks, to }: SubscribeArgsPlural<T>): Array<Subscription>;
-export function subscribe<T>({ sink, sinks, to }: SubscribeArgsSingular<T> & SubscribeArgsPlural<T>) {
+export function subscribe<T>({ sink, source }: SubscribeArgsSingular<T>): Subscription;
+export function subscribe<T>({ sinks, source }: SubscribeArgsPlural<T>): Array<Subscription>;
+export function subscribe<T>({ sink, sinks, source }: SubscribeArgsSingular<T> & SubscribeArgsPlural<T>) {
   if (sink) {
-    return to.subscribe(sink);
+    return source.subscribe(sink);
 
   } else {
     return sinks.map(
-      (sink: Observer<T>) => to.subscribe(sink)
+      (sink: Observer<T>) => source.subscribe(sink)
     );
   }
 }

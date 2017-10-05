@@ -42,7 +42,7 @@ describe('subscribe',
       () => {
         const subscription = subscribe({
           sink: new MemorylessIndefiniteSubject(),
-          to: new MemorylessIndefiniteSubject(),
+          source: new MemorylessIndefiniteSubject(),
         });
 
         expect(subscription.unsubscribe).to.exist;
@@ -56,7 +56,7 @@ describe('subscribe',
             new MemorylessIndefiniteSubject(),
             new MemorylessIndefiniteSubject(),
           ],
-          to: new MemorylessIndefiniteSubject(),
+          source: new MemorylessIndefiniteSubject(),
         });
 
         expect(subscriptions[0].unsubscribe).to.exist;
