@@ -15,6 +15,10 @@
  */
 
 import {
+  combineLatest,
+} from '../combineLatest';
+
+import {
   isBoolean,
 } from '../typeGuards';
 
@@ -26,7 +30,7 @@ import {
 } from '../types';
 
 export interface MotionIsAnyOfable {
-  isAnyOf(valuesOrValueStreams: Array<any>): ObservableWithMotionOperators<boolean>;
+  isAnyOf(matches: Array<any>): ObservableWithMotionOperators<boolean>;
 }
 
 export function withIsAnyOf<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionIsAnyOfable> {
@@ -35,12 +39,9 @@ export function withIsAnyOf<T, S extends Constructor<MotionReactiveMappable<T>>>
      * Dispatches `true` when it receives a value that matches any of the
      * provided values and `false` otherwise.
      */
-    isAnyOf(valuesOrValueStreams: Array<any>): ObservableWithMotionOperators<boolean> {
-      return this._reactiveMap(
-        (upstreamValue: any, ...possibilities: Array<any>) => {
-          return possibilities.includes(upstreamValue);
-        },
-        valuesOrValueStreams
+    isAnyOf(matches: Array<any>): ObservableWithMotionOperators<boolean> {
+      return combineLatest([ this, ...matches ])._map(
+        ([ upstream, ...currentMatches ]: Array<T>) => currentMatches.includes(upstream)
       );
     }
   };
