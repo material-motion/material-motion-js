@@ -47,7 +47,7 @@ export function withFlattenIterables<T, S extends Constructor<MotionNextOperable
             emit(values as any as U);
           }
         }
-      );
+      });
     }
   };
 }
