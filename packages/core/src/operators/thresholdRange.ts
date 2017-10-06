@@ -26,38 +26,41 @@ import {
 } from '../enums';
 
 import {
-  ReactiveMappableOptions,
+  _ReactiveMapOptions,
 } from './foundation/_reactiveMap';
 
 export interface MotionThresholdRangeable {
   thresholdRange(
     start$: number | Observable<number>,
     end$: number | Observable<number>,
-    options?: ReactiveMappableOptions,
+    options?: _ReactiveMapOptions,
   ): ObservableWithMotionOperators<ThresholdRegion>;
 }
 
 export function withThresholdRange<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionThresholdRangeable> {
   return class extends superclass implements MotionThresholdRangeable {
-    thresholdRange(start$: number | Observable<number>, end$: number | Observable<number>, options?: ReactiveMappableOptions): ObservableWithMotionOperators<ThresholdRegion> {
-      return (this as any as ObservableWithMotionOperators<number>)._reactiveMap(
-        (value: number, start: number, end: number) => {
+    thresholdRange(start$: number | Observable<number>, end$: number | Observable<number>, options?: _ReactiveMapOptions): ObservableWithMotionOperators<ThresholdRegion> {
+      return (this as any as ObservableWithMotionOperators<number>)._reactiveMap({
+        transform: ({ upstream, start, end }) => {
           const lowerLimit = Math.min(start, end);
           const upperLimit = Math.max(start, end);
 
-          if (value < lowerLimit) {
+          if (upstream < lowerLimit) {
             return ThresholdRegion.BELOW;
 
-          } else if (value > upperLimit) {
+          } else if (upstream > upperLimit) {
             return ThresholdRegion.ABOVE;
 
           } else {
             return ThresholdRegion.WITHIN;
           }
         },
-        [ start$, end$, ],
-        options,
-      );
+        inputs: {
+          start: start$,
+          end: end$
+        },
+        ...options,
+      });
     }
   };
 }

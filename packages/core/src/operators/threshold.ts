@@ -26,33 +26,35 @@ import {
 } from '../enums';
 
 import {
-  ReactiveMappableOptions,
+  _ReactiveMapOptions,
 } from './foundation/_reactiveMap';
 
 export interface MotionThresholdable {
   threshold(
     limit$: number | Observable<number>,
-    options?: ReactiveMappableOptions,
+    options?: _ReactiveMapOptions,
   ): ObservableWithMotionOperators<ThresholdRegion>;
 }
 
 export function withThreshold<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionThresholdable> {
   return class extends superclass implements MotionThresholdable {
-    threshold(limit$: number | Observable<number>, options?: ReactiveMappableOptions): ObservableWithMotionOperators<ThresholdRegion> {
-      return (this as any as MotionReactiveMappable<number>)._reactiveMap(
-        (value: number, limit: number) => {
-          if (value < limit) {
+    threshold(limit$: number | Observable<number>, options?: _ReactiveMapOptions): ObservableWithMotionOperators<ThresholdRegion> {
+      return (this as any as MotionReactiveMappable<number>)._reactiveMap({
+        transform: ({ upstream, limit }) => {
+          if (upstream < limit) {
             return ThresholdRegion.BELOW;
 
-          } else if (value > limit) {
+          } else if (upstream > limit) {
             return ThresholdRegion.ABOVE;
           } else {
             return ThresholdRegion.WITHIN;
           }
         },
-        [ limit$, ],
-        options,
-      );
+        inputs: {
+          limit: limit$,
+        },
+        ...options,
+      });
     }
   };
 }

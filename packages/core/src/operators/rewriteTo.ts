@@ -23,13 +23,13 @@ import {
 } from '../types';
 
 import {
-  ReactiveMappableOptions,
+  _ReactiveMapOptions,
 } from './foundation/_reactiveMap';
 
 export interface MotionRewriteToable {
   rewriteTo<U>(
-    valueOrStream: U | Observable<U>,
-    options?: ReactiveMappableOptions,
+    value$: U | Observable<U>,
+    options?: _ReactiveMapOptions,
   ): ObservableWithMotionOperators<U>;
 }
 
@@ -38,12 +38,14 @@ export function withRewriteTo<T, S extends Constructor<MotionReactiveMappable<T>
     /**
      * Dispatches its argument every time it receives a value from upstream.
      */
-    rewriteTo<U>(valueOrStream: U | Observable<U>, options: ReactiveMappableOptions = { onlyDispatchWithUpstream: true }): ObservableWithMotionOperators<U> {
-      return this._reactiveMap(
-        (upstreamValue: T, value: U) => value,
-        [ valueOrStream ],
-        options,
-      );
+    rewriteTo<U>(value$: U | Observable<U>, options: _ReactiveMapOptions = { onlyDispatchWithUpstream: true }): ObservableWithMotionOperators<U> {
+      return this._reactiveMap({
+        transform: ({ value }) => value,
+        inputs: {
+          value: value$
+        },
+        ...options,
+      });
     }
   };
 }

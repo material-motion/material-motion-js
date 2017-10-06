@@ -177,14 +177,14 @@ export class Tossable {
 
     const locationOnDown$ = this.location$._debounce(whenDragIsActive$);
 
-    this.draggedLocation$ = draggable.value$.addedBy<Point2D>(locationOnDown$, { onlyDispatchWithUpstream: true })._reactiveMap(
-      (
-        location: Point2D,
-        resistanceOrigin: Point2D,
-        radiusUntilResistance: number,
-        resistanceBasis: number,
-        resistanceFactor: number,
-      ) => {
+    this.draggedLocation$ = draggable.value$.addedBy<Point2D>(locationOnDown$, { onlyDispatchWithUpstream: true })._reactiveMap({
+      transform: ({
+        upstream: location,
+        resistanceOrigin,
+        radiusUntilResistance,
+        resistanceBasis,
+        resistanceFactor,
+      }) => {
         if (!resistanceFactor) {
           return location;
         }
@@ -213,16 +213,14 @@ export class Tossable {
           y: resistanceOrigin.y + radiusWithResistance * Math.sin(angle),
         };
       },
-      [
-        this.resistanceOrigin$,
-        this.radiusUntilResistance$,
-        this.resistanceBasis$,
-        this.resistanceFactor$,
-      ],
-      {
-        onlyDispatchWithUpstream: true,
+      inputs: {
+        resistanceOrigin: this.resistanceOrigin$,
+        radiusUntilResistance: this.radiusUntilResistance$,
+        resistanceBasis: this.resistanceBasis$,
+        resistanceFactor: this.resistanceFactor$,
       },
-    );
+      onlyDispatchWithUpstream: true,
+    });
 
     // maybe should be named velocityWhen?
     this.velocity$ = this.draggedLocation$.startWith({ x: 0, y: 0 }).velocity(whenDragIsAtRest$);
@@ -300,16 +298,18 @@ export function applyLinearResistanceToTossable({
 
   subscribe({
     sink: tossable.radiusUntilResistance$,
-    source: min$._reactiveMap(
-      (min: number, max: number) => Math.abs(max - min) / 2,
-      [ max$, ]
-    ),
+    source: min$._reactiveMap({
+      transform: ({ upstream: min, max }) => Math.abs(max - min) / 2,
+      inputs: {
+        max: max$,
+      }
+    }),
   });
 
   subscribe({
     sink: tossable.resistanceOrigin$,
-    source: axis$._reactiveMap(
-      (axis: Axis, min: number, max: number) => {
+    source: axis$._reactiveMap({
+      transform: ({ upstream: axis, min, max }) => {
         const linearCenter = min + (max - min) / 2;
 
         if (axis === Axis.X) {
@@ -326,7 +326,10 @@ export function applyLinearResistanceToTossable({
           console.warn(`Cannot apply linear resistance if axis isn't locked`);
         }
       },
-      [ min$, max$, ],
-    ),
+      inputs: {
+        min: min$,
+        max: max$,
+      },
+    }),
   });
 }

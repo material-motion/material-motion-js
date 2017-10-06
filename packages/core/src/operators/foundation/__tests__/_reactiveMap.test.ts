@@ -53,22 +53,27 @@ describe('motionObservable._reactiveMap',
 
     it('should call the transform function with each upstream value',
       () => {
-        subject._reactiveMap(listener, []).subscribe(() => {});
+        subject._reactiveMap({
+          transform: listener,
+          inputs: {}
+        }).subscribe(() => {});
 
         subject.next(2);
-        expect(listener).to.have.been.calledWith(2);
+        expect(listener).to.have.been.calledWithMatch({ upstream: 2 });
 
         subject.next(3);
-        expect(listener).to.have.been.calledWith(3);
+        expect(listener).to.have.been.calledWithMatch({ upstream: 3 });
       }
     );
 
     it('should call the transform function with each sideloaded value',
       () => {
-        subject._reactiveMap(
-          (upstream, sideloaded) => upstream + sideloaded,
-          [ argSubject ],
-        ).subscribe(listener);
+        subject._reactiveMap({
+          transform: ({ upstream, sideloaded }) => upstream + sideloaded,
+          inputs: {
+            sideloaded: argSubject,
+          },
+        }).subscribe(listener);
 
         subject.next(40);
         argSubject.next(2);
@@ -81,10 +86,12 @@ describe('motionObservable._reactiveMap',
 
     it('should call the transform function when any stream dispatches a new value',
       () => {
-        subject._reactiveMap(
-          (upstream, sideloaded) => upstream + sideloaded,
-          [ argSubject ],
-        ).subscribe(listener);
+        subject._reactiveMap({
+          transform: ({ upstream, sideloaded }) => upstream + sideloaded,
+          inputs: {
+            sideloaded: argSubject,
+          },
+        }).subscribe(listener);
 
         subject.next(40);
         argSubject.next(2);
@@ -100,10 +107,13 @@ describe('motionObservable._reactiveMap',
 
     it('should passthrough constants',
       () => {
-        subject._reactiveMap(
-          (upstream, constant, sideloaded) => upstream + constant + sideloaded,
-          [ 100, argSubject ],
-        ).subscribe(listener);
+        subject._reactiveMap({
+          transform: ({ upstream, constant, sideloaded }) => upstream + constant + sideloaded,
+          inputs: {
+            constant: 100,
+            sideloaded: argSubject,
+          },
+        }).subscribe(listener);
 
         subject.next(40);
         argSubject.next(2);

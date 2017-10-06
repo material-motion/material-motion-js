@@ -16,21 +16,23 @@
 
 import {
   Constructor,
+  MaybeReactive,
   MotionReactiveNextOperable,
   MotionTappable,
   NextChannel,
   ObservableWithMotionOperators,
 } from '../../types';
 
-export type ReactiveMappableOptions = {
+export type _ReactiveMapOptions = {
   onlyDispatchWithUpstream?: boolean,
 };
+
+export type _ReactiveMapArgs<D, T, U> = _ReactiveMapOptions & {
+  transform: (kwargs: { upstream: T } & D) => U,
+  inputs: MaybeReactive<D>,
+};
 export interface MotionReactiveMappable<T> {
-  _reactiveMap<U>(
-    transform: (upstreamValue: T, ...args: Array<any>) => U,
-    args: Array<any>,
-    options?: ReactiveMappableOptions,
-  ): ObservableWithMotionOperators<U>;
+  _reactiveMap<U, D>(kwargs: _ReactiveMapArgs<D, T, U>): ObservableWithMotionOperators<U>;
 }
 
 export function withReactiveMap<T, S extends Constructor<MotionReactiveNextOperable<T> & MotionTappable<T>>>(superclass: S): S & Constructor<MotionReactiveMappable<T>> {
@@ -43,22 +45,22 @@ export function withReactiveMap<T, S extends Constructor<MotionReactiveNextOpera
      * If the `onlyDispatchWithUpstream` option is set, `transform` is only
      * called when the upstream value changes.
      */
-    _reactiveMap<U>(transform: (upstreamValue: T, ...args: Array<any>) => U, args: Array<any>, { onlyDispatchWithUpstream = false }: ReactiveMappableOptions = {}): ObservableWithMotionOperators<U> {
+    _reactiveMap<U, D>({ transform, inputs, onlyDispatchWithUpstream = false }: _ReactiveMapArgs<D, T, U>): ObservableWithMotionOperators<U> {
       let upstreamChanged = false;
 
       return this._tap(
         () => {
           upstreamChanged = true;
         }
-      )._reactiveNextOperator(
-        (dispatch: NextChannel<U>, upstreamValue: T, ...argValues: Array<any>) => {
+      )._reactiveNextOperator<U, D>({
+        operation: ({ emit }) => (values) => {
           if (upstreamChanged || !onlyDispatchWithUpstream) {
-            dispatch(transform(upstreamValue, ...argValues));
+            emit(transform(values));
           }
           upstreamChanged = false;
         },
-        args
-      );
+        inputs
+      });
     }
   };
 }

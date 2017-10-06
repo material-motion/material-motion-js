@@ -27,7 +27,7 @@ import {
 } from '../types';
 
 import {
-  ReactiveMappableOptions,
+  _ReactiveMapOptions,
 } from './foundation/_reactiveMap';
 
 export interface MotionMultipliable<T> {
@@ -40,12 +40,12 @@ export interface MotionMultipliable<T> {
   // use the type variable `U`.
   multipliedBy<U extends T & number>(
     coefficient$: U | Observable<U>,
-    options?: ReactiveMappableOptions,
+    options?: _ReactiveMapOptions,
   ): ObservableWithMotionOperators<number>;
 
   multipliedBy<U extends T & Point2D>(
     coefficient$: U | Observable<U>,
-    options?: ReactiveMappableOptions,
+    options?: _ReactiveMapOptions,
   ): ObservableWithMotionOperators<U>;
 }
 
@@ -55,7 +55,7 @@ export function withMultipliedBy<T, S extends Constructor<MotionMathOperable<T>>
      * Multiplies the incoming value by the coefficient and dispatches the
      * result.
      */
-    multipliedBy<U extends T & (Point2D | number)>(coefficient$: U | Observable<U>, options?: ReactiveMappableOptions): ObservableWithMotionOperators<U> {
+    multipliedBy<U extends T & (Point2D | number)>(coefficient$: U | Observable<U>, options?: _ReactiveMapOptions): ObservableWithMotionOperators<U> {
       return this._mathOperator(
         (value, coefficient) => value * coefficient,
         coefficient$,
