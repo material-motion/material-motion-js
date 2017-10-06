@@ -29,7 +29,8 @@ import {
  *
  * Useful as a pulse for `_debounce` to ensure that UI work only happens once
  * per frame.  Since no rendering will happen until `requestAnimationFrame` is
- * called, it should be safe to `_debounce(frame$)` without missing a frame.
+ * called, it should be safe to `_debounce({ pulse$: frame$ })` without missing
+ * a frame.
  */
 let frame$: ObservableWithMotionOperators<number>;
 export function getFrame$() {

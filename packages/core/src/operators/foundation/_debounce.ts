@@ -31,8 +31,12 @@ import {
   Observer
 } from '../../types';
 
+export type _DebounceArgs = {
+  pulse$?: Observable<any>,
+}
+
 export interface MotionDebounceable<T> {
-  _debounce(pulse$?: Observable<any>): ObservableWithMotionOperators<T>;
+  _debounce(kwargs?: _DebounceArgs): ObservableWithMotionOperators<T>;
 }
 
 export function withDebounce<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S
@@ -47,7 +51,7 @@ export function withDebounce<T, S extends Constructor<MotionNextOperable<T>>>(su
      * By default, it will throttle to the framerate using
      * `requestAnimationFrame`.
      */
-    _debounce(pulse$: Observable<any> = getFrame$()): ObservableWithMotionOperators<T> {
+    _debounce({ pulse$ = getFrame$() } = {}): ObservableWithMotionOperators<T> {
       return new MotionObservable<T>(
         (observer: Observer<T>) => {
           let awaitingDispatch = false;

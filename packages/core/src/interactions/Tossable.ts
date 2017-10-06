@@ -168,10 +168,10 @@ export class Tossable {
     // start from 0
     subscribe({
       sink: spring.initialValue$,
-      source: this.location$._debounce(whenDragIsAtRest$)
+      source: this.location$._debounce({ pulse$: whenDragIsAtRest$}),
     });
 
-    const locationOnDown$ = this.location$._debounce(whenDragIsActive$);
+    const locationOnDown$ = this.location$._debounce({ pulse$: whenDragIsActive$ });
 
     this.draggedLocation$ = draggable.value$.addedBy<Point2D>(locationOnDown$, { onlyDispatchWithUpstream: true })._reactiveMap({
       transform: ({
