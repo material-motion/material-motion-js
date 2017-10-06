@@ -20,6 +20,8 @@ import {
 
 import {
   Dict,
+  MaybeReactive,
+  NumericallyKeyed,
   Observable,
   ObservableWithMotionOperators,
   Observer,
@@ -34,8 +36,8 @@ import {
 export type CombineLatestOptions = {
   waitForAllValues?: boolean,
 };
-export function combineLatest<V, T extends Array<V | Observable<V>>, U extends Array<V>>(streams: T, options?: CombineLatestOptions): ObservableWithMotionOperators<U>;
-export function combineLatest<V, T extends Dict<V | Observable<V>>, U extends Dict<V>>(streams: T, options?: CombineLatestOptions): ObservableWithMotionOperators<U>;
+export function combineLatest<V, T extends MaybeReactive<NumericallyKeyed<V>>, U extends Array<V>>(streams: T, options?: CombineLatestOptions): ObservableWithMotionOperators<U>;
+export function combineLatest<U, T extends MaybeReactive<U>>(streams: T, options?: CombineLatestOptions): ObservableWithMotionOperators<U>;
 export function combineLatest<V, T extends Dict<V | Observable<V>> | Array<V | Observable<V>>, U extends Dict<V> | Array<V>>(streams: T, { waitForAllValues = true }: CombineLatestOptions = {}): ObservableWithMotionOperators<U> {
   return new MotionObservable(
     (observer: Observer<U>) => {
