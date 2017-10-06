@@ -35,11 +35,6 @@ import {
 } from './dedupe';
 
 import {
-  MotionDelayable,
-  withDelayBy,
-} from './delayBy';
-
-import {
   MotionMeasurable,
   withDistanceFrom,
 } from './distanceFrom';
@@ -53,11 +48,6 @@ import {
   ObservableWithFoundationalMotionOperators,
   withFoundationalMotionOperators,
 } from './foundation';
-
-import {
-  MotionIgnorable,
-  withIgnoreUntil,
-} from './ignoreUntil';
 
 import {
   MotionInvertible,
@@ -149,9 +139,7 @@ export interface ObservableWithMotionOperators<T> extends
   MotionAddable<T>,
   MotionAppendUnitable,
   MotionDeduplicable<T>,
-  MotionDelayable<T>,
   MotionDivisible<T>,
-  MotionIgnorable<T>,
   MotionInvertible<T>,
   MotionIsAnyOfable,
   MotionLoggable<T>,
@@ -195,21 +183,17 @@ export function withMotionOperators<T, S extends Constructor<Observable<T>>>(sup
   const result19 = withIsAnyOf<T, typeof result18>(result18);
   const result20 = withAppendUnit<T, typeof result19>(result19);
   const result21 = withInverted<T, typeof result20>(result20);
-  const result22 = withDelayBy<T, typeof result21>(result21);
-  const result23 = withIgnoreUntil<T, typeof result22>(result22);
-  const result24 = withVelocity<T, typeof result23>(result23);
+  const result22 = withVelocity<T, typeof result21>(result21);
 
-  return result24;
+  return result22;
 }
 
 export * from './addedBy';
 export * from './appendUnit';
 export * from './dedupe';
-export * from './delayBy';
 export * from './distanceFrom';
 export * from './dividedBy';
 export * from './foundation';
-export * from './ignoreUntil';
 export * from './inverted';
 export * from './isAnyOf';
 export * from './log';

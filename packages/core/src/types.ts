@@ -39,11 +39,9 @@ export {
 export {
   MotionAppendUnitable,
   MotionDebounceable,
-  MotionDelayable,
   MotionDeduplicable,
   MotionFilterable,
   MotionFlattenable,
-  MotionIgnorable,
   MotionInvertible,
   MotionIsAnyOfable,
   MotionLoggable,
