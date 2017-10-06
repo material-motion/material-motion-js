@@ -20,15 +20,19 @@ import {
 
 import {
   Constructor,
+  EmittingOperation,
   NextChannel,
-  NextOperation,
   Observable,
   ObservableWithMotionOperators,
   Observer,
 } from '../../types';
 
+export type _NextOperatorArgs<T, U> = {
+  operation: EmittingOperation<{}, T, U>,
+}
+
 export interface MotionNextOperable<T> extends Observable<T> {
-  _nextOperator<U>(operation: NextOperation<T, U>): ObservableWithMotionOperators<U>;
+  _nextOperator<U>(kwargs: _NextOperatorArgs<T, U>): ObservableWithMotionOperators<U>;
 }
 
 export function withNextOperator<T, S extends Constructor<Observable<T>>>(superclass: S): S & Constructor<MotionNextOperable<T>> {
@@ -42,13 +46,15 @@ export function withNextOperator<T, S extends Constructor<Observable<T>>>(superc
      * `next` channel, transform it, and use the supplied callback to dispatch
      * the result to the observer's `next` channel.
      */
-    _nextOperator<U>(operation: NextOperation<T, U>): ObservableWithMotionOperators<U> {
+    _nextOperator<U>({ operation }: _NextOperatorArgs<T, U>): ObservableWithMotionOperators<U> {
       return new MotionObservable(
         (observer: Observer<U>) => {
-          const dispatch: NextChannel<U> = observer.next.bind(observer);
+          const innerOperation = operation({
+            emit: observer.next.bind(observer),
+          });
 
           const subscription = this.subscribe(
-            (value: T) => operation(value, dispatch)
+            (value: T) => innerOperation({ upstream: value })
           );
 
           return subscription.unsubscribe;

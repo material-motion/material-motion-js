@@ -33,13 +33,13 @@ export function withFilter<T, S extends Constructor<MotionNextOperable<T>>>(supe
      * values that return `true` to the observer.
      */
     _filter(predicate: Predicate<T>): ObservableWithMotionOperators<T> {
-      return this._nextOperator(
-        (value: T, dispatch: NextChannel<T>) => {
-          if (predicate(value)) {
-            dispatch(value);
+      return this._nextOperator({
+        operation: ({ emit }) => ({ upstream }) => {
+          if (predicate(upstream)) {
+            emit(upstream);
           }
         }
-      );
+      });
     }
   };
 }

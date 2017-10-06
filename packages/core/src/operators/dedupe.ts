@@ -34,26 +34,25 @@ export function withDedupe<T, S extends Constructor<ObservableWithFoundationalMo
      * Ensures that every value dispatched is different than the previous one.
      */
     dedupe(areEqual: EqualityCheck = deepEqual): ObservableWithMotionOperators<T> {
-      // If upstream observable is synchronous, `_multicast` will skip the first
-      // value (because its observers will not yet have been registered when
-      // upstream dispatches).  Thus, we manually multicast here.
-      const lastValueByChannel = new Map<NextChannel<T>, T>();
+      return this._nextOperator({
+        operation({ emit }) {
+          let emitted = false;
+          let lastValue: T;
 
-      return this._nextOperator(
-        (value: T, dispatch: NextChannel<T>) => {
-          const lastValue = lastValueByChannel.get(dispatch);
+          return ({ upstream }) => {
+            if (emitted && areEqual(upstream, lastValue)) {
+              return;
+            }
 
-          if (lastValueByChannel.has(dispatch) && areEqual(value, lastValue)) {
-            return;
+            // To prevent a potential infinite loop, these flags must be set
+            // before dispatching the result to the observer.
+            lastValue = upstream;
+            emitted = true;
+
+            emit(upstream);
           }
-
-          // To prevent a potential infinite loop, this must be set before
-          // dispatching the result to the observer
-          lastValueByChannel.set(dispatch, value);
-
-          dispatch(value);
         }
-      );
+      });
     }
   };
 }

@@ -16,7 +16,6 @@
 
 import {
   Constructor,
-  NextOperation,
   Observable,
   ObservableWithMotionOperators,
   Observer,
