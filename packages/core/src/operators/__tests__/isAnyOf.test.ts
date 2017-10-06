@@ -29,35 +29,29 @@ import {
 } from 'sinon';
 
 import {
-  createMockObserver,
-} from 'material-motion-testing-utils';
-
-import {
   MemorylessIndefiniteSubject,
-  MotionObservable,
+  MotionSubject,
 } from '../../observables/';
 
 describe('motionObservable.isAnyOf',
   () => {
     let subject;
-    let stream;
-    let mockObserver;
+    let argSubject;
     let listener;
 
     beforeEach(
       () => {
-        mockObserver = createMockObserver();
-        subject = new MemorylessIndefiniteSubject();
-        stream = new MotionObservable(mockObserver.connect);
+        subject = new MotionSubject();
+        argSubject = new MemorylessIndefiniteSubject();
         listener = stub();
       }
     );
 
     it('should dispatch true when the upstream values matches a possibility',
       () => {
-        stream.isAnyOf([1, 2, 3]).subscribe(listener);
+        subject.isAnyOf([1, 2, 3]).subscribe(listener);
 
-        mockObserver.next(2);
+        subject.next(2);
 
         expect(listener).to.have.been.calledWith(true);
       }
@@ -65,11 +59,25 @@ describe('motionObservable.isAnyOf',
 
     it('should dispatch false when the upstream values matches a possibility',
       () => {
-        stream.isAnyOf([1, 2, 3]).subscribe(listener);
+        subject.isAnyOf([1, 2, 3]).subscribe(listener);
 
-        mockObserver.next(4);
+        subject.next(4);
 
         expect(listener).to.have.been.calledWith(false);
+      }
+    );
+
+    it('should accept reactive matches',
+      () => {
+        subject.isAnyOf([1, argSubject, 3]).subscribe(listener);
+
+        argSubject.next(2);
+        subject.next(4);
+
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(false);
+
+        argSubject.next(4);
+        expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(true);
       }
     );
   }
