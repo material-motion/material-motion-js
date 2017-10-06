@@ -69,9 +69,9 @@ describe('motionObservable',
       () => {
         MotionObservable.from(
           new IndefiniteObservable(mockObserver.connect)
-        )._filter(
-          value => value < 2
-        ).subscribe(listener);
+        )._filter({
+          predicate: value => value < 2
+        }).subscribe(listener);
 
         mockObserver.next(1);
         mockObserver.next(3);

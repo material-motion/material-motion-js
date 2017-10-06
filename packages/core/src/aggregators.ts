@@ -79,7 +79,5 @@ export function not(stream: ObservableWithMotionOperators<boolean>): ObservableW
  * ).subscribe(b.cancellation$)
  */
 export function when(stream: ObservableWithMotionOperators<boolean>): ObservableWithMotionOperators<boolean> {
-  return stream._filter(
-    value => value === true
-  );
+  return stream._filter({ predicate: isTrue });
 }
