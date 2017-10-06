@@ -22,23 +22,23 @@ import {
 } from '../../types';
 
 export interface MotionTappable<T> {
-  _tap(operation: (value: T) => any): ObservableWithMotionOperators<T>;
+  _tap(sideEffect: (value: T) => any): ObservableWithMotionOperators<T>;
 }
 
 export function withTap<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionTappable<T>> {
   return class extends superclass implements MotionTappable<T> {
     /**
-     * Calls `operation` for each value in the stream.  The result of
-     * `operation` is ignored - values received from upstream are passed-through
-     * to the observer.
+     * Calls `sideEffect` for each value in the stream.  The result of
+     * `sideEffect` is ignored - values received from upstream are passed-
+     * through to the observer.
      */
-    _tap(operation: (value: T) => any): ObservableWithMotionOperators<T> {
-      return this._nextOperator(
-        (value: T, dispatch: NextChannel<T>) => {
-          operation(value);
-          dispatch(value);
+    _tap(sideEffect: (value: T) => any): ObservableWithMotionOperators<T> {
+      return this._nextOperator({
+        operation: ({ emit }) => ({ upstream }) => {
+          sideEffect(upstream);
+          emit(upstream);
         }
-      );
+      });
     }
   };
 }

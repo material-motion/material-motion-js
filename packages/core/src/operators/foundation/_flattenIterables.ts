@@ -37,14 +37,14 @@ export function withFlattenIterables<T, S extends Constructor<MotionNextOperable
      * individually.
      */
     _flattenIterables<U>(): ObservableWithMotionOperators<U> {
-      return this._nextOperator(
-        (values: T | Iterable<U>, dispatch: NextChannel<U>) => {
+      return this._nextOperator({
+        operation: ({ emit }) => ({ upstream: values }) => {
           if (isIterable(values)) {
             for (const value of values) {
-              dispatch(value);
+              emit(value);
             }
           } else {
-            dispatch(values as any as U);
+            emit(values as any as U);
           }
         }
       );

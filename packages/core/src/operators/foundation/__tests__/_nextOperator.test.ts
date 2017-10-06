@@ -29,23 +29,17 @@ import {
 } from 'sinon';
 
 import {
-  createMockObserver,
-} from 'material-motion-testing-utils';
-
-import {
-  MotionObservable,
+  MotionSubject,
 } from '../../../observables/';
 
 describe('motionObservable._nextOperator',
   () => {
-    let stream;
-    let mockObserver;
+    let subject;
     let nextListener;
 
     beforeEach(
       () => {
-        mockObserver = createMockObserver();
-        stream = new MotionObservable(mockObserver.connect);
+        subject = new MotionSubject();
 
         nextListener = stub();
       }
@@ -55,17 +49,17 @@ describe('motionObservable._nextOperator',
       () => {
         const waitAMoment = Promise.resolve();
 
-        const makeValuesAsync = (value, nextChannel) => {
-          waitAMoment.then(
-            () => {
-              nextChannel(value);
-            }
-          );
-        };
+        subject._nextOperator({
+          operation: ({ emit }) => ({ upstream }) => {
+            waitAMoment.then(
+              () => {
+                emit(upstream);
+              }
+            );
+          }
+        }).subscribe(nextListener);
 
-        stream._nextOperator(makeValuesAsync).subscribe(nextListener);
-
-        mockObserver.next(1);
+        subject.next(1);
 
         expect(nextListener).not.to.have.been.called;
         return waitAMoment.then(
@@ -86,13 +80,13 @@ describe('motionObservable._nextOperator',
           this.listener(value);
         }
 
-        stream._nextOperator(
-          (value, nextChannel) => nextChannel(value)
-        ).subscribe({
+        subject._nextOperator({
+          operation: ({ emit }) => ({ upstream }) => emit(upstream)
+        }).subscribe({
           next: callOwnListener.bind(dictWithListener)
         });
 
-        mockObserver.next(1);
+        subject.next(1);
 
         expect(nextListener).to.have.been.calledWith(1);
       }
