@@ -160,10 +160,6 @@ export class Tossable {
       [State.ACTIVE]: false,
     }).dedupe();
 
-    // Since drag starts at rest, this calls the observer immediately, which
-    // sets velocity to undefined.  If `ignoreUntil` took a reactive pulse, this
-    // could be whenDragIsAtRest$.ignoreUntil(whenDragIsActive$).  Since it's
-    // not, velocity manually starts with {0, 0}.
     const whenDragIsAtRest$ = when(dragIsAtRest$);
     const whenDragIsActive$ = when(not(dragIsAtRest$));
 
@@ -222,7 +218,8 @@ export class Tossable {
       onlyDispatchWithUpstream: true,
     });
 
-    // maybe should be named velocityWhen?
+    // Since drag starts at rest, whenDragIsAtRest$ emits immediately.  Thus, we
+    // start with { 0, 0 } to ensure velocity doesn't emit undefined.
     this.velocity$ = this.draggedLocation$.startWith({ x: 0, y: 0 }).velocity(whenDragIsAtRest$);
     subscribe({
       sink: spring.initialVelocity$,
