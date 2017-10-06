@@ -37,6 +37,7 @@ import {
 
 import {
   Dict,
+  MaybeReactive,
   Observable,
   ObservableWithMotionOperators,
   Point2D,
@@ -174,7 +175,7 @@ export class Point2DSpring implements Spring<Point2D> {
   // If it were debounced, we'd have to either ensure that `state$` waits until
   // the next frame before emitting `AT_REST`, or accept that they are out-of-
   // sync and add an extra mockRAF.step() to the relevant tests.
-  readonly value$: ObservableWithMotionOperators<Point2D> = combineLatest<number, Dict<Observable<number>>, Point2D>({
+  readonly value$: ObservableWithMotionOperators<Point2D> = combineLatest<Point2D, MaybeReactive<Point2D>>({
     x: this.xSpring.value$,
     y: this.ySpring.value$,
   });

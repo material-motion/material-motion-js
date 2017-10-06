@@ -202,7 +202,21 @@ export type EqualityCheck = (a: any, b: any) => boolean;
 export interface Timestamped<T> {
   value: T,
   timestamp: number,
-}
+};
+
+export type MaybeReactive<D> = {
+  [K in keyof D]: D[K] | Observable<D[K]>
+};
+
+/**
+ * `Array` has both members and methods.  `MaybeReactive` iterates over all the
+ * keys in an object.  `MaybeReactive<NumericallyKeyed<T>>` allows you to
+ * represent an array with potentially reactive members without worrying about
+ * the methods.
+ */
+export type NumericallyKeyed<T> = {
+  [index: number]: T,
+};
 
 export type Dict<T> = {
   [index: string]: T,

@@ -41,6 +41,7 @@ import {
 
 import {
   ObservableWithMotionOperators,
+  MaybeReactive,
   Point2D,
   ScaleStyleStreams,
   TranslateStyleStreams,
@@ -234,7 +235,7 @@ export class Swipeable {
 
     subscribe({
       sink: spring.destination$,
-      source: combineLatest({
+      source: combineLatest<Point2D, MaybeReactive<Point2D>>({
         x: this.swipeState$.rewrite({
           [SwipeState.NONE]: 0,
           [SwipeState.LEFT]: destinationDistance$.multipliedBy(-1),
