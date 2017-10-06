@@ -41,11 +41,11 @@ export function withInverted<T, S extends Constructor<MotionNextOperable<T>>>(su
      * - `1 - value` when it receives a numeric value
      */
     inverted<U extends T & number>(): ObservableWithMotionOperators<U> {
-      return (this as any as MotionNextOperable<U>)._nextOperator(
-        (value: U, dispatch: NextChannel<U>) => {
-          dispatch((1 - (value as number)) as U);
+      return (this as any as MotionNextOperable<U>)._nextOperator({
+        operation: ({ emit }) => ({ upstream }) => {
+          emit((1 - (upstream as number)) as U);
         }
-      );
+      });
     }
   };
 }

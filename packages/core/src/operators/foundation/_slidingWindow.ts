@@ -37,19 +37,21 @@ export function withSlidingWindow<T, S extends Constructor<MotionNextOperable<T>
      * dispatches, make a copy of each as you receive it.
      */
     _slidingWindow(length: number = 2): ObservableWithMotionOperators<Array<T>> {
-      const result: Array<T> = [];
+      return this._nextOperator({
+        operation({ emit }) {
+          const result: Array<T> = [];
 
-      return this._nextOperator(
-        (value: T, dispatch: NextChannel<Array<T>>) => {
-          result.push(value);
+          return ({ upstream }) => {
+            result.push(upstream);
 
-          if (result.length > length) {
-            result.shift();
+            if (result.length > length) {
+              result.shift();
+            }
+
+            emit(result);
           }
-
-          dispatch(result);
         }
-      );
+      });
     }
   };
 }

@@ -32,9 +32,9 @@ export function withMap<T, S extends Constructor<MotionNextOperable<T>>>(supercl
      * result to the observer.
      */
     _map<U>(transform: (value: T) => U): ObservableWithMotionOperators<U> {
-      return this._nextOperator(
-        (value: T, dispatch: NextChannel<U>) => {
-          dispatch(transform(value));
+      return this._nextOperator({
+        operation: ({ emit }) => ({ upstream }) => {
+          emit(transform(upstream));
         }
       );
     }
