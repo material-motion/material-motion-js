@@ -31,6 +31,13 @@ export function isBoolean(value: any): value is boolean {
 }
 
 /**
+ * Checks if an object is not undefined.
+ */
+export function isDefined(value: any): boolean {
+  return typeof value !== 'undefined';
+}
+
+/**
  * Checks if an object is a Number.
  */
 export function isNumber(value: any): value is number {

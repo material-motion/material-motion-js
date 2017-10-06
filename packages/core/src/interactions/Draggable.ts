@@ -178,9 +178,9 @@ export class Draggable {
                   (downEvent.target as Element).setPointerCapture(downEvent.pointerId);
                 }
 
-                moveSubscription = move$.merge(up$)._filter(
-                  (nextEvent: PartialPointerEvent) => nextEvent.pointerId === downEvent.pointerId
-                ).subscribe(
+                moveSubscription = move$.merge(up$)._filter({
+                  predicate: (nextEvent: PartialPointerEvent) => nextEvent.pointerId === downEvent.pointerId
+                }).subscribe(
                   (nextEvent: PartialPointerEvent) => {
                     const atRest = nextEvent.type.includes('up');
 

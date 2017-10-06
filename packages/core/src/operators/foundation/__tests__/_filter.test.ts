@@ -54,7 +54,7 @@ describe('motionObservable._filter',
       () => {
         const isOdd = x => x % 2;
 
-        stream._filter(isOdd).subscribe(listener1);
+        stream._filter({ predicate: isOdd }).subscribe(listener1);
 
         mockObserver.next(1);
         mockObserver.next(2);

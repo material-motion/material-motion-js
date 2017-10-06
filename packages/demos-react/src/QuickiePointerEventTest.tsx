@@ -47,9 +47,9 @@ export class QuickiePointerEventTest extends React.Component {
       );
 
       const velocity$ = draggable.value$.velocity(
-        draggable.recognitionState$._filter(
-          recognitionState => recognitionState === GestureRecognitionState.RECOGNIZED
-        )
+        draggable.recognitionState$._filter({
+          predicate: recognitionState => recognitionState === GestureRecognitionState.RECOGNIZED
+        })
       );
 
       subscriptions = [

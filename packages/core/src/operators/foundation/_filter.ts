@@ -22,17 +22,28 @@ import {
   Predicate,
 } from '../../types';
 
+import {
+  isDefined,
+} from '../../typeGuards';
+
+export type _FilterArgs<T> = {
+  predicate?: Predicate<T>,
+}
+
 export interface MotionFilterable<T> {
-  _filter(predicate: Predicate<T>): ObservableWithMotionOperators<T>;
+  _filter(kwargs?: _FilterArgs<T>): ObservableWithMotionOperators<T>;
 }
 
 export function withFilter<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionFilterable<T>> {
   return class extends superclass implements MotionFilterable<T> {
     /**
-     * Applies `predicate` to every incoming value and synchronously passes
+     * Checks every incoming value with `predicate` and synchronously passes
      * values that return `true` to the observer.
+     *
+     * If `predicate` is not supplied, `_filter` will pass through any value
+     * that is not `undefined`.
      */
-    _filter(predicate: Predicate<T>): ObservableWithMotionOperators<T> {
+    _filter({ predicate = isDefined }: _FilterArgs<T> = {}): ObservableWithMotionOperators<T> {
       return this._nextOperator({
         operation: ({ emit }) => ({ upstream }) => {
           if (predicate(upstream)) {
