@@ -76,7 +76,7 @@ describe('Point2DSpring',
           //
           // Thus, we only measure what its values are when the state changes,
           // to be sure we are checking the correct values.
-          spring.value$._debounce(spring.state$).subscribe(valueListener);
+          spring.value$._debounce({ pulse$: spring.state$ }).subscribe(valueListener);
 
           const initialValue = { x: 2, y: 3 };
           const destination = { x: 4, y: 2 };
@@ -230,7 +230,7 @@ describe('Point2DSpring',
           //
           // Thus, we only measure what its values are when the state changes,
           // to be sure we are checking the correct values.
-          spring.value$._debounce(spring.state$).subscribe(valueListener);
+          spring.value$._debounce({ pulse$: spring.state$ }).subscribe(valueListener);
 
           const initialValue = { x: 4, y: 8 };
           const destination = { x: 0, y: 0 };
