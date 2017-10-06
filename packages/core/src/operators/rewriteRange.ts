@@ -33,24 +33,23 @@ export function withRewriteRange<T, S extends Constructor<MotionNextOperable<T>>
      * ranges, and dispatches the result to the observer.
      */
     rewriteRange({
-      fromStart: fromStart$ = 0,
-      fromEnd: fromEnd$ = 1,
-      toStart: toStart$ = 0,
-      toEnd: toEnd$ = 1,
-      bound: bound$ = false,
+      fromStart = 0,
+      fromEnd = 1,
+      toStart = 0,
+      toEnd = 1,
+      bound = false,
     }: RewriteRangeArgs): ObservableWithMotionOperators<number> {
-      return (this as any as ObservableWithMotionOperators<number>)._reactiveNextOperator(
-        (
-          dispatch: NextChannel<number>,
-          value: number,
-          fromStart: number,
-          fromEnd: number,
-          toStart: number,
-          toEnd: number,
-          bound: boolean,
-        ) => {
+      return (this as any as ObservableWithMotionOperators<number>)._reactiveNextOperator({
+        operation: ({ emit }) => ({
+          upstream,
+          fromStart,
+          fromEnd,
+          toStart,
+          toEnd,
+          bound,
+        }) => {
           const fromRange = fromStart - fromEnd;
-          const fromProgress = (value - fromEnd) / fromRange;
+          const fromProgress = (upstream - fromEnd) / fromRange;
           const toRange = toStart - toEnd;
 
           const result = toEnd + fromProgress * toRange;
@@ -59,13 +58,13 @@ export function withRewriteRange<T, S extends Constructor<MotionNextOperable<T>>
             const lowerBound = Math.min(toStart, toEnd);
             const upperBound = Math.max(toStart, toEnd);
 
-            dispatch(Math.max(lowerBound, Math.min(result, upperBound)));
+            emit(Math.max(lowerBound, Math.min(result, upperBound)));
           } else {
-            dispatch(result);
+            emit(result);
           }
         },
-        [ fromStart$, fromEnd$, toStart$, toEnd$, bound$ ],
-      );
+        inputs: { fromStart, fromEnd, toStart, toEnd, bound },
+      });
     }
   };
 }

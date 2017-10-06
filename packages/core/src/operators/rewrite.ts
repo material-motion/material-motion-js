@@ -72,8 +72,8 @@ export function withRewrite<T, S extends Constructor<MotionReactiveNextOperable<
         upstream = this.timestamp();
       }
 
-      return upstream._reactiveNextOperator(
-        (dispatch: NextChannel<U>, currentKey: undefined | string | T | Timestamped<string | T>, ...currentValues: Array<undefined | U | Timestamped<U>>) => {
+      return upstream._reactiveNextOperator({
+        operation: ({ emit }) => ({ upstream: currentKey, ...currentValues }) => {
           if (currentKey !== undefined) {
             let key: string | T = isTimestamped(currentKey)
               ? currentKey.value
@@ -90,32 +90,32 @@ export function withRewrite<T, S extends Constructor<MotionReactiveNextOperable<
 
             if (index === -1) {
               if (defaultValue !== SUPPRESS_FAILURES) {
-                dispatch(defaultValue as U);
+                emit(defaultValue as U);
               }
             } else {
-              const currentValue = currentValues[index];
+              const currentValue = (currentValues as Array<U>)[index];
 
               // Wait until both the currentKey and currentValue have been
-              // defined before dispatching.  This also presumes that the author
+              // defined before emitting.  This also presumes that the author
               // is not intentionally rewriting to undefined.
               if (currentValue !== undefined) {
                 const value = isTimestamped(currentValue)
                   ? currentValue.value
                   : currentValue;
 
-                // Prevent stale values from being dispatched by only forwarding
-                // values that are newer than the key, unless dispatchOnKeyChange is
-                // set (which will omit the timestamps).
+                // Prevent stale values from being emitted by only forwarding
+                // values that are newer than the key, unless
+                // dispatchOnKeyChange is set (which will omit the timestamps).
                 if (!isTimestamped(currentValue) || currentValue.timestamp > (currentKey as Timestamped<T>).timestamp) {
-                  dispatch(value);
+                  emit(value);
                 }
               }
             }
           }
         },
-        values,
-        { waitForAllValues: false }
-      );
+        inputs: values,
+        waitForAllValues: false
+      });
     }
   };
 }

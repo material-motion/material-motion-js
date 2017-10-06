@@ -93,8 +93,9 @@ export interface Subject<T> extends Observable<T> {
   next(value: T): void;
 }
 
+export type EmittingOperation<D, T, U> = (kwargs: { emit: NextChannel<U> }) => (values: D & { upstream: T }) => void;
+
 export type NextOperation<T, U> = (value: T, nextChannel: NextChannel<U>) => void;
-export type ReactiveNextOperation<T, U> = (nextChannel: NextChannel<U>, ...values: Array<any>) => void;
 
 export type Point2D = {
   x: number,

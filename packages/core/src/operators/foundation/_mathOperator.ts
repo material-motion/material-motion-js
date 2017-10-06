@@ -27,14 +27,14 @@ import {
 } from '../../types';
 
 import {
-  ReactiveMappableOptions,
+  _ReactiveMapOptions,
 } from './_reactiveMap';
 
 export interface MotionMathOperable<T> {
   _mathOperator<U extends T & (number | Point2D)>(
     operation: (upstream: number, parameter: number) => number,
     amount$: U | Observable<U>,
-    options?: ReactiveMappableOptions,
+    options?: _ReactiveMapOptions,
   ): ObservableWithMotionOperators<U>;
 }
 
@@ -43,21 +43,23 @@ export function withMathOperator<T, S extends Constructor<MotionReactiveMappable
     /**
      * Applies the operation to each dimension and dispatches the result.
      */
-    _mathOperator<U extends T & (number | Point2D)>(operation: (upstream: number, parameter: number) => number, amount$: U | Observable<U>, options?: ReactiveMappableOptions): ObservableWithMotionOperators<U> {
-      return (this as any as MotionReactiveMappable<U>)._reactiveMap(
-        (value: U, amount: U) => {
-          if (isPoint2D(value)) {
+    _mathOperator<U extends T & (number | Point2D)>(operation: (upstream: number, parameter: number) => number, amount$: U | Observable<U>, options?: _ReactiveMapOptions): ObservableWithMotionOperators<U> {
+      return (this as any as MotionReactiveMappable<U>)._reactiveMap({
+        transform: ({ upstream, amount }) => {
+          if (isPoint2D(upstream)) {
             return {
-              x: operation(value.x, (amount as Point2D).x),
-              y: operation(value.y, (amount as Point2D).y),
+              x: operation(upstream.x, (amount as Point2D).x),
+              y: operation(upstream.y, (amount as Point2D).y),
             } as U;
           } else {
-            return operation(value as number, amount as number) as U;
+            return operation(upstream as number, amount as number) as U;
           }
         },
-        [ amount$, ],
-        options
-      );
+        inputs: {
+          amount: amount$,
+        },
+        ...options
+      });
     }
   };
 }

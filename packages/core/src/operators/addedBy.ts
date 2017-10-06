@@ -27,7 +27,7 @@ import {
 } from '../types';
 
 import {
-  ReactiveMappableOptions,
+  _ReactiveMapOptions,
 } from './foundation/_reactiveMap';
 
 export interface MotionAddable<T> {
@@ -40,12 +40,12 @@ export interface MotionAddable<T> {
   // use the type variable `U`.
   addedBy<U extends T & number>(
     amount$: U | Observable<U>,
-    options?: ReactiveMappableOptions,
+    options?: _ReactiveMapOptions,
   ): ObservableWithMotionOperators<number>;
 
   addedBy<U extends T & Point2D>(
     amount$: U | Observable<U>,
-    options?: ReactiveMappableOptions,
+    options?: _ReactiveMapOptions,
   ): ObservableWithMotionOperators<U>;
 }
 
@@ -54,7 +54,7 @@ export function withAddedBy<T, S extends Constructor<MotionMathOperable<T>>>(sup
     /**
      * Adds the amount to the incoming value and dispatches the result.
      */
-    addedBy<U extends T & (Point2D | number)>(amount$: U | Observable<U>, options?: ReactiveMappableOptions): ObservableWithMotionOperators<U> {
+    addedBy<U extends T & (Point2D | number)>(amount$: U | Observable<U>, options?: _ReactiveMapOptions): ObservableWithMotionOperators<U> {
       return this._mathOperator(
         (value, amount) => value + amount,
         amount$,
