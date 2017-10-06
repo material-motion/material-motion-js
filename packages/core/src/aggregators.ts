@@ -19,31 +19,12 @@ import {
 } from './operators';
 
 import {
-  MotionObservable,
-} from './observables/MotionObservable';
+  combineLatest,
+} from './combineLatest';
 
 import {
   Observer,
 } from './types';
-
-// This is a quick test of the `any/all/someOf` operators.  In order to reuse
-// the subscription aggregating logic in `_reactiveMap`, each starts with an
-// empty stream at the head of the chain to give us access to the operator.
-//
-// In the future, the subscription managing logic in `_reactiveMap` could be
-// abstracted so it may be shared between these functions and `_reactiveMap`.
-//
-// Arguments are arrays to give us room to easily add parameters to the
-// signatures in the future (e.g. a flag to indicate whether to wait for all
-// streams to dispatch before dispatching).
-
-const emptyStream = new MotionObservable(
-  (observer: Observer<any>) => {
-    observer.next(undefined);
-
-    return () => {};
-  }
-);
 
 function isTrue(value: any): boolean {
   return value === true;
@@ -55,11 +36,8 @@ function isTrue(value: any): boolean {
  * has received a value from each stream in the array.
  */
 export function anyOf(streams: Array<ObservableWithMotionOperators<boolean>>): ObservableWithMotionOperators<boolean> {
-  return emptyStream._reactiveMap(
-    (_, ...values) => {
-      return values.some(isTrue);
-    },
-    streams
+  return combineLatest(streams)._map(
+    (values) => values.some(isTrue)
   );
 };
 
@@ -69,11 +47,8 @@ export function anyOf(streams: Array<ObservableWithMotionOperators<boolean>>): O
  * received a value from each stream in the array.
  */
 export function allOf(streams: Array<ObservableWithMotionOperators<boolean>>): ObservableWithMotionOperators<boolean> {
-  return emptyStream._reactiveMap(
-    (_, ...values) => {
-      return values.every(isTrue);
-    },
-    streams
+  return combineLatest(streams)._map(
+    (values) => values.every(isTrue)
   );
 };
 
