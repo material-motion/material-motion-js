@@ -53,15 +53,15 @@ export function withLog<T, S extends Constructor<MotionTappable<T>>>(superclass:
         plucker = createPlucker(pluckPath);
       }
 
-      return this._tap(
-        (value: T) => {
+      return this._tap({
+        sideEffect({ upstream: value }) {
           if (plucker) {
             value = plucker(value);
           }
 
           console.log(label, value);
         }
-      );
+      });
     }
   };
 }

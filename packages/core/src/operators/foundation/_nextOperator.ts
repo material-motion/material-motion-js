@@ -28,7 +28,7 @@ import {
 } from '../../types';
 
 export type _NextOperatorArgs<T, U> = {
-  operation: EmittingOperation<{}, T, U>,
+  operation: EmittingOperation<T, {}, U>,
 }
 
 export interface MotionNextOperable<T> extends Observable<T> {

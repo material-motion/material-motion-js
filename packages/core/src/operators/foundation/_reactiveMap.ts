@@ -48,11 +48,11 @@ export function withReactiveMap<T, S extends Constructor<MotionReactiveNextOpera
     _reactiveMap<U, D>({ transform, inputs, onlyDispatchWithUpstream = false }: _ReactiveMapArgs<D, T, U>): ObservableWithMotionOperators<U> {
       let upstreamChanged = false;
 
-      return this._tap(
-        () => {
+      return this._tap({
+        sideEffect() {
           upstreamChanged = true;
-        }
-      )._reactiveNextOperator<U, D>({
+        },
+      })._reactiveNextOperator<U, D>({
         operation: ({ emit }) => (values) => {
           if (upstreamChanged || !onlyDispatchWithUpstream) {
             emit(transform(values));
