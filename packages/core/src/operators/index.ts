@@ -137,7 +137,7 @@ export interface ObservableWithMotionOperators<T> extends
   MotionDeduplicable<T>,
   MotionDivisible<T>,
   MotionInvertible<T>,
-  MotionIsAnyOfable,
+  MotionIsAnyOfable<T>,
   MotionLoggable<T>,
   MotionMeasurable<T>,
   MotionMergeable<T>,

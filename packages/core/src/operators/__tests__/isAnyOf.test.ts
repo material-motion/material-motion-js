@@ -49,7 +49,7 @@ describe('motionObservable.isAnyOf',
 
     it('should dispatch true when the upstream values matches a possibility',
       () => {
-        subject.isAnyOf([1, 2, 3]).subscribe(listener);
+        subject.isAnyOf({ candidates: [1, 2, 3] }).subscribe(listener);
 
         subject.next(2);
 
@@ -59,7 +59,7 @@ describe('motionObservable.isAnyOf',
 
     it('should dispatch false when the upstream values matches a possibility',
       () => {
-        subject.isAnyOf([1, 2, 3]).subscribe(listener);
+        subject.isAnyOf({ candidates: [1, 2, 3] }).subscribe(listener);
 
         subject.next(4);
 
@@ -69,7 +69,7 @@ describe('motionObservable.isAnyOf',
 
     it('should accept reactive matches',
       () => {
-        subject.isAnyOf([1, argSubject, 3]).subscribe(listener);
+        subject.isAnyOf({ candidates: [1, argSubject, 3] }).subscribe(listener);
 
         argSubject.next(2);
         subject.next(4);
