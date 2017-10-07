@@ -45,7 +45,7 @@ describe('motionProperty',
 
     it(`should be a property with operators`,
       () => {
-        property.pluck('a').subscribe(listener);
+        property.pluck({ path: 'a' }).subscribe(listener);
 
         property.write({ 'a': 1 });
 

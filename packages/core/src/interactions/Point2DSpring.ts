@@ -183,32 +183,32 @@ export class Point2DSpring implements Spring<Point2D> {
   constructor() {
     subscribe({
       sink: this.xSpring.destination$,
-      source: this.destination$.pluck('x'),
+      source: this.destination$.pluck({ path: 'x'}),
     });
 
     subscribe({
       sink: this.ySpring.destination$,
-      source: this.destination$.pluck('y'),
+      source: this.destination$.pluck({ path: 'y'}),
     });
 
     subscribe({
       sink: this.xSpring.initialValue$,
-      source: this.initialValue$.pluck('x'),
+      source: this.initialValue$.pluck({ path: 'x'}),
     });
 
     subscribe({
       sink: this.ySpring.initialValue$,
-      source: this.initialValue$.pluck('y'),
+      source: this.initialValue$.pluck({ path: 'y'}),
     });
 
     subscribe({
       sink: this.xSpring.initialVelocity$,
-      source: this.initialVelocity$.pluck('x'),
+      source: this.initialVelocity$.pluck({ path: 'x'}),
     });
 
     subscribe({
       sink: this.ySpring.initialVelocity$,
-      source: this.initialVelocity$.pluck('y'),
+      source: this.initialVelocity$.pluck({ path: 'y'}),
     });
 
     subscribe({
