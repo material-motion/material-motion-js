@@ -1,4 +1,5 @@
 /** @license
+appe/** @license
  *  Copyright 2016 - present The Material Motion Authors. All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -20,8 +21,12 @@ import {
   ObservableWithMotionOperators,
 } from '../types';
 
+export type AppendUnitArgs = {
+  unit: string,
+}
+
 export interface MotionAppendUnitable {
-  appendUnit(unit: string): ObservableWithMotionOperators<string>;
+  appendUnit(kwargs: AppendUnitArgs): ObservableWithMotionOperators<string>;
 }
 
 export function withAppendUnit<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionAppendUnitable> {
@@ -30,7 +35,7 @@ export function withAppendUnit<T, S extends Constructor<MotionMappable<T>>>(supe
      * Converts a stream to a CSS string representation by appending the given
      * unit to the upstream values.
      */
-    appendUnit(unit: string): ObservableWithMotionOperators<string> {
+    appendUnit({ unit }: AppendUnitArgs): ObservableWithMotionOperators<string> {
       return this._map({
         transform: (value: T) => value + unit
       });
