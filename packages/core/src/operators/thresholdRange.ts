@@ -16,6 +16,7 @@
 
 import {
   Constructor,
+  MaybeReactive,
   MotionReactiveMappable,
   Observable,
   ObservableWithMotionOperators,
@@ -29,17 +30,18 @@ import {
   _ReactiveMapOptions,
 } from './foundation/_reactiveMap';
 
+export type ThresholdRangeArgs = _ReactiveMapOptions & MaybeReactive<{
+  start$: number,
+  end$: number,
+}>;
+
 export interface MotionThresholdRangeable {
-  thresholdRange(
-    start$: number | Observable<number>,
-    end$: number | Observable<number>,
-    options?: _ReactiveMapOptions,
-  ): ObservableWithMotionOperators<ThresholdRegion>;
+  thresholdRange(kwargs: ThresholdRangeArgs): ObservableWithMotionOperators<ThresholdRegion>;
 }
 
 export function withThresholdRange<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionThresholdRangeable> {
   return class extends superclass implements MotionThresholdRangeable {
-    thresholdRange(start$: number | Observable<number>, end$: number | Observable<number>, options?: _ReactiveMapOptions): ObservableWithMotionOperators<ThresholdRegion> {
+    thresholdRange({ start$, end$, ..._reactiveMapOptions }: ThresholdRangeArgs): ObservableWithMotionOperators<ThresholdRegion> {
       return (this as any as ObservableWithMotionOperators<number>)._reactiveMap({
         transform: ({ upstream, start, end }) => {
           const lowerLimit = Math.min(start, end);
@@ -59,7 +61,7 @@ export function withThresholdRange<T, S extends Constructor<MotionReactiveMappab
           start: start$,
           end: end$
         },
-        ...options,
+        ..._reactiveMapOptions,
       });
     }
   };
