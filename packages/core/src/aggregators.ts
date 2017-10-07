@@ -36,9 +36,9 @@ function isTrue(value: any): boolean {
  * has received a value from each stream in the array.
  */
 export function anyOf(streams: Array<ObservableWithMotionOperators<boolean>>): ObservableWithMotionOperators<boolean> {
-  return combineLatest(streams)._map(
-    (values) => values.some(isTrue)
-  );
+  return combineLatest(streams)._map({
+    transform: (values) => values.some(isTrue)
+  });
 };
 
 /**
@@ -47,9 +47,9 @@ export function anyOf(streams: Array<ObservableWithMotionOperators<boolean>>): O
  * received a value from each stream in the array.
  */
 export function allOf(streams: Array<ObservableWithMotionOperators<boolean>>): ObservableWithMotionOperators<boolean> {
-  return combineLatest(streams)._map(
-    (values) => values.every(isTrue)
-  );
+  return combineLatest(streams)._map({
+    transform: (values) => values.every(isTrue)
+  });
 };
 
 /**
@@ -67,7 +67,9 @@ export function noneOf(streams: Array<ObservableWithMotionOperators<boolean>>): 
  * stream in the array.
  */
 export function not(stream: ObservableWithMotionOperators<boolean>): ObservableWithMotionOperators<boolean> {
-  return stream._map(value => !value);
+  return stream._map({
+    transform: (value) => !value
+  });
 };
 
 /**

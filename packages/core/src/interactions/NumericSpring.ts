@@ -177,9 +177,9 @@ export class NumericSpring implements Spring<number> {
       // order they are subscribed to; hence,
       const subscriptions: Array<Subscription> = [
         // properties that configure the spring
-        this.stiffness$._map(toValueWithKey('stiffness')).subscribe(updateSpringConfig),
-        this.damping$._map(toValueWithKey('damping')).subscribe(updateSpringConfig),
-        this.threshold$._map(toValueWithKey('restDisplacementThreshold')).subscribe(updateSpringConfig),
+        this.stiffness$._map(transformToValueWithKey('stiffness')).subscribe(updateSpringConfig),
+        this.damping$._map(transformToValueWithKey('damping')).subscribe(updateSpringConfig),
+        this.threshold$._map(transformToValueWithKey('restDisplacementThreshold')).subscribe(updateSpringConfig),
 
         // properties that initialize the spring
         this.initialVelocity$.subscribe(
@@ -281,10 +281,12 @@ export class NumericSpring implements Spring<number> {
 }
 export default NumericSpring;
 
-function toValueWithKey<T>(key: string) {
-  return function (value: T) {
-    return {
-      [key]: value,
-    };
+function transformToValueWithKey<T>(key: string) {
+  return {
+    transform(value: T) {
+      return {
+        [key]: value,
+      };
+    },
   };
 }

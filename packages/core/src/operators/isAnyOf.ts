@@ -40,9 +40,9 @@ export function withIsAnyOf<T, S extends Constructor<MotionReactiveMappable<T>>>
      * provided values and `false` otherwise.
      */
     isAnyOf(matches: Array<any>): ObservableWithMotionOperators<boolean> {
-      return combineLatest([ this, ...matches ])._map(
-        ([ upstream, ...currentMatches ]: Array<T>) => currentMatches.includes(upstream)
-      );
+      return combineLatest([ this, ...matches ])._map({
+        transform: ([ upstream, ...currentMatches ]: Array<T>) => currentMatches.includes(upstream)
+      });
     }
   };
 }

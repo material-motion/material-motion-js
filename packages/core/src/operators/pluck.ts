@@ -40,9 +40,9 @@ export function withPluck<T, S extends Constructor<MotionMappable<T>>>(superclas
      *   `transform$.map(transform => transform.translate.x)`
      */
     pluck<K extends keyof T, U extends T[K]>(path: K): ObservableWithMotionOperators<U> {
-      return (this as any as ObservableWithMotionOperators<Record<K, any>>)._map(
-        createPlucker<K>(path)
-      );
+      return (this as any as ObservableWithMotionOperators<Record<K, any>>)._map({
+        transform: createPlucker<K>(path)
+      });
     }
   };
 }
