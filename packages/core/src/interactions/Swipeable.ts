@@ -55,10 +55,6 @@ import {
   Tossable,
 } from './Tossable';
 
-const onlyDispatchWithUpstream = {
-  onlyDispatchWithUpstream: true,
-};
-
 export enum SwipeState {
   NONE = 'none',
   LEFT = 'left',
@@ -158,10 +154,10 @@ export class Swipeable {
     const tossableIsAtRest$ = tossable.state$.isAnyOf({ candidates: [ State.AT_REST ] });
     subscribe({
       sink: tossable.resistanceFactor$,
-      source: when(tossableIsAtRest$).rewriteTo(
-        tossable.resistanceBasis$.dividedBy({ value$: Swipeable.VISUAL_THRESHOLD }),
-        onlyDispatchWithUpstream
-      )
+      source: when(tossableIsAtRest$).rewriteTo({
+        value$: tossable.resistanceBasis$.dividedBy({ value$: Swipeable.VISUAL_THRESHOLD }),
+        onlyDispatchWithUpstream: true,
+      })
     });
 
     this.direction$ = draggedX$.threshold(0).isAnyOf({ candidates: [ ThresholdRegion.ABOVE ] }).rewrite({
@@ -188,19 +184,24 @@ export class Swipeable {
       sink: spring.enabled$,
       source: this.whenThresholdFirstCrossed$.merge({
         others: [
-          when(spring.state$.isAnyOf({ candidates: [ State.AT_REST ] })).rewriteTo(false)
+          when(spring.state$.isAnyOf({ candidates: [ State.AT_REST ] })).rewriteTo({
+            value$: false,
+          })
         ]
       }),
     });
 
     subscribe({
       sink: tossable.resistanceFactor$,
-      source: this.whenThresholdCrossed$.rewriteTo(DISABLED_RESISTANCE_FACTOR),
+      source: this.whenThresholdCrossed$.rewriteTo({ value$: DISABLED_RESISTANCE_FACTOR }),
     });
 
     subscribe({
       sink: spring.initialValue$,
-      source: this.whenThresholdCrossed$.rewriteTo(tossable.draggedLocation$, onlyDispatchWithUpstream),
+      source: this.whenThresholdCrossed$.rewriteTo({
+        value$: tossable.draggedLocation$,
+        onlyDispatchWithUpstream: true,
+      }),
     });
 
     subscribe({
@@ -232,15 +233,15 @@ export class Swipeable {
     // cares about final position.
     subscribe({
       sink: this.swipeState$,
-      source: when(draggable.state$.isAnyOf({ candidates: [ State.AT_REST ] })).rewriteTo(
-        this.isThresholdMet$.rewrite({
+      source: when(draggable.state$.isAnyOf({ candidates: [ State.AT_REST ] })).rewriteTo({
+        value$: this.isThresholdMet$.rewrite({
           mapping: {
             true: this.direction$,
             false: SwipeState.NONE,
-          }
+          },
         }),
-        onlyDispatchWithUpstream
-      ),
+        onlyDispatchWithUpstream: true,
+      }),
     });
 
     const destinationDistance$ = width$.addedBy({ value$: this.destinationMargin$ });

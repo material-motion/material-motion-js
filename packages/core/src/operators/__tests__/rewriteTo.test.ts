@@ -39,7 +39,7 @@ import {
 
 describe('motionObservable.rewriteTo',
   () => {
-    const valueSubject = new MemorylessMotionSubject();
+    const value$ = new MemorylessMotionSubject();
     let stream;
     let mockObserver;
     let listener;
@@ -54,7 +54,7 @@ describe('motionObservable.rewriteTo',
 
     it('should dispatch its argument whenever it receives a value from upstream',
       () => {
-        stream.rewriteTo('banana').subscribe(listener);
+        stream.rewriteTo({ value$: 'banana' }).subscribe(listener);
 
         mockObserver.next();
         mockObserver.next(false);
@@ -67,13 +67,13 @@ describe('motionObservable.rewriteTo',
 
     it('should support reactive arguments',
       () => {
-        stream.rewriteTo(valueSubject).subscribe(listener);
+        stream.rewriteTo({ value$ }).subscribe(listener);
 
         mockObserver.next();
         mockObserver.next(false);
 
-        valueSubject.next(12);
-        valueSubject.next(15);
+        value$.next(12);
+        value$.next(15);
 
         expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(12);
 
@@ -85,12 +85,12 @@ describe('motionObservable.rewriteTo',
 
     it('should support reactive arguments and onlyDispatchWithUpstream',
       () => {
-        stream.rewriteTo(valueSubject, { onlyDispatchWithUpstream: false }).subscribe(listener);
+        stream.rewriteTo({ value$, onlyDispatchWithUpstream: false }).subscribe(listener);
 
         mockObserver.next(false);
 
-        valueSubject.next(12);
-        valueSubject.next(15);
+        value$.next(12);
+        value$.next(15);
 
         expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(12).and.to.have.been.calledWith(15);
       }
