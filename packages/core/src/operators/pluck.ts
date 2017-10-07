@@ -21,27 +21,31 @@ import {
   ObservableWithMotionOperators,
 } from '../types';
 
+export type PluckArgs<T> = {
+  path: keyof T,
+};
+
 export interface MotionPluckable<T> {
-  pluck<K extends keyof T, U extends T[K]>(key: K): ObservableWithMotionOperators<U>;
+  pluck<K extends keyof T, U extends T[K]>(kwargs: PluckArgs<T>): ObservableWithMotionOperators<U>;
 }
 
 export function withPluck<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionPluckable<T>> {
   return class extends superclass implements MotionPluckable<T> {
     /**
-     * Extracts the value at a given key from every incoming object and passes
+     * Extracts the value at a given path from every incoming object and passes
      * those values to the observer.
      *
      * For instance:
      *
-     * - `transform$.pluck('translate')` is equivalent to
+     * - `transform$.pluck({ path: 'translate' })` is equivalent to
      *   `transform$.map(transform => transform.translate)`
      *
-     * - `transform$.pluck('translate.x')` is equivalent to
+     * - `transform$.pluck({ path: 'translate.x' })` is equivalent to
      *   `transform$.map(transform => transform.translate.x)`
      */
-    pluck<K extends keyof T, U extends T[K]>(path: K): ObservableWithMotionOperators<U> {
+    pluck<K extends keyof T, U extends T[K]>({ path }: PluckArgs<T>): ObservableWithMotionOperators<U> {
       return (this as any as ObservableWithMotionOperators<Record<K, any>>)._map({
-        transform: createPlucker<K>(path)
+        transform: createPlucker<K>(path as K)
       });
     }
   };
