@@ -55,7 +55,7 @@ describe('motionObservable.rewrite',
 
     it('should dispatch the matching value from an object literal',
       () => {
-        stream.rewrite({ a: 1, b: 2 }).subscribe(listener);
+        stream.rewrite({ mapping: {  a: 1, b: 2 } }).subscribe(listener);
 
         mockObserver.next('b');
 
@@ -65,7 +65,7 @@ describe('motionObservable.rewrite',
 
     it('should cast incoming values to strings if the dict is an object literal',
       () => {
-        stream.rewrite({ true: 1, false: 2 }).subscribe(listener);
+        stream.rewrite({ mapping: {  true: 1, false: 2 } }).subscribe(listener);
 
         mockObserver.next(false);
 
@@ -75,7 +75,7 @@ describe('motionObservable.rewrite',
 
     it('should dispatch the matching value from an object literal of streams',
       () => {
-        stream.rewrite({ a: innerSubject, b: 1 }).subscribe(listener);
+        stream.rewrite({ mapping: {  a: innerSubject, b: 1 } }).subscribe(listener);
 
         innerSubject.next('q');
 
@@ -89,14 +89,14 @@ describe('motionObservable.rewrite',
 
     it('should dispatch the matching value from a Map',
       () => {
-        const dict = new Map();
+        const mapping = new Map();
         const a = Symbol();
         const b = Symbol();
 
-        dict.set(a, 'a');
-        dict.set(b, 'b');
+        mapping.set(a, 'a');
+        mapping.set(b, 'b');
 
-        stream.rewrite(dict).subscribe(listener);
+        stream.rewrite({ mapping }).subscribe(listener);
 
         mockObserver.next(b);
 
@@ -106,14 +106,14 @@ describe('motionObservable.rewrite',
 
     it('should dispatch the matching value from a Map of streams',
       () => {
-        const dict = new Map();
+        const mapping = new Map();
         const a = Symbol();
         const b = innerSubject;
 
-        dict.set(a, 'a');
-        dict.set(b, innerSubject);
+        mapping.set(a, 'a');
+        mapping.set(b, innerSubject);
 
-        stream.rewrite(dict).subscribe(listener);
+        stream.rewrite({ mapping }).subscribe(listener);
 
         mockObserver.next(b);
 

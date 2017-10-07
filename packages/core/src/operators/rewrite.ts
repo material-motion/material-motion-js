@@ -35,29 +35,34 @@ import {
   timestamp,
 } from './timestamp';
 
-export type RewritableOptions<U> = {
-  defaultValue?: U | symbol,
-  dispatchOnKeyChange?: boolean,
-};
+export type RewritableOptions<U> = Partial<{
+  defaultValue: U | symbol,
+  dispatchOnKeyChange: boolean,
+}>;
+
+export type RewriteArgs<T, R, U> = RewritableOptions<U> & {
+  mapping: Dict<R> | Map<T, R>,
+}
+
 export interface MotionRewritable<T> {
-  rewrite<U, R extends U | ObservableWithMotionOperators<U>>(dict: Dict<R> | Map<T, R>, options?: RewritableOptions<U>): ObservableWithMotionOperators<U>;
+  rewrite<U, R extends U | ObservableWithMotionOperators<U>>(kwargs: RewriteArgs<T, R, U>): ObservableWithMotionOperators<U>;
 }
 
 export const SUPPRESS_FAILURES = Symbol();
 
 export function withRewrite<T, S extends Constructor<MotionReactiveNextOperable<T> & MotionTimestampable<T>>>(superclass: S): S & Constructor<MotionRewritable<T>> {
   return class extends superclass implements MotionRewritable<T> {
-    rewrite<U, R extends U | ObservableWithMotionOperators<U>>(dict: Dict<R> | Map<T, R>, { defaultValue = SUPPRESS_FAILURES, dispatchOnKeyChange = true }: RewritableOptions<U> = {}): ObservableWithMotionOperators<U> {
+    rewrite<U, R extends U | ObservableWithMotionOperators<U>>({ mapping, defaultValue = SUPPRESS_FAILURES, dispatchOnKeyChange = true }: RewriteArgs<T, R, U>): ObservableWithMotionOperators<U> {
       let keys: Array<string> | Array<T>;
       let values: Array<U | ObservableWithMotionOperators<U> | Timestamped<U> | Timestamped<ObservableWithMotionOperators<U>>>;
       let castKeysToStrings = false;
 
-      if (isMap(dict)) {
-        keys = Array.from(dict.keys());
-        values = Array.from(dict.values());
+      if (isMap(mapping)) {
+        keys = Array.from(mapping.keys());
+        values = Array.from(mapping.values());
       } else {
-        keys = Object.keys(dict);
-        values = Object.values(dict);
+        keys = Object.keys(mapping);
+        values = Object.values(mapping);
         castKeysToStrings = true;
       }
 
