@@ -29,56 +29,49 @@ import {
 } from 'sinon';
 
 import {
-  createMockObserver,
-} from 'material-motion-testing-utils';
-
-import {
-  MemorylessIndefiniteSubject,
-  MotionObservable,
+  MemorylessMotionSubject,
 } from '../../observables/';
 
 describe('motionObservable.multipliedBy',
   () => {
-    const coefficientSubject = new MemorylessIndefiniteSubject();
-    let stream;
-    let mockObserver;
+    const value$ = new MemorylessMotionSubject();
+    let subject;
     let listener;
 
     beforeEach(
       () => {
-        mockObserver = createMockObserver();
-        stream = new MotionObservable(mockObserver.connect);
+        subject = new MemorylessMotionSubject();
         listener = stub();
       }
     );
 
     it('should multiply the coefficient by the incoming value and dispatch the result',
       () => {
-        stream.multipliedBy(10).subscribe(listener);
+        subject.multipliedBy({ value$: 10 }).subscribe(listener);
 
-        mockObserver.next(3);
+        subject.next(3);
 
         expect(listener).to.have.been.calledWith(30);
       }
     );
 
-    it('should multiply values from a coefficient stream by the incoming value and dispatch the result',
+    it('should multiply values from a coefficient subject by the incoming value and dispatch the result',
       () => {
-        stream.multipliedBy(coefficientSubject).subscribe(listener);
+        subject.multipliedBy({ value$ }).subscribe(listener);
 
-        mockObserver.next(3);
-        coefficientSubject.next(4);
+        subject.next(3);
+        value$.next(4);
 
         expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(12);
       }
     );
 
-    it('should multiply point values from a coefficient stream by the incoming value and dispatch the result',
+    it('should multiply point values from a coefficient subject by the incoming value and dispatch the result',
       () => {
-        stream.multipliedBy(coefficientSubject).subscribe(listener);
+        subject.multipliedBy({ value$ }).subscribe(listener);
 
-        mockObserver.next({ x: 3, y: 4 });
-        coefficientSubject.next({ x: 4, y: 10 });
+        subject.next({ x: 3, y: 4 });
+        value$.next({ x: 4, y: 10 });
 
         expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({ x: 12, y: 40 });
       }

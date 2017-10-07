@@ -29,68 +29,61 @@ import {
 } from 'sinon';
 
 import {
-  createMockObserver,
-} from 'material-motion-testing-utils';
-
-import {
-  MotionObservable,
   MemorylessMotionSubject,
 } from '../../observables/';
 
 describe('motionObservable.addedBy',
   () => {
-    const amountSubject = new MemorylessMotionSubject();
-    let stream;
-    let mockObserver;
+    const value$ = new MemorylessMotionSubject();
+    let subject;
     let listener;
 
     beforeEach(
       () => {
-        mockObserver = createMockObserver();
-        stream = new MotionObservable(mockObserver.connect);
+        subject = new MemorylessMotionSubject();
         listener = stub();
       }
     );
 
-    it('should add the amount constant to an incoming numeric value and dispatch the result',
+    it('should add the amount constant to the upstream numeric value and dispatch the result',
       () => {
-        stream.addedBy(10).subscribe(listener);
+        subject.addedBy({ value$: 10 }).subscribe(listener);
 
-        mockObserver.next(3);
+        subject.next(3);
 
         expect(listener).to.have.been.calledWith(13);
       }
     );
 
-    it('should add the amount constant to an incoming Point2D value and dispatch the result',
+    it('should add the amount constant to the upstream Point2D value and dispatch the result',
       () => {
-        stream.addedBy({x: 10, y: 20 }).subscribe(listener);
+        subject.addedBy({ value$: {x : 10, y: 20 } }).subscribe(listener);
 
-        mockObserver.next({x: 100, y: -40 });
+        subject.next({x: 100, y: -40 });
 
         expect(listener).to.have.been.calledWith({x: 110, y: -20 });
       }
     );
 
-    it('should add values from the amount stream to an incoming numeric value and dispatch the result',
+    it('should add values from value$ to the upstream numeric value and dispatch the result',
       () => {
-        stream.addedBy(amountSubject).subscribe(listener);
+        subject.addedBy({ value$ }).subscribe(listener);
 
-        mockObserver.next(3);
-        amountSubject.next(10);
-        amountSubject.next(20);
+        subject.next(3);
+        value$.next(10);
+        value$.next(20);
 
         expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(13).and.to.have.been.calledWith(23);
       }
     );
 
-    it('should add values from the amount stream to an incoming Point2D value and dispatch the result',
+    it('should add values from value$ to the upstream Point2D value and dispatch the result',
       () => {
-        stream.addedBy(amountSubject).subscribe(listener);
+        subject.addedBy({ value$ }).subscribe(listener);
 
-        mockObserver.next({x: 100, y: -40 });
-        mockObserver.next({x: 10, y: 0 });
-        amountSubject.next({x: 0, y: 15 });
+        subject.next({x: 100, y: -40 });
+        subject.next({x: 10, y: 0 });
+        value$.next({x: 0, y: 15 });
 
         expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({x: 10, y: 15 });
       }

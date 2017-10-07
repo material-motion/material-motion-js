@@ -159,7 +159,7 @@ export class Swipeable {
     subscribe({
       sink: tossable.resistanceFactor$,
       source: when(tossableIsAtRest$).rewriteTo(
-        tossable.resistanceBasis$.dividedBy(Swipeable.VISUAL_THRESHOLD),
+        tossable.resistanceBasis$.dividedBy({ value$: Swipeable.VISUAL_THRESHOLD }),
         onlyDispatchWithUpstream
       )
     });
@@ -233,14 +233,14 @@ export class Swipeable {
       ),
     });
 
-    const destinationDistance$ = width$.addedBy(this.destinationMargin$);
+    const destinationDistance$ = width$.addedBy({ value$: this.destinationMargin$ });
 
     subscribe({
       sink: spring.destination$,
       source: combineLatest<Point2D, MaybeReactive<Point2D>>({
         x: this.swipeState$.rewrite({
           [SwipeState.NONE]: 0,
-          [SwipeState.LEFT]: destinationDistance$.multipliedBy(-1),
+          [SwipeState.LEFT]: destinationDistance$.multipliedBy({ value$: -1 }),
           [SwipeState.RIGHT]: destinationDistance$,
         }),
         y: 0,
