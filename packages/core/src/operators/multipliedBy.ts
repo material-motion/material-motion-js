@@ -39,12 +39,12 @@ export interface MotionMultipliable<T> {
   // number, we explicitly return an `Observable<number>`.  Otherwise, we can
   // use the type variable `U`.
   multipliedBy<U extends T & number>(
-    coefficient$: U | Observable<U>,
+    value$: U | Observable<U>,
     options?: _ReactiveMapOptions,
   ): ObservableWithMotionOperators<number>;
 
   multipliedBy<U extends T & Point2D>(
-    coefficient$: U | Observable<U>,
+    value$: U | Observable<U>,
     options?: _ReactiveMapOptions,
   ): ObservableWithMotionOperators<U>;
 }
@@ -52,15 +52,15 @@ export interface MotionMultipliable<T> {
 export function withMultipliedBy<T, S extends Constructor<MotionMathOperable<T>>>(superclass: S): S & Constructor<MotionMultipliable<T>> {
   return class extends superclass implements MotionMultipliable<T> {
     /**
-     * Multiplies the incoming value by the coefficient and dispatches the
+     * Multiplies the upstream value by the provided value and dispatches the
      * result.
      */
-    multipliedBy<U extends T & (Point2D | number)>(coefficient$: U | Observable<U>, options?: _ReactiveMapOptions): ObservableWithMotionOperators<U> {
-      return this._mathOperator(
-        (value, coefficient) => value * coefficient,
-        coefficient$,
-        options
-      );
+    multipliedBy<U extends T & (Point2D | number)>(value$: U | Observable<U>, options?: _ReactiveMapOptions): ObservableWithMotionOperators<U> {
+      return this._mathOperator({
+        operation: (upstream, value) => upstream * value,
+        value$,
+        ...options,
+      });
     }
   };
 }

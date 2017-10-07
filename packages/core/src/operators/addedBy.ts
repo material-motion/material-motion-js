@@ -39,12 +39,12 @@ export interface MotionAddable<T> {
   // number, we explicitly return an `Observable<number>`.  Otherwise, we can
   // use the type variable `U`.
   addedBy<U extends T & number>(
-    amount$: U | Observable<U>,
+    value$: U | Observable<U>,
     options?: _ReactiveMapOptions,
   ): ObservableWithMotionOperators<number>;
 
   addedBy<U extends T & Point2D>(
-    amount$: U | Observable<U>,
+    value$: U | Observable<U>,
     options?: _ReactiveMapOptions,
   ): ObservableWithMotionOperators<U>;
 }
@@ -52,14 +52,14 @@ export interface MotionAddable<T> {
 export function withAddedBy<T, S extends Constructor<MotionMathOperable<T>>>(superclass: S): S & Constructor<MotionAddable<T>> {
   return class extends superclass implements MotionAddable<T> {
     /**
-     * Adds the amount to the incoming value and dispatches the result.
+     * Adds the provided value to the upstream value and dispatches the result.
      */
-    addedBy<U extends T & (Point2D | number)>(amount$: U | Observable<U>, options?: _ReactiveMapOptions): ObservableWithMotionOperators<U> {
-      return this._mathOperator(
-        (value, amount) => value + amount,
-        amount$,
-        options
-      );
+    addedBy<U extends T & (Point2D | number)>(value$: U | Observable<U>, options?: _ReactiveMapOptions): ObservableWithMotionOperators<U> {
+      return this._mathOperator({
+        operation: (upstream, value) => upstream + value,
+        value$,
+        ...options
+      });
     }
   };
 }
