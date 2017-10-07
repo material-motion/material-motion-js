@@ -53,10 +53,10 @@ describe('motionObservable.rewriteRange',
     it('should use interpolate between the from and to ranges',
       () => {
         stream.rewriteRange({
-          fromStart: 15,
-          fromEnd: 35,
-          toStart: 200,
-          toEnd: 100,
+          fromStart$: 15,
+          fromEnd$: 35,
+          toStart$: 200,
+          toEnd$: 100,
         }).subscribe(listener);
 
         mockObserver.next(20);
@@ -72,10 +72,10 @@ describe('motionObservable.rewriteRange',
       () => {
         // or maybe it should be, but it isn't right now
         stream.rewriteRange({
-          fromStart: 10,
-          fromEnd: 100,
-          toStart: 110,
-          toEnd: 200,
+          fromStart$: 10,
+          fromEnd$: 100,
+          toStart$: 110,
+          toEnd$: 200,
         }).subscribe(listener);
 
         mockObserver.next(1);
