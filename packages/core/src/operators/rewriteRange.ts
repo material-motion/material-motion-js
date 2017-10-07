@@ -16,11 +16,20 @@
 
 import {
   Constructor,
+  MaybeReactive,
   MotionNextOperable,
   NextChannel,
   Observable,
   ObservableWithMotionOperators,
 } from '../types';
+
+export type RewriteRangeArgs = Partial<MaybeReactive<{
+  fromStart$: number,
+  fromEnd$: number,
+  toStart$: number,
+  toEnd$: number,
+  shouldClamp$: boolean,
+}>>;
 
 export interface MotionRewriteRangeable {
   rewriteRange(kwargs: RewriteRangeArgs): ObservableWithMotionOperators<number>;
@@ -33,11 +42,11 @@ export function withRewriteRange<T, S extends Constructor<MotionNextOperable<T>>
      * ranges, and dispatches the result to the observer.
      */
     rewriteRange({
-      fromStart = 0,
-      fromEnd = 1,
-      toStart = 0,
-      toEnd = 1,
-      bound = false,
+      fromStart$ = 0,
+      fromEnd$ = 1,
+      toStart$ = 0,
+      toEnd$ = 1,
+      shouldClamp$ = false,
     }: RewriteRangeArgs): ObservableWithMotionOperators<number> {
       return (this as any as ObservableWithMotionOperators<number>)._reactiveNextOperator({
         operation: ({ emit }) => ({
@@ -46,7 +55,7 @@ export function withRewriteRange<T, S extends Constructor<MotionNextOperable<T>>
           fromEnd,
           toStart,
           toEnd,
-          bound,
+          shouldClamp,
         }) => {
           const fromRange = fromStart - fromEnd;
           const fromProgress = (upstream - fromEnd) / fromRange;
@@ -54,25 +63,23 @@ export function withRewriteRange<T, S extends Constructor<MotionNextOperable<T>>
 
           const result = toEnd + fromProgress * toRange;
 
-          if (bound) {
-            const lowerBound = Math.min(toStart, toEnd);
-            const upperBound = Math.max(toStart, toEnd);
+          if (shouldClamp) {
+            const min = Math.min(toStart, toEnd);
+            const max = Math.max(toStart, toEnd);
 
-            emit(Math.max(lowerBound, Math.min(result, upperBound)));
+            emit(Math.max(min, Math.min(result, max)));
           } else {
             emit(result);
           }
         },
-        inputs: { fromStart, fromEnd, toStart, toEnd, bound },
+        inputs: {
+          fromStart: fromStart$,
+          fromEnd: fromEnd$,
+          toStart: toStart$,
+          toEnd: toEnd$,
+          shouldClamp: shouldClamp$,
+        },
       });
     }
   };
 }
-
-export type RewriteRangeArgs = {
-  fromStart?: number | Observable<number>,
-  fromEnd?: number | Observable<number>,
-  toStart?: number | Observable<number>,
-  toEnd?: number | Observable<number>,
-  bound?: boolean | Observable<boolean>,
-};
