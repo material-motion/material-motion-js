@@ -24,8 +24,12 @@ import {
   ObservableWithMotionOperators,
 } from '../types';
 
+export type DedupeArgs = {
+  areEqual?: EqualityCheck,
+};
+
 export interface MotionDeduplicable<T> {
-  dedupe(areEqual?: EqualityCheck): ObservableWithMotionOperators<T>;
+  dedupe(kwargs?: DedupeArgs): ObservableWithMotionOperators<T>;
 }
 
 export function withDedupe<T, S extends Constructor<ObservableWithFoundationalMotionOperators<T>>>(superclass: S): S & Constructor<MotionDeduplicable<T>> {
@@ -33,7 +37,7 @@ export function withDedupe<T, S extends Constructor<ObservableWithFoundationalMo
     /**
      * Ensures that every value dispatched is different than the previous one.
      */
-    dedupe(areEqual: EqualityCheck = deepEqual): ObservableWithMotionOperators<T> {
+    dedupe({ areEqual = deepEqual } = {}): ObservableWithMotionOperators<T> {
       return this._nextOperator({
         operation({ emit }) {
           let emitted = false;
