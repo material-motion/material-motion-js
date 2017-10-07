@@ -20,6 +20,7 @@ import {
 
 import {
   Constructor,
+  MathOperation,
   MotionReactiveMappable,
   Observable,
   ObservableWithMotionOperators,
@@ -30,12 +31,13 @@ import {
   _ReactiveMapOptions,
 } from './_reactiveMap';
 
+export type _MathOperatorArgs<U> = _ReactiveMapOptions & {
+  operation: MathOperation,
+  value$: U | Observable<U>,
+};
+
 export interface MotionMathOperable<T> {
-  _mathOperator<U extends T & (number | Point2D)>(
-    operation: (upstream: number, parameter: number) => number,
-    amount$: U | Observable<U>,
-    options?: _ReactiveMapOptions,
-  ): ObservableWithMotionOperators<U>;
+  _mathOperator<U extends T & (number | Point2D)>(kwargs: _MathOperatorArgs<U>): ObservableWithMotionOperators<U>;
 }
 
 export function withMathOperator<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionMathOperable<T>> {
@@ -43,22 +45,22 @@ export function withMathOperator<T, S extends Constructor<MotionReactiveMappable
     /**
      * Applies the operation to each dimension and dispatches the result.
      */
-    _mathOperator<U extends T & (number | Point2D)>(operation: (upstream: number, parameter: number) => number, amount$: U | Observable<U>, options?: _ReactiveMapOptions): ObservableWithMotionOperators<U> {
+    _mathOperator<U extends T & (number | Point2D)>({ operation, value$, ...reactiveMapOptions }: _MathOperatorArgs<U>): ObservableWithMotionOperators<U> {
       return (this as any as MotionReactiveMappable<U>)._reactiveMap({
-        transform: ({ upstream, amount }) => {
+        transform: ({ upstream, value }) => {
           if (isPoint2D(upstream)) {
             return {
-              x: operation(upstream.x, (amount as Point2D).x),
-              y: operation(upstream.y, (amount as Point2D).y),
+              x: operation(upstream.x, (value as Point2D).x),
+              y: operation(upstream.y, (value as Point2D).y),
             } as U;
           } else {
-            return operation(upstream as number, amount as number) as U;
+            return operation(upstream as number, value as number) as U;
           }
         },
         inputs: {
-          amount: amount$,
+          value: value$,
         },
-        ...options
+        ...reactiveMapOptions
       });
     }
   };

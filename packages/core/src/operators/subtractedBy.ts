@@ -39,12 +39,12 @@ export interface MotionSubtractable<T> {
   // number, we explicitly return an `Observable<number>`.  Otherwise, we can
   // use the type variable `U`.
   subtractedBy<U extends T & number>(
-    amount$: U | Observable<U>,
+    value$: U | Observable<U>,
     options?: _ReactiveMapOptions,
   ): ObservableWithMotionOperators<number>;
 
   subtractedBy<U extends T & (Point2D | number)>(
-    amount$: U | Observable<U>,
+    value$: U | Observable<U>,
     options?: _ReactiveMapOptions,
   ): ObservableWithMotionOperators<U>;
 }
@@ -52,14 +52,15 @@ export interface MotionSubtractable<T> {
 export function withSubtractedBy<T, S extends Constructor<MotionMathOperable<T>>>(superclass: S): S & Constructor<MotionSubtractable<T>> {
   return class extends superclass implements MotionSubtractable<T> {
     /**
-     * Subtracts the amount from the incoming value and dispatches the result.
+     * Subtracts the provided value from the upstream value and dispatches the
+     * result.
      */
-    subtractedBy<U extends T & (Point2D | number)>(amount$: U | Observable<U>, options?: _ReactiveMapOptions): ObservableWithMotionOperators<U> {
-      return this._mathOperator(
-        (value, amount) => value - amount,
-        amount$,
-        options
-      );
+    subtractedBy<U extends T & (Point2D | number)>(value$: U | Observable<U>, options?: _ReactiveMapOptions): ObservableWithMotionOperators<U> {
+      return this._mathOperator({
+        operation: (upstream, value) => upstream - value,
+        value$,
+        ...options,
+      });
     }
   };
 }
