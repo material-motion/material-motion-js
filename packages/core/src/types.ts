@@ -38,6 +38,7 @@ export {
 
 export {
   MotionAppendUnitable,
+  MotionClampable,
   MotionDebounceable,
   MotionDeduplicable,
   MotionFilterable,
@@ -45,7 +46,6 @@ export {
   MotionInvertible,
   MotionIsAnyOfable,
   MotionLoggable,
-  MotionLowerBoundable,
   MotionMappable,
   MotionMathOperable,
   MotionMeasurable,
@@ -69,7 +69,6 @@ export {
   MotionThresholdable,
   MotionThresholdRangeable,
   MotionTimestampable,
-  MotionUpperBoundable,
   MotionVelocityMeasurable,
   MotionWindowable,
   ObservableWithFoundationalMotionOperators,
