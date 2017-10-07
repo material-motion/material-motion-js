@@ -23,9 +23,9 @@ import {
   ObservableWithMotionOperators,
 } from '../../types';
 
-export type _ReactiveMapOptions = {
-  onlyDispatchWithUpstream?: boolean,
-};
+export type _ReactiveMapOptions = Partial<{
+  onlyDispatchWithUpstream: boolean,
+}>;
 
 export type _ReactiveMapArgs<D, T, U> = _ReactiveMapOptions & {
   transform: (kwargs: { upstream: T } & D) => U,
