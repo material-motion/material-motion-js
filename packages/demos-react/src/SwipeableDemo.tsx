@@ -102,8 +102,10 @@ class SwipeableCard extends React.Component<{}, {}> {
       combineStyleStreams({
         display: 'flex',
         flexDirection: swipeable.direction$.rewrite({
-          [Direction.LEFT]: 'row-reverse',
-          [Direction.RIGHT]: 'row',
+          mapping: {
+            [Direction.LEFT]: 'row-reverse',
+            [Direction.RIGHT]: 'row',
+          },
         }),
         position: 'relative',
         overflow: 'hidden',

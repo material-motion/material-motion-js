@@ -165,8 +165,10 @@ export class Swipeable {
     });
 
     this.direction$ = draggedX$.threshold(0).isAnyOf({ candidates: [ ThresholdRegion.ABOVE ] }).rewrite({
-      true: Direction.RIGHT,
-      false: Direction.LEFT
+      mapping: {
+        true: Direction.RIGHT,
+        false: Direction.LEFT,
+      }
     });
 
     // I originally tried to introduce a `resistanceProgress$` to `Tossable`,
@@ -209,16 +211,20 @@ export class Swipeable {
     subscribe({
       sink: this.backgroundSpring.destination$,
       source: this.isThresholdMet$.rewrite({
-        true: 1,
-        false: 0,
+        mapping: {
+          true: 1,
+          false: 0,
+        }
       }),
     });
 
     subscribe({
       sink: this.iconSpring.destination$,
       source: this.isThresholdMet$.rewrite({
-        true: 1,
-        false: ICON_SPRING_INITIAL_VALUE,
+        mapping: {
+          true: 1,
+          false: ICON_SPRING_INITIAL_VALUE,
+        }
       }),
     });
 
@@ -228,8 +234,10 @@ export class Swipeable {
       sink: this.swipeState$,
       source: when(draggable.state$.isAnyOf({ candidates: [ State.AT_REST ] })).rewriteTo(
         this.isThresholdMet$.rewrite({
-          true: this.direction$,
-          false: SwipeState.NONE,
+          mapping: {
+            true: this.direction$,
+            false: SwipeState.NONE,
+          }
         }),
         onlyDispatchWithUpstream
       ),
@@ -241,9 +249,11 @@ export class Swipeable {
       sink: spring.destination$,
       source: combineLatest<Point2D, MaybeReactive<Point2D>>({
         x: this.swipeState$.rewrite({
-          [SwipeState.NONE]: 0,
-          [SwipeState.LEFT]: destinationDistance$.multipliedBy({ value$: -1 }),
-          [SwipeState.RIGHT]: destinationDistance$,
+          mapping: {
+            [SwipeState.NONE]: 0,
+            [SwipeState.LEFT]: destinationDistance$.multipliedBy({ value$: -1 }),
+            [SwipeState.RIGHT]: destinationDistance$,
+          }
         }),
         y: 0,
       })
