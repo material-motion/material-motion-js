@@ -28,6 +28,10 @@ import {
 } from '../../types';
 
 import {
+  isDefined,
+} from '../../typeGuards';
+
+import {
   _ReactiveMapOptions,
 } from './_reactiveMap';
 
@@ -50,8 +54,8 @@ export function withMathOperator<T, S extends Constructor<MotionReactiveMappable
         transform: ({ upstream, value }) => {
           if (isPoint2D(upstream)) {
             return {
-              x: operation(upstream.x, (value as Point2D).x),
-              y: operation(upstream.y, (value as Point2D).y),
+              x: operation(upstream.x, isDefined(value) ? (value as Point2D).x: undefined!),
+              y: operation(upstream.y, isDefined(value) ? (value as Point2D).y: undefined!),
             } as U;
           } else {
             return operation(upstream as number, value as number) as U;

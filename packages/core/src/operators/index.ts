@@ -30,6 +30,11 @@ import {
 } from './appendUnit';
 
 import {
+  MotionClampable,
+  withClampTo,
+} from './clampTo';
+
+import {
   MotionDeduplicable,
   withDedupe,
 } from './dedupe';
@@ -63,11 +68,6 @@ import {
   MotionLoggable,
   withLog,
 } from './log';
-
-import {
-  MotionLowerBoundable,
-  withLowerBound,
-} from './lowerBound';
 
 import {
   MotionMergeable,
@@ -125,11 +125,6 @@ import {
 } from './timestamp';
 
 import {
-  MotionUpperBoundable,
-  withUpperBound,
-} from './upperBound';
-
-import {
   MotionVelocityMeasurable,
   withVelocity,
 } from './velocity';
@@ -138,12 +133,12 @@ export interface ObservableWithMotionOperators<T> extends
   ObservableWithFoundationalMotionOperators<T>,
   MotionAddable<T>,
   MotionAppendUnitable,
+  MotionClampable<T>,
   MotionDeduplicable<T>,
   MotionDivisible<T>,
   MotionInvertible<T>,
   MotionIsAnyOfable,
   MotionLoggable<T>,
-  MotionLowerBoundable,
   MotionMeasurable<T>,
   MotionMergeable<T>,
   MotionMultipliable<T>,
@@ -156,7 +151,6 @@ export interface ObservableWithMotionOperators<T> extends
   MotionThresholdRangeable,
   MotionThresholdable,
   MotionTimestampable<T>,
-  MotionUpperBoundable,
   MotionVelocityMeasurable<T> {}
 
 export function withMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
@@ -176,20 +170,20 @@ export function withMotionOperators<T, S extends Constructor<Observable<T>>>(sup
   const result12 = withMultipliedBy<T, typeof result11>(result11);
   const result13 = withDividedBy<T, typeof result12>(result12);
   const result14 = withDistanceFrom<T, typeof result13>(result13);
-  const result15 = withUpperBound<T, typeof result14>(result14);
-  const result16 = withLowerBound<T, typeof result15>(result15);
-  const result17 = withThresholdRange<T, typeof result16>(result16);
-  const result18 = withThreshold<T, typeof result17>(result17);
-  const result19 = withIsAnyOf<T, typeof result18>(result18);
-  const result20 = withAppendUnit<T, typeof result19>(result19);
-  const result21 = withInverted<T, typeof result20>(result20);
-  const result22 = withVelocity<T, typeof result21>(result21);
+  const result15 = withClampTo<T, typeof result14>(result14);
+  const result16 = withThresholdRange<T, typeof result15>(result15);
+  const result17 = withThreshold<T, typeof result16>(result16);
+  const result18 = withIsAnyOf<T, typeof result17>(result17);
+  const result19 = withAppendUnit<T, typeof result18>(result18);
+  const result20 = withInverted<T, typeof result19>(result19);
+  const result21 = withVelocity<T, typeof result20>(result20);
 
-  return result22;
+  return result21;
 }
 
 export * from './addedBy';
 export * from './appendUnit';
+export * from './clampTo';
 export * from './dedupe';
 export * from './distanceFrom';
 export * from './dividedBy';
@@ -197,7 +191,6 @@ export * from './foundation';
 export * from './inverted';
 export * from './isAnyOf';
 export * from './log';
-export * from './lowerBound';
 export * from './merge';
 export * from './multipliedBy';
 export * from './pluck';
@@ -209,5 +202,4 @@ export * from './subtractedBy';
 export * from './threshold';
 export * from './thresholdRange';
 export * from './timestamp';
-export * from './upperBound';
 export * from './velocity';
