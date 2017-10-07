@@ -147,7 +147,7 @@ export class Swipeable {
 
     const draggable = tossable.draggable;
     const spring = tossable.spring;
-    const draggedX$ = tossable.draggedLocation$.pluck('x');
+    const draggedX$ = tossable.draggedLocation$.pluck({ path: 'x' });
 
     // How close the spring should be to the pointer before the interaction
     // becomes directly manipulable
