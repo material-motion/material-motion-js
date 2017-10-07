@@ -26,22 +26,29 @@ import {
   Constructor,
   MotionReactiveMappable,
   NextChannel,
+  Observable,
   ObservableWithMotionOperators,
 } from '../types';
 
-export interface MotionIsAnyOfable {
-  isAnyOf(matches: Array<any>): ObservableWithMotionOperators<boolean>;
+export type IsAnyOfArgs<T> = {
+  // To be consistent with our naming strategy, this should probably be called
+  // candidate$s, but it looks weird to combine the two sufficies.
+  candidates: Array<T | Observable<T>>,
+};
+
+export interface MotionIsAnyOfable<T> {
+  isAnyOf(kwargs: IsAnyOfArgs<T>): ObservableWithMotionOperators<boolean>;
 }
 
-export function withIsAnyOf<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionIsAnyOfable> {
-  return class extends superclass implements MotionIsAnyOfable {
+export function withIsAnyOf<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionIsAnyOfable<T>> {
+  return class extends superclass implements MotionIsAnyOfable<T> {
     /**
      * Dispatches `true` when it receives a value that matches any of the
-     * provided values and `false` otherwise.
+     * provided candidates and `false` otherwise.
      */
-    isAnyOf(matches: Array<any>): ObservableWithMotionOperators<boolean> {
-      return combineLatest([ this, ...matches ])._map({
-        transform: ([ upstream, ...currentMatches ]: Array<T>) => currentMatches.includes(upstream)
+    isAnyOf({ candidates }: IsAnyOfArgs<T>): ObservableWithMotionOperators<boolean> {
+      return combineLatest([ this, ...candidates ])._map({
+        transform: ([ upstream, ...currentCandidates ]: Array<T>) => currentCandidates.includes(upstream)
       });
     }
   };

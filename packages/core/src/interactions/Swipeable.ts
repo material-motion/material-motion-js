@@ -155,7 +155,7 @@ export class Swipeable {
 
     this.iconSpring.initialValue = ICON_SPRING_INITIAL_VALUE;
 
-    const tossableIsAtRest$ = tossable.state$.isAnyOf([ State.AT_REST ]);
+    const tossableIsAtRest$ = tossable.state$.isAnyOf({ candidates: [ State.AT_REST ] });
     subscribe({
       sink: tossable.resistanceFactor$,
       source: when(tossableIsAtRest$).rewriteTo(
@@ -164,7 +164,7 @@ export class Swipeable {
       )
     });
 
-    this.direction$ = draggedX$.threshold(0).isAnyOf([ ThresholdRegion.ABOVE ]).rewrite({
+    this.direction$ = draggedX$.threshold(0).isAnyOf({ candidates: [ ThresholdRegion.ABOVE ] }).rewrite({
       true: Direction.RIGHT,
       false: Direction.LEFT
     });
@@ -178,14 +178,14 @@ export class Swipeable {
 
     this.isThresholdMet$ = draggedX$.distanceFrom({
       origin$: 0,
-    }).threshold(Swipeable.VISUAL_THRESHOLD).isAnyOf([ThresholdRegion.ABOVE, ThresholdRegion.WITHIN]);
+    }).threshold(Swipeable.VISUAL_THRESHOLD).isAnyOf({ candidates: [ThresholdRegion.ABOVE, ThresholdRegion.WITHIN] });
     this.whenThresholdCrossed$ = when(this.isThresholdMet$.dedupe());
-    this.whenThresholdFirstCrossed$ = when(tossable.resistanceFactor$.dedupe().isAnyOf([ DISABLED_RESISTANCE_FACTOR ]));
+    this.whenThresholdFirstCrossed$ = when(tossable.resistanceFactor$.dedupe().isAnyOf({ candidates: [ DISABLED_RESISTANCE_FACTOR ] }));
 
     subscribe({
       sink: spring.enabled$,
       source: this.whenThresholdFirstCrossed$.merge(
-        when(spring.state$.isAnyOf([ State.AT_REST ])).rewriteTo(false)
+        when(spring.state$.isAnyOf({ candidates: [ State.AT_REST ] })).rewriteTo(false)
       ),
     });
 
@@ -224,7 +224,7 @@ export class Swipeable {
     // cares about final position.
     subscribe({
       sink: this.swipeState$,
-      source: when(draggable.state$.isAnyOf([ State.AT_REST ])).rewriteTo(
+      source: when(draggable.state$.isAnyOf({ candidates: [ State.AT_REST ] })).rewriteTo(
         this.isThresholdMet$.rewrite({
           true: this.direction$,
           false: SwipeState.NONE,
