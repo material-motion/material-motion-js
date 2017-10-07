@@ -16,7 +16,9 @@
 
 import {
   Constructor,
-  MotionMappable,
+  Dict,
+  MaybeReactive,
+  MotionReactiveMappable,
   ObservableWithMotionOperators,
   Point2D,
 } from '../types';
@@ -25,27 +27,37 @@ import {
   isPoint2D,
 } from '../typeGuards';
 
+export type DistanceFromArgs<T> = MaybeReactive<{
+  origin$: T & (Point2D | number),
+}>;
+
 export interface MotionMeasurable<T> {
-  distanceFrom(origin: T & (Point2D | number)): ObservableWithMotionOperators<number>;
+  distanceFrom(kwargs: DistanceFromArgs<T>): ObservableWithMotionOperators<number>;
 }
 
-export function withDistanceFrom<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionMeasurable<T>> {
+export function withDistanceFrom<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionMeasurable<T>> {
   return class extends superclass implements MotionMeasurable<T> {
     /**
      * Dispatches the distance that each upstream value is from a given origin.
      * The origin may be a number or a point, but the dispatched value will
      * always be a number; distance is computed using Pythagorean theorem.
      */
-    distanceFrom(origin: T & (Point2D | number)): ObservableWithMotionOperators<number> {
-      if (isPoint2D(origin)) {
-        return (this as any as MotionMappable<Point2D>)._map({
-          transform: (value: Point2D) => Math.sqrt((origin.x - value.x) ** 2 + (origin.y - value.y) ** 2)
-        });
-      } else {
-        return (this as any as MotionMappable<number>)._map({
-          transform: (value: number) => Math.abs(origin - value)
-        });
-      }
+    distanceFrom({ origin$ }: DistanceFromArgs<T>): ObservableWithMotionOperators<number> {
+      return this._reactiveMap({
+        transform({ upstream, origin }: Dict<(T & number) | (T & Point2D)>) {
+          if (isPoint2D(upstream)) {
+            return Math.sqrt(
+              ((origin as Point2D).x - upstream.x) ** 2 +
+              ((origin as Point2D).y - upstream.y) ** 2
+            );
+          } else {
+            return Math.abs(origin as number - upstream);
+          }
+        },
+        inputs: {
+          origin: origin$,
+        },
+      });
     }
   };
 }
