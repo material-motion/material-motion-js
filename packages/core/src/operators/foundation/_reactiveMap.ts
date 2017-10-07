@@ -27,12 +27,12 @@ export type _ReactiveMapOptions = {
   onlyDispatchWithUpstream?: boolean,
 };
 
-export type _ReactiveMapArgs<D, T, U> = _ReactiveMapOptions & {
+export type _ReactiveMapArgs<T, D, U> = _ReactiveMapOptions & {
   transform: (kwargs: { upstream: T } & D) => U,
   inputs: MaybeReactive<D>,
 };
 export interface MotionReactiveMappable<T> {
-  _reactiveMap<U, D>(kwargs: _ReactiveMapArgs<D, T, U>): ObservableWithMotionOperators<U>;
+  _reactiveMap<U, D>(kwargs: _ReactiveMapArgs<T, D, U>): ObservableWithMotionOperators<U>;
 }
 
 export function withReactiveMap<T, S extends Constructor<MotionReactiveNextOperable<T> & MotionTappable<T>>>(superclass: S): S & Constructor<MotionReactiveMappable<T>> {
@@ -45,14 +45,14 @@ export function withReactiveMap<T, S extends Constructor<MotionReactiveNextOpera
      * If the `onlyDispatchWithUpstream` option is set, `transform` is only
      * called when the upstream value changes.
      */
-    _reactiveMap<U, D>({ transform, inputs, onlyDispatchWithUpstream = false }: _ReactiveMapArgs<D, T, U>): ObservableWithMotionOperators<U> {
+    _reactiveMap<U, D>({ transform, inputs, onlyDispatchWithUpstream = false }: _ReactiveMapArgs<T, D, U>): ObservableWithMotionOperators<U> {
       let upstreamChanged = false;
 
-      return this._tap(
-        () => {
+      return this._tap({
+        sideEffect() {
           upstreamChanged = true;
-        }
-      )._reactiveNextOperator<U, D>({
+        },
+      })._reactiveNextOperator<U, D>({
         operation: ({ emit }) => (values) => {
           if (upstreamChanged || !onlyDispatchWithUpstream) {
             emit(transform(values));
