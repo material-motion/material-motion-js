@@ -29,56 +29,49 @@ import {
 } from 'sinon';
 
 import {
-  createMockObserver,
-} from 'material-motion-testing-utils';
-
-import {
-  MemorylessIndefiniteSubject,
-  MotionObservable,
+  MemorylessMotionSubject,
 } from '../../observables/';
 
 describe('motionObservable.dividedBy',
   () => {
-    const denominatorSubject = new MemorylessIndefiniteSubject();
-    let stream;
-    let mockObserver;
+    const value$ = new MemorylessMotionSubject();
+    let subject;
     let listener;
 
     beforeEach(
       () => {
-        mockObserver = createMockObserver();
-        stream = new MotionObservable(mockObserver.connect);
+        subject = new MemorylessMotionSubject();
         listener = stub();
       }
     );
 
-    it('should divide the incoming value by the denominator and dispatch the result',
+    it('should divide the upstream numeric value by the value constant and dispatch the result',
       () => {
-        stream.dividedBy(5).subscribe(listener);
+        subject.dividedBy({ value$: 5 }).subscribe(listener);
 
-        mockObserver.next(10);
+        subject.next(10);
 
         expect(listener).to.have.been.calledWith(2);
       }
     );
 
-    it('should divide values from a denominator stream and dispatch the result',
+    it('should divide the upstream numeric value by values from value$ and dispatch the result',
       () => {
-        stream.dividedBy(denominatorSubject).subscribe(listener);
+        subject.dividedBy({ value$ }).subscribe(listener);
 
-        mockObserver.next(30);
-        denominatorSubject.next(5);
+        subject.next(30);
+        value$.next(5);
 
         expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(6);
       }
     );
 
-    it('should divide point values from a denominator stream and dispatch the result',
+    it('should divide the upstream Point2D value by values from value$ and dispatch the result',
       () => {
-        stream.dividedBy(denominatorSubject).subscribe(listener);
+        subject.dividedBy({ value$ }).subscribe(listener);
 
-        mockObserver.next({ x: 30, y: 60 });
-        denominatorSubject.next({ x: 2, y: 3 });
+        subject.next({ x: 30, y: 60 });
+        value$.next({ x: 2, y: 3 });
 
         expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({ x: 15, y: 20 });
       }

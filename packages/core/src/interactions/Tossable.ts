@@ -173,7 +173,10 @@ export class Tossable {
 
     const locationOnDown$ = this.location$._debounce({ pulse$: whenDragIsActive$ });
 
-    this.draggedLocation$ = draggable.value$.addedBy<Point2D>(locationOnDown$, { onlyDispatchWithUpstream: true })._reactiveMap({
+    this.draggedLocation$ = draggable.value$.addedBy<Point2D>({
+      value$: locationOnDown$,
+      onlyDispatchWithUpstream: true
+    })._reactiveMap({
       transform: ({
         upstream: location,
         resistanceOrigin,
