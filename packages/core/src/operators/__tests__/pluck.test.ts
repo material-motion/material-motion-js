@@ -61,7 +61,7 @@ describe('motionObservable.pluck',
           translate,
         };
 
-        stream.pluck('translate').subscribe(listener);
+        stream.pluck({ path: 'translate' }).subscribe(listener);
 
         mockObserver.next(transform);
 
@@ -69,7 +69,7 @@ describe('motionObservable.pluck',
       }
     );
 
-    it('should recurse over every key in a .-separated string',
+    it('should recurse over every key in a dot-delimited string',
       () => {
         const translate = {
           x: 10,
@@ -80,7 +80,7 @@ describe('motionObservable.pluck',
           translate,
         };
 
-        stream.pluck('translate.x').subscribe(listener);
+        stream.pluck({ path: 'translate.x' }).subscribe(listener);
 
         mockObserver.next(transform);
 

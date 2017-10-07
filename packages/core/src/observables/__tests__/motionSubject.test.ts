@@ -45,7 +45,7 @@ describe('motionSubject',
 
     it(`should be a subject with operators`,
       () => {
-        subject.pluck('a').subscribe(listener);
+        subject.pluck({ path: 'a' }).subscribe(listener);
 
         subject.next({ 'a': 1 });
 
