@@ -23,20 +23,24 @@ import {
   Observer,
 } from '../../types';
 
+export type _SlidingWindowArgs = {
+  size: number,
+};
+
 export interface MotionWindowable<T> {
-  _slidingWindow(length: number): ObservableWithMotionOperators<Array<T>>;
+  _slidingWindow(kwargs?: _SlidingWindowArgs): ObservableWithMotionOperators<Array<T>>;
 }
 
 export function withSlidingWindow<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionWindowable<T>> {
   return class extends superclass implements MotionWindowable<T> {
     /**
      * Dispatches the last values to be received in an array of the given
-     * `length`.
+     * `size`.
      *
      * Reuses the same array on each dispatch, so if you want to compare
      * dispatches, make a copy of each as you receive it.
      */
-    _slidingWindow(length: number = 2): ObservableWithMotionOperators<Array<T>> {
+    _slidingWindow({ size = 2 } = {}): ObservableWithMotionOperators<Array<T>> {
       return this._nextOperator({
         operation({ emit }) {
           const result: Array<T> = [];
@@ -44,7 +48,7 @@ export function withSlidingWindow<T, S extends Constructor<MotionNextOperable<T>
           return ({ upstream }) => {
             result.push(upstream);
 
-            if (result.length > length) {
+            if (result.length > size) {
               result.shift();
             }
 

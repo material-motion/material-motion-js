@@ -52,7 +52,7 @@ describe('motionObservable._slidingWindow',
 
     it(`should not dispatch items as it receives them`,
       () => {
-        stream._slidingWindow(3).subscribe(listener);
+        stream._slidingWindow({ size: 3 }).subscribe(listener);
 
         mockObserver.next(1);
 
@@ -62,7 +62,7 @@ describe('motionObservable._slidingWindow',
 
     it(`should dispatch when the array is the correct length`,
       () => {
-        stream._slidingWindow(3).subscribe(listener);
+        stream._slidingWindow({ size: 3 }).subscribe(listener);
 
         mockObserver.next(1);
         mockObserver.next(2);
@@ -74,7 +74,7 @@ describe('motionObservable._slidingWindow',
 
     it(`should remove old items as new ones are received`,
       () => {
-        stream._slidingWindow(3).subscribe(listener);
+        stream._slidingWindow({ size: 3 }).subscribe(listener);
 
         mockObserver.next(1);
         mockObserver.next(2);
