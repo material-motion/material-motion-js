@@ -52,7 +52,7 @@ describe('motionObservable.appendUnit',
 
     it('should append the given unit to the upstream values',
       () => {
-        stream.appendUnit('px').subscribe(listener);
+        stream.appendUnit({ unit: 'px' }).subscribe(listener);
 
         mockObserver.next(50);
 
