@@ -19,10 +19,15 @@ import {
   MotionNextOperable,
   NextChannel,
   ObservableWithMotionOperators,
+  Operation,
 } from '../../types';
 
+export type _TapArgs<T> = {
+  sideEffect: Operation<T, {}>
+};
+
 export interface MotionTappable<T> {
-  _tap(sideEffect: (value: T) => any): ObservableWithMotionOperators<T>;
+  _tap(kwargs: _TapArgs<T>): ObservableWithMotionOperators<T>;
 }
 
 export function withTap<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionTappable<T>> {
@@ -32,10 +37,10 @@ export function withTap<T, S extends Constructor<MotionNextOperable<T>>>(supercl
      * `sideEffect` is ignored - values received from upstream are passed-
      * through to the observer.
      */
-    _tap(sideEffect: (value: T) => any): ObservableWithMotionOperators<T> {
+    _tap({ sideEffect }: _TapArgs<T>): ObservableWithMotionOperators<T> {
       return this._nextOperator({
         operation: ({ emit }) => ({ upstream }) => {
-          sideEffect(upstream);
+          sideEffect({ upstream });
           emit(upstream);
         }
       });

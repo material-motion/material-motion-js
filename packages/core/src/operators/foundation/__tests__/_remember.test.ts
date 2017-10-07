@@ -83,7 +83,7 @@ describe('motionObservable._remember',
 
     it('should prevent upstream work from being duplicated',
       () => {
-        const rememberedStream = stream._tap(listener1)._remember();
+        const rememberedStream = stream._tap({ sideEffect: listener1 })._remember();
         rememberedStream.subscribe(listener2);
         rememberedStream.subscribe(listener3);
 
