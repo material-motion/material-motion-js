@@ -36,6 +36,8 @@ export function withMap<T, S extends Constructor<MotionNextOperable<T>>>(supercl
      * result to the observer.
      */
     _map<U>({ transform }: _MapArgs<T, U>): ObservableWithMotionOperators<U> {
+      if (!transform) debugger
+
       return this._nextOperator({
         operation: ({ emit }) => ({ upstream }) => {
           emit(transform(upstream));
