@@ -52,7 +52,9 @@ describe('motionObservable.distanceFrom',
 
     it('should work on numbers',
       () => {
-        stream.distanceFrom(10).subscribe(listener);
+        stream.distanceFrom({
+          origin$: 10,
+        }).subscribe(listener);
 
         mockObserver.next(15);
 
@@ -62,7 +64,9 @@ describe('motionObservable.distanceFrom',
 
     it('should be positive, even if the next value is smaller',
       () => {
-        stream.distanceFrom(10).subscribe(listener);
+        stream.distanceFrom({
+          origin$: 10,
+        }).subscribe(listener);
 
         mockObserver.next(5);
 
@@ -72,7 +76,9 @@ describe('motionObservable.distanceFrom',
 
     it('should work on points',
       () => {
-        stream.distanceFrom({ x: 100, y: 100 }).subscribe(listener);
+        stream.distanceFrom({
+          origin$: { x: 100, y: 100 },
+        }).subscribe(listener);
 
         mockObserver.next({ x: 0, y: 0 });
 
