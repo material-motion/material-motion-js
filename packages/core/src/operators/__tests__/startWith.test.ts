@@ -52,7 +52,7 @@ describe('motionObservable.startWith',
 
     it('should dispatch the initialValue',
       () => {
-        stream.startWith(10).subscribe(listener);
+        stream.startWith({ value: 10 }).subscribe(listener);
 
         expect(listener).to.have.been.calledWith(10);
       }
@@ -60,7 +60,7 @@ describe('motionObservable.startWith',
 
     it('should pass values through after the initialValue',
       () => {
-        stream.startWith(10).subscribe(listener);
+        stream.startWith({ value: 10 }).subscribe(listener);
 
         mockObserver.next(20);
 
@@ -70,7 +70,7 @@ describe('motionObservable.startWith',
 
     it('should return a remembered stream',
       () => {
-        const startingWith = stream.startWith(10);
+        const startingWith = stream.startWith({ value: 10 });
         startingWith.subscribe(() => {});
 
         mockObserver.next(20);

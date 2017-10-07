@@ -26,7 +26,7 @@ import {
 // here and export an empty stream if it's undefined.
 export const viewportDimensions$ = getEventStreamFromElement(
   'resize', window as any as Element
-).startWith({} as Event)._map({
+).startWith({ value: {} as Event })._map({
   // Using _map instead of rewriteTo because it should be reevaluated on
   // every resize.
   transform: () => (

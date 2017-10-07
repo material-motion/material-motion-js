@@ -25,22 +25,26 @@ import {
   Observer,
 } from '../types';
 
+export type StartWithArgs<T> = {
+  value: T,
+};
+
 export interface MotionSeedable<T> {
-  startWith(initialValue: T): ObservableWithMotionOperators<T>;
+  startWith(kwargs: StartWithArgs<T>): ObservableWithMotionOperators<T>;
 }
 
 export function withStartWith<T, S extends Constructor<ObservableWithFoundationalMotionOperators<T>>>(superclass: S): S & Constructor<MotionSeedable<T>> {
   return class extends superclass implements MotionSeedable<T> {
     /**
-     * Dispatches `initialValue` and passes through all subsequent values.
+     * Dispatches `value` and passes through all subsequent values.
      *
      * Returns a remembered stream, so each new observer will synchronously
      * receive the most recent value.
      */
-    startWith(initialValue: T): ObservableWithMotionOperators<T> {
+    startWith({ value }: StartWithArgs<T>): ObservableWithMotionOperators<T> {
       return new MotionObservable(
         (observer: Observer<T>) => {
-          observer.next(initialValue);
+          observer.next(value);
           const subscription = this.subscribe(observer);
 
           return subscription.unsubscribe;
