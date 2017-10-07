@@ -225,7 +225,7 @@ export class Tossable {
 
     // Since drag starts at rest, whenDragIsAtRest$ emits immediately.  Thus, we
     // start with { 0, 0 } to ensure velocity doesn't emit undefined.
-    this.velocity$ = this.draggedLocation$.startWith({ x: 0, y: 0 }).velocity(whenDragIsAtRest$);
+    this.velocity$ = this.draggedLocation$.startWith({ value: { x: 0, y: 0 } }).velocity(whenDragIsAtRest$);
     subscribe({
       sink: spring.initialVelocity$,
       source: this.velocity$,
