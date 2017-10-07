@@ -60,7 +60,7 @@ describe('motionObservable.merge',
 
     it('should dispatch values from both upstream and its stream arguments',
       () => {
-        stream1.merge(stream2, stream3).subscribe(listener);
+        stream1.merge({ others: [ stream2, stream3 ] }).subscribe(listener);
 
         mockObserver1.next(1);
         expect(listener).to.have.been.calledOnce.and.calledWith(1);
