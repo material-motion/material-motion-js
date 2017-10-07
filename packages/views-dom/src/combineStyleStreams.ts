@@ -16,6 +16,7 @@
 
 import {
   Dict,
+  MaybeReactive,
   Observable,
   ObservableWithMotionOperators,
   Point2D,
@@ -39,11 +40,11 @@ export type PrimitiveStyleDict = {
 };
 
 export function combineStyleStreams(styleStreams: Partial<StyleStreams>): ObservableWithMotionOperators<StyleDict> {
-  return combineLatest(
-    stripStreamSuffices(styleStreams as StyleStreams),
+  return combineLatest<PrimitiveStyleDict, MaybeReactive<PrimitiveStyleDict>>(
+    stripStreamSuffices(styleStreams as StyleStreams) as MaybeReactive<PrimitiveStyleDict>,
     { waitForAllValues: false }
-  )._debounce()._map(
-    ({ opacity = 1, scale = 1, translate = { x: 0, y: 0 }, borderRadius = '', willChange = '', ...passthrough }: PrimitiveStyleDict) => (
+  )._debounce()._map({
+    transform: ({ opacity = 1, scale = 1, translate = { x: 0, y: 0 }, borderRadius = '', willChange = '', ...passthrough }) => (
       {
         ...passthrough,
         borderRadius: Array.isArray(borderRadius)
@@ -54,7 +55,7 @@ export function combineStyleStreams(styleStreams: Partial<StyleStreams>): Observ
         willChange,
       }
     )
-  ) as ObservableWithMotionOperators<StyleDict>;
+  }) as ObservableWithMotionOperators<StyleDict>;
 }
 export default combineStyleStreams;
 

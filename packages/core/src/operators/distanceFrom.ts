@@ -38,13 +38,13 @@ export function withDistanceFrom<T, S extends Constructor<MotionMappable<T>>>(su
      */
     distanceFrom(origin: T & (Point2D | number)): ObservableWithMotionOperators<number> {
       if (isPoint2D(origin)) {
-        return (this as any as MotionMappable<Point2D>)._map(
-          (value: Point2D) => Math.sqrt((origin.x - value.x) ** 2 + (origin.y - value.y) ** 2)
-        );
+        return (this as any as MotionMappable<Point2D>)._map({
+          transform: (value: Point2D) => Math.sqrt((origin.x - value.x) ** 2 + (origin.y - value.y) ** 2)
+        });
       } else {
-        return (this as any as MotionMappable<number>)._map(
-          (value: number) => Math.abs(origin - value)
-        );
+        return (this as any as MotionMappable<number>)._map({
+          transform: (value: number) => Math.abs(origin - value)
+        });
       }
     }
   };

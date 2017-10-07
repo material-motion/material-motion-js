@@ -52,9 +52,9 @@ describe('motionObservable._map',
 
     it('should transform the stream with the supplied function',
       () => {
-        stream._map(
-          x => x + 40
-        ).subscribe(listener1);
+        stream._map({
+          transform: x => x + 40
+        }).subscribe(listener1);
 
         mockObserver.next(2);
         expect(listener1).to.have.been.calledWith(42);
