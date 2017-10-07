@@ -30,6 +30,9 @@ import {
   _ReactiveMapOptions,
 } from './foundation/_reactiveMap';
 
+export type SubtractedByArgs<U> = _ReactiveMapOptions & {
+  value$: U | Observable<U>
+};
 export interface MotionSubtractable<T> {
   // Since number literals get their own types, `U extends T & number` will
   // resolve to `5` if the upstream value is `5`.  This would break
@@ -38,15 +41,8 @@ export interface MotionSubtractable<T> {
   // To work around this, we overload the method signature.  When `T` is a
   // number, we explicitly return an `Observable<number>`.  Otherwise, we can
   // use the type variable `U`.
-  subtractedBy<U extends T & number>(
-    value$: U | Observable<U>,
-    options?: _ReactiveMapOptions,
-  ): ObservableWithMotionOperators<number>;
-
-  subtractedBy<U extends T & (Point2D | number)>(
-    value$: U | Observable<U>,
-    options?: _ReactiveMapOptions,
-  ): ObservableWithMotionOperators<U>;
+  subtractedBy<U extends T & number>(kwargs: SubtractedByArgs<U>): ObservableWithMotionOperators<number>;
+  subtractedBy<U extends T & (Point2D | number)>(kwargs: SubtractedByArgs<U>): ObservableWithMotionOperators<U>;
 }
 
 export function withSubtractedBy<T, S extends Constructor<MotionMathOperable<T>>>(superclass: S): S & Constructor<MotionSubtractable<T>> {
@@ -55,11 +51,11 @@ export function withSubtractedBy<T, S extends Constructor<MotionMathOperable<T>>
      * Subtracts the provided value from the upstream value and dispatches the
      * result.
      */
-    subtractedBy<U extends T & (Point2D | number)>(value$: U | Observable<U>, options?: _ReactiveMapOptions): ObservableWithMotionOperators<U> {
+    subtractedBy<U extends T & (Point2D | number)>({ value$, ...reactiveMapOptions }: SubtractedByArgs<U>): ObservableWithMotionOperators<U> {
       return this._mathOperator({
         operation: (upstream, value) => upstream - value,
         value$,
-        ...options,
+        ...reactiveMapOptions,
       });
     }
   };

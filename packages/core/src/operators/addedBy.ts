@@ -30,6 +30,10 @@ import {
   _ReactiveMapOptions,
 } from './foundation/_reactiveMap';
 
+export type AddedByArgs<U> = _ReactiveMapOptions & {
+  value$: U | Observable<U>
+};
+
 export interface MotionAddable<T> {
   // Since number literals get their own types, `U extends T & number` will
   // resolve to `5` if the upstream value is `5`.  This would break
@@ -38,15 +42,8 @@ export interface MotionAddable<T> {
   // To work around this, we overload the method signature.  When `T` is a
   // number, we explicitly return an `Observable<number>`.  Otherwise, we can
   // use the type variable `U`.
-  addedBy<U extends T & number>(
-    value$: U | Observable<U>,
-    options?: _ReactiveMapOptions,
-  ): ObservableWithMotionOperators<number>;
-
-  addedBy<U extends T & Point2D>(
-    value$: U | Observable<U>,
-    options?: _ReactiveMapOptions,
-  ): ObservableWithMotionOperators<U>;
+  addedBy<U extends T & number>(kwargs: AddedByArgs<U>): ObservableWithMotionOperators<number>;
+  addedBy<U extends T & Point2D>(kwargs: AddedByArgs<U>): ObservableWithMotionOperators<U>;
 }
 
 export function withAddedBy<T, S extends Constructor<MotionMathOperable<T>>>(superclass: S): S & Constructor<MotionAddable<T>> {
@@ -54,11 +51,11 @@ export function withAddedBy<T, S extends Constructor<MotionMathOperable<T>>>(sup
     /**
      * Adds the provided value to the upstream value and dispatches the result.
      */
-    addedBy<U extends T & (Point2D | number)>(value$: U | Observable<U>, options?: _ReactiveMapOptions): ObservableWithMotionOperators<U> {
+    addedBy<U extends T & (Point2D | number)>({ value$, ...reactiveMapOptions }: AddedByArgs<U>): ObservableWithMotionOperators<U> {
       return this._mathOperator({
         operation: (upstream, value) => upstream + value,
         value$,
-        ...options
+        ...reactiveMapOptions,
       });
     }
   };

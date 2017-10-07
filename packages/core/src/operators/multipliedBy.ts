@@ -30,6 +30,10 @@ import {
   _ReactiveMapOptions,
 } from './foundation/_reactiveMap';
 
+export type MultipliedByArgs<U> = _ReactiveMapOptions & {
+  value$: U | Observable<U>
+};
+
 export interface MotionMultipliable<T> {
   // Since number literals get their own types, `U extends T & number` will
   // resolve to `5` if the upstream value is `5`.  This would break
@@ -38,15 +42,8 @@ export interface MotionMultipliable<T> {
   // To work around this, we overload the method signature.  When `T` is a
   // number, we explicitly return an `Observable<number>`.  Otherwise, we can
   // use the type variable `U`.
-  multipliedBy<U extends T & number>(
-    value$: U | Observable<U>,
-    options?: _ReactiveMapOptions,
-  ): ObservableWithMotionOperators<number>;
-
-  multipliedBy<U extends T & Point2D>(
-    value$: U | Observable<U>,
-    options?: _ReactiveMapOptions,
-  ): ObservableWithMotionOperators<U>;
+  multipliedBy<U extends T & number>(kwargs: MultipliedByArgs<U>): ObservableWithMotionOperators<number>;
+  multipliedBy<U extends T & Point2D>(kwargs: MultipliedByArgs<U>): ObservableWithMotionOperators<U>;
 }
 
 export function withMultipliedBy<T, S extends Constructor<MotionMathOperable<T>>>(superclass: S): S & Constructor<MotionMultipliable<T>> {
@@ -55,11 +52,11 @@ export function withMultipliedBy<T, S extends Constructor<MotionMathOperable<T>>
      * Multiplies the upstream value by the provided value and dispatches the
      * result.
      */
-    multipliedBy<U extends T & (Point2D | number)>(value$: U | Observable<U>, options?: _ReactiveMapOptions): ObservableWithMotionOperators<U> {
+    multipliedBy<U extends T & (Point2D | number)>({ value$, ...reactiveMapOptions }: MultipliedByArgs<U>): ObservableWithMotionOperators<U> {
       return this._mathOperator({
         operation: (upstream, value) => upstream * value,
         value$,
-        ...options,
+        ...reactiveMapOptions,
       });
     }
   };

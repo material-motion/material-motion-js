@@ -28,71 +28,65 @@ import {
   stub,
 } from 'sinon';
 
-import {
-  createMockObserver,
-} from 'material-motion-testing-utils';
 
 import {
-  MotionObservable,
   MemorylessMotionSubject,
 } from '../../observables/';
 
 describe('motionObservable.subtractedBy',
   () => {
-    const amountSubject = new MemorylessMotionSubject();
-    let stream;
-    let mockObserver;
+    const value$ = new MemorylessMotionSubject();
+    let subject;
     let listener;
 
     beforeEach(
       () => {
-        mockObserver = createMockObserver();
-        stream = new MotionObservable(mockObserver.connect);
+        subject = new MemorylessMotionSubject();
         listener = stub();
       }
     );
 
-    it('should subtract the amount constant to an incoming numeric value and dispatch the result',
+    it('should subtract the value constant from the upstream numeric value and dispatch the result',
       () => {
-        stream.subtractedBy(10).subscribe(listener);
+        subject.subtractedBy({ value$: 10 }).subscribe(listener);
 
-        mockObserver.next(3);
+        subject.next(3);
 
         expect(listener).to.have.been.calledWith(-7);
       }
     );
 
-    it('should subtract the amount constant to an incoming Point2D value and dispatch the result',
+    it('should subtract the value constant to an upstream Point2D value and dispatch the result',
       () => {
-        stream.subtractedBy({x: 10, y: 20 }).subscribe(listener);
+        subject.subtractedBy({ value$: { x: 10, y: 20 } }).subscribe(listener);
 
-        mockObserver.next({x: 100, y: -40 });
+        subject.next({ x: 100, y: -40 });
 
-        expect(listener).to.have.been.calledWith({x: 90, y: -60 });
+        expect(listener).to.have.been.calledWith({ x: 90, y: -60 });
       }
     );
 
-    it('should subtract values from the amount stream to an incoming numeric value and dispatch the result',
+    it('should subtract values from value$ from the upstream numeric value and dispatch the result',
       () => {
-        stream.subtractedBy(amountSubject).subscribe(listener);
+        subject.subtractedBy({ value$ }).subscribe(listener);
 
-        mockObserver.next(3);
-        amountSubject.next(10);
-        amountSubject.next(20);
+        subject.next(3);
+        value$.next(10);
+        value$.next(20);
 
         expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(-7).and.to.have.been.calledWith(-17);
       }
     );
 
-    it('should subtract values from the amount stream to an incoming Point2D value and dispatch the result',
+    it('should subtract values from value$ from an upstream Point2D value and dispatch the result',
       () => {
-        stream.subtractedBy(amountSubject).subscribe(listener);
+        subject.subtractedBy({ value$ }).subscribe(listener);
 
-        mockObserver.next({x: 100, y: -40 });
-        mockObserver.next({x: 10, y: 0 });
-        amountSubject.next({x: 0, y: 15 });
+        subject.next({ x: 100, y: -40 });
+        subject.next({ x: 10, y: 0 });
+        value$.next({ x: 0, y: 15 });
 
-        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({x: 10, y: -15 });
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({ x: 10, y: -15 });
       }
     );
   }
