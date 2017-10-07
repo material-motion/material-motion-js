@@ -42,7 +42,7 @@ export function isNumber(value: any): value is number {
  * [Symbol.observable]()
  */
 export function isObservable(value: any): value is Observable<any> {
-  return value[$$observable] && value === value[$$observable]();
+  return value && value[$$observable] && value === value[$$observable]();
 }
 
 /**
@@ -86,7 +86,7 @@ export function isPointerEvent(value: any): value is PointerEvent {
  * Checks if value is iterable; that is, usable in a `for of` loop.
  */
 export function isIterable(value: any): value is Iterable<any> {
-  return value[Symbol.iterator] !== undefined;
+  return value && value[Symbol.iterator] !== undefined;
 }
 
 /**
