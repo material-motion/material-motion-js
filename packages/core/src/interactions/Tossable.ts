@@ -156,8 +156,10 @@ export class Tossable {
     this.spring = spring;
 
     const dragIsAtRest$ = draggable.state$.rewrite<boolean, boolean>({
-      [State.AT_REST]: true,
-      [State.ACTIVE]: false,
+      mapping: {
+        [State.AT_REST]: true,
+        [State.ACTIVE]: false,
+      }
     }).dedupe();
 
     const whenDragIsAtRest$ = when(dragIsAtRest$);
@@ -240,30 +242,32 @@ export class Tossable {
         spring.state$.isAnyOf({ candidates: [ State.ACTIVE ] }),
         draggable.state$.isAnyOf({ candidates: [ State.ACTIVE ] }),
       ]).rewrite({
-        true: State.ACTIVE,
-        false: State.AT_REST,
+        mapping: {
+          true: State.ACTIVE,
+          false: State.AT_REST,
+        },
       }).dedupe(),
     });
 
     subscribe({
       sink: this.location$,
-      source: spring.enabled$.rewrite<Point2D, ObservableWithMotionOperators<Point2D>>(
-        {
+      source: spring.enabled$.rewrite<Point2D, ObservableWithMotionOperators<Point2D>>({
+        mapping: {
           true: spring.value$,
-          false: this.draggedLocation$
+          false: this.draggedLocation$,
         },
-        {
-          dispatchOnKeyChange: false,
-        },
-      )._debounce(),
+        dispatchOnKeyChange: false,
+      })._debounce(),
     });
 
     this.styleStreams = {
       translate$: this.location$,
 
       willChange$: this.state$.rewrite<string, string>({
-        [State.ACTIVE]: 'transform',
-        [State.AT_REST]: '',
+        mapping: {
+          [State.ACTIVE]: 'transform',
+          [State.AT_REST]: '',
+        },
       }),
     };
   }
