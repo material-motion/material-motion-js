@@ -29,8 +29,12 @@ import {
   createPlucker,
 } from './pluck';
 
+export type MergeArgs<T> = {
+  others: Array<Observable<T>>
+};
+
 export interface MotionMergeable<T> extends Observable<T> {
-  merge(...otherStreams: Array<Observable<any>>): ObservableWithMotionOperators<any>;
+  merge(kwargs: MergeArgs<T>): ObservableWithMotionOperators<T>;
 }
 
 export function withMerge<T, S extends Constructor<Observable<T>>>(superclass: S): S & Constructor<MotionMergeable<T>> {
@@ -39,10 +43,10 @@ export function withMerge<T, S extends Constructor<Observable<T>>>(superclass: S
      * Dispatches values as it receives them, both from upstream and from any
      * streams provided as arguments.
      */
-    merge(...otherStreams: Array<Observable<any>>): ObservableWithMotionOperators<any> {
+    merge({ others }: MergeArgs<T>): ObservableWithMotionOperators<T> {
       return new MotionObservable(
-        (observer: Observer<any>) => {
-          const subscriptions = [this, ...otherStreams].map(
+        (observer: Observer<T>) => {
+          const subscriptions = [this, ...others].map(
             stream => stream.subscribe(observer)
           );
 

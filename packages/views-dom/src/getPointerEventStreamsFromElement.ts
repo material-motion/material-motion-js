@@ -53,21 +53,27 @@ export function getPointerEventStreamsFromElement(element: Element): PointerEven
     };
   } else {
     return {
-      down$: getEventStreamFromElement<MouseEvent>('mousedown', element).merge(
-        convertTouchEventsToPointerEvents(
-          getEventStreamFromElement<TouchEvent>('touchstart', element)
-        )
-      ),
-      move$: getEventStreamFromElement<MouseEvent>('mousemove', element).merge(
-        convertTouchEventsToPointerEvents(
-          getEventStreamFromElement<TouchEvent>('touchmove', element)
-        )
-      ),
-      up$: getEventStreamFromElement<MouseEvent>('mouseup', element).merge(
-        convertTouchEventsToPointerEvents(
-          getEventStreamFromElement<TouchEvent>('touchend', element)
-        )
-      ),
+      down$: getEventStreamFromElement<MouseEvent>('mousedown', element).merge({
+        others: [
+          convertTouchEventsToPointerEvents(
+            getEventStreamFromElement<TouchEvent>('touchstart', element)
+          ),
+        ],
+      }),
+      move$: getEventStreamFromElement<MouseEvent>('mousemove', element).merge({
+        others: [
+          convertTouchEventsToPointerEvents(
+            getEventStreamFromElement<TouchEvent>('touchmove', element)
+          ),
+        ],
+      }),
+      up$: getEventStreamFromElement<MouseEvent>('mouseup', element).merge({
+        others: [
+          convertTouchEventsToPointerEvents(
+            getEventStreamFromElement<TouchEvent>('touchend', element)
+          ),
+        ],
+      }),
       cancel$: convertTouchEventsToPointerEvents(
         getEventStreamFromElement<TouchEvent>('touchcancel', element)
       ),
