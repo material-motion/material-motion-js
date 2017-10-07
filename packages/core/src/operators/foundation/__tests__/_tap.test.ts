@@ -52,20 +52,20 @@ describe('motionObservable._tap',
 
     it('should call operation for each value in the stream',
       () => {
-        stream._tap(listener).subscribe(() => {});
+        stream._tap({ sideEffect: listener }).subscribe(() => {});
 
         mockObserver.next(2);
         mockObserver.next(4);
 
-        expect(listener).to.have.been.calledWith(2).and.to.have.been.calledWith(4);
+        expect(listener).to.have.been.calledWithMatch({ upstream: 2 }).and.to.have.been.calledWithMatch({ upstream: 4 });
       }
     );
 
     it('should passthrough the value it receives',
       () => {
-        stream._tap(
-          x => x + 40
-        ).subscribe(listener);
+        stream._tap({
+          sideEffect: ({ upstream: x }) => x + 40
+        }).subscribe(listener);
 
         mockObserver.next(2);
         expect(listener).to.have.been.calledWith(2);
