@@ -29,7 +29,9 @@ export interface MotionTimestampable<T> {
 export function withTimestamp<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionTimestampable<T>> {
   return class extends superclass implements MotionTimestampable<T> {
     timestamp(): ObservableWithMotionOperators<Timestamped<T>> {
-      return this._map(timestamp);
+      return this._map({
+        transform: timestamp,
+      });
     }
   };
 }

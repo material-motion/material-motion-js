@@ -30,8 +30,8 @@ const TOUCH_TYPE_TO_POINTER_TYPE: Dict<string> = {
 };
 
 export function convertTouchEventsToPointerEvents(touchEvent$: ObservableWithMotionOperators<TouchEvent>): ObservableWithMotionOperators<PartialPointerEvent> {
-  return touchEvent$._map(
-    ({ type, targetTouches, changedTouches }: TouchEvent) => Array.from(
+  return touchEvent$._map({
+    transform: ({ type, targetTouches, changedTouches }: TouchEvent) => Array.from(
       ['touchend', 'touchcancel'].includes(type)
         ? changedTouches
         : targetTouches,
@@ -44,6 +44,6 @@ export function convertTouchEventsToPointerEvents(touchEvent$: ObservableWithMot
         }
       )
     )
-  )._flattenIterables<PartialPointerEvent>();
+  })._flattenIterables<PartialPointerEvent>();
 }
 export default convertTouchEventsToPointerEvents;

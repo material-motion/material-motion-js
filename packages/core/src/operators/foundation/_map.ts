@@ -21,8 +21,12 @@ import {
   ObservableWithMotionOperators,
 } from '../../types';
 
+export type _MapArgs<T, U> = {
+  transform: (value: T) => U,
+};
+
 export interface MotionMappable<T> {
-  _map<U>(transform: (value: T) => U): ObservableWithMotionOperators<U>;
+  _map<U>(kwargs: _MapArgs<T, U>): ObservableWithMotionOperators<U>;
 }
 
 export function withMap<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionMappable<T>> {
@@ -31,12 +35,12 @@ export function withMap<T, S extends Constructor<MotionNextOperable<T>>>(supercl
      * Applies `transform` to every incoming value and synchronously passes the
      * result to the observer.
      */
-    _map<U>(transform: (value: T) => U): ObservableWithMotionOperators<U> {
+    _map<U>({ transform }: _MapArgs<T, U>): ObservableWithMotionOperators<U> {
       return this._nextOperator({
         operation: ({ emit }) => ({ upstream }) => {
           emit(transform(upstream));
         }
-      );
+      });
     }
   };
 }
