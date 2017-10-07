@@ -78,7 +78,7 @@ describe('motionObservable._multicast',
 
     it('should prevent upstream work from being duplicated',
       () => {
-        const stream = subject._tap(listener1)._multicast();
+        const stream = subject._tap({ sideEffect: listener1 })._multicast();
         stream.subscribe(listener2);
         stream.subscribe(listener3);
 

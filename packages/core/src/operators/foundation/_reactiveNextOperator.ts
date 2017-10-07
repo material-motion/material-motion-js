@@ -38,13 +38,13 @@ import {
   Subscription,
 } from '../../types';
 
-export type _ReactiveNextOperatorArgs<D, T, U> = CombineLatestOptions & {
-  operation: EmittingOperation<D, T, U>,
+export type _ReactiveNextOperatorArgs<T, D, U> = CombineLatestOptions & {
+  operation: EmittingOperation<T, D, U>,
   inputs: MaybeReactive<D>,
 }
 
 export interface MotionReactiveNextOperable<T> extends Observable<T> {
-  _reactiveNextOperator<U, D>(kwargs: _ReactiveNextOperatorArgs<D, T, U>): ObservableWithMotionOperators<U>;
+  _reactiveNextOperator<U, D>(kwargs: _ReactiveNextOperatorArgs<T, D, U>): ObservableWithMotionOperators<U>;
 }
 
 export function withReactiveNextOperator<T, S extends Constructor<Observable<T>>>(superclass: S): S & Constructor<MotionReactiveNextOperable<T>> {
@@ -61,7 +61,7 @@ export function withReactiveNextOperator<T, S extends Constructor<Observable<T>>
      * `_reactiveNextOperator` will not call `operation` until it has received
      * a value from every argument it is subscribed to.
      */
-    _reactiveNextOperator<U, D>({ operation, inputs, ...combineLatestOptions }: _ReactiveNextOperatorArgs<D, T, U>): ObservableWithMotionOperators<U> {
+    _reactiveNextOperator<U, D>({ operation, inputs, ...combineLatestOptions }: _ReactiveNextOperatorArgs<T, D, U>): ObservableWithMotionOperators<U> {
       return new MotionObservable(
         (observer: Observer<U>) => {
           const innerOperation = operation({
