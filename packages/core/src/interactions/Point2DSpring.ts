@@ -154,8 +154,10 @@ export class Point2DSpring implements Spring<Point2D> {
     this.xSpring.state$.isAnyOf({ candidates: [ State.ACTIVE ] }),
     this.ySpring.state$.isAnyOf({ candidates: [ State.ACTIVE ] }),
   ]).dedupe().rewrite<State, State>({
-    true: State.ACTIVE,
-    false: State.AT_REST,
+    mapping: {
+      true: State.ACTIVE,
+      false: State.AT_REST,
+    },
   })._remember();
 
   get state(): State {
