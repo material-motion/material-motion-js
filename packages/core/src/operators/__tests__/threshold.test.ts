@@ -43,24 +43,22 @@ import {
 
 describe('motionObservable.threshold',
   () => {
-    const limitSubject = new MemorylessMotionSubject();
-    let stream;
-    let mockObserver;
+    const limit$ = new MemorylessMotionSubject();
+    let subject;
     let listener;
 
     beforeEach(
       () => {
-        mockObserver = createMockObserver();
-        stream = new MotionObservable(mockObserver.connect);
+        subject = new MemorylessMotionSubject();
         listener = stub();
       }
     );
 
     it('should dispatch BELOW when it receives a value below the limit',
       () => {
-        stream.threshold(7).subscribe(listener);
+        subject.threshold({ limit$: 7 }).subscribe(listener);
 
-        mockObserver.next(3);
+        subject.next(3);
 
         expect(listener).to.have.been.calledWith(ThresholdRegion.BELOW);
       }
@@ -68,9 +66,9 @@ describe('motionObservable.threshold',
 
     it('should dispatch WITHIN when it receives a value that matches the limit',
       () => {
-        stream.threshold(7).subscribe(listener);
+        subject.threshold({ limit$: 7 }).subscribe(listener);
 
-        mockObserver.next(7);
+        subject.next(7);
 
         expect(listener).to.have.been.calledWith(ThresholdRegion.WITHIN);
       }
@@ -78,9 +76,9 @@ describe('motionObservable.threshold',
 
     it('should dispatch ABOVE when it receives a value above the limit',
       () => {
-        stream.threshold(7).subscribe(listener);
+        subject.threshold({ limit$: 7 }).subscribe(listener);
 
-        mockObserver.next(10);
+        subject.next(10);
 
         expect(listener).to.have.been.calledWith(ThresholdRegion.ABOVE);
       }
@@ -88,33 +86,33 @@ describe('motionObservable.threshold',
 
     it('should support reactive limits',
       () => {
-        stream.threshold(limitSubject).subscribe(listener);
+        subject.threshold({ limit$: limit$ }).subscribe(listener);
 
-        mockObserver.next(10);
+        subject.next(10);
 
-        limitSubject.next(5);
+        limit$.next(5);
         expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(ThresholdRegion.ABOVE);
 
-        limitSubject.next(15);
+        limit$.next(15);
         expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(ThresholdRegion.BELOW);
 
-        limitSubject.next(10);
+        limit$.next(10);
         expect(listener).to.have.been.calledThrice.and.to.have.been.calledWith(ThresholdRegion.WITHIN);
       }
     );
 
-    it('should support reactive limits and onlyDispatchWithUpstream',
+    it('should support reactive limits and onlyDispatchWithUpsubject',
       () => {
-        stream.threshold(limitSubject, { onlyDispatchWithUpstream: true }).subscribe(listener);
+        subject.threshold({ limit$, onlyDispatchWithUpstream: true }).subscribe(listener);
 
-        mockObserver.next(10);
+        subject.next(10);
 
-        limitSubject.next(5);
-        limitSubject.next(15);
+        limit$.next(5);
+        limit$.next(15);
 
         expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(ThresholdRegion.ABOVE);
 
-        mockObserver.next(12);
+        subject.next(12);
 
         expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(ThresholdRegion.BELOW);
       }
