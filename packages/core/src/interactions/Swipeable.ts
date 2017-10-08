@@ -160,7 +160,7 @@ export class Swipeable {
       })
     });
 
-    this.direction$ = draggedX$.threshold(0).isAnyOf({ candidates: [ ThresholdRegion.ABOVE ] }).rewrite({
+    this.direction$ = draggedX$.threshold({ limit$: 0 }).isAnyOf({ candidates: [ ThresholdRegion.ABOVE ] }).rewrite({
       mapping: {
         true: Direction.RIGHT,
         false: Direction.LEFT,
@@ -176,7 +176,9 @@ export class Swipeable {
 
     this.isThresholdMet$ = draggedX$.distanceFrom({
       origin$: 0,
-    }).threshold(Swipeable.VISUAL_THRESHOLD).isAnyOf({ candidates: [ThresholdRegion.ABOVE, ThresholdRegion.WITHIN] });
+    }).threshold({ limit$: Swipeable.VISUAL_THRESHOLD }).isAnyOf({
+        candidates: [ThresholdRegion.ABOVE, ThresholdRegion.WITHIN]
+    });
     this.whenThresholdCrossed$ = when(this.isThresholdMet$.dedupe());
     this.whenThresholdFirstCrossed$ = when(tossable.resistanceFactor$.dedupe().isAnyOf({ candidates: [ DISABLED_RESISTANCE_FACTOR ] }));
 
