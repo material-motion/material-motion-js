@@ -124,11 +124,6 @@ import {
   withTimestamp,
 } from './timestamp';
 
-import {
-  MotionVelocityMeasurable,
-  withVelocity,
-} from './velocity';
-
 export interface ObservableWithMotionOperators<T> extends
   ObservableWithFoundationalMotionOperators<T>,
   MotionAddable<T>,
@@ -150,8 +145,7 @@ export interface ObservableWithMotionOperators<T> extends
   MotionSubtractable<T>,
   MotionThresholdRangeable,
   MotionThresholdable,
-  MotionTimestampable<T>,
-  MotionVelocityMeasurable<T> {}
+  MotionTimestampable<T> {}
 
 export function withMotionOperators<T, S extends Constructor<Observable<T>>>(superclass: S): S
     & Constructor<ObservableWithMotionOperators<T>> {
@@ -176,9 +170,8 @@ export function withMotionOperators<T, S extends Constructor<Observable<T>>>(sup
   const result18 = withIsAnyOf<T, typeof result17>(result17);
   const result19 = withAppendUnit<T, typeof result18>(result18);
   const result20 = withInverted<T, typeof result19>(result19);
-  const result21 = withVelocity<T, typeof result20>(result20);
 
-  return result21;
+  return result20;
 }
 
 export * from './addedBy';
@@ -202,4 +195,3 @@ export * from './subtractedBy';
 export * from './threshold';
 export * from './thresholdRange';
 export * from './timestamp';
-export * from './velocity';
