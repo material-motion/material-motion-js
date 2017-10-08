@@ -21,6 +21,8 @@ export * from './observables';
 export * from './aggregators';
 export * from './subscribe';
 export * from './combineLatest';
+export * from './getFrame$';
+export * from './getVelocity$';
 export * from './interactions';
 
 export default undefined;

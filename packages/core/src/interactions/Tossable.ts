@@ -26,20 +26,24 @@ import {
 } from '../aggregators';
 
 import {
+  getVelocity$,
+} from '../getVelocity$';
+
+import {
   MemorylessMotionSubject,
   MotionProperty,
   createProperty,
 } from '../observables/';
 
 import {
+  subscribe,
+} from '../subscribe';
+
+import {
   ObservableWithMotionOperators,
   Point2D,
   TranslateStyleStreams,
 } from '../types';
-
-import {
-  subscribe,
-} from '../subscribe';
 
 import {
   Draggable,
@@ -223,9 +227,13 @@ export class Tossable {
       onlyDispatchWithUpstream: true,
     });
 
-    // Since drag starts at rest, whenDragIsAtRest$ emits immediately.  Thus, we
-    // start with { 0, 0 } to ensure velocity doesn't emit undefined.
-    this.velocity$ = this.draggedLocation$.startWith({ value: { x: 0, y: 0 } }).velocity(whenDragIsAtRest$);
+    this.velocity$ = getVelocity$({
+      // Since drag starts at rest, whenDragIsAtRest$ emits immediately.  Thus,
+      // we start with { 0, 0 } to ensure velocity doesn't emit undefined.
+      value$: this.draggedLocation$.startWith({ value: { x: 0, y: 0 } }),
+      pulse$: whenDragIsAtRest$,
+    });
+
     subscribe({
       sink: spring.initialVelocity$,
       source: this.velocity$,

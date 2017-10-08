@@ -21,6 +21,7 @@ import {
   GestureRecognitionState,
   MotionObservable,
   Subscription,
+  getVelocity$,
 } from 'material-motion';
 
 import {
@@ -46,11 +47,12 @@ export class QuickiePointerEventTest extends React.Component {
         getPointerEventStreamsFromElement(element)
       );
 
-      const velocity$ = draggable.value$.velocity(
-        draggable.recognitionState$._filter({
+      const velocity$ = getVelocity$({
+        value$: draggable.value$,
+        pulse$: draggable.recognitionState$._filter({
           predicate: recognitionState => recognitionState === GestureRecognitionState.RECOGNIZED
         })
-      );
+      });
 
       subscriptions = [
         draggable.value$.subscribe(this.setState.bind(this)),
