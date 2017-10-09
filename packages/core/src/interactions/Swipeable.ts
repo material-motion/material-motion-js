@@ -174,9 +174,7 @@ export class Swipeable {
     // `resistanceProgress`. Thus, we independently calculate the threshold
     // here.
 
-    this.isThresholdMet$ = draggedX$.distanceFrom({
-      origin$: 0,
-    }).threshold({ limit$: Swipeable.VISUAL_THRESHOLD }).isAnyOf({
+    this.isThresholdMet$ = draggedX$.distanceFrom(0).threshold({ limit$: Swipeable.VISUAL_THRESHOLD }).isAnyOf({
         candidates: [ThresholdRegion.ABOVE, ThresholdRegion.WITHIN]
     });
     this.whenThresholdCrossed$ = when(this.isThresholdMet$.dedupe());
