@@ -23,15 +23,21 @@ import {
 } from '../types';
 
 import {
+  isDefined,
+} from '../typeGuards';
+
+import {
   _ReactiveMapOptions,
 } from './foundation/_reactiveMap';
 
+export type RewriteToValue<U> = U | Observable<U>;
 export type RewriteToArgs<U> = _ReactiveMapOptions & {
-  value$: U | Observable<U>,
+  value$: RewriteToValue<U>,
 };
 
 export interface MotionRewriteToable {
   rewriteTo<U>(kwargs: RewriteToArgs<U>): ObservableWithMotionOperators<U>;
+  rewriteTo<U>(value$: RewriteToValue<U>): ObservableWithMotionOperators<U>;
 }
 
 export function withRewriteTo<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionRewriteToable> {
@@ -39,7 +45,13 @@ export function withRewriteTo<T, S extends Constructor<MotionReactiveMappable<T>
     /**
      * Dispatches its argument every time it receives a value from upstream.
      */
+    rewriteTo<U>(value$: RewriteToValue<U>): ObservableWithMotionOperators<U>;
+    rewriteTo<U>(kwargs: RewriteToArgs<U>): ObservableWithMotionOperators<U>;
     rewriteTo<U>({ value$, onlyDispatchWithUpstream = true, ...reactiveMapOptions }: RewriteToArgs<U>): ObservableWithMotionOperators<U> {
+      if (!isDefined(value$)) {
+        value$ = arguments[0];
+      }
+
       return this._reactiveMap({
         transform: ({ value }) => value,
         inputs: {
