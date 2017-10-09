@@ -15,6 +15,10 @@
  */
 
 import {
+  ThresholdRegion,
+} from '../enums';
+
+import {
   Constructor,
   MaybeReactive,
   MotionReactiveMappable,
@@ -23,24 +27,32 @@ import {
 } from '../types';
 
 import {
-  ThresholdRegion,
-} from '../enums';
+  isDefined,
+} from '../typeGuards';
 
 import {
   _ReactiveMapOptions,
 } from './foundation/_reactiveMap';
 
-export type ThresholdArgs = _ReactiveMapOptions & MaybeReactive<{
-  limit$: number,
-}>;
+export type ThresholdLimit = number | Observable<number>;
+export type ThresholdArgs = _ReactiveMapOptions & {
+  limit$: ThresholdLimit,
+};
 
 export interface MotionThresholdable {
+  threshold(limit$: ThresholdLimit): ObservableWithMotionOperators<ThresholdRegion>;
   threshold(kwargs: ThresholdArgs): ObservableWithMotionOperators<ThresholdRegion>;
 }
 
 export function withThreshold<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionThresholdable> {
   return class extends superclass implements MotionThresholdable {
-    threshold({ limit$, ...reactiveMapOptions }: ThresholdArgs): ObservableWithMotionOperators<ThresholdRegion> {
+    threshold(limit$: ThresholdLimit): ObservableWithMotionOperators<ThresholdRegion>;
+    threshold(kwargs: ThresholdArgs): ObservableWithMotionOperators<ThresholdRegion>;
+    threshold({ limit$, ...reactiveMapOptions }: any): ObservableWithMotionOperators<ThresholdRegion> {
+      if (!isDefined(limit$)) {
+        limit$ = arguments[0];
+      }
+
       return (this as any as MotionReactiveMappable<number>)._reactiveMap({
         transform: ({ upstream, limit }) => {
           if (upstream < limit) {
@@ -53,9 +65,9 @@ export function withThreshold<T, S extends Constructor<MotionReactiveMappable<T>
           }
         },
         inputs: {
-          limit: limit$,
+          limit: limit$ as ThresholdLimit,
         },
-        ...reactiveMapOptions,
+        ...reactiveMapOptions as _ReactiveMapOptions,
       });
     }
   };

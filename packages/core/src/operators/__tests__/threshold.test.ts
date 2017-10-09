@@ -117,5 +117,15 @@ describe('motionObservable.threshold',
         expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(ThresholdRegion.BELOW);
       }
     );
+
+    it('should have a shorthand signature',
+      () => {
+        subject.threshold(7).subscribe(listener);
+
+        subject.next(3);
+
+        expect(listener).to.have.been.calledWith(ThresholdRegion.BELOW);
+      }
+    );
   }
 );
