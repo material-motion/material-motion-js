@@ -20,11 +20,16 @@ import {
   ObservableWithMotionOperators,
 } from '../types';
 
+import {
+  isDefined,
+} from '../typeGuards';
+
 export type AppendUnitArgs = {
   unit: string,
 }
 
 export interface MotionAppendUnitable {
+  appendUnit(unit: string): ObservableWithMotionOperators<string>;
   appendUnit(kwargs: AppendUnitArgs): ObservableWithMotionOperators<string>;
 }
 
@@ -34,7 +39,13 @@ export function withAppendUnit<T, S extends Constructor<MotionMappable<T>>>(supe
      * Converts a stream to a CSS string representation by appending the given
      * unit to the upstream values.
      */
-    appendUnit({ unit }: AppendUnitArgs): ObservableWithMotionOperators<string> {
+    appendUnit(unit: string): ObservableWithMotionOperators<string>;
+    appendUnit(kwargs: AppendUnitArgs): ObservableWithMotionOperators<string>;
+    appendUnit({ unit }: AppendUnitArgs & string): ObservableWithMotionOperators<string> {
+      if (!isDefined(unit)) {
+        unit = arguments[0];
+      }
+
       return this._map({
         transform: (value: T) => value + unit
       });
