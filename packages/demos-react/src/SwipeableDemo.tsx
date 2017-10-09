@@ -113,7 +113,7 @@ class SwipeableCard extends React.Component<{}, {}> {
 
       combineStyleStreams({
         filter: 'invert()',
-        scale: swipeable.styleStreamsByTargetName.icon.scale$.startWith({ value: 0 }),
+        scale: swipeable.styleStreamsByTargetName.icon.scale$.startWith(0),
         willChange: swipeable.styleStreamsByTargetName.icon.willChange$,
       }).subscribe(this.iconStyle$);
     }
