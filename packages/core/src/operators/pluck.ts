@@ -21,11 +21,17 @@ import {
   ObservableWithMotionOperators,
 } from '../types';
 
+import {
+  isDefined,
+} from '../typeGuards';
+
+export type PluckPath<T> = keyof T;
 export type PluckArgs<T> = {
-  path: keyof T,
+  path: PluckPath<T>,
 };
 
 export interface MotionPluckable<T> {
+  pluck<K extends keyof T, U extends T[K]>(path: PluckPath<T>): ObservableWithMotionOperators<U>;
   pluck<K extends keyof T, U extends T[K]>(kwargs: PluckArgs<T>): ObservableWithMotionOperators<U>;
 }
 
@@ -43,7 +49,13 @@ export function withPluck<T, S extends Constructor<MotionMappable<T>>>(superclas
      * - `transform$.pluck({ path: 'translate.x' })` is equivalent to
      *   `transform$.map(transform => transform.translate.x)`
      */
-    pluck<K extends keyof T, U extends T[K]>({ path }: PluckArgs<T>): ObservableWithMotionOperators<U> {
+    pluck<K extends keyof T, U extends T[K]>(path: PluckPath<T>): ObservableWithMotionOperators<U>;
+    pluck<K extends keyof T, U extends T[K]>({ path }: PluckArgs<T>): ObservableWithMotionOperators<U>;
+    pluck<K extends keyof T, U extends T[K]>({ path }: PluckArgs<T> & K): ObservableWithMotionOperators<U> {
+      if (!isDefined(path)) {
+        path = arguments[0];
+      }
+
       return (this as any as ObservableWithMotionOperators<Record<K, any>>)._map({
         transform: createPlucker<K>(path as K)
       });

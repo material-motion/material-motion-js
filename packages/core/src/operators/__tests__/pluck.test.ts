@@ -87,6 +87,25 @@ describe('motionObservable.pluck',
         expect(listener).to.have.been.calledWith(10);
       }
     );
+
+    it('should have a shorthand signature',
+      () => {
+        const translate = {
+          x: 10,
+          y: 15,
+        };
+
+        const transform = {
+          translate,
+        };
+
+        stream.pluck({ path: 'translate.x' }).subscribe(listener);
+
+        mockObserver.next(transform);
+
+        expect(listener).to.have.been.calledWith(10);
+      }
+    );
   }
 );
 
