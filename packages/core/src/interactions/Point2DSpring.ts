@@ -151,8 +151,8 @@ export class Point2DSpring implements Spring<Point2D> {
   }
 
   readonly state$: ObservableWithMotionOperators<State> = anyOf([
-    this.xSpring.state$.isAnyOf({ candidates: [ State.ACTIVE ] }),
-    this.ySpring.state$.isAnyOf({ candidates: [ State.ACTIVE ] }),
+    this.xSpring.state$.isAnyOf([ State.ACTIVE ]),
+    this.ySpring.state$.isAnyOf([ State.ACTIVE ]),
   ]).dedupe().rewrite<State, State>({
     mapping: {
       true: State.ACTIVE,

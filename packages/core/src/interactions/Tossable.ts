@@ -247,8 +247,8 @@ export class Tossable {
     subscribe({
       sink: this.state$,
       source: anyOf([
-        spring.state$.isAnyOf({ candidates: [ State.ACTIVE ] }),
-        draggable.state$.isAnyOf({ candidates: [ State.ACTIVE ] }),
+        spring.state$.isAnyOf([ State.ACTIVE ]),
+        draggable.state$.isAnyOf([ State.ACTIVE ]),
       ]).rewrite({
         mapping: {
           true: State.ACTIVE,
