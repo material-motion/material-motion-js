@@ -31,9 +31,9 @@ function isTrue(value: any): boolean {
 };
 
 /**
- * Accepts an array of streams and returns a stream that dispatches true when
- * the most recent dispatch from at least one of them is true.  Inert until it
- * has received a value from each stream in the array.
+ * Accepts an array of streams and returns a stream that emits true when the
+ * most recent emission from at least one of them is true.  Inert until it has
+ * received a value from each stream in the array.
  */
 export function anyOf(streams: Array<ObservableWithMotionOperators<boolean>>): ObservableWithMotionOperators<boolean> {
   return combineLatest(streams)._map({
@@ -42,9 +42,9 @@ export function anyOf(streams: Array<ObservableWithMotionOperators<boolean>>): O
 };
 
 /**
- * Accepts an array of streams and returns a stream that dispatches true when
- * the most recent dispatch from each of them is true.  Inert until it has
- * received a value from each stream in the array.
+ * Accepts an array of streams and returns a stream that emits true when the
+ * most recent emission from each of them is true.  Inert until it has received
+ * a value from each stream in the array.
  */
 export function allOf(streams: Array<ObservableWithMotionOperators<boolean>>): ObservableWithMotionOperators<boolean> {
   return combineLatest(streams)._map({
@@ -53,8 +53,8 @@ export function allOf(streams: Array<ObservableWithMotionOperators<boolean>>): O
 };
 
 /**
- * Accepts an array of streams and returns a stream that dispatches true when
- * the most recent dispatch from each of them is false.  Inert until it has
+ * Accepts an array of streams and returns a stream that emits true when
+ * the most recent emission from each of them is false.  Inert until it has
  * received a value from each stream in the array.
  */
 export function noneOf(streams: Array<ObservableWithMotionOperators<boolean>>): ObservableWithMotionOperators<boolean> {
@@ -62,9 +62,8 @@ export function noneOf(streams: Array<ObservableWithMotionOperators<boolean>>): 
 };
 
 /**
- * Accepts an stream of booleans and returns a stream of where each value is the
- * opposite of what was received. Inert until it has received a value from each
- * stream in the array.
+ * Accepts an stream of booleans and returns a stream of where each emission is
+ * the opposite of what was emitted upstream.
  */
 export function not(stream: ObservableWithMotionOperators<boolean>): ObservableWithMotionOperators<boolean> {
   return stream._map({
@@ -73,8 +72,8 @@ export function not(stream: ObservableWithMotionOperators<boolean>): ObservableW
 };
 
 /**
- * Accepts a single stream of booleans and dispatches whenever that stream
- * dispatches `true`.  Useful in combination with the other aggregators, e.g.:
+ * Accepts a single stream of booleans and emits whenever that stream
+ * emits `true`.  Useful in combination with the other aggregators, e.g.:
  *
  * when(
  *   a.recognitionState$.isAnyOf([GestureRecognitionState.BEGAN])

@@ -56,7 +56,7 @@ export function withReactiveNextOperator<T, S extends Constructor<Observable<T>>
      * It calls `operation` with the most recent values from upstream and from
      * the other arguments.  Arguments that aren't reactive will be passed
      * through as-they-are.  Arguments that are reactive will cause `operation`
-     * to be called again for each value they dispatch.
+     * to be called again for each value they emit.
      *
      * `_reactiveNextOperator` will not call `operation` until it has received
      * a value from every argument it is subscribed to.

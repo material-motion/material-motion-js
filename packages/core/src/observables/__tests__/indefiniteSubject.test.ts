@@ -52,7 +52,7 @@ describe('indefiniteSubject',
       }
     );
 
-    it(`should call all subscribers when a new value is dispatched`,
+    it(`should call all subscribers when a new value is emitted`,
       () => {
         subject.subscribe(listener1);
         subject.subscribe(listener2);
@@ -64,7 +64,7 @@ describe('indefiniteSubject',
       }
     );
 
-    it(`should remember its last value and dispatch it immediately to a new subscriber`,
+    it(`should remember its last emission and emit it immediately to a new subscriber`,
       () => {
         subject.next(5);
         subject.subscribe(listener1);

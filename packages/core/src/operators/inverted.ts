@@ -32,13 +32,10 @@ export interface MotionInvertible<T> {
 export function withInverted<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionInvertible<T>> {
   return class extends superclass implements MotionInvertible<T> {
     /**
-     * Useful for getting the opposite of a boolean or the complementary
-     * percentage of a number between 0 and 1 (inclusive).
+     * Emits the complementary percentage of a number between 0 and 1
+     * (inclusive).
      *
-     * Dispatches:
-     * - `false` when it receives `true`,
-     * - `true` when it receives `false`,
-     * - `1 - value` when it receives a numeric value
+     * For instance, if it receives `.33`, it will emit `.67`.
      */
     inverted<U extends T & number>(): ObservableWithMotionOperators<U> {
       return (this as any as MotionNextOperable<U>)._nextOperator({

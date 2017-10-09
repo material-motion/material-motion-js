@@ -50,7 +50,7 @@ describe('combineLatest',
       }
     );
 
-    it('should dispatch a dictionary of values when it receives a dictionary',
+    it('should emit a dictionary of values when it receives a dictionary',
       () => {
         combineLatest({ a: subject1, b: subject2 }).subscribe(listener);
 
@@ -61,7 +61,7 @@ describe('combineLatest',
       }
     );
 
-    it('should dispatch an array of values when it receives an array',
+    it('should emit an array of values when it receives an array',
       () => {
         combineLatest([ subject1, subject2 ]).subscribe(listener);
 
@@ -72,7 +72,7 @@ describe('combineLatest',
       }
     );
 
-    it('should dispatch each time it receives a new value when it receives a dictionary',
+    it('should emit each time it receives a new value when it receives a dictionary',
       () => {
         combineLatest({ a: subject1, b: subject2 }).subscribe(listener);
 
@@ -89,7 +89,7 @@ describe('combineLatest',
       }
     );
 
-    it('should dispatch each time it receives a new value when it receives an array',
+    it('should emit each time it receives a new value when it receives an array',
       () => {
         combineLatest([ subject1, subject2 ]).subscribe(listener);
 
@@ -128,7 +128,7 @@ describe('combineLatest',
       }
     );
 
-    it('should not dispatch until it receives a value from each item in the dictionary',
+    it('should not emit until it receives a value from each item in the dictionary',
       () => {
         combineLatest({ a: subject1, b: subject2 }).subscribe(listener);
 
@@ -138,7 +138,7 @@ describe('combineLatest',
       }
     );
 
-    it('should not dispatch until it receives a value from each item in the array',
+    it('should not emit until it receives a value from each item in the array',
       () => {
         combineLatest([ subject1, subject2 ]).subscribe(listener);
 
@@ -148,7 +148,7 @@ describe('combineLatest',
       }
     );
 
-    it('should dispatch a new dictionary for each change',
+    it('should emit a new dictionary for each change',
       () => {
         combineLatest({ a: subject1, b: subject2 }).subscribe(listener);
 
@@ -160,7 +160,7 @@ describe('combineLatest',
       }
     );
 
-    it('should dispatch a new array for each change',
+    it('should emit a new array for each change',
       () => {
         combineLatest([ subject1, subject2 ]).subscribe(listener);
 

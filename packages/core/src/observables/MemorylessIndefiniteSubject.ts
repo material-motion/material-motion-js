@@ -39,9 +39,9 @@ export class MemorylessIndefiniteSubject<T> implements Observable<T>, Observer<T
    * Passes the supplied value to any currently-subscribed observers.
    */
   next(value: T) {
-    // The parent stream has dispatched a value, so pass it along to all the
+    // The parent stream has emitted a value, so pass it along to all the
     // children, and cache it for any observers that subscribe before the next
-    // dispatch.
+    // emission.
     this._observers.forEach(
       (observer: Observer<T>) => observer.next(value)
     );

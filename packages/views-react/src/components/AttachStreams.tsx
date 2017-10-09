@@ -38,7 +38,7 @@ export type AttachStreamsState = {
 
 /**
  * `AttachStreams` is a stateful component that listens to any stream it
- * receives as a prop.  Whenever the stream dispatches a value, `AttachStreams`
+ * receives as a prop.  Whenever the stream emits a value, `AttachStreams`
  * forwards that value as a prop onto its child component.
  *
  * If the prop name starts with "on," `AttachStreams` presumes the prop
@@ -142,8 +142,8 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
    * of the prop name (e.g. `click` for `onClick`) and forward them to the
    * stream.
    *
-   * Otherwise, `AttachStreams` will subscribe to the stream and pass any values
-   * the stream dispatches as props to its `children` component.
+   * Otherwise, `AttachStreams` will subscribe to the stream and pass any
+   * emissions as props to its `children` component.
    */
   private _subscribeToProps(props: Partial<AttachStreamsProps>) {
     let usesPointerEvents: boolean = false;

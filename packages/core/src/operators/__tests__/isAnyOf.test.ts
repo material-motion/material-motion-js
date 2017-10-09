@@ -47,7 +47,7 @@ describe('motionObservable.isAnyOf',
       }
     );
 
-    it('should dispatch true when the upstream values matches a possibility',
+    it('should emit true when the upstream values matches a possibility',
       () => {
         subject.isAnyOf({ candidates: [1, 2, 3] }).subscribe(listener);
 
@@ -57,7 +57,7 @@ describe('motionObservable.isAnyOf',
       }
     );
 
-    it('should dispatch false when the upstream values matches a possibility',
+    it('should emit false when the upstream values matches a possibility',
       () => {
         subject.isAnyOf({ candidates: [1, 2, 3] }).subscribe(listener);
 

@@ -53,7 +53,7 @@ describe('motionObservable.rewrite',
       }
     );
 
-    it('should dispatch the matching value from an object literal',
+    it('should emit the matching value from an object literal',
       () => {
         stream.rewrite({ mapping: {  a: 1, b: 2 } }).subscribe(listener);
 
@@ -73,7 +73,7 @@ describe('motionObservable.rewrite',
       }
     );
 
-    it('should dispatch the matching value from an object literal of streams',
+    it('should emit the matching value from an object literal of streams',
       () => {
         stream.rewrite({ mapping: {  a: innerSubject, b: 1 } }).subscribe(listener);
 
@@ -87,7 +87,7 @@ describe('motionObservable.rewrite',
       }
     );
 
-    it('should dispatch the matching value from a Map',
+    it('should emit the matching value from a Map',
       () => {
         const mapping = new Map();
         const a = Symbol();
@@ -104,7 +104,7 @@ describe('motionObservable.rewrite',
       }
     );
 
-    it('should dispatch the matching value from a Map of streams',
+    it('should emit the matching value from a Map of streams',
       () => {
         const mapping = new Map();
         const a = Symbol();

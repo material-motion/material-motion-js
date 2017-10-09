@@ -39,7 +39,7 @@ export function withRewriteRange<T, S extends Constructor<MotionNextOperable<T>>
   return class extends superclass implements MotionRewriteRangeable {
     /**
      * Receives a value from upstream, linearly interpolates it between the given
-     * ranges, and dispatches the result to the observer.
+     * ranges, and emits the result.
      */
     rewriteRange({
       fromStart$ = 0,

@@ -45,7 +45,7 @@ describe('motionObservable.multipliedBy',
       }
     );
 
-    it('should multiply the coefficient by the incoming value and dispatch the result',
+    it('should multiply the coefficient by the incoming value and emit the result',
       () => {
         subject.multipliedBy({ value$: 10 }).subscribe(listener);
 
@@ -55,7 +55,7 @@ describe('motionObservable.multipliedBy',
       }
     );
 
-    it('should multiply values from a coefficient subject by the incoming value and dispatch the result',
+    it('should multiply values from a coefficient subject by the incoming value and emit the result',
       () => {
         subject.multipliedBy({ value$ }).subscribe(listener);
 
@@ -66,7 +66,7 @@ describe('motionObservable.multipliedBy',
       }
     );
 
-    it('should multiply point values from a coefficient subject by the incoming value and dispatch the result',
+    it('should multiply point values from a coefficient subject by the incoming value and emit the result',
       () => {
         subject.multipliedBy({ value$ }).subscribe(listener);
 

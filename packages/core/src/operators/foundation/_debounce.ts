@@ -43,9 +43,9 @@ export function withDebounce<T, S extends Constructor<MotionNextOperable<T>>>(su
     & Constructor<MotionDebounceable<T>> {
   return class extends superclass implements MotionDebounceable<T> {
     /**
-     * Throttles the upstream subscription to dispatch its latest value whenever
-     * `pulse$` dispatches.  If more than one value is received whilst awaiting
-     * the pulse, the most recent value is dispatched and the intermediaries are
+     * Throttles the upstream subscription to emit its latest value whenever
+     * `pulse$` emits.  If more than one value is received whilst awaiting
+     * the pulse, the most recent value is emitted and the intermediaries are
      * forgotten.
      *
      * By default, it will throttle to the framerate using
@@ -54,20 +54,20 @@ export function withDebounce<T, S extends Constructor<MotionNextOperable<T>>>(su
     _debounce({ pulse$ = getFrame$() } = {}): ObservableWithMotionOperators<T> {
       return new MotionObservable<T>(
         (observer: Observer<T>) => {
-          let awaitingDispatch = false;
+          let awaitingEmit = false;
           let lastValue: T;
 
           const valueSubscription = this.subscribe(
             (value: T) => {
               lastValue = value;
-              awaitingDispatch = true;
+              awaitingEmit = true;
             }
           );
 
           const pulseSubscription = pulse$.subscribe(
             () => {
-              if (awaitingDispatch) {
-                awaitingDispatch = false;
+              if (awaitingEmit) {
+                awaitingEmit = false;
                 observer.next(lastValue);
               }
             }

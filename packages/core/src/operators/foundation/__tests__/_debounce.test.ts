@@ -68,7 +68,7 @@ describe('motionObservable._debounce',
         }
       );
 
-      it('should dispatch exactly once per frame',
+      it('should emit exactly once per frame',
         () => {
           stream._debounce().subscribe(listener1);
 

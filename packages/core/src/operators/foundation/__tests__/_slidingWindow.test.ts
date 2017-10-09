@@ -50,7 +50,7 @@ describe('motionObservable._slidingWindow',
       }
     );
 
-    it(`should not dispatch items as it receives them`,
+    it(`should not emit items as it receives them`,
       () => {
         stream._slidingWindow({ size: 3 }).subscribe(listener);
 
@@ -60,7 +60,7 @@ describe('motionObservable._slidingWindow',
       }
     );
 
-    it(`should dispatch when the array is the correct length`,
+    it(`should emit when the array is the correct length`,
       () => {
         stream._slidingWindow({ size: 3 }).subscribe(listener);
 

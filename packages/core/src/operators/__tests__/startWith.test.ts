@@ -50,7 +50,7 @@ describe('motionObservable.startWith',
       }
     );
 
-    it('should dispatch the initialValue',
+    it('should emit the initialValue',
       () => {
         stream.startWith({ value: 10 }).subscribe(listener);
 

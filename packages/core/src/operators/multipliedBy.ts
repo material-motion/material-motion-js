@@ -53,7 +53,7 @@ export interface MotionMultipliable<T> {
 export function withMultipliedBy<T, S extends Constructor<MotionMathOperable<T>>>(superclass: S): S & Constructor<MotionMultipliable<T>> {
   return class extends superclass implements MotionMultipliable<T> {
     /**
-     * Multiplies the upstream value by the provided value and dispatches the
+     * Multiplies the upstream value by the provided value and emits the
      * result.
      */
     multipliedBy<U extends T & (Point2D | number)>(kwargs: MultipliedByArgs<U>): ObservableWithMotionOperators<U>;

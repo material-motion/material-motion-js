@@ -47,7 +47,7 @@ export interface MotionMathOperable<T> {
 export function withMathOperator<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionMathOperable<T>> {
   return class extends superclass implements MotionMathOperable<T> {
     /**
-     * Applies the operation to each dimension and dispatches the result.
+     * Applies the operation to each dimension and emits the result.
      */
     _mathOperator<U extends T & (number | Point2D)>({ operation, value$, ...reactiveMapOptions }: _MathOperatorArgs<U>): ObservableWithMotionOperators<U> {
       return (this as any as MotionReactiveMappable<U>)._reactiveMap({

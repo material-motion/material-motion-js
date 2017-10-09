@@ -33,11 +33,11 @@ export interface MotionMemorable<T> extends Observable<T> {
 export function withRemember<T, S extends Constructor<Observable<T>>>(superclass: S): S & Constructor<MotionMemorable<T>> {
   return class extends superclass implements MotionMemorable<T> {
     /**
-     * Remembers the most recently dispatched value and synchronously
-     * dispatches it to all new subscribers.
+     * Remembers the most recent emission and synchronously emits it to all new
+     * subscribers.
      *
      * `_remember()` is also useful for ensuring that expensive operations only
-     * happen once per dispatch, sharing the resulting value with all observers.
+     * happen once per emission, sharing the resulting value with all observers.
      */
     _remember(): ObservableWithMotionOperators<T> {
       const result = new MotionSubject<T>();

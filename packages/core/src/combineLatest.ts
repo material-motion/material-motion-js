@@ -72,18 +72,18 @@ export function combineLatest<V, T extends Dict<V | Observable<V>> | Array<V | O
               outstandingKeys.delete(key);
 
               (nextValue as Dict<V>)[key] = value as V;
-              dispatchNextValue();
+              emitNextValue();
             }
           );
         } else {
           outstandingKeys.delete(key);
 
           (nextValue as Dict<V>)[key] = maybeStream as V;
-          dispatchNextValue();
+          emitNextValue();
         }
       }
 
-      function dispatchNextValue() {
+      function emitNextValue() {
         if (waitForAllValues ? outstandingKeys.size === 0 : !initializing) {
           observer.next(
             (
@@ -95,7 +95,7 @@ export function combineLatest<V, T extends Dict<V | Observable<V>> | Array<V | O
         }
       }
 
-      dispatchNextValue();
+      emitNextValue();
 
       return function disconnect() {
         Object.values(subscriptions).forEach(

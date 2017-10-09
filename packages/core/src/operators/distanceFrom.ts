@@ -42,9 +42,9 @@ export interface MotionMeasurable<T> {
 export function withDistanceFrom<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionMeasurable<T>> {
   return class extends superclass implements MotionMeasurable<T> {
     /**
-     * Dispatches the distance that each upstream value is from a given origin.
-     * The origin may be a number or a point, but the dispatched value will
-     * always be a number; distance is computed using Pythagorean theorem.
+     * Emits the distance that each upstream emission is from a given origin.
+     * The origin may be a number or a point, but `distanceFrom` will always
+     * emit a number; distance is computed using Pythagorean theorem.
      */
     distanceFrom(kwargs: DistanceFromArgs<T>): ObservableWithMotionOperators<number>;
     distanceFrom(origin$: DistanceFromOrigin<T>): ObservableWithMotionOperators<number>;

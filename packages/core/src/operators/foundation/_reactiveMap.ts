@@ -24,7 +24,7 @@ import {
 } from '../../types';
 
 export type _ReactiveMapOptions = Partial<{
-  onlyDispatchWithUpstream: boolean,
+  onlyEmitWithUpstream: boolean,
 }>;
 
 export type _ReactiveMapArgs<T, D, U> = _ReactiveMapOptions & {
@@ -42,10 +42,10 @@ export function withReactiveMap<T, S extends Constructor<MotionReactiveNextOpera
      * `_reactiveMap` calls `transform` and synchronously passes the result to
      * the observer.
      *
-     * If the `onlyDispatchWithUpstream` option is set, `transform` is only
+     * If the `onlyEmitWithUpstream` option is set, `transform` is only
      * called when the upstream value changes.
      */
-    _reactiveMap<U, D>({ transform, inputs, onlyDispatchWithUpstream = false }: _ReactiveMapArgs<T, D, U>): ObservableWithMotionOperators<U> {
+    _reactiveMap<U, D>({ transform, inputs, onlyEmitWithUpstream = false }: _ReactiveMapArgs<T, D, U>): ObservableWithMotionOperators<U> {
       let upstreamChanged = false;
 
       return this._tap({
@@ -54,7 +54,7 @@ export function withReactiveMap<T, S extends Constructor<MotionReactiveNextOpera
         },
       })._reactiveNextOperator<U, D>({
         operation: ({ emit }) => (values) => {
-          if (upstreamChanged || !onlyDispatchWithUpstream) {
+          if (upstreamChanged || !onlyEmitWithUpstream) {
             emit(transform(values));
           }
           upstreamChanged = false;

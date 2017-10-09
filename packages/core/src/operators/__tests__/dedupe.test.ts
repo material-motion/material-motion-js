@@ -46,7 +46,7 @@ describe('motionObservable.dedupe',
       }
     );
 
-    it('should dispatch the first value it receives',
+    it('should emit the first value it receives',
       () => {
         subject.dedupe().subscribe(listener1);
 

@@ -52,7 +52,7 @@ export interface MotionSubtractable<T> {
 export function withSubtractedBy<T, S extends Constructor<MotionMathOperable<T>>>(superclass: S): S & Constructor<MotionSubtractable<T>> {
   return class extends superclass implements MotionSubtractable<T> {
     /**
-     * Subtracts the provided value from the upstream value and dispatches the
+     * Subtracts the provided value from the upstream value and emits the
      * result.
      */
     subtractedBy<U extends T & (Point2D | number)>(kwargs: SubtractedByArgs<U>): ObservableWithMotionOperators<U>;

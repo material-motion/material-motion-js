@@ -55,8 +55,7 @@ export interface MotionDivisible<T> {
 export function withDividedBy<T, S extends Constructor<MotionMathOperable<T>>>(superclass: S): S & Constructor<MotionDivisible<T>> {
   return class extends superclass implements MotionDivisible<T> {
     /**
-     * Divides the upstream value by the provided value and dispatches the
-     * result.
+     * Divides the upstream value by the provided value and emits the result.
      */
     dividedBy<U extends T & (Point2D | number)>(kwargs: DividedByArgs<U>): ObservableWithMotionOperators<U>;
     dividedBy<U extends T & (Point2D | number)>(value$: DividedByValue<U>): ObservableWithMotionOperators<U>;

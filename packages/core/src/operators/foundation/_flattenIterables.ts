@@ -33,7 +33,7 @@ export interface MotionFlattenable<T> {
 export function withFlattenIterables<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionFlattenable<T>> {
   return class extends superclass implements MotionFlattenable<T> {
     /**
-     * Iterates over every value it receives from upstream and dispatches each
+     * Iterates over every value it receives from upstream and emits each
      * individually.
      */
     _flattenIterables<U>(): ObservableWithMotionOperators<U> {

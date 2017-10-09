@@ -52,7 +52,7 @@ describe('motionObservable.rewriteTo',
       }
     );
 
-    it('should dispatch its argument whenever it receives a value from upstream',
+    it('should emit its argument whenever it receives an emission from upstream',
       () => {
         stream.rewriteTo({ value$: 'banana' }).subscribe(listener);
 
@@ -83,9 +83,9 @@ describe('motionObservable.rewriteTo',
       }
     );
 
-    it('should support reactive arguments and onlyDispatchWithUpstream',
+    it('should support reactive arguments and onlyEmitWithUpstream',
       () => {
-        stream.rewriteTo({ value$, onlyDispatchWithUpstream: false }).subscribe(listener);
+        stream.rewriteTo({ value$, onlyEmitWithUpstream: false }).subscribe(listener);
 
         mockObserver.next(false);
 

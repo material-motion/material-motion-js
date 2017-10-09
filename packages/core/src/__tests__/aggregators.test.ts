@@ -58,7 +58,7 @@ describe('anyOf',
       }
     );
 
-    it('should do nothing until all streams have dispatched',
+    it('should do nothing until all streams have emitted',
       () => {
         anyOf([subject1, subject2]).subscribe(listener);
 
@@ -68,7 +68,7 @@ describe('anyOf',
       }
     );
 
-    it('should dispatch true if one of the streams dispatched true',
+    it('should emit true if one of the streams emitted true',
       () => {
         anyOf([subject1, subject2]).subscribe(listener);
 
@@ -79,7 +79,7 @@ describe('anyOf',
       }
     );
 
-    it('should dispatch false if none of the streams dispatched true',
+    it('should emit false if none of the streams emitted true',
       () => {
         anyOf([subject1, subject2]).subscribe(listener);
 
@@ -90,7 +90,7 @@ describe('anyOf',
       }
     );
 
-    it('should dispatch true if all of the streams dispatched true',
+    it('should emit true if all of the streams emitted true',
       () => {
         anyOf([subject1, subject2]).subscribe(listener);
 
@@ -117,7 +117,7 @@ describe('allOf',
       }
     );
 
-    it('should do nothing until all streams have dispatched',
+    it('should do nothing until all streams have emitted',
       () => {
         allOf([subject1, subject2]).subscribe(listener);
 
@@ -127,7 +127,7 @@ describe('allOf',
       }
     );
 
-    it('should dispatch false if only some of the streams dispatched true',
+    it('should emit false if only some of the streams emitted true',
       () => {
         allOf([subject1, subject2]).subscribe(listener);
 
@@ -138,7 +138,7 @@ describe('allOf',
       }
     );
 
-    it('should dispatch false if none of the streams dispatched true',
+    it('should emit false if none of the streams emitted true',
       () => {
         allOf([subject1, subject2]).subscribe(listener);
 
@@ -149,7 +149,7 @@ describe('allOf',
       }
     );
 
-    it('should dispatch true if all of the streams dispatched true',
+    it('should emit true if all of the streams emitted true',
       () => {
         allOf([subject1, subject2]).subscribe(listener);
 
@@ -176,7 +176,7 @@ describe('noneOf',
       }
     );
 
-    it('should do nothing until all streams have dispatched',
+    it('should do nothing until all streams have emitted',
       () => {
         noneOf([subject1, subject2]).subscribe(listener);
 
@@ -186,7 +186,7 @@ describe('noneOf',
       }
     );
 
-    it('should dispatch false if one of the streams dispatched true',
+    it('should emit false if one of the streams emitted true',
       () => {
         noneOf([subject1, subject2]).subscribe(listener);
 
@@ -197,7 +197,7 @@ describe('noneOf',
       }
     );
 
-    it('should dispatch true if none of the streams dispatched true',
+    it('should emit true if none of the streams emitted true',
       () => {
         noneOf([subject1, subject2]).subscribe(listener);
 
@@ -208,7 +208,7 @@ describe('noneOf',
       }
     );
 
-    it('should dispatch false if all of the streams dispatched true',
+    it('should emit false if all of the streams emitted true',
       () => {
         noneOf([subject1, subject2]).subscribe(listener);
 
@@ -234,7 +234,7 @@ describe('not',
     );
 
 
-    it('should dispatch false when it receives true',
+    it('should emit false when it receives true',
       () => {
         not(subject).subscribe(listener);
 
@@ -244,7 +244,7 @@ describe('not',
       }
     );
 
-    it('should dispatch true when it receives false',
+    it('should emit true when it receives false',
       () => {
         not(subject).subscribe(listener);
 

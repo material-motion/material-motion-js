@@ -107,7 +107,7 @@ describe('NumericSpring',
         }
       );
 
-      it('becomes active before dispatching new values',
+      it('becomes active before emitting new values',
         () => {
           let tested;
 

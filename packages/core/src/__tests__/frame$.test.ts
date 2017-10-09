@@ -56,7 +56,7 @@ describe('frame$',
         }
       );
 
-      it('should dispatch at the beginning of each frame',
+      it('should emit at the beginning of each frame',
         () => {
           frame$.subscribe(listener);
 
@@ -68,7 +68,7 @@ describe('frame$',
         }
       );
 
-      it('should stop dispatching on unsubscription',
+      it('should stop emitting on unsubscription',
         () => {
           const subscription = frame$.subscribe(listener);
 
@@ -80,7 +80,7 @@ describe('frame$',
         }
       );
 
-      it('should not dispatch if unsubscribed from before a frame occurs',
+      it('should not emit if unsubscribed from before a frame occurs',
         () => {
           const subscription = frame$.subscribe(listener);
           subscription.unsubscribe();

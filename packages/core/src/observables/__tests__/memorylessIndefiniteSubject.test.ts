@@ -53,7 +53,7 @@ describe('memorylessIndefiniteSubject',
       }
     );
 
-    it(`should call all subscribers when a new value is dispatched`,
+    it(`should call all subscribers when a new value is emitted`,
       () => {
         subject.subscribe(listener1);
         subject.subscribe(listener2);

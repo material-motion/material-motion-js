@@ -43,11 +43,11 @@ export interface MotionRewriteToable {
 export function withRewriteTo<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionRewriteToable> {
   return class extends superclass implements MotionRewriteToable {
     /**
-     * Dispatches its argument every time it receives a value from upstream.
+     * Emits its argument every time it receives an emission from upstream.
      */
     rewriteTo<U>(kwargs: RewriteToArgs<U>): ObservableWithMotionOperators<U>;
     rewriteTo<U>(value$: RewriteToValue<U>): ObservableWithMotionOperators<U>;
-    rewriteTo<U>({ value$, onlyDispatchWithUpstream = true, ...reactiveMapOptions }: RewriteToArgs<U>): ObservableWithMotionOperators<U> {
+    rewriteTo<U>({ value$, onlyEmitWithUpstream = true, ...reactiveMapOptions }: RewriteToArgs<U>): ObservableWithMotionOperators<U> {
       if (!isDefined(value$)) {
         value$ = arguments[0];
       }
@@ -57,7 +57,7 @@ export function withRewriteTo<T, S extends Constructor<MotionReactiveMappable<T>
         inputs: {
           value: value$
         },
-        onlyDispatchWithUpstream,
+        onlyEmitWithUpstream,
         ...reactiveMapOptions,
       });
     }

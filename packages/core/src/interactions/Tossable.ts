@@ -181,7 +181,7 @@ export class Tossable {
 
     this.draggedLocation$ = draggable.value$.addedBy<Point2D>({
       value$: locationOnDown$,
-      onlyDispatchWithUpstream: true
+      onlyEmitWithUpstream: true
     })._reactiveMap({
       transform: ({
         upstream: location,
@@ -224,7 +224,7 @@ export class Tossable {
         resistanceBasis: this.resistanceBasis$,
         resistanceFactor: this.resistanceFactor$,
       },
-      onlyDispatchWithUpstream: true,
+      onlyEmitWithUpstream: true,
     });
 
     this.velocity$ = getVelocity$({
@@ -264,7 +264,7 @@ export class Tossable {
           true: spring.value$,
           false: this.draggedLocation$,
         },
-        dispatchOnKeyChange: false,
+        emitOnKeyChange: false,
       })._debounce(),
     });
 

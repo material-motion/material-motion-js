@@ -46,7 +46,7 @@ describe('motionObservable.subtractedBy',
       }
     );
 
-    it('should subtract the value constant from the upstream numeric value and dispatch the result',
+    it('should subtract the value constant from the upstream numeric value and emit the result',
       () => {
         subject.subtractedBy({ value$: 10 }).subscribe(listener);
 
@@ -56,7 +56,7 @@ describe('motionObservable.subtractedBy',
       }
     );
 
-    it('should subtract the value constant to an upstream Point2D value and dispatch the result',
+    it('should subtract the value constant to an upstream Point2D value and emit the result',
       () => {
         subject.subtractedBy({ value$: { x: 10, y: 20 } }).subscribe(listener);
 
@@ -66,7 +66,7 @@ describe('motionObservable.subtractedBy',
       }
     );
 
-    it('should subtract values from value$ from the upstream numeric value and dispatch the result',
+    it('should subtract values from value$ from the upstream numeric value and emit the result',
       () => {
         subject.subtractedBy({ value$ }).subscribe(listener);
 
@@ -78,7 +78,7 @@ describe('motionObservable.subtractedBy',
       }
     );
 
-    it('should subtract values from value$ from an upstream Point2D value and dispatch the result',
+    it('should subtract values from value$ from an upstream Point2D value and emit the result',
       () => {
         subject.subtractedBy({ value$ }).subscribe(listener);
 
