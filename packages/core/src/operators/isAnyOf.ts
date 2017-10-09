@@ -39,8 +39,8 @@ export type IsAnyOfArgs<T> = {
 };
 
 export interface MotionIsAnyOfable<T> {
-  isAnyOf(candidates: IsAnyOfCandidates<T>): ObservableWithMotionOperators<boolean>;
   isAnyOf(kwargs: IsAnyOfArgs<T>): ObservableWithMotionOperators<boolean>;
+  isAnyOf(candidates: IsAnyOfCandidates<T>): ObservableWithMotionOperators<boolean>;
 }
 
 export function withIsAnyOf<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionIsAnyOfable<T>> {
@@ -49,8 +49,8 @@ export function withIsAnyOf<T, S extends Constructor<MotionReactiveMappable<T>>>
      * Dispatches `true` when it receives a value that matches any of the
      * provided candidates and `false` otherwise.
      */
+    isAnyOf(kwargs: IsAnyOfArgs<T>): ObservableWithMotionOperators<boolean>;
     isAnyOf(candidates: IsAnyOfCandidates<T>): ObservableWithMotionOperators<boolean>;
-    isAnyOf({ candidates }: IsAnyOfArgs<T>): ObservableWithMotionOperators<boolean>;
     isAnyOf({ candidates }: IsAnyOfArgs<T> & IsAnyOfCandidates<T>): ObservableWithMotionOperators<boolean> {
       if (!isDefined(candidates)) {
         candidates = arguments[0];

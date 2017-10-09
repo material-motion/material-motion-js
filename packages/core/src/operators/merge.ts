@@ -38,8 +38,8 @@ export type MergeArgs<T> = {
 };
 
 export interface MotionMergeable<T> extends Observable<T> {
-  merge(others: Array<Observable<T>>): ObservableWithMotionOperators<T>;
   merge(kwargs: MergeArgs<T>): ObservableWithMotionOperators<T>;
+  merge(others: Array<Observable<T>>): ObservableWithMotionOperators<T>;
 }
 
 export function withMerge<T, S extends Constructor<Observable<T>>>(superclass: S): S & Constructor<MotionMergeable<T>> {
@@ -48,8 +48,8 @@ export function withMerge<T, S extends Constructor<Observable<T>>>(superclass: S
      * Dispatches values as it receives them, both from upstream and from any
      * streams provided as arguments.
      */
-    merge(others: Array<Observable<T>>): ObservableWithMotionOperators<T>;
     merge(kwargs: MergeArgs<T>): ObservableWithMotionOperators<T>;
+    merge(others: Array<Observable<T>>): ObservableWithMotionOperators<T>;
     merge({ others }: MergeArgs<T> & Array<Observable<T>>): ObservableWithMotionOperators<T> {
       if (!isDefined(others)) {
         others = arguments[0];

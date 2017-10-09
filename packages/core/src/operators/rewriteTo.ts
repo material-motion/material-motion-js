@@ -45,8 +45,8 @@ export function withRewriteTo<T, S extends Constructor<MotionReactiveMappable<T>
     /**
      * Dispatches its argument every time it receives a value from upstream.
      */
-    rewriteTo<U>(value$: RewriteToValue<U>): ObservableWithMotionOperators<U>;
     rewriteTo<U>(kwargs: RewriteToArgs<U>): ObservableWithMotionOperators<U>;
+    rewriteTo<U>(value$: RewriteToValue<U>): ObservableWithMotionOperators<U>;
     rewriteTo<U>({ value$, onlyDispatchWithUpstream = true, ...reactiveMapOptions }: RewriteToArgs<U>): ObservableWithMotionOperators<U> {
       if (!isDefined(value$)) {
         value$ = arguments[0];

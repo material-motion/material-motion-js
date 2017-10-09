@@ -29,8 +29,8 @@ export type AppendUnitArgs = {
 }
 
 export interface MotionAppendUnitable {
-  appendUnit(unit: string): ObservableWithMotionOperators<string>;
   appendUnit(kwargs: AppendUnitArgs): ObservableWithMotionOperators<string>;
+  appendUnit(unit: string): ObservableWithMotionOperators<string>;
 }
 
 export function withAppendUnit<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionAppendUnitable> {
@@ -39,8 +39,8 @@ export function withAppendUnit<T, S extends Constructor<MotionMappable<T>>>(supe
      * Converts a stream to a CSS string representation by appending the given
      * unit to the upstream values.
      */
-    appendUnit(unit: string): ObservableWithMotionOperators<string>;
     appendUnit(kwargs: AppendUnitArgs): ObservableWithMotionOperators<string>;
+    appendUnit(unit: string): ObservableWithMotionOperators<string>;
     appendUnit({ unit }: AppendUnitArgs & string): ObservableWithMotionOperators<string> {
       if (!isDefined(unit)) {
         unit = arguments[0];

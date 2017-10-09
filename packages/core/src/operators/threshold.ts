@@ -40,14 +40,14 @@ export type ThresholdArgs = _ReactiveMapOptions & {
 };
 
 export interface MotionThresholdable {
-  threshold(limit$: ThresholdLimit): ObservableWithMotionOperators<ThresholdRegion>;
   threshold(kwargs: ThresholdArgs): ObservableWithMotionOperators<ThresholdRegion>;
+  threshold(limit$: ThresholdLimit): ObservableWithMotionOperators<ThresholdRegion>;
 }
 
 export function withThreshold<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionThresholdable> {
   return class extends superclass implements MotionThresholdable {
-    threshold(limit$: ThresholdLimit): ObservableWithMotionOperators<ThresholdRegion>;
     threshold(kwargs: ThresholdArgs): ObservableWithMotionOperators<ThresholdRegion>;
+    threshold(limit$: ThresholdLimit): ObservableWithMotionOperators<ThresholdRegion>;
     threshold({ limit$, ...reactiveMapOptions }: any): ObservableWithMotionOperators<ThresholdRegion> {
       if (!isDefined(limit$)) {
         limit$ = arguments[0];

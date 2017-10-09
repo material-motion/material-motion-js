@@ -35,8 +35,8 @@ export type DistanceFromArgs<T> = {
 };
 
 export interface MotionMeasurable<T> {
-  distanceFrom(origin$: DistanceFromOrigin<T>): ObservableWithMotionOperators<number>;
   distanceFrom(kwargs: DistanceFromArgs<T>): ObservableWithMotionOperators<number>;
+  distanceFrom(origin$: DistanceFromOrigin<T>): ObservableWithMotionOperators<number>;
 }
 
 export function withDistanceFrom<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionMeasurable<T>> {
@@ -46,8 +46,8 @@ export function withDistanceFrom<T, S extends Constructor<MotionReactiveMappable
      * The origin may be a number or a point, but the dispatched value will
      * always be a number; distance is computed using Pythagorean theorem.
      */
+    distanceFrom(kwargs: DistanceFromArgs<T>): ObservableWithMotionOperators<number>;
     distanceFrom(origin$: DistanceFromOrigin<T>): ObservableWithMotionOperators<number>;
-    distanceFrom({ origin$ }: DistanceFromArgs<T>): ObservableWithMotionOperators<number>;
     distanceFrom({ origin$ }: DistanceFromArgs<T> & DistanceFromOrigin<T>): ObservableWithMotionOperators<number> {
       if (!isDefined(origin$)) {
         origin$ = arguments[0] as DistanceFromOrigin<T>;
