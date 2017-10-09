@@ -160,7 +160,7 @@ export class Swipeable {
       })
     });
 
-    this.direction$ = draggedX$.threshold({ limit$: 0 }).isAnyOf([ ThresholdRegion.ABOVE ]).rewrite({
+    this.direction$ = draggedX$.threshold(0).isAnyOf([ ThresholdRegion.ABOVE ]).rewrite({
       mapping: {
         true: Direction.RIGHT,
         false: Direction.LEFT,
@@ -174,7 +174,7 @@ export class Swipeable {
     // `resistanceProgress`. Thus, we independently calculate the threshold
     // here.
 
-    this.isThresholdMet$ = draggedX$.distanceFrom(0).threshold({ limit$: Swipeable.VISUAL_THRESHOLD }).isAnyOf([
+    this.isThresholdMet$ = draggedX$.distanceFrom(0).threshold(Swipeable.VISUAL_THRESHOLD).isAnyOf([
       ThresholdRegion.ABOVE,
       ThresholdRegion.WITHIN,
     ]);
