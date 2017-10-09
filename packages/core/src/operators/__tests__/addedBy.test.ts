@@ -88,5 +88,37 @@ describe('motionObservable.addedBy',
         expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({x: 10, y: 15 });
       }
     );
+
+    it('should have a shorthand signature for numeric constants',
+      () => {
+        subject.addedBy(10).subscribe(listener);
+
+        subject.next(3);
+
+        expect(listener).to.have.been.calledWith(13);
+      }
+    );
+
+    it('should have a shorthand signature for Point2D constants',
+      () => {
+        subject.addedBy({ x : 10, y: 20 }).subscribe(listener);
+
+        subject.next({x: 100, y: -40 });
+
+        expect(listener).to.have.been.calledWith({x: 110, y: -20 });
+      }
+    );
+
+    it('should have a shorthand signature for streams',
+      () => {
+        subject.addedBy(value$).subscribe(listener);
+
+        subject.next(3);
+        value$.next(10);
+        value$.next(20);
+
+        expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(13).and.to.have.been.calledWith(23);
+      }
+    );
   }
 );

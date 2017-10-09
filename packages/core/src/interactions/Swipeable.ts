@@ -155,7 +155,7 @@ export class Swipeable {
     subscribe({
       sink: tossable.resistanceFactor$,
       source: when(tossableIsAtRest$).rewriteTo({
-        value$: tossable.resistanceBasis$.dividedBy({ value$: Swipeable.VISUAL_THRESHOLD }),
+        value$: tossable.resistanceBasis$.dividedBy(Swipeable.VISUAL_THRESHOLD),
         onlyDispatchWithUpstream: true,
       })
     });
@@ -246,7 +246,7 @@ export class Swipeable {
       }),
     });
 
-    const destinationDistance$ = width$.addedBy({ value$: this.destinationMargin$ });
+    const destinationDistance$ = width$.addedBy(this.destinationMargin$);
 
     subscribe({
       sink: spring.destination$,
@@ -254,7 +254,7 @@ export class Swipeable {
         x: this.swipeState$.rewrite({
           mapping: {
             [SwipeState.NONE]: 0,
-            [SwipeState.LEFT]: destinationDistance$.multipliedBy({ value$: -1 }),
+            [SwipeState.LEFT]: destinationDistance$.multipliedBy(-1),
             [SwipeState.RIGHT]: destinationDistance$,
           }
         }),
