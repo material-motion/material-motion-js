@@ -75,5 +75,23 @@ describe('motionObservable.merge',
         expect(listener).to.have.been.calledWith(4);
       }
     );
+
+    it('should have a shorthand signature',
+      () => {
+        stream1.merge([ stream2, stream3 ]).subscribe(listener);
+
+        mockObserver1.next(1);
+        expect(listener).to.have.been.calledOnce.and.calledWith(1);
+
+        mockObserver3.next(3);
+        expect(listener).to.have.been.calledTwice.and.calledWith(3);
+
+        mockObserver2.next(2);
+        expect(listener).to.have.been.calledThrice.and.calledWith(2);
+
+        mockObserver1.next(4);
+        expect(listener).to.have.been.calledWith(4);
+      }
+    );
   }
 );

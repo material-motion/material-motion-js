@@ -26,14 +26,19 @@ import {
 } from '../types';
 
 import {
+  isDefined,
+} from '../typeGuards';
+
+import {
   createPlucker,
 } from './pluck';
 
 export type MergeArgs<T> = {
-  others: Array<Observable<T>>
+  others: Array<Observable<T>>,
 };
 
 export interface MotionMergeable<T> extends Observable<T> {
+  merge(others: Array<Observable<T>>): ObservableWithMotionOperators<T>;
   merge(kwargs: MergeArgs<T>): ObservableWithMotionOperators<T>;
 }
 
@@ -43,7 +48,13 @@ export function withMerge<T, S extends Constructor<Observable<T>>>(superclass: S
      * Dispatches values as it receives them, both from upstream and from any
      * streams provided as arguments.
      */
-    merge({ others }: MergeArgs<T>): ObservableWithMotionOperators<T> {
+    merge(others: Array<Observable<T>>): ObservableWithMotionOperators<T>;
+    merge(kwargs: MergeArgs<T>): ObservableWithMotionOperators<T>;
+    merge({ others }: MergeArgs<T> & Array<Observable<T>>): ObservableWithMotionOperators<T> {
+      if (!isDefined(others)) {
+        others = arguments[0];
+      }
+
       return new MotionObservable(
         (observer: Observer<T>) => {
           const subscriptions = [this, ...others].map(

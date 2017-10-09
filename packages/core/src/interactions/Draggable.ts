@@ -178,7 +178,7 @@ export class Draggable {
                   (downEvent.target as Element).setPointerCapture(downEvent.pointerId);
                 }
 
-                moveSubscription = move$.merge({ others: [ up$ ] })._filter({
+                moveSubscription = move$.merge([ up$ ])._filter({
                   predicate: (nextEvent: PartialPointerEvent) => nextEvent.pointerId === downEvent.pointerId
                 }).subscribe(
                   (nextEvent: PartialPointerEvent) => {
@@ -251,13 +251,11 @@ export class Draggable {
           }
         );
 
-        cancellationSubscription = this.cancellation$.merge({
-          others: [
-            when(not(this.enabled$)),
-            cancel$,
-            contextMenu$,
-          ]
-        }).subscribe(
+        cancellationSubscription = this.cancellation$.merge([
+          when(not(this.enabled$)),
+          cancel$,
+          contextMenu$,
+        ]).subscribe(
           () => {
             if (moveSubscription) {
               moveSubscription.unsubscribe();
