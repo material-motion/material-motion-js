@@ -31,8 +31,8 @@ export type PluckArgs<T> = {
 };
 
 export interface MotionPluckable<T> {
-  pluck<K extends keyof T, U extends T[K]>(path: PluckPath<T>): ObservableWithMotionOperators<U>;
   pluck<K extends keyof T, U extends T[K]>(kwargs: PluckArgs<T>): ObservableWithMotionOperators<U>;
+  pluck<K extends keyof T, U extends T[K]>(path: PluckPath<T>): ObservableWithMotionOperators<U>;
 }
 
 export function withPluck<T, S extends Constructor<MotionMappable<T>>>(superclass: S): S & Constructor<MotionPluckable<T>> {
@@ -49,8 +49,8 @@ export function withPluck<T, S extends Constructor<MotionMappable<T>>>(superclas
      * - `transform$.pluck({ path: 'translate.x' })` is equivalent to
      *   `transform$.map(transform => transform.translate.x)`
      */
+    pluck<K extends keyof T, U extends T[K]>(kwargs: PluckArgs<T>): ObservableWithMotionOperators<U>;
     pluck<K extends keyof T, U extends T[K]>(path: PluckPath<T>): ObservableWithMotionOperators<U>;
-    pluck<K extends keyof T, U extends T[K]>({ path }: PluckArgs<T>): ObservableWithMotionOperators<U>;
     pluck<K extends keyof T, U extends T[K]>({ path }: PluckArgs<T> & K): ObservableWithMotionOperators<U> {
       if (!isDefined(path)) {
         path = arguments[0];

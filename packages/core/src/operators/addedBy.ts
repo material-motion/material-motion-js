@@ -45,10 +45,10 @@ export interface MotionAddable<T> {
   // To work around this, we overload the method signature.  When `T` is a
   // number, we explicitly return an `Observable<number>`.  Otherwise, we can
   // use the type variable `U`.
-  addedBy<U extends T & number>(value$: AddedByValue<U>): ObservableWithMotionOperators<number>;
   addedBy<U extends T & number>(kwargs: AddedByArgs<U>): ObservableWithMotionOperators<number>;
-  addedBy<U extends T & Point2D>(value$: AddedByValue<U>): ObservableWithMotionOperators<U>;
+  addedBy<U extends T & number>(value$: AddedByValue<U>): ObservableWithMotionOperators<number>;
   addedBy<U extends T & Point2D>(kwargs: AddedByArgs<U>): ObservableWithMotionOperators<U>;
+  addedBy<U extends T & Point2D>(value$: AddedByValue<U>): ObservableWithMotionOperators<U>;
 }
 
 export function withAddedBy<T, S extends Constructor<MotionMathOperable<T>>>(superclass: S): S & Constructor<MotionAddable<T>> {
@@ -56,8 +56,8 @@ export function withAddedBy<T, S extends Constructor<MotionMathOperable<T>>>(sup
     /**
      * Adds the provided value to the upstream value and dispatches the result.
      */
-    addedBy<U extends T & (Point2D | number)>(value$: AddedByValue<U>): ObservableWithMotionOperators<U>;
     addedBy<U extends T & (Point2D | number)>(kwargs: AddedByArgs<U>): ObservableWithMotionOperators<U>;
+    addedBy<U extends T & (Point2D | number)>(value$: AddedByValue<U>): ObservableWithMotionOperators<U>;
     addedBy<U extends T & (Point2D | number)>({ value$, ...reactiveMapOptions }: AddedByArgs<U>): ObservableWithMotionOperators<U> {
       if (!isDefined(value$)) {
         value$ = arguments[0];

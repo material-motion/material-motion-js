@@ -44,10 +44,10 @@ export interface MotionMultipliable<T> {
   // To work around this, we overload the method signature.  When `T` is a
   // number, we explicitly return an `Observable<number>`.  Otherwise, we can
   // use the type variable `U`.
-  multipliedBy<U extends T & number>(value$: MultipliedByValue<U>): ObservableWithMotionOperators<number>;
   multipliedBy<U extends T & number>(kwargs: MultipliedByArgs<U>): ObservableWithMotionOperators<number>;
-  multipliedBy<U extends T & Point2D>(value$: MultipliedByValue<U>): ObservableWithMotionOperators<U>;
+  multipliedBy<U extends T & number>(value$: MultipliedByValue<U>): ObservableWithMotionOperators<number>;
   multipliedBy<U extends T & Point2D>(kwargs: MultipliedByArgs<U>): ObservableWithMotionOperators<U>;
+  multipliedBy<U extends T & Point2D>(value$: MultipliedByValue<U>): ObservableWithMotionOperators<U>;
 }
 
 export function withMultipliedBy<T, S extends Constructor<MotionMathOperable<T>>>(superclass: S): S & Constructor<MotionMultipliable<T>> {
@@ -56,8 +56,8 @@ export function withMultipliedBy<T, S extends Constructor<MotionMathOperable<T>>
      * Multiplies the upstream value by the provided value and dispatches the
      * result.
      */
-    multipliedBy<U extends T & (Point2D | number)>(value$: MultipliedByValue<U>): ObservableWithMotionOperators<U>;
     multipliedBy<U extends T & (Point2D | number)>(kwargs: MultipliedByArgs<U>): ObservableWithMotionOperators<U>;
+    multipliedBy<U extends T & (Point2D | number)>(value$: MultipliedByValue<U>): ObservableWithMotionOperators<U>;
     multipliedBy<U extends T & (Point2D | number)>({ value$, ...reactiveMapOptions }: MultipliedByArgs<U>): ObservableWithMotionOperators<U> {
       if (!isDefined(value$)) {
         value$ = arguments[0];
