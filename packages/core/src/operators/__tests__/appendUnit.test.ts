@@ -59,5 +59,15 @@ describe('motionObservable.appendUnit',
         expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith('50px');
       }
     );
+
+    it('should have a shorthand signature',
+      () => {
+        stream.appendUnit('px').subscribe(listener);
+
+        mockObserver.next(50);
+
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith('50px');
+      }
+    );
   }
 );
