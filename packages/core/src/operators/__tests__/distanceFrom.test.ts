@@ -87,5 +87,27 @@ describe('motionObservable.distanceFrom',
         expect(valueInLastCall).to.be.closeTo(hypoteneuse, 1);
       }
     );
+
+    it('should accept a shorthand signature for numbers',
+      () => {
+        stream.distanceFrom(10).subscribe(listener);
+
+        mockObserver.next(15);
+
+        expect(listener).to.have.been.calledWith(5);
+      }
+    );
+
+    it('should accept a shorthand signature for points',
+      () => {
+        stream.distanceFrom({ x: 100, y: 100 }).subscribe(listener);
+
+        mockObserver.next({ x: 0, y: 0 });
+
+        const hypoteneuse = 100 / Math.cos(Math.PI / 4);
+        const valueInLastCall = listener.lastCall.args[0];
+        expect(valueInLastCall).to.be.closeTo(hypoteneuse, 1);
+      }
+    );
   }
 );
