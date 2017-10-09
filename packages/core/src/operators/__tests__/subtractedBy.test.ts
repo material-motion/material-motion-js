@@ -89,5 +89,37 @@ describe('motionObservable.subtractedBy',
         expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({ x: 10, y: -15 });
       }
     );
+
+    it('should have a shorthand signature for numeric constants',
+      () => {
+        subject.subtractedBy(10).subscribe(listener);
+
+        subject.next(3);
+
+        expect(listener).to.have.been.calledWith(-7);
+      }
+    );
+
+    it('should have a shorthand signature for Point2D constants',
+      () => {
+        subject.subtractedBy({ x: 10, y: 20 }).subscribe(listener);
+
+        subject.next({ x: 100, y: -40 });
+
+        expect(listener).to.have.been.calledWith({ x: 90, y: -60 });
+      }
+    );
+
+    it('should have a shorthand signature for streams',
+      () => {
+        subject.subtractedBy(value$).subscribe(listener);
+
+        subject.next({ x: 100, y: -40 });
+        subject.next({ x: 10, y: 0 });
+        value$.next({ x: 0, y: 15 });
+
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({ x: 10, y: -15 });
+      }
+    );
   }
 );

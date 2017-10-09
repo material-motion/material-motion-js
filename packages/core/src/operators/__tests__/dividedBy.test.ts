@@ -76,5 +76,36 @@ describe('motionObservable.dividedBy',
         expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({ x: 15, y: 20 });
       }
     );
+
+    it('should have a shorthand signature for numeric constants',
+      () => {
+        subject.dividedBy(5).subscribe(listener);
+
+        subject.next(10);
+
+        expect(listener).to.have.been.calledWith(2);
+      }
+    );
+
+    it('should have a shorthand signature for Point2D constants',
+      () => {
+        subject.dividedBy({ x : 10, y: 20 }).subscribe(listener);
+
+        subject.next({x: 100, y: 40 });
+
+        expect(listener).to.have.been.calledWith({x: 10, y: 2 });
+      }
+    );
+
+    it('should have a shorthand signature for streams',
+      () => {
+        subject.dividedBy(value$).subscribe(listener);
+
+        subject.next({ x: 30, y: 60 });
+        value$.next({ x: 2, y: 3 });
+
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({ x: 15, y: 20 });
+      }
+    );
   }
 );
