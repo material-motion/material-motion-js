@@ -183,13 +183,11 @@ export class Swipeable {
 
     subscribe({
       sink: spring.enabled$,
-      source: this.whenThresholdFirstCrossed$.merge({
-        others: [
-          when(spring.state$.isAnyOf([ State.AT_REST ])).rewriteTo({
-            value$: false,
-          })
-        ]
-      }),
+      source: this.whenThresholdFirstCrossed$.merge([
+        when(spring.state$.isAnyOf([ State.AT_REST ])).rewriteTo({
+          value$: false,
+        })
+      ]),
     });
 
     subscribe({
