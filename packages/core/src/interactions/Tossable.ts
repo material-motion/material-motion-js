@@ -230,7 +230,7 @@ export class Tossable {
     this.velocity$ = getVelocity$({
       // Since drag starts at rest, whenDragIsAtRest$ emits immediately.  Thus,
       // we start with { 0, 0 } to ensure velocity doesn't emit undefined.
-      value$: this.draggedLocation$.startWith({ value: { x: 0, y: 0 } }),
+      value$: this.draggedLocation$.startWith({ x: 0, y: 0 }),
       pulse$: whenDragIsAtRest$,
     });
 

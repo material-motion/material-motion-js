@@ -81,5 +81,22 @@ describe('motionObservable.startWith',
         expect(listener).to.have.been.calledWith(20);
       }
     );
+
+    it('should have a shorthand signature',
+      () => {
+        stream.startWith(10).subscribe(listener);
+
+        expect(listener).to.have.been.calledWith(10);
+      }
+    );
+
+    it('should prefer the shorthand signature if there are an incorrect number of named arguments',
+      () => {
+        const expected = { value: 10, timestamp: 12345 };
+        stream.startWith(expected).subscribe(listener);
+
+        expect(listener).to.have.been.calledWith(expected);
+      }
+    );
   }
 );
