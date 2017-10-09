@@ -80,5 +80,19 @@ describe('motionObservable.isAnyOf',
         expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(true);
       }
     );
+
+    it('should have a shorthand signature',
+      () => {
+        subject.isAnyOf([ 1, argSubject, 3 ]).subscribe(listener);
+
+        argSubject.next(2);
+        subject.next(4);
+
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(false);
+
+        argSubject.next(4);
+        expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(true);
+      }
+    );
   }
 );
