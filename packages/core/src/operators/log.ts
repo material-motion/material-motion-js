@@ -30,8 +30,8 @@ export type LogArgs = Partial<{
 }>;
 
 export interface MotionLoggable<T> {
-  log(label?: string): ObservableWithMotionOperators<T>;
   log(kwargs?: LogArgs): ObservableWithMotionOperators<T>;
+  log(label?: string): ObservableWithMotionOperators<T>;
 }
 
 export function withLog<T, S extends Constructor<MotionTappable<T>>>(superclass: S): S & Constructor<MotionLoggable<T>> {
