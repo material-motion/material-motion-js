@@ -151,7 +151,7 @@ export class Swipeable {
 
     this.iconSpring.initialValue = ICON_SPRING_INITIAL_VALUE;
 
-    const tossableIsAtRest$ = tossable.state$.isAnyOf({ candidates: [ State.AT_REST ] });
+    const tossableIsAtRest$ = tossable.state$.isAnyOf([ State.AT_REST ]);
     subscribe({
       sink: tossable.resistanceFactor$,
       source: when(tossableIsAtRest$).rewriteTo({
@@ -160,7 +160,7 @@ export class Swipeable {
       })
     });
 
-    this.direction$ = draggedX$.threshold({ limit$: 0 }).isAnyOf({ candidates: [ ThresholdRegion.ABOVE ] }).rewrite({
+    this.direction$ = draggedX$.threshold({ limit$: 0 }).isAnyOf([ ThresholdRegion.ABOVE ]).rewrite({
       mapping: {
         true: Direction.RIGHT,
         false: Direction.LEFT,
@@ -174,17 +174,18 @@ export class Swipeable {
     // `resistanceProgress`. Thus, we independently calculate the threshold
     // here.
 
-    this.isThresholdMet$ = draggedX$.distanceFrom(0).threshold({ limit$: Swipeable.VISUAL_THRESHOLD }).isAnyOf({
-        candidates: [ThresholdRegion.ABOVE, ThresholdRegion.WITHIN]
-    });
+    this.isThresholdMet$ = draggedX$.distanceFrom(0).threshold({ limit$: Swipeable.VISUAL_THRESHOLD }).isAnyOf([
+      ThresholdRegion.ABOVE,
+      ThresholdRegion.WITHIN,
+    ]);
     this.whenThresholdCrossed$ = when(this.isThresholdMet$.dedupe());
-    this.whenThresholdFirstCrossed$ = when(tossable.resistanceFactor$.dedupe().isAnyOf({ candidates: [ DISABLED_RESISTANCE_FACTOR ] }));
+    this.whenThresholdFirstCrossed$ = when(tossable.resistanceFactor$.dedupe().isAnyOf([ DISABLED_RESISTANCE_FACTOR ]));
 
     subscribe({
       sink: spring.enabled$,
       source: this.whenThresholdFirstCrossed$.merge({
         others: [
-          when(spring.state$.isAnyOf({ candidates: [ State.AT_REST ] })).rewriteTo({
+          when(spring.state$.isAnyOf([ State.AT_REST ])).rewriteTo({
             value$: false,
           })
         ]
@@ -233,7 +234,7 @@ export class Swipeable {
     // cares about final position.
     subscribe({
       sink: this.swipeState$,
-      source: when(draggable.state$.isAnyOf({ candidates: [ State.AT_REST ] })).rewriteTo({
+      source: when(draggable.state$.isAnyOf([ State.AT_REST ])).rewriteTo({
         value$: this.isThresholdMet$.rewrite({
           mapping: {
             true: this.direction$,

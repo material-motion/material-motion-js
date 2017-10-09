@@ -20,6 +20,7 @@ import {
 
 import {
   isBoolean,
+  isDefined,
 } from '../typeGuards';
 
 import {
@@ -30,13 +31,15 @@ import {
   ObservableWithMotionOperators,
 } from '../types';
 
+export type IsAnyOfCandidates<T> = Array<T | Observable<T>>;
 export type IsAnyOfArgs<T> = {
   // To be consistent with our naming strategy, this should probably be called
   // candidate$s, but it looks weird to combine the two sufficies.
-  candidates: Array<T | Observable<T>>,
+  candidates: IsAnyOfCandidates<T>,
 };
 
 export interface MotionIsAnyOfable<T> {
+  isAnyOf(candidates: IsAnyOfCandidates<T>): ObservableWithMotionOperators<boolean>;
   isAnyOf(kwargs: IsAnyOfArgs<T>): ObservableWithMotionOperators<boolean>;
 }
 
@@ -46,7 +49,13 @@ export function withIsAnyOf<T, S extends Constructor<MotionReactiveMappable<T>>>
      * Dispatches `true` when it receives a value that matches any of the
      * provided candidates and `false` otherwise.
      */
-    isAnyOf({ candidates }: IsAnyOfArgs<T>): ObservableWithMotionOperators<boolean> {
+    isAnyOf(candidates: IsAnyOfCandidates<T>): ObservableWithMotionOperators<boolean>;
+    isAnyOf({ candidates }: IsAnyOfArgs<T>): ObservableWithMotionOperators<boolean>;
+    isAnyOf({ candidates }: IsAnyOfArgs<T> & IsAnyOfCandidates<T>): ObservableWithMotionOperators<boolean> {
+      if (!isDefined(candidates)) {
+        candidates = arguments[0];
+      }
+
       return combineLatest([ this, ...candidates ])._map({
         transform: ([ upstream, ...currentCandidates ]: Array<T>) => currentCandidates.includes(upstream)
       });
