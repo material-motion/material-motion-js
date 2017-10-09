@@ -56,7 +56,7 @@ describe('convertTouchEventsToPointerEvents',
       }
     );
 
-    it('should dispatch partial pointer events for all the targetTouches in a TouchEvent',
+    it('should emit PartialPointerEvents for all the targetTouches in a TouchEvent',
       () => {
         stream.subscribe(listener);
 
@@ -91,7 +91,7 @@ describe('convertTouchEventsToPointerEvents',
       }
     );
 
-    it('should dispatch pointerdown for touchstart',
+    it('should emit pointerdown for touchstart',
       () => {
         stream.subscribe(listener);
 
@@ -115,7 +115,7 @@ describe('convertTouchEventsToPointerEvents',
       }
     );
 
-    it('should dispatch pointermove for touchmove',
+    it('should emit pointermove for touchmove',
       () => {
         stream.subscribe(listener);
 
@@ -139,7 +139,7 @@ describe('convertTouchEventsToPointerEvents',
       }
     );
 
-    it('should dispatch pointerup for touchend',
+    it('should emit pointerup for touchend',
       () => {
         stream.subscribe(listener);
 
@@ -163,7 +163,7 @@ describe('convertTouchEventsToPointerEvents',
       }
     );
 
-    it('should dispatch pointercancel for touchcancel',
+    it('should emit pointercancel for touchcancel',
       () => {
         stream.subscribe(listener);
 

@@ -54,18 +54,18 @@ export type GetVelocity$Args<U extends number | Point2D> = {
 };
 
 /**
- * Computes the velocity of an incoming stream and dispatches the result.
- * Velocity's denominator is in milliseconds; if the incoming stream is
- * measured in pixels, the resulting stream will be in pixels / millisecond.
+ * Computes the velocity of an incoming stream and emits the result. Velocity's
+ * denominator is in milliseconds; if the incoming stream is measured in pixels,
+ * the resulting stream will be in pixels / millisecond.
  *
- * Velocity is computed by watching the trailing 250ms of up to 5 dispatches
- * and measuring the distance between the longest pair of events moving in
- * the current direction.  This approach is more resiliant to anomolous data
- * than a simple (nextPosition - prevPosition) / (nextTime - prevTime).
+ * Velocity is computed by watching the trailing 250ms of up to 5 emissions and
+ * measuring the distance between the longest pair of events moving in the
+ * current direction.  This approach is more resiliant to anomolous data than a
+ * simple (nextPosition - prevPosition) / (nextTime - prevTime).
  *
- * If `pulse` is supplied, `velocity(pulse)` will only dispatch values when
- * `pulse` dispatches a value.  This is useful for ensuring that velocity
- * is only calculated when it will be used.
+ * If `pulse$` is supplied, `velocity(pulse$)` will only emit values when
+ * `pulse$` emits a value.  This is useful for ensuring that velocity is only
+ * calculated when it will be used.
  */
 export function getVelocity$<U extends number | Point2D>({
   value$,

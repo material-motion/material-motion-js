@@ -156,7 +156,7 @@ export class Swipeable {
       sink: tossable.resistanceFactor$,
       source: when(tossableIsAtRest$).rewriteTo({
         value$: tossable.resistanceBasis$.dividedBy(Swipeable.VISUAL_THRESHOLD),
-        onlyDispatchWithUpstream: true,
+        onlyEmitWithUpstream: true,
       })
     });
 
@@ -197,7 +197,7 @@ export class Swipeable {
       sink: spring.initialValue$,
       source: this.whenThresholdCrossed$.rewriteTo({
         value$: tossable.draggedLocation$,
-        onlyDispatchWithUpstream: true,
+        onlyEmitWithUpstream: true,
       }),
     });
 
@@ -237,7 +237,7 @@ export class Swipeable {
             false: SwipeState.NONE,
           },
         }),
-        onlyDispatchWithUpstream: true,
+        onlyEmitWithUpstream: true,
       }),
     });
 

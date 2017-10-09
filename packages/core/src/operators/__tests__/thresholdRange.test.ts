@@ -58,7 +58,7 @@ describe('motionObservable.thresholdRange',
       }
     );
 
-    it('should dispatch BELOW when it receives a value less than the lower limit',
+    it('should emit BELOW when it receives a value less than the lower limit',
       () => {
         stream.thresholdRange({ start$: 10, end$: 20 }).subscribe(listener);
 
@@ -68,7 +68,7 @@ describe('motionObservable.thresholdRange',
       }
     );
 
-    it('should dispatch BELOW even if the limits are backwards',
+    it('should emit BELOW even if the limits are backwards',
       () => {
         stream.thresholdRange({ start$: 20, end$: 10 }).subscribe(listener);
 
@@ -78,7 +78,7 @@ describe('motionObservable.thresholdRange',
       }
     );
 
-    it('should dispatch WITHIN when it receives a value that matches the lower limit',
+    it('should emit WITHIN when it receives a value that matches the lower limit',
       () => {
         stream.thresholdRange({ start$: 10, end$: 20 }).subscribe(listener);
 
@@ -88,7 +88,7 @@ describe('motionObservable.thresholdRange',
       }
     );
 
-    it('should dispatch WITHIN when it receives a value between the limits',
+    it('should emit WITHIN when it receives a value between the limits',
       () => {
         stream.thresholdRange({ start$: 10, end$: 20 }).subscribe(listener);
 
@@ -98,7 +98,7 @@ describe('motionObservable.thresholdRange',
       }
     );
 
-    it('should dispatch WITHIN even if the limits are backwards',
+    it('should emit WITHIN even if the limits are backwards',
       () => {
         stream.thresholdRange({ start$: 20, end$: 10 }).subscribe(listener);
 
@@ -108,7 +108,7 @@ describe('motionObservable.thresholdRange',
       }
     );
 
-    it('should dispatch WITHIN when it receives a value that matches the upper limit',
+    it('should emit WITHIN when it receives a value that matches the upper limit',
       () => {
         stream.thresholdRange({ start$: 10, end$: 20 }).subscribe(listener);
 
@@ -118,7 +118,7 @@ describe('motionObservable.thresholdRange',
       }
     );
 
-    it('should dispatch ABOVE when it receives a value greater than the upper limit',
+    it('should emit ABOVE when it receives a value greater than the upper limit',
       () => {
         stream.thresholdRange({ start$: 10, end$: 20 }).subscribe(listener);
 
@@ -128,7 +128,7 @@ describe('motionObservable.thresholdRange',
       }
     );
 
-    it('should dispatch ABOVE even if the limits are backwards',
+    it('should emit ABOVE even if the limits are backwards',
       () => {
         stream.thresholdRange({ start$: 20, end$: 10 }).subscribe(listener);
 
@@ -154,9 +154,9 @@ describe('motionObservable.thresholdRange',
       }
     );
 
-    it('should support reactive limits and onlyDispatchWithUpstream',
+    it('should support reactive limits and onlyEmitWithUpstream',
       () => {
-        stream.thresholdRange({ start$: startSubject, end$: endSubject, onlyDispatchWithUpstream: true }).subscribe(listener);
+        stream.thresholdRange({ start$: startSubject, end$: endSubject, onlyEmitWithUpstream: true }).subscribe(listener);
 
         mockObserver.next(21);
 

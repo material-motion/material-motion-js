@@ -36,8 +36,8 @@ import {
 
 export class BaseMotionObservable<T> extends IndefiniteObservable<T> {
   /**
-   * Creates a new `MotionObservable` that dispatches whatever values it
-   * receives from the provided stream.
+   * Creates a new `MotionObservable` that emits whatever values it receives
+   * from the provided stream.
    *
    * This is useful for imbuing another type of `Observable`, like an
    * `IndefiniteSubject`, with the operators present on `MotionObservable`.
@@ -54,9 +54,9 @@ export class BaseMotionObservable<T> extends IndefiniteObservable<T> {
 }
 
 /**
- * `MotionObservable` is an extension of `IndefiniteObservable` that includes
- * a series of purely-declarative operators that are useful for building
- * animated interactions.  Those operators are specified in the
+ * `MotionObservable` is an extension of `IndefiniteObservable` that includes a
+ * series of purely-declarative operators that are useful for building animated
+ * interactions.  Those operators are specified in the
  * [Starmap](https://material-motion.github.io/material-motion/starmap/specifications/operators/)
  */
 export class MotionObservable<T> extends withMotionOperators<T, new (connect: Connect<T>) => BaseMotionObservable<T>>(BaseMotionObservable) {}

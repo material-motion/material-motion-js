@@ -34,11 +34,10 @@ export interface MotionWindowable<T> {
 export function withSlidingWindow<T, S extends Constructor<MotionNextOperable<T>>>(superclass: S): S & Constructor<MotionWindowable<T>> {
   return class extends superclass implements MotionWindowable<T> {
     /**
-     * Dispatches the last values to be received in an array of the given
-     * `size`.
+     * Emits the last values to be received in an array of the given `size`.
      *
-     * Reuses the same array on each dispatch, so if you want to compare
-     * dispatches, make a copy of each as you receive it.
+     * Reuses the same array on each emit, so if you want to compare emissions,
+     * make a copy of each as you receive it.
      */
     _slidingWindow({ size = 2 } = {}): ObservableWithMotionOperators<Array<T>> {
       return this._nextOperator({

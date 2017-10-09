@@ -54,7 +54,7 @@ describe('motionObservable.threshold',
       }
     );
 
-    it('should dispatch BELOW when it receives a value below the limit',
+    it('should emit BELOW when it receives a value below the limit',
       () => {
         subject.threshold({ limit$: 7 }).subscribe(listener);
 
@@ -64,7 +64,7 @@ describe('motionObservable.threshold',
       }
     );
 
-    it('should dispatch WITHIN when it receives a value that matches the limit',
+    it('should emit WITHIN when it receives a value that matches the limit',
       () => {
         subject.threshold({ limit$: 7 }).subscribe(listener);
 
@@ -74,7 +74,7 @@ describe('motionObservable.threshold',
       }
     );
 
-    it('should dispatch ABOVE when it receives a value above the limit',
+    it('should emit ABOVE when it receives a value above the limit',
       () => {
         subject.threshold({ limit$: 7 }).subscribe(listener);
 
@@ -101,9 +101,9 @@ describe('motionObservable.threshold',
       }
     );
 
-    it('should support reactive limits and onlyDispatchWithUpsubject',
+    it('should support reactive limits and onlyEmitWithUpsubject',
       () => {
-        subject.threshold({ limit$, onlyDispatchWithUpstream: true }).subscribe(listener);
+        subject.threshold({ limit$, onlyEmitWithUpstream: true }).subscribe(listener);
 
         subject.next(10);
 

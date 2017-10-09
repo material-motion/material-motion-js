@@ -32,15 +32,15 @@ export class ReactiveProperty<T> extends IndefiniteSubject<T> {
   constructor(readableWritable?: ScopedReadable<T> & ScopedWritable<T>) {
     super();
 
-    // IndefiniteSubject caches the last value it dispatched as `_lastValue`.
+    // IndefiniteSubject caches the last emission as `_lastEmission`.
     //
     // If the user supplies `read` and `write` functions, we replace
-    // `_subject._lastValue` with them, so all reads and writes go through the
-    // user-supplied getter/setter.
+    // `_subject._lastEmission` with them, so all reads and writes go through
+    // the user-supplied getter/setter.
     if (readableWritable) {
       Object.defineProperty(
         this,
-        '_lastValue',
+        '_lastEmission',
         {
           get: readableWritable.read,
           set: readableWritable.write,
@@ -50,7 +50,7 @@ export class ReactiveProperty<T> extends IndefiniteSubject<T> {
   }
 
   read(): T {
-    return this._lastValue;
+    return this._lastEmission;
   }
 
   write(value: T): void {

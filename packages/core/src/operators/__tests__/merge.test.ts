@@ -58,7 +58,7 @@ describe('motionObservable.merge',
       }
     );
 
-    it('should dispatch values from both upstream and its stream arguments',
+    it('should emit values from both upstream and its stream arguments',
       () => {
         stream1.merge({ others: [ stream2, stream3 ] }).subscribe(listener);
 

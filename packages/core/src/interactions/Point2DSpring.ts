@@ -56,11 +56,11 @@ import {
  * configuration values.  Internally, it is composed of two independent
  * `NumericSpring`s.
  *
- * Because each internal spring dispatches independently, `value$` will dispatch
+ * Because each internal spring emits independently, `value$` will emit
  * intermediate values (e.g. changing `initialValue` from `{ x: 0, y: 0 }` to
- * `{ x: 5, y: 4 }` will cause 2 dispatches, one when `x` changes and one when
- * `y` changes.)  This may be corrected in a future release, when dispatches
- * could be batched into one per frame.
+ * `{ x: 5, y: 4 }` will cause 2 emissions, one when `x` changes and one when
+ * `y` changes.)  This may be corrected in a future release, when emits could be
+ * batched into one per frame.
  */
 export class Point2DSpring implements Spring<Point2D> {
   readonly xSpring = new NumericSpring();
@@ -164,8 +164,8 @@ export class Point2DSpring implements Spring<Point2D> {
     return this.state$._read()!;
   }
 
-  // Since this dispatches `Point2D`s, it's probably safe to presume it will be
-  // used for translation.  But, to be consistent with `NumericSpring`, we write
+  // Since this emits `Point2D`s, it's probably safe to presume it will be used
+  // for translation.  But, to be consistent with `NumericSpring`, we write
   // outputs to `value$` rather than `styleStreams`.
 
   // If `value$` were debounced, it would emit its terminal value after `state$`

@@ -59,7 +59,7 @@ describe('getVelocity$',
         }
       );
 
-      it(`should not dispatch unless pulse$ does`,
+      it(`should not emit unless pulse$ does`,
         () => {
           getVelocity$({ value$, pulse$ }).subscribe(listener);
 
@@ -71,7 +71,7 @@ describe('getVelocity$',
         }
       );
 
-      it(`should dispatch 0 if pulse$ dispatches before it's received values from upstream`,
+      it(`should emit 0 if pulse$ emits before it's received values from upstream`,
         () => {
           getVelocity$({ value$, pulse$ }).subscribe(listener);
 
@@ -81,7 +81,7 @@ describe('getVelocity$',
         }
       );
 
-      it(`should dispatch 0 when there is only one recent data point`,
+      it(`should emit 0 when there is only one recent data point`,
         () => {
           getVelocity$({ value$, pulse$ }).subscribe(listener);
 
@@ -124,7 +124,7 @@ describe('getVelocity$',
         }
       );
 
-      it(`should dispatch defaultVelocity for super-fast velocities with only 2 data points`,
+      it(`should emit defaultVelocity for super-fast velocities with only 2 data points`,
         () => {
           const defaultVelocity = 3;
           getVelocity$({ value$, pulse$, defaultVelocity }).subscribe(listener);
@@ -154,7 +154,7 @@ describe('getVelocity$',
         }
       );
 
-      it(`should dispatch maximumVelocity for super-fast velocities with at least 3 data points`,
+      it(`should emit maximumVelocity for super-fast velocities with at least 3 data points`,
         () => {
           const maximumVelocity = 7;
           getVelocity$({ value$, pulse$, maximumVelocity }).subscribe(listener);
@@ -255,7 +255,7 @@ describe('getVelocity$',
         }
       );
 
-      it(`should dispatch a point if the upstream values are points`,
+      it(`should emit a point if the upstream values are points`,
         () => {
           getVelocity$({ value$, pulse$ }).subscribe(listener);
 

@@ -37,7 +37,7 @@ import {
 
 export type RewritableOptions<U> = Partial<{
   defaultValue: U | symbol,
-  dispatchOnKeyChange: boolean,
+  emitOnKeyChange: boolean,
 }>;
 
 export type RewriteArgs<T, R, U> = RewritableOptions<U> & {
@@ -52,7 +52,7 @@ export const SUPPRESS_FAILURES = Symbol();
 
 export function withRewrite<T, S extends Constructor<MotionReactiveNextOperable<T> & MotionTimestampable<T>>>(superclass: S): S & Constructor<MotionRewritable<T>> {
   return class extends superclass implements MotionRewritable<T> {
-    rewrite<U, R extends U | ObservableWithMotionOperators<U>>({ mapping, defaultValue = SUPPRESS_FAILURES, dispatchOnKeyChange = true }: RewriteArgs<T, R, U>): ObservableWithMotionOperators<U> {
+    rewrite<U, R extends U | ObservableWithMotionOperators<U>>({ mapping, defaultValue = SUPPRESS_FAILURES, emitOnKeyChange = true }: RewriteArgs<T, R, U>): ObservableWithMotionOperators<U> {
       let keys: Array<string> | Array<T>;
       let values: Array<U | ObservableWithMotionOperators<U> | Timestamped<U> | Timestamped<ObservableWithMotionOperators<U>>>;
       let castKeysToStrings = false;
@@ -68,7 +68,7 @@ export function withRewrite<T, S extends Constructor<MotionReactiveNextOperable<
 
       let upstream: MotionReactiveNextOperable<T | Timestamped<T>> = this;
 
-      if (!dispatchOnKeyChange) {
+      if (!emitOnKeyChange) {
         values = values.map(
           value => isObservable(value)
             ? value.timestamp()
@@ -110,7 +110,7 @@ export function withRewrite<T, S extends Constructor<MotionReactiveNextOperable<
 
                 // Prevent stale values from being emitted by only forwarding
                 // values that are newer than the key, unless
-                // dispatchOnKeyChange is set (which will omit the timestamps).
+                // emitOnKeyChange is set (which will omit the timestamps).
                 if (!isTimestamped(currentValue) || currentValue.timestamp > (currentKey as Timestamped<T>).timestamp) {
                   emit(value);
                 }

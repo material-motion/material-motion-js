@@ -195,10 +195,10 @@ describe('Draggable',
     it(`should set recognitionState to ENDED on up, if recognized`);
     it(`should set recognitionState to POSSIBLE after ENDED`);
     it(`should only write to recognitionState once per event, even with multiple observers`);
-    it(`should stop listening for moves and dispatch CANCELLED when cancellation$ receives an event`);
+    it(`should stop listening for moves and emit CANCELLED when cancellation$ emits an event`);
     it(`should ignore events when disabled`);
-    it(`should dispatch CANCELLED when disabled during an recognition`);
-    it(`should dispatch CANCELLED when cancel$ dispatches during an recognition`);
-    it(`should dispatch CANCELLED when contextMenu$ dispatches during an recognition`);
+    it(`should emit CANCELLED when disabled during an recognition`);
+    it(`should emit CANCELLED when cancel$ emits during an recognition`);
+    it(`should emit CANCELLED when contextMenu$ emits during an recognition`);
   }
 );

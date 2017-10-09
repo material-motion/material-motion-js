@@ -54,7 +54,7 @@ export interface MotionAddable<T> {
 export function withAddedBy<T, S extends Constructor<MotionMathOperable<T>>>(superclass: S): S & Constructor<MotionAddable<T>> {
   return class extends superclass implements MotionAddable<T> {
     /**
-     * Adds the provided value to the upstream value and dispatches the result.
+     * Adds the provided value to the upstream value and emits the result.
      */
     addedBy<U extends T & (Point2D | number)>(kwargs: AddedByArgs<U>): ObservableWithMotionOperators<U>;
     addedBy<U extends T & (Point2D | number)>(value$: AddedByValue<U>): ObservableWithMotionOperators<U>;

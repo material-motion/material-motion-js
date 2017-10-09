@@ -45,7 +45,7 @@ describe('motionObservable.addedBy',
       }
     );
 
-    it('should add the amount constant to the upstream numeric value and dispatch the result',
+    it('should add the amount constant to the upstream numeric value and emit the result',
       () => {
         subject.addedBy({ value$: 10 }).subscribe(listener);
 
@@ -55,7 +55,7 @@ describe('motionObservable.addedBy',
       }
     );
 
-    it('should add the amount constant to the upstream Point2D value and dispatch the result',
+    it('should add the amount constant to the upstream Point2D value and emit the result',
       () => {
         subject.addedBy({ value$: {x : 10, y: 20 } }).subscribe(listener);
 
@@ -65,7 +65,7 @@ describe('motionObservable.addedBy',
       }
     );
 
-    it('should add values from value$ to the upstream numeric value and dispatch the result',
+    it('should add values from value$ to the upstream numeric value and emit the result',
       () => {
         subject.addedBy({ value$ }).subscribe(listener);
 
@@ -77,7 +77,7 @@ describe('motionObservable.addedBy',
       }
     );
 
-    it('should add values from value$ to the upstream Point2D value and dispatch the result',
+    it('should add values from value$ to the upstream Point2D value and emit the result',
       () => {
         subject.addedBy({ value$ }).subscribe(listener);
 

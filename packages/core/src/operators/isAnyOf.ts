@@ -46,7 +46,7 @@ export interface MotionIsAnyOfable<T> {
 export function withIsAnyOf<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionIsAnyOfable<T>> {
   return class extends superclass implements MotionIsAnyOfable<T> {
     /**
-     * Dispatches `true` when it receives a value that matches any of the
+     * Emits `true` when it receives a value that matches any of the
      * provided candidates and `false` otherwise.
      */
     isAnyOf(kwargs: IsAnyOfArgs<T>): ObservableWithMotionOperators<boolean>;

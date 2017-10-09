@@ -119,7 +119,7 @@ describe('Point2DSpring',
         }
       );
 
-      it('becomes active before dispatching new values',
+      it('becomes active before emitting new values',
         () => {
           let tested;
 
@@ -194,8 +194,8 @@ describe('Point2DSpring',
             mockRAF
           });
 
-          // value$ receives x and y independently, so it will dispatch as each
-          // is initialized
+          // `value$` receives `x` and `y` independently, so it will emit as
+          // each is initialized
           expect(valueListener).to.have.been.calledTwice;
           expect(stateListener).not.to.have.been.calledWith(State.ACTIVE);
         }
@@ -216,8 +216,8 @@ describe('Point2DSpring',
             mockRAF
           });
 
-          // value$ receives x and y independently, so it will dispatch as each
-          // is initialized
+          // `value$` receives `x` and `y` independently, so it will emit as
+          // each is initialized
           expect(valueListener).to.have.been.calledTwice;
           expect(stateListener).not.to.have.been.calledWith(State.ACTIVE);
         }
@@ -267,8 +267,8 @@ describe('Point2DSpring',
             mockRAF
           });
 
-          // value$ receives x and y independently, so it will dispatch as each
-          // is initialized
+          // `value$` receives `x` and `y` independently, so it will emit as
+          // each is initialized
           expect(valueListener.getCall(4)).to.have.been.calledWithMatch(initialValue);
           expect(valueListener.lastCall).to.have.been.calledWithMatch(destination);
         }

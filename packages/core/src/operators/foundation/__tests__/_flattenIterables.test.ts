@@ -50,7 +50,7 @@ describe(`motionObservable._flattenIterables`,
       }
     );
 
-    it(`should dispatch each value independently if it receives an Array`,
+    it(`should emit each value independently if it receives an Array`,
       () => {
         stream._flattenIterables().subscribe(listener);
 

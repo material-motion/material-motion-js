@@ -45,7 +45,7 @@ describe('motionObservable.dividedBy',
       }
     );
 
-    it('should divide the upstream numeric value by the value constant and dispatch the result',
+    it('should divide the upstream numeric value by the value constant and emit the result',
       () => {
         subject.dividedBy({ value$: 5 }).subscribe(listener);
 
@@ -55,7 +55,7 @@ describe('motionObservable.dividedBy',
       }
     );
 
-    it('should divide the upstream numeric value by values from value$ and dispatch the result',
+    it('should divide the upstream numeric value by values from value$ and emit the result',
       () => {
         subject.dividedBy({ value$ }).subscribe(listener);
 
@@ -66,7 +66,7 @@ describe('motionObservable.dividedBy',
       }
     );
 
-    it('should divide the upstream Point2D value by values from value$ and dispatch the result',
+    it('should divide the upstream Point2D value by values from value$ and emit the result',
       () => {
         subject.dividedBy({ value$ }).subscribe(listener);
 

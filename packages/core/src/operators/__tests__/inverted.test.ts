@@ -50,7 +50,7 @@ describe('motionObservable.inverted',
       }
     );
 
-    it('should dispatch 0 when it receives 1',
+    it('should emit 0 when it receives 1',
       () => {
         stream.inverted().subscribe(listener);
 
@@ -60,7 +60,7 @@ describe('motionObservable.inverted',
       }
     );
 
-    it('should dispatch 1 when it receives 0',
+    it('should emit 1 when it receives 0',
       () => {
         stream.inverted().subscribe(listener);
 
@@ -70,7 +70,7 @@ describe('motionObservable.inverted',
       }
     );
 
-    it('should dispatch .67 when it receives .33',
+    it('should emit .67 when it receives .33',
       () => {
         stream.inverted().subscribe(listener);
 

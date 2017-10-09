@@ -32,11 +32,11 @@ import {
  * it receives a value on `next`, it forwards that value to any subscribed
  * observers.
  *
- * `IndefiniteSubject` also remembers the most recent value dispatched and
- * passes it to any new subscriber.
+ * `IndefiniteSubject` also remembers the most recent emission and passes it to
+ * any new subscriber.
  */
 export class IndefiniteSubject<T> extends MemorylessIndefiniteSubject<T> {
-  _lastValue: T;
+  _lastEmission: T;
   _hasStarted: boolean = false;
 
   /**
@@ -46,7 +46,7 @@ export class IndefiniteSubject<T> extends MemorylessIndefiniteSubject<T> {
    */
   next(value: T): void {
     this._hasStarted = true;
-    this._lastValue = value;
+    this._lastEmission = value;
 
     super.next(value);
   }
@@ -64,8 +64,8 @@ export class IndefiniteSubject<T> extends MemorylessIndefiniteSubject<T> {
 
     if (this._hasStarted) {
       isObserver(observerOrNext)
-        ? observerOrNext.next(this._lastValue)
-        : observerOrNext(this._lastValue);
+        ? observerOrNext.next(this._lastEmission)
+        : observerOrNext(this._lastEmission);
     }
 
     return subscription;

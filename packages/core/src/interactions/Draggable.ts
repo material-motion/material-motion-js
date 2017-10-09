@@ -141,7 +141,7 @@ export class Draggable {
         let preventClicks: boolean = false;
 
         // HTML's OS-integrated drag-and-drop will interrupt a PointerEvent stream
-        // without dispatching pointercancel; this is the best way I've found to
+        // without emitting pointercancel; this is the best way I've found to
         // prevent that.
         //
         // See also https://github.com/w3c/pointerevents/issues/205

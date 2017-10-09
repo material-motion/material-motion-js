@@ -84,7 +84,7 @@ describe('motionObservable._reactiveMap',
       }
     );
 
-    it('should call the transform function when any stream dispatches a new value',
+    it('should call the transform function when any stream emits a new value',
       () => {
         subject._reactiveMap({
           transform: ({ upstream, sideloaded }) => upstream + sideloaded,

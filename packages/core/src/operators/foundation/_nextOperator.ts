@@ -43,8 +43,8 @@ export function withNextOperator<T, S extends Constructor<Observable<T>>>(superc
      * subscription boilerplate required for most operators.
      *
      * Its argument `operation` should receive a value from the parent stream's
-     * `next` channel, transform it, and use the supplied callback to dispatch
-     * the result to the observer's `next` channel.
+     * `next` channel, transform it, and use the supplied callback to emit the
+     * result to the observer's `next` channel.
      */
     _nextOperator<U>({ operation }: _NextOperatorArgs<T, U>): ObservableWithMotionOperators<U> {
       return new MotionObservable(

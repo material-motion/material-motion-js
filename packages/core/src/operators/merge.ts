@@ -45,7 +45,7 @@ export interface MotionMergeable<T> extends Observable<T> {
 export function withMerge<T, S extends Constructor<Observable<T>>>(superclass: S): S & Constructor<MotionMergeable<T>> {
   return class extends superclass implements MotionMergeable<T> {
     /**
-     * Dispatches values as it receives them, both from upstream and from any
+     * Emits values as it receives them, both from upstream and from any
      * streams provided as arguments.
      */
     merge(kwargs: MergeArgs<T>): ObservableWithMotionOperators<T>;

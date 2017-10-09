@@ -35,7 +35,7 @@ export interface MotionDeduplicable<T> {
 export function withDedupe<T, S extends Constructor<ObservableWithFoundationalMotionOperators<T>>>(superclass: S): S & Constructor<MotionDeduplicable<T>> {
   return class extends superclass implements MotionDeduplicable<T> {
     /**
-     * Ensures that every value dispatched is different than the previous one.
+     * Ensures that every emission is different than the previous one.
      */
     dedupe({ areEqual = deepEqual } = {}): ObservableWithMotionOperators<T> {
       return this._nextOperator({
@@ -49,7 +49,7 @@ export function withDedupe<T, S extends Constructor<ObservableWithFoundationalMo
             }
 
             // To prevent a potential infinite loop, these flags must be set
-            // before dispatching the result to the observer.
+            // before emitting the result to the observer.
             lastValue = upstream;
             emitted = true;
 

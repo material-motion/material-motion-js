@@ -41,7 +41,7 @@ export interface MotionSeedable<T> {
 export function withStartWith<T, S extends Constructor<ObservableWithFoundationalMotionOperators<T>>>(superclass: S): S & Constructor<MotionSeedable<T>> {
   return class extends superclass implements MotionSeedable<T> {
     /**
-     * Dispatches `value` and passes through all subsequent values.
+     * Emits `value` and passes through all subsequent values.
      *
      * Returns a remembered stream, so each new observer will synchronously
      * receive the most recent value.

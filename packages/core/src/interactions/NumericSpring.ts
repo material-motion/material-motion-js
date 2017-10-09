@@ -201,7 +201,7 @@ export class NumericSpring implements Spring<number> {
             // always up-to-date.  However, it's unclear how that would affect
             // `state$`.  Should `state$` go at_rest -> active -> at_rest every
             // time something touches `initialValue`?  Should `value$` be able
-            // to dispatch `initialValue$` without touching `value$`?  Should we
+            // to emit `initialValue$` without touching `value$`?  Should we
             // require authors to worry about connecting the two?
             //
             // Punting on this for now and forcing authors to deal with it.
