@@ -25,11 +25,16 @@ import {
   Observer,
 } from '../types';
 
+import {
+  isDefined,
+} from '../typeGuards';
+
 export type StartWithArgs<T> = {
   value: T,
 };
 
 export interface MotionSeedable<T> {
+  startWith(value: T): ObservableWithMotionOperators<T>;
   startWith(kwargs: StartWithArgs<T>): ObservableWithMotionOperators<T>;
 }
 
@@ -41,7 +46,16 @@ export function withStartWith<T, S extends Constructor<ObservableWithFoundationa
      * Returns a remembered stream, so each new observer will synchronously
      * receive the most recent value.
      */
-    startWith({ value }: StartWithArgs<T>): ObservableWithMotionOperators<T> {
+    startWith(value: T): ObservableWithMotionOperators<T>;
+    startWith(kwargs: StartWithArgs<T>): ObservableWithMotionOperators<T>;
+    startWith({ value }: StartWithArgs<T> & T): ObservableWithMotionOperators<T> {
+      const hasValue = isDefined(value);
+      // Only destructure if the supplied argument has the correct number of
+      // members.
+      if (!hasValue || (hasValue && Object.keys(arguments[0]).length > 1)) {
+        value = arguments[0];
+      }
+
       return new MotionObservable(
         (observer: Observer<T>) => {
           observer.next(value);
