@@ -42,7 +42,7 @@ import {
 } from 'material-motion-views-react';
 
 export function SwipeableDemo() {
-  const width$ = viewportDimensions$.pluck({ path: 'width' });
+  const width$ = viewportDimensions$.pluck('width');
 
   return (
     <ul
