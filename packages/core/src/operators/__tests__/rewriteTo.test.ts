@@ -95,5 +95,36 @@ describe('motionObservable.rewriteTo',
         expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(12).and.to.have.been.calledWith(15);
       }
     );
+
+    it('should have a shorthand signature for constants',
+      () => {
+        stream.rewriteTo('banana').subscribe(listener);
+
+        mockObserver.next();
+        mockObserver.next(false);
+        mockObserver.next(123);
+        mockObserver.next({a: '1234'});
+
+        expect(listener).to.have.callCount(4).and.to.always.have.been.calledWith('banana');
+      }
+    );
+
+    it('should have a shorthand signature for streams',
+      () => {
+        stream.rewriteTo(value$).subscribe(listener);
+
+        mockObserver.next();
+        mockObserver.next(false);
+
+        value$.next(12);
+        value$.next(15);
+
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(12);
+
+        mockObserver.next({});
+
+        expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(15);
+      }
+    );
   }
 );
