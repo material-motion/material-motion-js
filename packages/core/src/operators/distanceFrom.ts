@@ -17,21 +17,25 @@
 import {
   Constructor,
   Dict,
-  MaybeReactive,
   MotionReactiveMappable,
+  Observable,
   ObservableWithMotionOperators,
   Point2D,
 } from '../types';
 
 import {
+  isDefined,
   isPoint2D,
 } from '../typeGuards';
 
-export type DistanceFromArgs<T> = MaybeReactive<{
-  origin$: T & (Point2D | number),
-}>;
+export type DistanceFromOrigin<T> = (T & (Point2D | number)) | Observable<T & (Point2D | number)>;
+
+export type DistanceFromArgs<T> = {
+  origin$: DistanceFromOrigin<T>,
+};
 
 export interface MotionMeasurable<T> {
+  distanceFrom(origin$: DistanceFromOrigin<T>): ObservableWithMotionOperators<number>;
   distanceFrom(kwargs: DistanceFromArgs<T>): ObservableWithMotionOperators<number>;
 }
 
@@ -42,7 +46,13 @@ export function withDistanceFrom<T, S extends Constructor<MotionReactiveMappable
      * The origin may be a number or a point, but the dispatched value will
      * always be a number; distance is computed using Pythagorean theorem.
      */
-    distanceFrom({ origin$ }: DistanceFromArgs<T>): ObservableWithMotionOperators<number> {
+    distanceFrom(origin$: DistanceFromOrigin<T>): ObservableWithMotionOperators<number>;
+    distanceFrom({ origin$ }: DistanceFromArgs<T>): ObservableWithMotionOperators<number>;
+    distanceFrom({ origin$ }: DistanceFromArgs<T> & DistanceFromOrigin<T>): ObservableWithMotionOperators<number> {
+      if (!isDefined(origin$)) {
+        origin$ = arguments[0] as DistanceFromOrigin<T>;
+      }
+
       return this._reactiveMap({
         transform({ upstream, origin }: Dict<(T & number) | (T & Point2D)>) {
           if (isPoint2D(upstream)) {
