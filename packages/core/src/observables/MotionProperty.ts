@@ -30,7 +30,12 @@ import {
   fulfillProxies,
 } from './fulfillProxies';
 
-export class MotionProperty<T> extends withMotionOperators<T, new () => ReactiveProperty<T>>(ReactiveProperty) {}
+import {
+  ScopedReadable,
+  ScopedWritable,
+} from '../types';
+
+export class MotionProperty<T> extends withMotionOperators<T, new (kwargs?: ScopedReadable<T> & ScopedWritable<T>) => ReactiveProperty<T>>(ReactiveProperty) {}
 export default MotionProperty;
 
 // See explanation in `./proxies`
