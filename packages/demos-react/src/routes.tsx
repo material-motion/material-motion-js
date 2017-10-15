@@ -22,6 +22,7 @@ import Miss from 'react-router/Miss';
 import Router from 'react-router/BrowserRouter';
 
 // import ExampleMain from './example/components/ExampleMain';
+import ArticulableFinger from './ArticulableFinger';
 import QuickiePointerEventTest from './QuickiePointerEventTest';
 import SwipeableDemo from './SwipeableDemo';
 
@@ -37,6 +38,11 @@ const links = [
     href: '/swipe-away/',
     name: 'SwipeableDemo',
     component: SwipeableDemo,
+  },
+  {
+    href: '/articulable-finger/',
+    name: 'ArticulableFinger',
+    component: ArticulableFinger,
   },
   {
     href: '/pointer-events/',
