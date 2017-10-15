@@ -52,3 +52,6 @@ export { default as getEventStreamFromElement } from './getEventStreamFromElemen
 
 export * from './getPointerEventStreamsFromElement';
 export { default as getPointerEventStreamsFromElement } from './getPointerEventStreamsFromElement';
+
+export * from './SliderProperties';
+export { default as SliderProperties } from './SliderProperties';
