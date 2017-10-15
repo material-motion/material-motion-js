@@ -64,6 +64,7 @@ export default function TransformTarget({
   position = 'static',
   touchAction,
   children,
+  style = {},
   ...propsPassthrough
 }: TransformTargetArgs): React.ReactElement<any> {
   return (
@@ -78,6 +79,7 @@ export default function TransformTarget({
           opacity,
           position,
           touchAction,
+          ...style,
         }
       }
     >
