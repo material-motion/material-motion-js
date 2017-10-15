@@ -219,7 +219,7 @@ export class AttachStreams extends React.Component<AttachStreamsProps, AttachStr
       ...props
     } = this.state;
 
-    if (textContent) {
+    if (textContent !== undefined) {
       return (
         <div
           ref = { this._domRef }
