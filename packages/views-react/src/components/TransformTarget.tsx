@@ -24,20 +24,21 @@ import {
   buildTransformString,
 } from 'material-motion-views-dom';
 
-export type TransformTargetArgs = {
+export type TransformTargetArgs = Partial<{
   position: 'absolute' | 'fixed' | 'relative' | 'static' | 'sticky',
   touchAction: 'auto' | 'none' | 'pan-x' | 'pan-left' | 'pan-right' | 'pan-y'
               | 'pan-up' | 'pan-down' | 'pinch-zoom' | 'manipulation'
               | 'inherit' | 'initial' | 'unset',
   translate: Point2D,
+  origin: Point2D,
   rotate: number,
   scale: number,
   opacity: number,
   style: undefined | { [key: string]: string | number },
   children: React.ReactNode | undefined,
   domRef(ref: Element | null): void,
-  className?: string,
-};
+  className: string,
+}?;
 
 /**
  * Applies translate, rotate, and scale in the order specified by the CSS
@@ -48,6 +49,10 @@ export type TransformTargetArgs = {
  */
 export default function TransformTarget({
   translate = {
+    x: 0,
+    y: 0,
+  },
+  origin = {
     x: 0,
     y: 0,
   },
@@ -69,6 +74,7 @@ export default function TransformTarget({
         {
           ...propsPassthrough,
           transform: buildTransformString({ translate, rotate, scale }),
+          transformOrigin: `${ origin.x }px ${ origin.y }px`,
           opacity,
           position,
           touchAction,
