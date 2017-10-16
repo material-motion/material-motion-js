@@ -174,6 +174,10 @@ export type TranslateStyleStreams = WillChangeStyleStreams & {
   readonly translate$: ObservableWithMotionOperators<Point2D>,
 };
 
+export type RotateStyleStreams = WillChangeStyleStreams & {
+  readonly rotate$: ObservableWithMotionOperators<number>,
+};
+
 export type ScaleStyleStreams = WillChangeStyleStreams & {
   readonly scale$: ObservableWithMotionOperators<number>,
 };
