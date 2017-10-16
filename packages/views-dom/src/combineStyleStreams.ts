@@ -33,8 +33,9 @@ export type StyleDict = {
 
 export type PrimitiveStyleDict = {
   opacity: number,
-  scale: number,
   translate: Point2D,
+  rotate: number,
+  scale: number,
   borderRadius: string,
   willChange: string,
 };
@@ -44,14 +45,22 @@ export function combineStyleStreams(styleStreams: Partial<StyleStreams>): Observ
     stripStreamSuffices(styleStreams as StyleStreams) as MaybeReactive<PrimitiveStyleDict>,
     { waitForAllValues: false }
   )._debounce()._map({
-    transform: ({ opacity = 1, scale = 1, translate = { x: 0, y: 0 }, borderRadius = '', willChange = '', ...passthrough }) => (
+    transform: ({
+      willChange = '',
+      opacity = 1,
+      translate = { x: 0, y: 0 },
+      rotate = 0,
+      scale = 1,
+      borderRadius = '',
+      ...passthrough
+    }) => (
       {
         ...passthrough,
         borderRadius: Array.isArray(borderRadius)
           ? borderRadius.map(appendPixels).join(' ' )
           : borderRadius,
         opacity: opacity.toFixed(3),
-        transform: buildTransformString({ translate, scale }),
+        transform: buildTransformString({ translate, rotate, scale }),
         willChange,
       }
     )
