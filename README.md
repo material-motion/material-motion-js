@@ -27,11 +27,11 @@ This repo houses the JavaScript implementation of Material Motion.  For more inf
 
 This repo houses all the packages that comprise the Material Motion implementation for JavaScript.  They are available in [`packages`](https://github.com/material-motion/material-motion-js/tree/develop/packages/):
 
-- [`core`](https://github.com/material-motion/material-motion-experiments-js/tree/develop/packages/core/) houses the core implementation of Material Motion; including [`MotionObservable`](https://github.com/material-motion/material-motion-js/blob/develop/packages/core/src/observables/MotionObservable.ts), and [`ReactiveProperty`](https://github.com/material-motion/material-motion-js/blob/develop/packages/core/src/properties/ReactiveProperty.ts).  To use it in an application, you'll also need an adapter such as `material-motion-views-dom` or `material-motion-views-react`.  This package is published on NPM as [`material-motion`](https://www.npmjs.com/package/material-motion).
+- [`core`](https://github.com/material-motion/material-motion-js/tree/develop/packages/core/) houses the core implementation of Material Motion; including [`MotionObservable`](https://github.com/material-motion/material-motion-js/blob/develop/packages/core/src/observables/MotionObservable.ts), and [`ReactiveProperty`](https://github.com/material-motion/material-motion-js/blob/develop/packages/core/src/properties/ReactiveProperty.ts).
 
-- [`views-dom`](https://github.com/material-motion/material-motion-experiments-js/tree/develop/packages/views-dom/) houses the adapter that supports using Material Motion in the DOM with `connectInteractionToElements()`.
+- [`views-dom`](https://github.com/material-motion/material-motion-js/tree/develop/packages/views-dom/) houses the DOM-specific functions, like [`getPointerEventStreamsFromElement`](https://github.com/material-motion/material-motion-js/blob/develop/packages/views-dom/src/getPointerEventStreamsFromElement.ts) and [`combineStyleStreams`](https://github.com/material-motion/material-motion-js/blob/develop/packages/views-dom/src/combineStyleStreams.ts).
 
-- [`views-react`](https://github.com/material-motion/material-motion-experiments-js/tree/develop/packages/views-react/) houses the adapter that supports using Material Motion in React with `createMotionComponent()`.
+- [`views-react`](https://github.com/material-motion/material-motion-js/tree/develop/packages/views-react/) houses the components that make Motion easy to integrate with React: [`AttachStreams`](https://github.com/material-motion/material-motion-js/blob/develop/packages/views-react/src/components/AttachStreams.tsx) and [`TransformTarget`](https://github.com/material-motion/material-motion-js/blob/develop/packages/views-react/src/components/TransformTarget.tsx).
 
 ## Contributing ##
 
