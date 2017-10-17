@@ -24,6 +24,7 @@ import Router from 'react-router/BrowserRouter';
 // import ExampleMain from './example/components/ExampleMain';
 import ArticulableFinger from './ArticulableFinger';
 import QuickiePointerEventTest from './QuickiePointerEventTest';
+import ParallaxDemo from './ParallaxDemo';
 import SwipeableDemo from './SwipeableDemo';
 import TossableDemo from './TossableDemo';
 
@@ -49,6 +50,11 @@ const links = [
     href: '/articulable-finger/',
     name: 'ArticulableFinger',
     component: ArticulableFinger,
+  },
+  {
+    href: '/parallax/',
+    name: 'ParallaxDemo',
+    component: ParallaxDemo,
   },
   {
     href: '/pointer-events/',
