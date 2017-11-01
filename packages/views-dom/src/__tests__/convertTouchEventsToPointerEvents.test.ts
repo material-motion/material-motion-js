@@ -64,13 +64,13 @@ describe('convertTouchEventsToPointerEvents',
           type: 'touchstart',
           targetTouches: [
             {
-              pageX: 0,
-              pageY: 0,
+              clientX: 0,
+              clientY: 0,
               identifier: 3424080648,
             },
             {
-              pageX: 10,
-              pageY: 20,
+              clientX: 10,
+              clientY: 20,
               identifier: 3424080649,
             },
           ]
@@ -78,13 +78,13 @@ describe('convertTouchEventsToPointerEvents',
 
         expect(listener).to.have.been.calledTwice
           .and.to.have.been.calledWith({
-            pageX: 0,
-            pageY: 0,
+            x: 0,
+            y: 0,
             pointerId: 3424080648,
             type: 'pointerdown',
           }).and.to.have.been.calledWith({
-            pageX: 10,
-            pageY: 20,
+            x: 10,
+            y: 20,
             pointerId: 3424080649,
             type: 'pointerdown',
           });
@@ -99,16 +99,16 @@ describe('convertTouchEventsToPointerEvents',
           type: 'touchstart',
           targetTouches: [
             {
-              pageX: 0,
-              pageY: 0,
+              clientX: 10,
+              clientY: 30,
               identifier: 3424080648,
             },
           ]
         });
 
         expect(listener).to.have.been.calledWith({
-          pageX: 0,
-          pageY: 0,
+          x: 10,
+          y: 30,
           pointerId: 3424080648,
           type: 'pointerdown',
         });
@@ -123,16 +123,16 @@ describe('convertTouchEventsToPointerEvents',
           type: 'touchmove',
           targetTouches: [
             {
-              pageX: 0,
-              pageY: 0,
+              clientX: 5,
+              clientY: 7,
               identifier: 3424080648,
             },
           ]
         });
 
         expect(listener).to.have.been.calledWith({
-          pageX: 0,
-          pageY: 0,
+          x: 5,
+          y: 7,
           pointerId: 3424080648,
           type: 'pointermove',
         });
@@ -147,16 +147,16 @@ describe('convertTouchEventsToPointerEvents',
           type: 'touchend',
           changedTouches: [
             {
-              pageX: 0,
-              pageY: 0,
+              clientX: 14,
+              clientY: 8,
               identifier: 3424080648,
             },
           ]
         });
 
         expect(listener).to.have.been.calledWith({
-          pageX: 0,
-          pageY: 0,
+          x: 14,
+          y: 8,
           pointerId: 3424080648,
           type: 'pointerup',
         });
@@ -171,16 +171,16 @@ describe('convertTouchEventsToPointerEvents',
           type: 'touchcancel',
           changedTouches: [
             {
-              pageX: 0,
-              pageY: 0,
+              clientX: 9,
+              clientY: 90,
               identifier: 3424080648,
             },
           ]
         });
 
         expect(listener).to.have.been.calledWith({
-          pageX: 0,
-          pageY: 0,
+          x: 9,
+          y: 90,
           pointerId: 3424080648,
           type: 'pointercancel',
         });

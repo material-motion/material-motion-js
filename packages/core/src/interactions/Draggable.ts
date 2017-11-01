@@ -186,10 +186,10 @@ export class Draggable {
 
                     const translation = {
                       x: currentAxis !== Axis.Y
-                        ? nextEvent.pageX - downEvent.pageX
+                        ? nextEvent.x - downEvent.x
                         : 0,
                       y: currentAxis !== Axis.X
-                        ? nextEvent.pageY - downEvent.pageY
+                        ? nextEvent.y - downEvent.y
                         : 0,
                     };
 
