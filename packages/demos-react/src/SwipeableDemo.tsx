@@ -109,6 +109,7 @@ class SwipeableCard extends React.Component<{}, {}> {
         }),
         position: 'relative',
         overflow: 'hidden',
+        userSelect: 'none',
       }).subscribe(this.containerStyle$);
 
       combineStyleStreams({
