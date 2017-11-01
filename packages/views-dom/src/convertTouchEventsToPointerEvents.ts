@@ -35,10 +35,12 @@ export function convertTouchEventsToPointerEvents(touchEvent$: ObservableWithMot
       ['touchend', 'touchcancel'].includes(type)
         ? changedTouches
         : targetTouches,
-      ({ pageX, pageY, identifier }: Touch) => (
+      ({ clientX, clientY, identifier }: Touch) => (
         {
-          pageX,
-          pageY,
+          // `PointerEvent` defines `x` and `y` as aliases for `clientX` and
+          // `clientY`, but `TouchEvent` doesn't have the same sugar.
+          x: clientX,
+          y: clientY,
           pointerId: identifier,
           type: TOUCH_TYPE_TO_POINTER_TYPE[type]
         }
