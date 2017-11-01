@@ -129,21 +129,20 @@ export interface Spring<T> {
 /**
  * There are 2 competing input events on the Web: `PointerEvent`s and
  * `TouchEvent`s. Our gesture system only needs 4 properties: x, y, type and an
- * ID. In both models, `pageX` and `pageY` are provided. `TouchEvent` calls its
- * ID `identifier`; whereas, `PointerEvent` uses `pointerId`.
+ * ID. In both models, x and y are provided (both relative to the page and the
+ * viewport). `TouchEvent` calls its ID `identifier`; whereas, `PointerEvent`
+ * uses `pointerId`.
  *
  * `PartialPointerEvent` is the subset we care about.  `PointerEvent` already
  * has this shape.  `TouchEvent` can be trivially converted by extracting the
  * touches and renaming `identifier` to `pointerId`.
  */
-export type PartialPointerEvent = {
-  pageX: number;
-  pageY: number;
-  pointerId?: number; // Can be undefined for MouseEvent
+export type PartialPointerEvent = Point2D & {
+  pointerId?: number, // Can be undefined for MouseEvent
   // Uses string rather than ('pointerdown' | 'pointermove' | 'pointerup')
   // because the PointerEvent.type is a string and it makes life easier if we
   // match that.
-  type: string;
+  type: string,
 };
 
 export type PointerEventStreams = {

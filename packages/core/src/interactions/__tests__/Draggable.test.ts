@@ -85,20 +85,20 @@ describe('Draggable',
       () => {
         downObserver.next({
           type: 'pointerdown',
-          pageX: 0,
-          pageY: 0,
+          x: 0,
+          y: 0,
         });
 
         moveObserver.next({
           type: 'pointermove',
-          pageX: 10,
-          pageY: 20,
+          x: 10,
+          y: 20,
         });
 
         upObserver.next({
           type: 'pointerup',
-          pageX: 10,
-          pageY: 20,
+          x: 10,
+          y: 20,
         });
 
         expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({
@@ -126,20 +126,20 @@ describe('Draggable',
 
         downObserver.next({
           type: 'pointerdown',
-          pageX: 0,
-          pageY: 0,
+          x: 0,
+          y: 0,
         });
 
         moveObserver.next({
           type: 'pointermove',
-          pageX: 20,
-          pageY: 0,
+          x: 20,
+          y: 0,
         });
 
         upObserver.next({
           type: 'pointerup',
-          pageX: 20,
-          pageY: 0,
+          x: 20,
+          y: 0,
         });
 
         const capturedClickEvent = {
@@ -160,20 +160,20 @@ describe('Draggable',
 
         downObserver.next({
           type: 'pointerdown',
-          pageX: 0,
-          pageY: 0,
+          x: 0,
+          y: 0,
         });
 
         moveObserver.next({
           type: 'pointermove',
-          pageX: 20,
-          pageY: 0,
+          x: 20,
+          y: 0,
         });
 
         upObserver.next({
           type: 'pointerup',
-          pageX: 20,
-          pageY: 0,
+          x: 20,
+          y: 0,
         });
 
         const capturedClickEvent = {
