@@ -16,7 +16,7 @@
 
 import * as React from 'react';
 
-import jss from 'jss';
+import * as jss from 'jss';
 import preset from 'jss-preset-default';
 
 import {
@@ -38,33 +38,19 @@ import {
   TransformTarget,
 } from 'material-motion-views-react';
 
-jss.setup(preset());
-
 const createStyleSheet = ({ foreground$, background$ }) => {
-  // There's a bug in JSS 9.1 that only lets one selector have an observable
-  // value, so for now, we manually pluck the style values.
-  const sheet = jss.createStyleSheet(
-    {
-      container: {
-        touchAction: 'none',
-        width: '100vw',
-        height: '100vh',
-        overflow: 'hidden',
-        background: '#F7DF1E',
-      },
-
-      foreground: {
-        transform: foreground$.pluck('transform'),
-      },
-
-      background: {
-        transform: background$.pluck('transform'),
-      },
+  const sheet = jss.create().setup(preset()).createStyleSheet({
+    container: {
+      touchAction: 'none',
+      width: '100vw',
+      height: '100vh',
+      overflow: 'hidden',
+      background: '#F7DF1E',
     },
-    {
-      link: true,
-    }
-  ).attach();
+
+    foreground: foreground$,
+    background: background$,
+  }).attach().link();
 
   return sheet.classes;
 })
