@@ -37,10 +37,12 @@ export {
 } from 'indefinite-observable';
 
 export {
+  MotionAddable,
   MotionAppendUnitable,
   MotionClampable,
   MotionDebounceable,
   MotionDeduplicable,
+  MotionDivisible,
   MotionFilterable,
   MotionFlattenable,
   MotionInvertible,
@@ -52,22 +54,21 @@ export {
   MotionMemorable,
   MotionMergeable,
   MotionMulticastable,
+  MotionMultipliable,
   MotionNextOperable,
-  MotionDivisible,
-  MotionAddable,
   MotionPluckable,
+  MotionPolarizable,
   MotionReactiveMappable,
   MotionReactiveNextOperable,
   MotionReadable,
   MotionRewritable,
   MotionRewriteRangeable,
   MotionRewriteToable,
-  MotionMultipliable,
   MotionSeedable,
   MotionSubtractable,
   MotionTappable,
-  MotionThresholdable,
   MotionThresholdRangeable,
+  MotionThresholdable,
   MotionTimestampable,
   MotionWindowable,
   ObservableWithFoundationalMotionOperators,
@@ -96,6 +97,11 @@ export type MathOperation = (a: number, b: number) => number;
 export type Point2D = {
   x: number,
   y: number,
+};
+
+export type PolarCoords = {
+  angle: number,
+  distance: number,
 };
 
 export interface Spring<T> {
