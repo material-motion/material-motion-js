@@ -16,7 +16,7 @@
 
 import * as React from 'react';
 
-import jss from 'jss';
+import { create as createJSS } from 'jss';
 import preset from 'jss-preset-default';
 
 import {
@@ -38,11 +38,9 @@ import {
   TransformTarget,
 } from 'material-motion-views-react';
 
-jss.setup(preset());
+const jss = createJSS().setup(preset);
 
-const createStyleSheet = ({ foreground$, background$ }) => {
-  // There's a bug in JSS 9.1 that only lets one selector have an observable
-  // value, so for now, we manually pluck the style values.
+const getLayerClasses = ({ foreground$, background$ }) => {
   const sheet = jss.createStyleSheet(
     {
       container: {
@@ -53,13 +51,8 @@ const createStyleSheet = ({ foreground$, background$ }) => {
         background: '#F7DF1E',
       },
 
-      foreground: {
-        transform: foreground$.pluck('transform'),
-      },
-
-      background: {
-        transform: background$.pluck('transform'),
-      },
+      foreground: foreground$,
+      background: background$,
     },
     {
       link: true,
@@ -93,7 +86,7 @@ const getLayerTranslateStreams = () => {
 }
 
 export class JSSDemo extends React.Component<{}, {}> {
-  classes = createStyleSheet(getLayerTranslateStreams());
+  classes = getLayerClasses(getLayerTranslateStreams());
 
   render() {
     return (
