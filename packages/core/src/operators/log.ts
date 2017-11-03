@@ -56,7 +56,9 @@ export function withLog<T, S extends Constructor<MotionTappable<T>>>(superclass:
     log(kwargs: LogArgs): ObservableWithMotionOperators<T>;
     log(kwargs = {}): ObservableWithMotionOperators<T> {
       const {
-        label = '',
+        label = typeof kwargs === 'string'
+          ? kwargs
+          : '',
         pluckPath = '',
       } = kwargs as LogArgs;
 
