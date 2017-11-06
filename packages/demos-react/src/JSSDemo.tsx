@@ -20,10 +20,18 @@ import jss from 'jss';
 import preset from 'jss-preset-default';
 
 import {
+  Axis,
+  Draggable,
   MaybeReactive,
+  MotionProperty,
+  NumericSpring,
   NumericDict,
   ObservableWithMotionOperators,
+  Point2DSpring,
+  ThresholdRegion,
+  Tossable,
   combineLatest,
+  createProperty,
   subscribe,
 } from 'material-motion';
 
@@ -41,8 +49,6 @@ import {
 jss.setup(preset());
 
 const createStyleSheet = ({ foreground$, background$ }) => {
-  // There's a bug in JSS 9.1 that only lets one selector have an observable
-  // value, so for now, we manually pluck the style values.
   const sheet = jss.createStyleSheet(
     {
       container: {
@@ -50,16 +56,10 @@ const createStyleSheet = ({ foreground$, background$ }) => {
         width: '100vw',
         height: '100vh',
         overflow: 'hidden',
-        background: '#F7DF1E',
+        background: 'red',
       },
-
-      foreground: {
-        transform: foreground$.pluck('transform'),
-      },
-
-      background: {
-        transform: background$.pluck('transform'),
-      },
+      foreground: foreground$,
+      background: background$
     },
     {
       link: true,
@@ -81,29 +81,31 @@ const getLayerTranslateStreams = () => {
     })
   );
 
-  return {
-    background$: combineStyleStreams({
-      translate$: centeredMove$.multipliedBy({ x: 1.125, y: 0.25 }),
-    }),
+  const background$ = combineStyleStreams({
+    willChange: 'transform',
+    translate$: centeredMove$.multipliedBy({ x: 1.125, y: 0.25 }),
+  });
 
-    foreground$: combineStyleStreams({
-      translate$: centeredMove$.multipliedBy({ x: .75, y: 0.11 }),
-    }),
-  };
+  const foreground$ = combineStyleStreams({
+    willChange: 'transform',
+    translate$: centeredMove$.multipliedBy({ x: .75, y: 0.11 }),
+  });
+
+  return { background$, foreground$ };
 }
 
-export class JSSDemo extends React.Component<{}, {}> {
+export class ParallaxDemo extends React.Component<{}, {}> {
   classes = createStyleSheet(getLayerTranslateStreams());
 
   render() {
     return (
       <div className = { this.classes.container }>
-        <RandomLogos
-          className = { this.classes.foreground }
+        <RandomClouds
+          className={this.classes.foreground}
           scale = { 3 }
         />
 
-        <RandomLogos
+        <RandomClouds
           className = { this.classes.background }
           scale = { 5 }
         />
@@ -111,48 +113,56 @@ export class JSSDemo extends React.Component<{}, {}> {
     );
   }
 }
-export default JSSDemo;
+export default ParallaxDemo;
 
-// Since JSS uses `<style>` elements, it doesn't force its children to rerender
-// on each frame.  That allows this otherwise-expensive component to be
-// functional, since it will never be re-rendered.
-function RandomLogos({ scale, ...propsPassthrough }) {
-  return (
-    <div
-      style = {
-        {
-          position: 'relative',
+class RandomClouds extends React.Component<{ scale: number }, {}> {
+  shouldComponentUpdate() {
+    return false;
+  }
+
+  render() {
+    const {
+      scale,
+      ...propsPassthrough,
+    } = this.props;
+
+    return (
+      <div
+        style = {
+          {
+            position: 'relative',
+          }
         }
-      }
-      { ...propsPassthrough }
-    >
-      {
-        new Array(100).fill().map(
-          (_, i) => (
-            <div
-              key = { i }
-              style = {
-                {
-                  position: 'absolute',
-                  color: '#222222',
-                  fontWeight: 'bold',
-                  transform: `
-                    translate(
-                      ${ Math.round(Math.random() * 500 - 200) / 2 }vw,
-                      ${ Math.round(Math.random() * 200) / 2 }vh
-                    )
+        { ...propsPassthrough }
+      >
+        {
+          new Array(100).fill().map(
+            (_, i) => (
+              <div
+                key = { i }
+                className = 'material-icons'
+                style = {
+                  {
+                    position: 'absolute',
+                    color: '#E9E9E9',
+                    transform: `
+                      translate(
+                        ${ Math.round(Math.random() * 500 - 200) / 2 }vw,
+                        ${ Math.round(Math.random() * 200) / 2 }vh
+                      )
 
-                    scale(${ scale })
-                  `,
-                  userSelect: 'none',
+                      scale(${ scale })
+                    `,
+                    userSelect: 'none',
+                  }
                 }
-              }
-            >
-              JSS
-            </div>
+              >
+                cloud
+              </div>
+            )
           )
-        )
-      }
-    </div>
-  );
+        }
+      </div>
+    );
+  }
 }
