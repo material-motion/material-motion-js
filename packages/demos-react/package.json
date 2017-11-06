@@ -10,6 +10,8 @@
     "deploy": "yarn run build; ../../node_modules/.bin/firebase deploy"
   },
   "dependencies": {
+    "jss": "9.1",
+    "jss-preset-default": "4.0.1",
     "jsxstyle": "1.0.2",
     "material-motion": "0.0.0",
     "material-motion-views-dom": "0.0.0",
