@@ -58,14 +58,8 @@ const createStyleSheet = ({ foreground$, background$ }) => {
         overflow: 'hidden',
         background: 'red',
       },
-      foreground: {
-        willChange: 'transform',
-        transform: foreground$,
-      },
-      background: {
-        willChange: 'transform',
-        transform: background$,
-      }
+      foreground: foreground$,
+      background: background$
     },
     {
       link: true,
@@ -88,12 +82,14 @@ const getLayerTranslateStreams = () => {
   );
 
   const background$ = combineStyleStreams({
+    willChange: 'transform',
     translate$: centeredMove$.multipliedBy({ x: 1.125, y: 0.25 }),
-  }).pluck('transform');
+  });
 
   const foreground$ = combineStyleStreams({
+    willChange: 'transform',
     translate$: centeredMove$.multipliedBy({ x: .75, y: 0.11 }),
-  }).pluck('transform');
+  });
 
   return { background$, foreground$ };
 }
