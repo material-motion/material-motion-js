@@ -16,7 +16,7 @@
     "uws": "8.14.1"
   },
   "devDependencies": {
-    "@bazel/typescript": "^0.2.2",
+    "@bazel/typescript": "bazelbuild/rules_typescript#e55b3bd2b7a68106ec7c56e7e21e1090dea90c6d",
     "@types/chai": "^3.4.34",
     "@types/sinon": "^1.16.34",
     "@types/sinon-chai": "^2.7.28",
