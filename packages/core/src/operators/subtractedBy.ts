@@ -21,6 +21,7 @@ import {
 
 import {
   Constructor,
+  Dimensions,
   MotionMathOperable,
   Observable,
   ObservableWithMotionOperators,
@@ -45,8 +46,10 @@ export interface MotionSubtractable<T> {
   // use the type variable `U`.
   subtractedBy<U extends T & number>(kwargs: SubtractedByArgs<U>): ObservableWithMotionOperators<number>;
   subtractedBy<U extends T & number>(value$: SubtractedByValue<U>): ObservableWithMotionOperators<number>;
-  subtractedBy<U extends T & (Point2D | number)>(kwargs: SubtractedByArgs<U>): ObservableWithMotionOperators<U>;
+  subtractedBy<U extends T & Point2D>(kwargs: SubtractedByArgs<U>): ObservableWithMotionOperators<U>;
   subtractedBy<U extends T & Point2D>(value$: SubtractedByValue<U>): ObservableWithMotionOperators<U>;
+  subtractedBy<U extends T & Dimensions>(kwargs: SubtractedByArgs<U>): ObservableWithMotionOperators<U>;
+  subtractedBy<U extends T & Dimensions>(value$: SubtractedByValue<U>): ObservableWithMotionOperators<U>;
 }
 
 export function withSubtractedBy<T, S extends Constructor<MotionMathOperable<T>>>(superclass: S): S & Constructor<MotionSubtractable<T>> {
@@ -55,9 +58,9 @@ export function withSubtractedBy<T, S extends Constructor<MotionMathOperable<T>>
      * Subtracts the provided value from the upstream value and emits the
      * result.
      */
-    subtractedBy<U extends T & (Point2D | number)>(kwargs: SubtractedByArgs<U>): ObservableWithMotionOperators<U>;
-    subtractedBy<U extends T & (Point2D | number)>(value$: SubtractedByValue<U>): ObservableWithMotionOperators<U>;
-    subtractedBy<U extends T & (Point2D | number)>({ value$, ...reactiveMapOptions }: SubtractedByArgs<U>): ObservableWithMotionOperators<U> {
+    subtractedBy<U extends T & (Point2D | Dimensions | number)>(kwargs: SubtractedByArgs<U>): ObservableWithMotionOperators<U>;
+    subtractedBy<U extends T & (Point2D | Dimensions | number)>(value$: SubtractedByValue<U>): ObservableWithMotionOperators<U>;
+    subtractedBy<U extends T & (Point2D | Dimensions | number)>({ value$, ...reactiveMapOptions }: SubtractedByArgs<U>): ObservableWithMotionOperators<U> {
       if (!isDefined(value$)) {
         value$ = arguments[0];
       }

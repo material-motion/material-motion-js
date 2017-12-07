@@ -15,21 +15,20 @@
  */
 
 import {
+  isDefined,
+  isDimensions,
   isPoint2D,
 } from '../../typeGuards';
 
 import {
   Constructor,
+  Dimensions,
   MathOperation,
   MotionReactiveMappable,
   Observable,
   ObservableWithMotionOperators,
   Point2D,
 } from '../../types';
-
-import {
-  isDefined,
-} from '../../typeGuards';
 
 import {
   _ReactiveMapOptions,
@@ -41,7 +40,7 @@ export type _MathOperatorArgs<U> = _ReactiveMapOptions & {
 };
 
 export interface MotionMathOperable<T> {
-  _mathOperator<U extends T & (number | Point2D)>(kwargs: _MathOperatorArgs<U>): ObservableWithMotionOperators<U>;
+  _mathOperator<U extends T & (number | Point2D | Dimensions)>(kwargs: _MathOperatorArgs<U>): ObservableWithMotionOperators<U>;
 }
 
 export function withMathOperator<T, S extends Constructor<MotionReactiveMappable<T>>>(superclass: S): S & Constructor<MotionMathOperable<T>> {
@@ -49,7 +48,7 @@ export function withMathOperator<T, S extends Constructor<MotionReactiveMappable
     /**
      * Applies the operation to each dimension and emits the result.
      */
-    _mathOperator<U extends T & (number | Point2D)>({ operation, value$, ...reactiveMapOptions }: _MathOperatorArgs<U>): ObservableWithMotionOperators<U> {
+    _mathOperator<U extends T & (number | Point2D | Dimensions)>({ operation, value$, ...reactiveMapOptions }: _MathOperatorArgs<U>): ObservableWithMotionOperators<U> {
       return (this as any as MotionReactiveMappable<U>)._reactiveMap({
         transform: ({ upstream, value }) => {
           if (isPoint2D(upstream)) {
@@ -57,6 +56,17 @@ export function withMathOperator<T, S extends Constructor<MotionReactiveMappable
               x: operation(upstream.x, isDefined(value) ? (value as Point2D).x: undefined!),
               y: operation(upstream.y, isDefined(value) ? (value as Point2D).y: undefined!),
             } as U;
+
+          // This block is just copy/pasted from the isPoint2D block.  It may
+          // eventually be worth making this smart enough to handle arbitrarily-
+          // shaped objects, but for now, we can cover most cases with just
+          // these two shapes.
+          } else if (isDimensions(upstream)) {
+            return {
+              width: operation(upstream.width, isDefined(value) ? (value as Dimensions).width: undefined!),
+              height: operation(upstream.height, isDefined(value) ? (value as Dimensions).height: undefined!),
+            } as U;
+
           } else {
             return operation(upstream as number, value as number) as U;
           }

@@ -21,6 +21,7 @@ import {
 
 import {
   Constructor,
+  Dimensions,
   MotionMathOperable,
   Observable,
   ObservableWithMotionOperators,
@@ -50,6 +51,8 @@ export interface MotionDivisible<T> {
   dividedBy<U extends T & number>(value$: DividedByValue<U>): ObservableWithMotionOperators<number>;
   dividedBy<U extends T & Point2D>(kwargs: DividedByArgs<U>): ObservableWithMotionOperators<U>;
   dividedBy<U extends T & Point2D>(value$: DividedByValue<U>): ObservableWithMotionOperators<U>;
+  dividedBy<U extends T & Dimensions>(kwargs: DividedByArgs<U>): ObservableWithMotionOperators<U>;
+  dividedBy<U extends T & Dimensions>(value$: DividedByValue<U>): ObservableWithMotionOperators<U>;
 }
 
 export function withDividedBy<T, S extends Constructor<MotionMathOperable<T>>>(superclass: S): S & Constructor<MotionDivisible<T>> {
@@ -57,9 +60,9 @@ export function withDividedBy<T, S extends Constructor<MotionMathOperable<T>>>(s
     /**
      * Divides the upstream value by the provided value and emits the result.
      */
-    dividedBy<U extends T & (Point2D | number)>(kwargs: DividedByArgs<U>): ObservableWithMotionOperators<U>;
-    dividedBy<U extends T & (Point2D | number)>(value$: DividedByValue<U>): ObservableWithMotionOperators<U>;
-    dividedBy<U extends T & (Point2D | number)>({ value$, ...reactiveMapOptions }: DividedByArgs<U>): ObservableWithMotionOperators<U> {
+    dividedBy<U extends T & (Point2D | Dimensions | number)>(kwargs: DividedByArgs<U>): ObservableWithMotionOperators<U>;
+    dividedBy<U extends T & (Point2D | Dimensions | number)>(value$: DividedByValue<U>): ObservableWithMotionOperators<U>;
+    dividedBy<U extends T & (Point2D | Dimensions | number)>({ value$, ...reactiveMapOptions }: DividedByArgs<U>): ObservableWithMotionOperators<U> {
       if (!isDefined(value$)) {
         value$ = arguments[0];
       }
