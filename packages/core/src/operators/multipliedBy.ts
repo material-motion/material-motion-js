@@ -21,6 +21,7 @@ import {
 
 import {
   Constructor,
+  Dimensions,
   MotionMathOperable,
   Observable,
   ObservableWithMotionOperators,
@@ -48,6 +49,8 @@ export interface MotionMultipliable<T> {
   multipliedBy<U extends T & number>(value$: MultipliedByValue<U>): ObservableWithMotionOperators<number>;
   multipliedBy<U extends T & Point2D>(kwargs: MultipliedByArgs<U>): ObservableWithMotionOperators<U>;
   multipliedBy<U extends T & Point2D>(value$: MultipliedByValue<U>): ObservableWithMotionOperators<U>;
+  multipliedBy<U extends T & Dimensions>(kwargs: MultipliedByArgs<U>): ObservableWithMotionOperators<U>;
+  multipliedBy<U extends T & Dimensions>(value$: MultipliedByValue<U>): ObservableWithMotionOperators<U>;
 }
 
 export function withMultipliedBy<T, S extends Constructor<MotionMathOperable<T>>>(superclass: S): S & Constructor<MotionMultipliable<T>> {
@@ -56,9 +59,9 @@ export function withMultipliedBy<T, S extends Constructor<MotionMathOperable<T>>
      * Multiplies the upstream value by the provided value and emits the
      * result.
      */
-    multipliedBy<U extends T & (Point2D | number)>(kwargs: MultipliedByArgs<U>): ObservableWithMotionOperators<U>;
-    multipliedBy<U extends T & (Point2D | number)>(value$: MultipliedByValue<U>): ObservableWithMotionOperators<U>;
-    multipliedBy<U extends T & (Point2D | number)>({ value$, ...reactiveMapOptions }: MultipliedByArgs<U>): ObservableWithMotionOperators<U> {
+    multipliedBy<U extends T & (Point2D | Dimensions | number)>(kwargs: MultipliedByArgs<U>): ObservableWithMotionOperators<U>;
+    multipliedBy<U extends T & (Point2D | Dimensions | number)>(value$: MultipliedByValue<U>): ObservableWithMotionOperators<U>;
+    multipliedBy<U extends T & (Point2D | Dimensions | number)>({ value$, ...reactiveMapOptions }: MultipliedByArgs<U>): ObservableWithMotionOperators<U> {
       if (!isDefined(value$)) {
         value$ = arguments[0];
       }
