@@ -77,6 +77,18 @@ describe('motionObservable.multipliedBy',
       }
     );
 
+
+    it('should multiply dimensions values from a coefficient subject by the incoming value and emit the result',
+      () => {
+        subject.multipliedBy({ value$ }).subscribe(listener);
+
+        subject.next({ width: 3, height: 4 });
+        value$.next({ width: 4, height: 10 });
+
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({ width: 12, height: 40 });
+      }
+    );
+
     it('should have a shorthand signature for numeric constants',
       () => {
         subject.multipliedBy(10).subscribe(listener);
@@ -89,11 +101,21 @@ describe('motionObservable.multipliedBy',
 
     it('should have a shorthand signature for Point2D constants',
       () => {
-        subject.multipliedBy({ x : 10, y: 20 }).subscribe(listener);
+        subject.multipliedBy({ x: 10, y: 20 }).subscribe(listener);
 
         subject.next({ x: 2, y: 4 });
 
         expect(listener).to.have.been.calledWith({ x: 20, y: 80 });
+      }
+    );
+
+    it('should have a shorthand signature for Dimensions constants',
+      () => {
+        subject.multipliedBy({ width: 10, height: 20 }).subscribe(listener);
+
+        subject.next({ width: 2, height: 4 });
+
+        expect(listener).to.have.been.calledWith({ width: 20, height: 80 });
       }
     );
 

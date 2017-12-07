@@ -28,7 +28,6 @@ import {
   stub,
 } from 'sinon';
 
-
 import {
   MemorylessMotionSubject,
 } from '../../observables/';
@@ -66,6 +65,16 @@ describe('motionObservable.subtractedBy',
       }
     );
 
+    it('should subtract the value constant to an upstream Dimensions value and emit the result',
+      () => {
+        subject.subtractedBy({ value$: { width: 10, height: 20 } }).subscribe(listener);
+
+        subject.next({ width: 100, height: -40 });
+
+        expect(listener).to.have.been.calledWith({ width: 90, height: -60 });
+      }
+    );
+
     it('should subtract values from value$ from the upstream numeric value and emit the result',
       () => {
         subject.subtractedBy({ value$ }).subscribe(listener);
@@ -90,6 +99,18 @@ describe('motionObservable.subtractedBy',
       }
     );
 
+    it('should subtract values from value$ from an upstream Dimensions value and emit the result',
+      () => {
+        subject.subtractedBy({ value$ }).subscribe(listener);
+
+        subject.next({ width: 100, height: -40 });
+        subject.next({ width: 10, height: 0 });
+        value$.next({ width: 0, height: 15 });
+
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({ width: 10, height: -15 });
+      }
+    );
+
     it('should have a shorthand signature for numeric constants',
       () => {
         subject.subtractedBy(10).subscribe(listener);
@@ -107,6 +128,16 @@ describe('motionObservable.subtractedBy',
         subject.next({ x: 100, y: -40 });
 
         expect(listener).to.have.been.calledWith({ x: 90, y: -60 });
+      }
+    );
+
+    it('should have a shorthand signature for Dimensions constants',
+      () => {
+        subject.subtractedBy({ width: 10, height: 20 }).subscribe(listener);
+
+        subject.next({ width: 100, height: -40 });
+
+        expect(listener).to.have.been.calledWith({ width: 90, height: -60 });
       }
     );
 

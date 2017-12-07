@@ -76,6 +76,16 @@ describe('motionObservable.dividedBy',
         expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({ x: 15, y: 20 });
       }
     );
+    it('should divide the upstream Dimensions value by values from value$ and emit the result',
+      () => {
+        subject.dividedBy({ value$ }).subscribe(listener);
+
+        subject.next({ width: 30, height: 60 });
+        value$.next({ width: 2, height: 3 });
+
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({ width: 15, height: 20 });
+      }
+    );
 
     it('should have a shorthand signature for numeric constants',
       () => {
@@ -89,11 +99,21 @@ describe('motionObservable.dividedBy',
 
     it('should have a shorthand signature for Point2D constants',
       () => {
-        subject.dividedBy({ x : 10, y: 20 }).subscribe(listener);
+        subject.dividedBy({ x: 10, y: 20 }).subscribe(listener);
 
-        subject.next({x: 100, y: 40 });
+        subject.next({ x: 100, y: 40 });
 
         expect(listener).to.have.been.calledWith({x: 10, y: 2 });
+      }
+    );
+
+    it('should have a shorthand signature for Dimensions constants',
+      () => {
+        subject.dividedBy({ width: 10, height: 20 }).subscribe(listener);
+
+        subject.next({ width: 100, height: 40 });
+
+        expect(listener).to.have.been.calledWith({ width: 10, height: 2 });
       }
     );
 

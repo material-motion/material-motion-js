@@ -94,6 +94,11 @@ export type Operation<T, D> = (values: { upstream: T } & D) => void;
 export type EmittingOperation<T, D, U> = (kwargs: { emit: NextChannel<U> }) => Operation<T, D>;
 export type MathOperation = (a: number, b: number) => number;
 
+export type Dimensions = {
+  width: number,
+  height: number,
+};
+
 export type Point2D = {
   x: number,
   y: number,

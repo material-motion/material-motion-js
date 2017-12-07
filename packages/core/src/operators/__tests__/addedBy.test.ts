@@ -57,11 +57,31 @@ describe('motionObservable.addedBy',
 
     it('should add the amount constant to the upstream Point2D value and emit the result',
       () => {
-        subject.addedBy({ value$: {x : 10, y: 20 } }).subscribe(listener);
+        subject.addedBy({ value$: { x: 10, y: 20 } }).subscribe(listener);
 
-        subject.next({x: 100, y: -40 });
+        subject.next({ x: 100, y: -40 });
 
-        expect(listener).to.have.been.calledWith({x: 110, y: -20 });
+        expect(listener).to.have.been.calledWith({ x: 110, y: -20 });
+      }
+    );
+
+    it('should add the amount constant to the upstream Dimensions value and emit the result',
+      () => {
+        subject.addedBy({ value$: { width: 10, height: 20 } }).subscribe(listener);
+
+        subject.next({ width: 100, height: -40 });
+
+        expect(listener).to.have.been.calledWith({ width: 110, height: -20 });
+      }
+    );
+
+    it('should add the amount constant to the upstream Point2D value and emit the result',
+      () => {
+        subject.addedBy({ value$: { x: 10, y: 20 } }).subscribe(listener);
+
+        subject.next({ x: 100, y: -40 });
+
+        expect(listener).to.have.been.calledWith({ x: 110, y: -20 });
       }
     );
 
@@ -81,11 +101,23 @@ describe('motionObservable.addedBy',
       () => {
         subject.addedBy({ value$ }).subscribe(listener);
 
-        subject.next({x: 100, y: -40 });
-        subject.next({x: 10, y: 0 });
-        value$.next({x: 0, y: 15 });
+        subject.next({ x: 100, y: -40 });
+        subject.next({ x: 10, y: 0 });
+        value$.next({ x: 0, y: 15 });
 
-        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({x: 10, y: 15 });
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({ x: 10, y: 15 });
+      }
+    );
+
+    it('should add values from value$ to the upstream Dimensions value and emit the result',
+      () => {
+        subject.addedBy({ value$ }).subscribe(listener);
+
+        subject.next({ width: 100, height: -40 });
+        subject.next({ width: 10, height: 0 });
+        value$.next({ width: 0, height: 15 });
+
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith({ width: 10, height: 15 });
       }
     );
 
@@ -101,11 +133,21 @@ describe('motionObservable.addedBy',
 
     it('should have a shorthand signature for Point2D constants',
       () => {
-        subject.addedBy({ x : 10, y: 20 }).subscribe(listener);
+        subject.addedBy({ x: 10, y: 20 }).subscribe(listener);
 
-        subject.next({x: 100, y: -40 });
+        subject.next({ x: 100, y: -40 });
 
-        expect(listener).to.have.been.calledWith({x: 110, y: -20 });
+        expect(listener).to.have.been.calledWith({ x: 110, y: -20 });
+      }
+    );
+
+    it('should have a shorthand signature for Dimensions constants',
+      () => {
+        subject.addedBy({ width: 10, height: 20 }).subscribe(listener);
+
+        subject.next({ width: 100, height: -40 });
+
+        expect(listener).to.have.been.calledWith({ width: 110, height: -20 });
       }
     );
 

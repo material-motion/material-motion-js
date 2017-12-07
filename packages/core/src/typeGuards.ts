@@ -17,6 +17,7 @@
 import $$observable from 'symbol-observable';
 
 import {
+  Dimensions,
   Observable,
   Observer,
   Point2D,
@@ -35,6 +36,13 @@ export function isBoolean(value: any): value is boolean {
  */
 export function isDefined(value: any): boolean {
   return typeof value !== 'undefined';
+}
+
+/**
+ * Checks if an object has numeric values for both `width` and `height`.
+ */
+export function isDimensions(value: any): value is Dimensions {
+  return typeof value.width === 'number' && typeof value.height === 'number';
 }
 
 /**
