@@ -60,7 +60,7 @@ const getLayerClasses = ({ foreground$, background$ }) => {
   ).attach();
 
   return sheet.classes;
-})
+}
 
 const getLayerTranslateStreams = () => {
   const {
