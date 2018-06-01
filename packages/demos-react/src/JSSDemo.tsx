@@ -16,14 +16,14 @@
 
 import * as React from 'react';
 
-import { create as createJSS } from 'jss';
-import preset from 'jss-preset-default';
+import { default as jss, StyleSheet } from 'jss';
 
 import {
   MaybeReactive,
   NumericDict,
   ObservableWithMotionOperators,
   combineLatest,
+  createProperty,
   subscribe,
 } from 'material-motion';
 
@@ -38,10 +38,11 @@ import {
   TransformTarget,
 } from 'material-motion-views-react';
 
-const jss = createJSS().setup(preset);
+export class JSSDemo extends React.Component<{}, {}> {
+  foregroundStyle$ = createProperty({ initialValue: {} });
+  backgroundStyle$ = createProperty({ initialValue: {} });
 
-const getLayerClasses = ({ foreground$, background$ }) => {
-  const sheet = jss.createStyleSheet(
+  styleSheet = jss.createStyleSheet(
     {
       container: {
         touchAction: 'none',
@@ -50,54 +51,58 @@ const getLayerClasses = ({ foreground$, background$ }) => {
         overflow: 'hidden',
         background: '#F7DF1E',
       },
-
-      foreground: foreground$,
-      background: background$,
+      foreground: this.foregroundStyle$,
+      background: this.backgroundStyle$,
     },
     {
       link: true,
     }
   ).attach();
 
-  return sheet.classes;
-}
+  attachToContainer = (element: HTMLElement) => {
+    const {
+      move$,
+    } = getPointerEventStreamsFromElement(element);
 
-const getLayerTranslateStreams = () => {
-  const {
-    move$,
-  } = getPointerEventStreamsFromElement(document);
+    const centeredMove$ = move$.subtractedBy(
+      combineLatest<NumericDict, MaybeReactive<NumericDict>>({
+        x: viewportDimensions$.pluck('width').dividedBy(2),
+        y: viewportDimensions$.pluck('height').dividedBy(2),
+      })
+    );
 
-  const centeredMove$ = move$.subtractedBy(
-    combineLatest<NumericDict, MaybeReactive<NumericDict>>({
-      x: viewportDimensions$.pluck('width').dividedBy(2),
-      y: viewportDimensions$.pluck('height').dividedBy(2),
-    })
-  );
+    subscribe({
+      source: combineStyleStreams({
+        translate$: centeredMove$.multipliedBy({ x: 1.125, y: 0.25 }),
+      }),
+      sink: this.backgroundStyle$,
+    });
 
-  return {
-    background$: combineStyleStreams({
-      translate$: centeredMove$.multipliedBy({ x: 1.125, y: 0.25 }),
-    }),
-
-    foreground$: combineStyleStreams({
-      translate$: centeredMove$.multipliedBy({ x: .75, y: 0.11 }),
-    }),
-  };
-}
-
-export class JSSDemo extends React.Component<{}, {}> {
-  classes = getLayerClasses(getLayerTranslateStreams());
+    subscribe({
+      source: combineStyleStreams({
+        translate$: centeredMove$.multipliedBy({ x: .75, y: 0.11 }),
+      }),
+      sink: this.foregroundStyle$,
+    });
+  }
 
   render() {
+    const {
+      classes,
+    } = this.styleSheet;
+
     return (
-      <div className = { this.classes.container }>
+      <div
+        className = { classes.container }
+        ref = { this.attachToContainer }
+      >
         <RandomLogos
-          className = { this.classes.foreground }
+          className = { classes.foreground }
           scale = { 3 }
         />
 
         <RandomLogos
-          className = { this.classes.background }
+          className = { classes.background }
           scale = { 5 }
         />
       </div>
