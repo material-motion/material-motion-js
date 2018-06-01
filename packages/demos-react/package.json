@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@types/jss": "^9.5.3",
+    "bezier-js": "^2.2.5",
     "jss": "9.5",
     "jss-preset-default": "4.0.1",
     "jsxstyle": "2.1.1",
