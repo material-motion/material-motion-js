@@ -104,6 +104,8 @@ export type Point2D = {
   y: number,
 };
 
+export type BezierControlPoints = [Point2D, Point2D];
+
 export type PolarCoords = {
   angle: number,
   distance: number,
