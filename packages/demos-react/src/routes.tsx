@@ -23,6 +23,7 @@ import Router from 'react-router/BrowserRouter';
 
 // import ExampleMain from './example/components/ExampleMain';
 import ArticulableFinger from './ArticulableFinger';
+import BezierExperiments from './BezierExperiments';
 import JSSDemo from './JSSDemo';
 import ParallaxDemo from './ParallaxDemo';
 import QuickiePointerEventTest from './QuickiePointerEventTest';
@@ -61,6 +62,11 @@ const links = [
     href: '/parallax-jss/',
     name: 'JSSDemo',
     component: JSSDemo,
+  },
+  {
+    href: '/bezier-experiments/',
+    name: 'BezierExperiments',
+    component: BezierExperiments,
   },
   {
     href: '/pointer-events/',
