@@ -68,7 +68,13 @@ export function withReactiveNextOperator<T, S extends Constructor<Observable<T>>
             emit: observer.next.bind(observer),
           });
 
-          return combineLatest<D, MaybeReactive<D>>(
+          // TODO: verify this is the correct type.
+          //
+          // I added `{upstream: Observable<T>}` because otherwise `inputs` was
+          // getting inferred to require an `upstream` at a callsite.  This
+          // appears to fix it, but I haven't taken the time to reason if it's
+          // correct.
+          return combineLatest<D, MaybeReactive<D> & {upstream: Observable<T>}>(
             // TypeScript doesn't like ...inputs, so we use the longhand version
             Object.assign(
               { upstream: this },
