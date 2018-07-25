@@ -178,6 +178,10 @@ export interface ScopedWritable<T> {
   write: Write<T>;
 }
 
+export type TouchActionStyleStreams = {
+  readonly touchAction$: ObservableWithMotionOperators<string>,
+};
+
 export type WillChangeStyleStreams = {
   readonly willChange$: ObservableWithMotionOperators<string>,
 };
@@ -206,9 +210,9 @@ export type BorderRadiusStyleStreams = {
   readonly borderRadius$: ObservableWithMotionOperators<number | string | Array<number> | Array<string>>,
 };
 
-export type StyleStreams = WillChangeStyleStreams & TranslateStyleStreams &
-    ScaleStyleStreams & OpacityStyleStreams & BoxShadowStyleStreams &
-    BorderRadiusStyleStreams;
+export type StyleStreams = TouchActionStyleStreams & WillChangeStyleStreams &
+    TranslateStyleStreams & ScaleStyleStreams & OpacityStyleStreams &
+    BoxShadowStyleStreams & BorderRadiusStyleStreams;
 
 export type EqualityCheck = (a: any, b: any) => boolean;
 
