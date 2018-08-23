@@ -14,8 +14,11 @@
  *  under the License.
  */
 
+import * as CSS from 'csstype';
+
 import {
   Dict,
+  Dimensions,
   MaybeReactive,
   Observable,
   ObservableWithMotionOperators,
@@ -24,23 +27,15 @@ import {
   combineLatest,
 } from 'material-motion';
 
-export type StyleDict = {
-  opacity?: string,
-  touchAction?: string,
-  transform?: string,
-  willChange?: string,
-};
-
-export type PrimitiveStyleDict = {
+export type PrimitiveStyleDict = Partial<{
   opacity: number,
-  translate: Point2D,
+  translate: Partial<Point2D>,
   rotate: number,
   scale: number,
-  borderRadius: string,
-  willChange: string,
-};
+  dimensions: Partial<Dimensions>,
+}> & CSS.Properties;
 
-export function combineStyleStreams(styleStreams: Partial<StyleStreams>): ObservableWithMotionOperators<StyleDict> {
+export function combineStyleStreams(styleStreams: Partial<StyleStreams>): ObservableWithMotionOperators<CSS.Properties> {
   return combineLatest<PrimitiveStyleDict, MaybeReactive<PrimitiveStyleDict>>(
     stripStreamSuffices(styleStreams as StyleStreams) as MaybeReactive<PrimitiveStyleDict>,
     { waitForAllValues: false }
@@ -52,6 +47,7 @@ export function combineStyleStreams(styleStreams: Partial<StyleStreams>): Observ
       rotate = 0,
       scale = 1,
       borderRadius = '',
+      dimensions = {},
       ...passthrough
     }) => (
       {
@@ -59,37 +55,45 @@ export function combineStyleStreams(styleStreams: Partial<StyleStreams>): Observ
         borderRadius: Array.isArray(borderRadius)
           ? borderRadius.map(appendPixels).join(' ' )
           : borderRadius,
-        opacity: opacity.toFixed(3),
+        opacity: typeof opacity === 'number'
+          ? Number(opacity.toFixed(3))
+          : opacity,
         transform: buildTransformString({ translate, rotate, scale }),
+        width: appendPixels(dimensions.width || passthrough.width),
+        height: appendPixels(dimensions.height || passthrough.height),
         willChange,
       }
     )
-  }) as ObservableWithMotionOperators<StyleDict>;
+  });
 }
 export default combineStyleStreams;
 
-export function buildTransformString({ translate = { x: 0, y: 0 }, rotate = 0, scale = 1 }: Partial<{ translate: Point2D, rotate: number, scale: number }>): string {
+export function buildTransformString({
+  translate: { x: translateX = 0, y: translateY = 0 } = {},
+  rotate = 0,
+  scale = 1,
+}: Partial<{ translate: Partial<Point2D>, rotate: number, scale: number }>): string {
   return `
-    translate(${ appendPixels(translate.x) }, ${ appendPixels(translate.y) })
+    translate(${ appendPixels(translateX) }, ${ appendPixels(translateY) })
     rotate(${ appendRadians(rotate) })
     scale(${ scale })
   `;
 }
 
-function applySuffix(value: number | string, suffix: string = ''): string {
-  if (typeof value === 'string') {
-    return value;
+export function applySuffix(value: number | string | undefined, suffix: string = ''): string | undefined {
+  if (typeof value === 'number') {
+    return value + suffix;
   }
 
-  return value + suffix;
+  return value;
 }
 
 // Poor-man's currying
-function appendPixels(value: number): string {
+export function appendPixels(value: number | string | undefined): string | undefined {
   return applySuffix(value, 'px');
 }
 
-function appendRadians(value: number): string {
+export function appendRadians(value: number | string | undefined): string | undefined {
   return applySuffix(value, 'rad');
 }
 
