@@ -184,8 +184,12 @@ export type WillChangeStyleStreams = {
   readonly willChange$: ObservableWithMotionOperators<string>,
 };
 
+export type DimensionsStyleStreams = WillChangeStyleStreams & {
+  readonly dimensions$: ObservableWithMotionOperators<Partial<Dimensions>>,
+};
+
 export type TranslateStyleStreams = WillChangeStyleStreams & {
-  readonly translate$: ObservableWithMotionOperators<Point2D>,
+  readonly translate$: ObservableWithMotionOperators<Partial<Point2D>>,
 };
 
 export type RotateStyleStreams = WillChangeStyleStreams & {
@@ -209,8 +213,8 @@ export type BorderRadiusStyleStreams = {
 };
 
 export type StyleStreams = TouchActionStyleStreams & WillChangeStyleStreams &
-    TranslateStyleStreams & ScaleStyleStreams & OpacityStyleStreams &
-    BoxShadowStyleStreams & BorderRadiusStyleStreams;
+    DimensionsStyleStreams & TranslateStyleStreams & ScaleStyleStreams &
+    OpacityStyleStreams & BoxShadowStyleStreams & BorderRadiusStyleStreams;
 
 export type EqualityCheck = (a: any, b: any) => boolean;
 
