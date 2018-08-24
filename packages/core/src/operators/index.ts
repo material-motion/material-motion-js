@@ -85,6 +85,11 @@ import {
 } from './pluck';
 
 import {
+  MotionRenameable,
+  withRename,
+} from './rename';
+
+import {
   MotionRewritable,
   withRewrite,
 } from './rewrite';
@@ -144,6 +149,7 @@ export interface ObservableWithMotionOperators<T> extends
   MotionMultipliable<T>,
   MotionPluckable<T>,
   MotionPolarizable<T>,
+  MotionRenameable<T>,
   MotionRewritable<T>,
   MotionRewriteRangeable,
   MotionRewriteToable,
@@ -177,8 +183,9 @@ export function withMotionOperators<T, S extends Constructor<Observable<T>>>(sup
   const result19 = withAppendUnit<T, typeof result18>(result18);
   const result20 = withInverted<T, typeof result19>(result19);
   const result21 = withToPolar<T, typeof result20>(result20);
+  const result22 = withRename<T, typeof result21>(result21);
 
-  return result21;
+  return result22;
 }
 
 export * from './addedBy';
@@ -194,6 +201,7 @@ export * from './log';
 export * from './merge';
 export * from './multipliedBy';
 export * from './pluck';
+export * from './rename';
 export * from './rewrite';
 export * from './rewriteRange';
 export * from './rewriteTo';
