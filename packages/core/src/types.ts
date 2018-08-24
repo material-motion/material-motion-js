@@ -61,6 +61,7 @@ export {
   MotionReactiveMappable,
   MotionReactiveNextOperable,
   MotionReadable,
+  MotionRenameable,
   MotionRewritable,
   MotionRewriteRangeable,
   MotionRewriteToable,
