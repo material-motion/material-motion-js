@@ -6961,10 +6961,10 @@ winston@^1.0.1:
     pkginfo "0.3.x"
     stack-trace "0.0.x"
 
-wobble@1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/wobble/-/wobble-1.4.0.tgz#abd77b3619363f19c15948d0991e7c8e343fcfd2"
-  integrity sha512-tafn61Y6TBSdkFRpnnTINOhNWcncsrcbGSgX9ixap42qVas17qIWVYBcbeggOLRZ2r3EzCHutHSGgdWigjI6Nw==
+wobble@1.5:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/wobble/-/wobble-1.5.0.tgz#5192d6681642ca22e4e133408628b99e9a7d1559"
+  integrity sha512-C8rlhj+kowPy1eLFjvzINg05UndB0IPRV8jzLARsOfq3Z8HuYMwdjBwT+fAvURC2cTUJRBskNuvrT6aq/5xamg==
 
 wordwrap@0.0.2:
   version "0.0.2"
