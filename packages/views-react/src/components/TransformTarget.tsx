@@ -38,7 +38,7 @@ export type TransformTargetArgs = Partial<{
   children: React.ReactNode | undefined,
   domRef(ref: Element | null): void,
   className: string,
-}?;
+}>;
 
 /**
  * Applies translate, rotate, and scale in the order specified by the CSS
