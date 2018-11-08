@@ -32,6 +32,7 @@ export type PrimitiveStyleDict = Partial<{
   translate: Partial<Point2D>,
   rotate: number,
   scale: number,
+  transformOrigin: Partial<Point2D>,
   dimensions: Partial<Dimensions>,
 }> & CSS.Properties;
 
@@ -47,6 +48,7 @@ export function combineStyleStreams(styleStreams: Partial<StyleStreams>): Observ
       rotate = 0,
       scale = 1,
       borderRadius = '',
+      transformOrigin = { x: 0, y: 0 },
       dimensions = {},
       ...passthrough
     }) => (
@@ -59,6 +61,7 @@ export function combineStyleStreams(styleStreams: Partial<StyleStreams>): Observ
           ? Number(opacity.toFixed(3))
           : opacity,
         transform: buildTransformString({ translate, rotate, scale }),
+        transformOrigin: `${ appendPixels(transformOrigin.x) } ${ appendPixels(transformOrigin.y) }`,
         width: appendPixels(dimensions.width || passthrough.width),
         height: appendPixels(dimensions.height || passthrough.height),
         willChange,
