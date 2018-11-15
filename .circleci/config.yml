@@ -27,8 +27,7 @@ jobs:
     # To see the list of pre-built images that CircleCI provides for most common languages see
     # https://circleci.com/docs/2.0/circleci-images/
     docker:
-    - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
-      command: /sbin/init
+    - image: circleci/node:10-stretch-browsers
     steps:
     # Machine Setup
     #   If you break your build into multiple jobs with workflows, you will probably want to do the parts of this that are relevant in each
@@ -38,33 +37,27 @@ jobs:
     # In many cases you can simplify this from what is generated here.
     # 'See docs on artifact collection here https://circleci.com/docs/2.0/artifacts/'
     - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
-    # This is based on your 1.0 configuration file or project settings
-    - run:
-        working_directory: ~/material-motion/material-motion-js
-        command: nvm install 8.0.0 && nvm alias default 8.0.0
     # Dependencies
     #   This would typically go in either a build or a build-and-test job when using workflows
     # Restore the dependency cache
     - restore_cache:
         keys:
         # This branch if available
-        - v1-dep-{{ .Branch }}-
+        - nodeimage-{{ .Branch }}-
         # Default branch if not
-        - v1-dep-develop-
+        - nodeimage-develop-
         # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
-        - v1-dep-
-    # This is based on your 1.0 configuration file or project settings
+        - nodeimage-
     - run: echo "workspaces-experimental true" >> ~/.yarnrc
     - run: yarn config set prefix "$HOME/.yarn"
     - run: PATH=$( yarn global bin ):$PATH
-    - run: yarn global add yarn@1
     - run: yarn
     - run: yarn config set prefix "$HOME/.yarn"
     - run: $( yarn bin )/lerna bootstrap -- --non-interactive --flat
     - run: mkdir -p $CIRCLE_TEST_REPORTS/tslint/
     # Save dependency cache
     - save_cache:
-        key: v1-dep-{{ .Branch }}-{{ epoch }}
+        key: nodeimage-{{ .Branch }}-{{ epoch }}
         paths:
         - ~/.cache/yarn
         - ./node_modules
