@@ -36,17 +36,26 @@ export interface MockRAF {
 export type MockedRAFClosure = (mockRAF: MockRAF) => void;
 
 /**
- * Replaces window.requestAnimationFrame with a mock for the duration of a mocha
- * testing suite.
+ * Replaces `window.requestAnimationFrame`, `performance.now`, and `Date.now`
+ * with mocks for the duration of a mocha testing suite.
+ *
+ * The two `now` methods will only be incremented when `mockRAF.step` is called.
  */
 export default function useMockedRAF(closure: MockedRAFClosure) {
   return () => {
     const mockRAF = createMockRAF();
+    const initialTime = Date.now();
+
+    function mockNow() {
+      return initialTime + mockRAF.now();
+    }
 
     before(
       () => {
         stub(window, 'requestAnimationFrame').callsFake(mockRAF.raf);
         stub(window, 'cancelAnimationFrame').callsFake(mockRAF.cancel);
+        stub(Date, 'now').callsFake(mockNow);
+        stub(performance, 'now').callsFake(mockRAF.now);
       }
     );
 
@@ -54,6 +63,8 @@ export default function useMockedRAF(closure: MockedRAFClosure) {
       () => {
         (window.requestAnimationFrame as SinonStub).restore(); // tslint:disable-line: no-unbound-method
         (window.cancelAnimationFrame as SinonStub).restore(); // tslint:disable-line: no-unbound-method
+        (Date.now as SinonStub).restore(); // tslint:disable-line: no-unbound-method
+        (performance.now as SinonStub).restore(); // tslint:disable-line: no-unbound-method
       }
     );
 
