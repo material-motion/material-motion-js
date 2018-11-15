@@ -15,8 +15,8 @@
  */
 
 import {
-  when,
   not,
+  when,
 } from '../aggregators';
 
 import {

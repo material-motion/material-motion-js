@@ -7299,15 +7299,10 @@ supports-color@^5.3.0:
   dependencies:
     has-flag "^3.0.0"
 
-symbol-observable@1.0.4, symbol-observable@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.0.4.tgz#29bf615d4aa7121bdd898b22d4b3f9bc4e2aa03d"
-  integrity sha1-Kb9hXUqnEhvdiYsi1LP5vE4qoD0=
-
-symbol-observable@^0.2.2, symbol-observable@^0.2.4:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-0.2.4.tgz#95a83db26186d6af7e7a18dbd9760a2f86d08f40"
-  integrity sha1-lag9smGG1q9+ehjb2XYKL4bQj0A=
+symbol-observable@1.0.4, symbol-observable@1.2, symbol-observable@1.2.0, symbol-observable@^0.2.2, symbol-observable@^0.2.4, symbol-observable@^1.0.4:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.2.0.tgz#c22688aed4eab3cdc2dfeacbb561660560a00804"
+  integrity sha512-e900nM8RRtGhlV36KGEU9k65K3mPb1WV70OdjfxlG2EAuM1noi/E/BaW/uMhL7bPEssK8QV57vN3esixjUvcXQ==
 
 tapable@^0.2.5, tapable@~0.2.5:
   version "0.2.6"
@@ -7839,7 +7834,7 @@ uuid@^3.3.2:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
   integrity sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==
 
-uws@^0.12.0:
+uws@10.148.2, uws@^0.12.0:
   version "10.148.2"
   resolved "https://registry.yarnpkg.com/uws/-/uws-10.148.2.tgz#f01652a0b4bb941cb18bb7a6248d780fd0150245"
   integrity sha1-8BZSoLS7lByxi7emJI14D9AVAkU=

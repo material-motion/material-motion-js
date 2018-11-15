@@ -28,7 +28,7 @@ import {
 
 export type _FilterArgs<T> = {
   predicate?: Predicate<T>,
-}
+};
 
 export interface MotionFilterable<T> {
   _filter(kwargs?: _FilterArgs<T>): ObservableWithMotionOperators<T>;

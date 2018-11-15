@@ -28,6 +28,7 @@ export type _ReactiveMapOptions = Partial<{
 }>;
 
 export type _ReactiveMapArgs<T, D, U> = _ReactiveMapOptions & {
+  // tslint:disable-next-line:prefer-method-signature
   transform: (kwargs: { upstream: T } & D) => U,
   inputs: MaybeReactive<D>,
 };

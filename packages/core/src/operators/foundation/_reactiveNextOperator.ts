@@ -41,7 +41,7 @@ import {
 export type _ReactiveNextOperatorArgs<T, D, U> = CombineLatestOptions & {
   operation: EmittingOperation<T, D, U>,
   inputs: MaybeReactive<D>,
-}
+};
 
 export interface MotionReactiveNextOperable<T> extends Observable<T> {
   _reactiveNextOperator<U, D>(kwargs: _ReactiveNextOperatorArgs<T, D, U>): ObservableWithMotionOperators<U>;
