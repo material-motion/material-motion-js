@@ -22,6 +22,7 @@ import {
 } from '../../types';
 
 export type _MapArgs<T, U> = {
+  // tslint:disable-next-line:prefer-method-signature
   transform: (value: T) => U,
 };
 

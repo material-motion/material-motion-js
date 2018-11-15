@@ -42,7 +42,7 @@ export type RewritableOptions<U> = Partial<{
 
 export type RewriteArgs<T, R, U> = RewritableOptions<U> & {
   mapping: Dict<R> | Map<T, R>,
-}
+};
 
 export interface MotionRewritable<T> {
   rewrite<U, R extends U | ObservableWithMotionOperators<U>>(kwargs: RewriteArgs<T, R, U>): ObservableWithMotionOperators<U>;

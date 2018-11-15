@@ -52,7 +52,7 @@ export function withSlidingWindow<T, S extends Constructor<MotionNextOperable<T>
             }
 
             emit(result);
-          }
+          };
         }
       });
     }

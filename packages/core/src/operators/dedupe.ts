@@ -54,7 +54,7 @@ export function withDedupe<T, S extends Constructor<ObservableWithFoundationalMo
             emitted = true;
 
             emit(upstream);
-          }
+          };
         }
       });
     }

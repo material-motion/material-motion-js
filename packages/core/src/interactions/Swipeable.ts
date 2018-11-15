@@ -40,8 +40,8 @@ import {
 } from '../observables';
 
 import {
-  ObservableWithMotionOperators,
   MaybeReactive,
+  ObservableWithMotionOperators,
   Point2D,
   ScaleStyleStreams,
   TranslateStyleStreams,

@@ -26,7 +26,7 @@ import {
 
 export type AppendUnitArgs = {
   unit: string,
-}
+};
 
 export interface MotionAppendUnitable {
   appendUnit(kwargs: AppendUnitArgs): ObservableWithMotionOperators<string>;

@@ -33,7 +33,7 @@ import {
 
 export type _DebounceArgs = {
   pulse$?: Observable<any>,
-}
+};
 
 export interface MotionDebounceable<T> {
   _debounce(kwargs?: _DebounceArgs): ObservableWithMotionOperators<T>;

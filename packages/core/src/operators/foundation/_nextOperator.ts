@@ -29,7 +29,7 @@ import {
 
 export type _NextOperatorArgs<T, U> = {
   operation: EmittingOperation<T, {}, U>,
-}
+};
 
 export interface MotionNextOperable<T> extends Observable<T> {
   _nextOperator<U>(kwargs: _NextOperatorArgs<T, U>): ObservableWithMotionOperators<U>;

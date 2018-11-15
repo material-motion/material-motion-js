@@ -12,8 +12,8 @@
     "packages/*"
   ],
   "resolutions": {
-    "symbol-observable": "1.0.4",
-    "uws": "8.14.1"
+    "symbol-observable": "1.2.0",
+    "uws": "10.148.2"
   },
   "devDependencies": {
     "@bazel/typescript": "^0.2.2",
