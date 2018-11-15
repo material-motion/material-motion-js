@@ -33,6 +33,7 @@ module.exports = function(config) {
       '**/*.js': ['webpack'],
     },
     webpack: {
+      mode: 'none',
       devtool: 'eval',
       stats: 'errors-only',
       resolve: {
@@ -40,9 +41,17 @@ module.exports = function(config) {
         mainFields: ['typescript:main', 'jsnext:main', 'main'],
       },
       module: {
-        loaders: [
+        rules: [
           {
-            test: /\.tsx?$/, loader: 'ts-loader?transpileOnly=true',
+            test: /\.tsx?$/,
+            use: [
+              {
+                loader: 'ts-loader',
+                options: {
+                  transpileOnly: true,
+                },
+              }
+            ]
           },
         ],
       },

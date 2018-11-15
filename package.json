@@ -21,13 +21,13 @@
     "@types/sinon": "^1.16.34",
     "@types/sinon-chai": "^2.7.28",
     "chai": "^4.0.2",
-    "karma": "1.5.0",
+    "karma": "3",
     "karma-chrome-launcher": "2.0.0",
     "karma-firefox-launcher": "1.0.0",
     "karma-junit-reporter": "1.2.0",
     "karma-mocha": "1.3.0",
     "karma-safari-launcher": "1.0.0",
-    "karma-webpack": "2.0.3",
+    "karma-webpack": "4.0.0-rc.2",
     "lerna": "2.0.0",
     "minimist": "1.2.0",
     "mocha": "4",
@@ -47,13 +47,13 @@
     "pundle-resolver-default": "2.0.0-beta12",
     "pundle-transformer-typescript": "2.0.0-beta12",
     "rules_karma": "alexeagle/rules_karma",
-    "sinon": "2.1.0",
-    "sinon-chai": "^2.11.0",
-    "ts-loader": "2.0.3",
+    "sinon": "7",
+    "sinon-chai": "3",
+    "ts-loader": "5",
     "tsickle": "^0.24.1",
     "tslint": "4.5.1",
     "tslint-junit-formatter": "5.1.0",
     "typescript": "2.4",
-    "webpack": "2.3.1"
+    "webpack": "4"
   }
 }
