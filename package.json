@@ -4,7 +4,9 @@
   "scripts": {
     "build": "lerna run build",
     "lint": "lerna run lint",
+    "pretest": "rm -rf coverage .nyc_output; mkdir coverage .nyc_output",
     "test": "karma start",
+    "posttest": "codecov -f coverage/*.json",
     "ci": "lerna run lint-ci; yarn run build; yarn run test --single-run"
   },
   "lerna": "2.0.0",
@@ -21,8 +23,11 @@
     "@types/sinon": "^1.16.34",
     "@types/sinon-chai": "^2.7.28",
     "chai": "^4.0.2",
+    "codecov": "3",
+    "istanbul-instrumenter-loader": "^3.0.1",
     "karma": "3",
     "karma-chrome-launcher": "2.0.0",
+    "karma-coverage-istanbul-reporter": "^2.0.4",
     "karma-firefox-launcher": "1.0.0",
     "karma-junit-reporter": "1.2.0",
     "karma-mocha": "1.3.0",
