@@ -14,10 +14,17 @@ module.exports = function(config) {
     // CircleCI needs JUnit to show tests correctly.
     // https://circleci.com/docs/1.0/test-metadata/#karma
     reporters: process.env.CI
-      ? ['junit', 'progress']
-      : ['progress'],
+      ? ['junit', 'progress', 'coverage-istanbul']
+      : ['progress', 'coverage-istanbul'],
     junitReporter: {
       outputDir: process.env.CIRCLE_TEST_REPORTS,
+    },
+    coverageIstanbulReporter: {
+      reports: [
+        'text-summary',
+        'json',
+      ],
+      fixWebpackSourcePaths: true,
     },
 
     client: {
@@ -43,14 +50,28 @@ module.exports = function(config) {
       module: {
         rules: [
           {
-            test: /\.tsx?$/,
+            test: /\.ts$/,
             use: [
               {
                 loader: 'ts-loader',
                 options: {
                   transpileOnly: true,
                 },
-              }
+              },
+            ]
+          },
+          {
+            enforce: 'post',
+            test: /\.ts$/,
+            include: /packages\/[^/]+\/src\/.*\.(j|t)s?$/,
+            exclude: path => path.includes('__tests__'),
+            use: [
+              {
+                loader: 'istanbul-instrumenter-loader',
+                options: {
+                  transpileOnly: true,
+                },
+              },
             ]
           },
         ],
