@@ -14,10 +14,14 @@ module.exports = function(config) {
     // CircleCI needs JUnit to show tests correctly.
     // https://circleci.com/docs/1.0/test-metadata/#karma
     reporters: process.env.CI
-      ? ['junit', 'progress']
-      : ['progress'],
+      ? ['junit', 'coverage', 'progress']
+      : ['coverage', 'progress'],
     junitReporter: {
       outputDir: process.env.CIRCLE_TEST_REPORTS,
+    },
+    coverageReporter: {
+      type : 'lcov',
+      dir : 'coverage/',
     },
 
     client: {
@@ -29,21 +33,24 @@ module.exports = function(config) {
       '**/*.map',
     ],
     preprocessors: {
-      '**/*.ts': ['webpack'],
       '**/*.js': ['webpack'],
+      '**/*.jsx': ['webpack'],
+      '**/*.ts': ['webpack'],
+      '**/*.tsx': ['webpack'],
+      '**/!(__tests__)/*.ts': ['webpack', 'coverage'],
     },
     webpack: {
       mode: 'none',
       devtool: 'eval',
       stats: 'errors-only',
       resolve: {
-        extensions: ['.js', '.ts'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
         mainFields: ['typescript:main', 'jsnext:main', 'main'],
       },
       module: {
         rules: [
           {
-            test: /\.tsx?$/,
+            test: /.*/,
             use: [
               {
                 loader: 'ts-loader',
@@ -73,27 +80,22 @@ module.exports = function(config) {
     concurrency: Infinity,
   });
 
+  let filesBasePath = 'packages/*!(-react)/src/**/';
+
   const argv = minimist(process.argv);
   if (argv.only) {
     // Run tests for a specific package
     if (!fs.existsSync(path.resolve(__dirname, `./packages/${ argv.only }`))) {
       throw new Error(`"${ argv.only }" package does not exist!`);
     }
-
-    config.set({
-      files: [`packages/${ argv.only }/src/**/__tests__/**`],
-    });
+    filesBasePath = `packages/${ argv.only }/src/**/`;
 
   } else if (argv.grep) {
     // Run tests for a subset of all packages by name
-    config.set({
-      files: [`packages/*${ argv.grep }*/src/**/__tests__/**`],
-    });
-
-  } else if (!argv.only && !argv.grep) {
-    // Run all tests
-    config.set({
-      files: ['packages/*/src/**/__tests__/**'],
-    });
+    filesBasePath = `packages/*${ argv.grep }*/src/**/`;
   }
+
+  config.set({
+    files: [`${ filesBasePath }*.js`, `${ filesBasePath }*.jsx`, `${ filesBasePath }*.ts`, `${ filesBasePath }*.tsx`],
+  });
 };
