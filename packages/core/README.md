@@ -1,27 +1,131 @@
-# Material Motion Streams #
+# Material Motion #
 
-A stream-powered implementation of Material Motion
+Material Motion is a library used by the Material Design team to prototype interactive experiences with gestures.
+
+[![Build Status](https://img.shields.io/circleci/project/github/material-motion/material-motion-js/stable.svg)](https://circleci.com/gh/material-motion/material-motion-js/)
+[![codecov](https://codecov.io/gh/material-motion/material-motion-js/branch/stable/graph/badge.svg)](https://codecov.io/gh/material-motion/material-motion-js)
+[![Chat](https://img.shields.io/discord/198544450366996480.svg)](https://discord.gg/material-motion)
+
+## Status: Experimental ##
+
+🚨 Material Motion has not been used in a production application at Google.  It is unstable and unsupported. 🚨
+
+### Unexplored areas ###
+
+- **bundle size**
+
+  Material Motion has not been run through [Closure Compiler](https://github.com/google/closure-compiler).  No attempts have been made to minify its file size.
+
+  [Operators](https://github.com/material-motion/material-motion-js/tree/develop/packages/core/src/operators) are presently implemented using the [mixin pattern](http://justinfagnani.com/2015/12/21/real-mixins-with-javascript-classes/), which may not minify well.  We may migrate to a [pipeable architecture, like RxJS's](https://github.com/ReactiveX/rxjs/blob/master/doc/pipeable-operators.md), in a future version.
+
+- **memory footprint**
+
+  Interactions are implemented by composing streams of user input to emit styles like `transform` and `opacity`.  We have not yet explored when/how these streams should be freed for garbage collection.
+
+### Other likely changes ###
+
+- **modularization**
+
+  Material Motion is split into packages:
+
+  - `material-motion` is a pure JavaScript library with no dependencies on the DOM or opinions about how the view layer is implemented.
+  - [`material-motion-views-dom`](https://github.com/material-motion/material-motion-js/tree/develop/packages/views-dom/) contains functions for working with the DOM, like `getPointerEventStreamsFromElement` and `combineStyleStreams`.
+
+  The original idea was to vend different `views` libraries for different frameworks (React, Angular, etc.), separate from the common logic in the core library.  [`jss`](https://github.com/cssinjs/jss/) does a good job binding observables to CSS in a framework-agnostic way; therefore, `views-dom` is likely to be folded into `material-motion` in a future version.
+
+- **function signatures**
+
+  In support of future evolution, Material Motion uses the named argument pattern, often with a positional shorthand.  For instance, these are equivalent:
+
+  ```typescript
+  openOffset$.addedBy({ value$: thresholdAmount$ })  // named argument
+
+  openOffset$.addedBy(thresholdAmount$)              // positional shorthand
+
+  openOffset$.addedBy({                              // named argument, with
+    value$: thresholdAmount$,                        // an explicit value for
+    onlyEmitWithUpstream: false,                     // an optional parameter
+  })
+  ```
+
+  All arguments that accept stream values [are suffixed with `$`](https://medium.com/@benlesh/observables-and-finnish-notation-df8356ed1c9b).
+
+  The Material Motion API is declarative.  Its operators accept literal values and other streams, but not functions.  This decision was made to ensure the API is portable across platforms, and to provide a foundation for visual tooling to be built on top of.
+
+  We will continue to assess the impact of these patterns on both ergonomics and code size, and may make changes in the future accordingly.
 
 ## Usage ##
 
+Material Motion is often used to implement the toss gesture: where the user drags an element, and it springs to a resting position when released.  [`Tossable`](https://github.com/material-motion/material-motion-js/blob/develop/packages/core/src/interactions/Tossable.ts) observes the drag's velocity and passes it to the spring, preserving the user's momentum and making the interaction feel seamless.
+
+Here's a simple example:
+
 ```javascript
-import MotionProperty from 'material-motion';
+// We use JSS to update the document's style sheet whenever Material Motion
+// emits a new value.
+import { create as createJSS, StyleSheet } from 'jss';
+import createDefaultJSSPreset from 'jss-preset-default';
 
+import {
+  Draggable,
+  Point2DSpring,
+  Tossable,
+  subscribe,
+} from 'material-motion';
 
+import {
+  combineStyleStreams,
+  getPointerEventStreamsFromElement,
+} from 'material-motion-views-dom';
+
+const ball = document.getElementById('ball');
+
+// `Draggable` listens for events on the down, move, and up streams.  It
+// calculates how far a pointer has been dragged, and emits the result on its
+// `value$` stream.
+const pointerEvents = getPointerEventStreamsFromElement(ball);
+const draggable = new Draggable(pointerEvents);
+
+// `Tossable` passes the velocity from `draggable` into the spring.  This
+// ensures that when the user lets go, the item continues moving at the same
+// speed it was while the user was in control.
+const spring = new Point2DSpring();
+const tossable = new Tossable({ draggable, spring });
+
+// `Tossable` emits `translate$` and `willChange$`.
+//
+// `combineStyleStreams` will combine these into a stream of
+// `{ transform, willChange }`, to be passed to JSS.
+const ballStyles$ = combineStyleStreams(tossable.styleStreams);
+
+// Unfortunately, there's a bit of boilerplate to instantiate JSS.  Notice
+// that the output of `tossable` has been given the name `ball` here.
+const styleSheet = jss.createStyleSheet(
+  {
+    ball: ballStyles$,
+  },
+  {
+    link: true,
+  }
+).attach();
+
+// Now, we assign the class name that JSS generated to the element that we
+// received the pointer events from:
+ball.classList.add(styleSheet.classes.ball);
 ```
 
-See also the [MotionProperty specification]() in [the Starmap](https://material-motion.github.io/material-motion/starmap/).
+You can see this in action at https://material-motion-demos.firebaseapp.com/toss/.  The source code is in [`TossableDemo`](https://github.com/material-motion/material-motion-js/blob/develop/packages/demos-react/src/TossableDemo.tsx).
 
-## API ##
+## Documentation ##
 
-To encourage code readability, we follow the named arguments pattern: each function takes a single object literal.  Internally, we destructure that object to read a function's arguments.
+Material Motion was originally a cross-platform initiative that targeted Android, iOS, and the Web.  Although the other platforms aren't currently in active development, you may find the documentation from the shared project helpful: https://material-motion.github.io/material-motion/documentation/
 
-### `MotionProperty` ###
+Unfortunately, there is not yet independent documentation for the JavaScript implementation.  Hopefully, there will be in there future.
 
 ## Installation ##
 
 ```
-yarn add material-motion
+yarn add material-motion material-motion-views-dom
 ```
 
 ## License ##
