@@ -96,6 +96,10 @@ export class TossableDemo extends React.Component<{}, {}> {
       sink: this.iconStyle$,
       source: combineStyleStreams({
         rotate$: thresholdCrossedSpring.value$.multipliedBy(Math.PI),
+        transformOrigin$: {
+          x: '50%',
+          y: '50%',
+        },
         willChange$: 'transform',
       }),
     });
