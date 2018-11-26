@@ -34,8 +34,18 @@ export type PrimitiveStyleDict = Partial<{
   scale: number,
   transformOrigin: Partial<Point2D>,
   dimensions: Partial<Dimensions>,
-}> & CSS.Properties;
 
+  // Explicitly pass through the styles that `combineStyleStreams` needs.
+  //
+  // Can't `& CSS.Properties` because that causes conflicts for the shape of
+  // `transformOrigin`.  See #250.
+  borderRadius: CSS.Properties['borderRadius'],
+  willChange: CSS.Properties['willChange'],
+  width: CSS.Properties['width'],
+  height: CSS.Properties['height'],
+}>;
+
+// TODO(#250): Merge StyleStreams and csstype
 export function combineStyleStreams(styleStreams: Partial<StyleStreams>): ObservableWithMotionOperators<CSS.Properties> {
   return combineLatest<PrimitiveStyleDict, MaybeReactive<PrimitiveStyleDict>>(
     stripStreamSuffices(styleStreams as StyleStreams) as MaybeReactive<PrimitiveStyleDict>,
