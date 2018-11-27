@@ -1,4 +1,4 @@
-# Material Motion Testing Utils #
+# <img src="https://www.gstatic.com/images/branding/product/2x/motion_48dp.png" width="48" height="48" style="position: relative; top: 10px;" alt="logo" />  Material Motion: Testing utils #
 
 Utilities for testing the Material Motion framework
 
