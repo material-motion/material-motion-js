@@ -1,4 +1,4 @@
-# Material Motion for JavaScript #
+# <img src="https://www.gstatic.com/images/branding/product/2x/motion_48dp.png" width="48" height="48" alt="logo" /> Material Motion for JavaScript #
 
 [![Build Status](https://img.shields.io/circleci/project/github/material-motion/material-motion-js/develop.svg)](https://circleci.com/gh/material-motion/material-motion-js/)
 [![codecov](https://codecov.io/gh/material-motion/material-motion-js/branch/develop/graph/badge.svg)](https://codecov.io/gh/material-motion/material-motion-js)

@@ -1,4 +1,4 @@
-# Material Motion: DOM adaptor #
+# <img src="https://www.gstatic.com/images/branding/product/2x/motion_48dp.png" width="48" height="48" style="position: relative; top: 10px;" alt="logo" /> Material Motion: DOM adaptor #
 
 Functions that help Material Motion work with the DOM
 
@@ -12,7 +12,7 @@ It was originally split into many packages: [`material-motion`](http://npmjs.com
 
 In the intervening time, we've standardized on using [Wobble](https://github.com/skevy/wobble/) for springs and [JSS](https://github.com/cssinjs/jss/) for framework-agnostic integration with style sheets.
 
-Therefore, this package is likely to be merged into [`material-motion`](http://npmjs.com/package/material-motion/) in a future release.
+Therefore, this package is likely to be merged into [`material-motion`](http://npmjs.com/package/material-motion) in a future release.
 
 ## Usage ##
 
