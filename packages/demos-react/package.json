@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "material-motion-demos-react",
   "version": "0.0.0",
   "scripts": {
@@ -19,7 +20,6 @@
     "react": "15.4.1",
     "react-dom": "15.4.1",
     "react-router": "4.0.0-alpha.6",
-    "recompose": "0.20.2",
     "tslib": "^1.2.0"
   },
   "devDependencies": {
@@ -33,7 +33,7 @@
   "author": "The Material Motion Authors (see AUTHORS)",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/material-motion/material-motion-js/issues/"
+    "url": "https://github.com/material-motion/material-motion-js/issues"
   },
-  "homepage": "https://github.com/material-motion/material-motion-js/#readme"
+  "homepage": "https://github.com/material-motion/material-motion-js#readme"
 }

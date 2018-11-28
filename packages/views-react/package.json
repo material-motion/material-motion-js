@@ -13,7 +13,7 @@
     "build": "yarn run clean; ../../node_modules/.bin/tsc"
   },
   "dependencies": {
-    "indefinite-observable": "1.0.1",
+    "indefinite-observable": "1.0.2",
     "material-motion": "0.0.0",
     "material-motion-views-dom": "0.0.0",
     "tslib": "^1.2.0"
@@ -43,7 +43,7 @@
   "author": "The Material Motion Authors (see AUTHORS)",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/material-motion/material-motion-js/issues/"
+    "url": "https://github.com/material-motion/material-motion-js/issues"
   },
-  "homepage": "https://github.com/material-motion/material-motion-js/tree/develop/packages/streams-react/#readme"
+  "homepage": "https://github.com/material-motion/material-motion-js/tree/develop/packages/views-react#readme"
 }
