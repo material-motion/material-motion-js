@@ -42,9 +42,9 @@
   "author": "The Material Motion Authors (see AUTHORS)",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/material-motion/material-motion-js/issues/"
+    "url": "https://github.com/material-motion/material-motion-js/issues"
   },
-  "homepage": "https://github.com/material-motion/material-motion-js/tree/develop/packages/testing-utils/#readme",
+  "homepage": "https://github.com/material-motion/material-motion-js/tree/develop/packages/testing-utils#readme",
   "devDependencies": {
     "@types/sinon": "^1.16.34"
   }

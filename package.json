@@ -14,7 +14,6 @@
     "packages/*"
   ],
   "resolutions": {
-    "symbol-observable": "1.2.0",
     "uws": "10.148.2"
   },
   "devDependencies": {
