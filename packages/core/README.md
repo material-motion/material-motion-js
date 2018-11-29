@@ -1,5 +1,5 @@
 <!-- Uses position: relative for vertical aligning on NPM, since vertical-align: middle doesn't actually center it there, and GitHub doesn't support styling images. -->
-# <img src="https://www.gstatic.com/images/branding/product/2x/motion_48dp.png" width="48" height="48" style="position: relative; top: 10px;" alt="logo" /> Material Motion #
+# <img src="https://www.gstatic.com/images/branding/product/2x/motion_48dp.png" width="48" height="48" style="position: relative; top: 12px;" alt="logo" /> Material Motion #
 
 Material Motion is a library used by the Material Design team to prototype interactive experiences with gestures.
 

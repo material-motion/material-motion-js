@@ -1,4 +1,4 @@
-# <img src="https://www.gstatic.com/images/branding/product/2x/motion_48dp.png" width="48" height="48" style="position: relative; top: 10px;" alt="logo" /> Material Motion: DOM adaptor #
+# <img src="https://www.gstatic.com/images/branding/product/2x/motion_48dp.png" width="48" height="48" style="position: relative; top: 12px;" alt="logo" /> Material Motion: DOM adaptor #
 
 Functions that help Material Motion work with the DOM
 

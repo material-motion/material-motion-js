@@ -1,4 +1,4 @@
-# <img src="https://www.gstatic.com/images/branding/product/2x/motion_48dp.png" width="48" height="48" style="position: relative; top: 10px;" alt="logo" /> Material Motion: React adaptor #
+# <img src="https://www.gstatic.com/images/branding/product/2x/motion_48dp.png" width="48" height="48" style="position: relative; top: 12px;" alt="logo" /> Material Motion: React adaptor #
 
 React components that make it easy to add gestures to a React application with Material Motion.
 
