@@ -16,6 +16,9 @@
 
 import * as React from 'react';
 
+import { create as createJSS, StyleSheet } from 'jss';
+import createDefaultJSSPreset from 'jss-preset-default';
+
 import {
   Axis,
   Draggable,
@@ -35,17 +38,21 @@ import {
   viewportDimensions$,
 } from 'material-motion';
 
-import {
-  AttachStreams,
-} from './AttachStreams';
-
-import {
-  TransformTarget,
-} from './TransformTarget';
+const jss = createJSS(createDefaultJSSPreset());
 
 export class ParallaxDemo extends React.Component<{}, {}> {
   foregroundStyle$ = createProperty({ initialValue: {} });
   backgroundStyle$ = createProperty({ initialValue: {} });
+
+  styleSheet = jss.createStyleSheet(
+    {
+      foreground: this.foregroundStyle$,
+      background: this.backgroundStyle$,
+    },
+    {
+      link: true,
+    },
+  ).attach();
 
   attachInteractions = (element: HTMLElement | null) => {
     if (element) {
@@ -80,9 +87,8 @@ export class ParallaxDemo extends React.Component<{}, {}> {
 
   render() {
     const {
-      backgroundStyle$,
-      foregroundStyle$,
-    } = this;
+      classes,
+    } = this.styleSheet;
 
     return (
       <div
@@ -97,25 +103,14 @@ export class ParallaxDemo extends React.Component<{}, {}> {
           }
         }
       >
-        <AttachStreams
-          style = { backgroundStyle$ }
-        >
-          <TransformTarget>
-            <RandomClouds
-              scale = { 3 }
-            />
-          </TransformTarget>
-        </AttachStreams>
-
-        <AttachStreams
-          style = { foregroundStyle$ }
-        >
-          <TransformTarget>
-            <RandomClouds
-              scale = { 5 }
-            />
-          </TransformTarget>
-        </AttachStreams>
+        <RandomClouds
+          className = { classes.background }
+          scale = { 3 }
+        />
+        <RandomClouds
+          className = { classes.foreground }
+          scale = { 5 }
+        />
       </div>
     );
   }
@@ -129,11 +124,13 @@ class RandomClouds extends React.Component<{ scale: number }, {}> {
 
   render() {
     const {
+      className,
       scale,
     } = this.props;
 
     return (
       <div
+        className = { className }
         style = {
           {
             position: 'relative',
