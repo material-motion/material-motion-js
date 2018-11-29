@@ -27,6 +27,6 @@ To push a new build to NPM, follow these steps.  If the process changes, please 
 12. Update the `stable` branch:
     ```
     git checkout stable
-    git reset --hard develop
+    git merge develop --ff
     git push origin stable
     ```
