@@ -22,7 +22,7 @@ import {
 
 import {
   AttachStreams,
-} from 'material-motion-views-react';
+} from './AttachStreams';
 
 import {
   Col,

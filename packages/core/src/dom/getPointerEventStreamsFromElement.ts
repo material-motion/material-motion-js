@@ -16,9 +16,12 @@
 
 import {
   MotionObservable,
+} from '../observables/MotionObservable';
+
+import {
   PartialPointerEvent,
   PointerEventStreams,
-} from 'material-motion';
+} from '../types';
 
 import {
   convertTouchEventsToPointerEvents,

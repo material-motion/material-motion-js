@@ -18,7 +18,7 @@ import {
   Dict,
   ObservableWithMotionOperators,
   PartialPointerEvent,
-} from 'material-motion';
+} from '../types';
 
 // TouchEvent types from https://developer.apple.com/reference/webkitjs/touchevent/
 // PointerEvent types from https://w3c.github.io/pointerevents/

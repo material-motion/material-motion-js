@@ -27,19 +27,19 @@ import {
   PointerEventStreams,
   Swipeable,
   Tossable,
+  combineStyleStreams,
   createProperty,
+  getPointerEventStreamsFromElement,
+  viewportDimensions$,
 } from 'material-motion';
 
 import {
-  combineStyleStreams,
-  getPointerEventStreamsFromElement,
-  viewportDimensions$,
-} from 'material-motion-views-dom';
+  AttachStreams,
+} from './AttachStreams';
 
 import {
-  AttachStreams,
   TransformTarget,
-} from 'material-motion-views-react';
+} from './TransformTarget';
 
 export function SwipeableDemo() {
   const width$ = viewportDimensions$.pluck('width');

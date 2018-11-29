@@ -13,6 +13,7 @@
     "test": "node ../../tools/test.js --only core"
   },
   "dependencies": {
+    "csstype": "2.5.6",
     "deep-equal": "1.0.1",
     "indefinite-observable": "1.0.2",
     "symbol-observable": "1.2.0",

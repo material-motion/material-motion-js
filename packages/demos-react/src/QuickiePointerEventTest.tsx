@@ -21,12 +21,9 @@ import {
   GestureRecognitionState,
   MotionObservable,
   Subscription,
+  getPointerEventStreamsFromElement,
   getVelocity$,
 } from 'material-motion';
-
-import {
-  getPointerEventStreamsFromElement,
-} from 'material-motion-views-dom';
 
 export class QuickiePointerEventTest extends React.Component {
   state = {

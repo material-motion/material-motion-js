@@ -24,13 +24,16 @@ import {
 } from 'material-motion';
 
 import {
-  SliderProperties,
-} from 'material-motion-views-dom';
+  AttachStreams,
+} from './AttachStreams';
 
 import {
-  AttachStreams,
+  SliderProperties,
+} from './SliderProperties';
+
+import {
   TransformTarget,
-} from 'material-motion-views-react';
+} from './TransformTarget';
 
 export class ArticulableFinger extends React.Component<{}, {}> {
   progress$ = createProperty({ initialValue: 0 });
