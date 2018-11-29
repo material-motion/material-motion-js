@@ -14,8 +14,8 @@
   },
   "dependencies": {
     "indefinite-observable": "1.0.2",
-    "material-motion": "0.0.0",
-    "material-motion-views-dom": "0.0.0",
+    "material-motion": "^0.0.0",
+    "material-motion-views-dom": "^0.0.0",
     "tslib": "^1.2.0"
   },
   "devDependencies": {

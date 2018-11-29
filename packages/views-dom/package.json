@@ -15,11 +15,11 @@
   "dependencies": {
     "csstype": "^2.5.6",
     "indefinite-observable": "1.0.2",
-    "material-motion": "0.0.0",
+    "material-motion": "^0.0.0",
     "tslib": "^1.2.0"
   },
   "devDependencies": {
-    "material-motion-testing-utils": "0.0.0"
+    "material-motion-testing-utils": "^0.0.0"
   },
   "repository": {
     "type": "git",
