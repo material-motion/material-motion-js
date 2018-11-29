@@ -17,6 +17,10 @@
 import * as CSS from 'csstype';
 
 import {
+  combineLatest,
+} from '../combineLatest';
+
+import {
   Dict,
   Dimensions,
   MaybeReactive,
@@ -24,8 +28,7 @@ import {
   ObservableWithMotionOperators,
   Point2D,
   StyleStreams,
-  combineLatest,
-} from 'material-motion';
+} from '../types';
 
 export type PrimitiveStyleDict = Partial<{
   opacity: number,

@@ -24,5 +24,6 @@ export * from './combineLatest';
 export * from './getFrame$';
 export * from './getVelocity$';
 export * from './interactions';
+export * from './dom';
 
 export default undefined;

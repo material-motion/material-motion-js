@@ -30,15 +30,6 @@ Material Motion is a library used by the Material Design team to prototype inter
 
 ### Other likely changes ###
 
-- **modularization**
-
-  Material Motion is split into packages:
-
-  - `material-motion` is a pure JavaScript library with no dependencies on the DOM or opinions about how the view layer is implemented.
-  - [`material-motion-views-dom`](https://github.com/material-motion/material-motion-js/tree/develop/packages/views-dom/) contains functions for working with the DOM, like `getPointerEventStreamsFromElement` and `combineStyleStreams`.
-
-  The original idea was to vend different `views` adaptors for different frameworks (React, Angular, etc.), separate from the pure logic in the core library.  [`JSS`](https://github.com/cssinjs/jss/) does a good job binding observables to CSS in a framework-agnostic way; therefore, `views-dom` is likely to be folded into `material-motion` in a future version.
-
 - **function signatures**
 
   Material Motion uses the named argument pattern to make it easier to evolve APIs without making breaking changes.  There is usually a positional shorthand.  For instance, these are equivalent:
@@ -76,12 +67,9 @@ import {
   Draggable,
   Point2DSpring,
   Tossable,
-} from 'material-motion';
-
-import {
   combineStyleStreams,
   getPointerEventStreamsFromElement,
-} from 'material-motion-views-dom';
+} from 'material-motion';
 
 // We're presuming there's an element on the page called "ball" that we want to
 // make tossable.
@@ -132,7 +120,7 @@ Unfortunately, there is not yet independent documentation for the JavaScript imp
 ## Installation ##
 
 ```
-yarn add material-motion material-motion-views-dom
+yarn add material-motion
 ```
 
 ## License ##

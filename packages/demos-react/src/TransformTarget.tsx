@@ -18,11 +18,8 @@ import * as React from 'react';
 
 import {
   Point2D,
-} from 'material-motion';
-
-import {
   buildTransformString,
-} from 'material-motion-views-dom';
+} from 'material-motion';
 
 export type TransformTargetArgs = Partial<{
   position: 'absolute' | 'fixed' | 'relative' | 'static' | 'sticky',
@@ -47,7 +44,7 @@ export type TransformTargetArgs = Partial<{
  *
  * https://drafts.csswg.org/css-transforms-2/
  */
-export default function TransformTarget({
+export function TransformTarget({
   translate = {
     x: 0,
     y: 0,
@@ -87,3 +84,4 @@ export default function TransformTarget({
     </div>
   );
 }
+export default TransformTarget;

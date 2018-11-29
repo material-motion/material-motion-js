@@ -16,9 +16,12 @@
 
 import {
   MotionObservable,
+} from '../observables/MotionObservable';
+
+import {
   ObservableWithMotionOperators,
   Observer,
-} from 'material-motion';
+} from '../types';
 
 // Passive event feature detection from
 // https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md
@@ -33,8 +36,8 @@ try {
 } catch (e) {}
 
 export function getEventStreamFromElement<U extends Event = Event>(type: string, element: Element, eventListenerOptions: AddEventListenerOptions = { passive: true }): ObservableWithMotionOperators<U> {
-  return new MotionObservable<Event>(
-    (observer: Observer<Event>) => {
+  return new MotionObservable<U>(
+    (observer: Observer<U>) => {
       if (!supportsPassiveListeners) {
         eventListenerOptions = (eventListenerOptions.capture || false) as any as AddEventListenerOptions;
       }

@@ -18,11 +18,8 @@ import {
   MotionProperty,
   ObservableWithMotionOperators,
   createProperty,
-} from 'material-motion';
-
-import {
   getEventStreamFromElement,
-} from './getEventStreamFromElement';
+} from 'material-motion';
 
 export type SliderPropertiesArgs = {
   element: HTMLInputElement,

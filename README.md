@@ -28,16 +28,6 @@ This repo houses the JavaScript implementation of Material Motion.  For more inf
 - To allow authors to write views in terms of URLs, and have the system guide the transitions between them.
   - _Note:_ This is an eventual goal.  In the near term, Material Motion is focused specifically on aiding the creation of reusable gestural interactions.
 
-## Organization ##
-
-This repo houses all the packages that comprise the Material Motion implementation for JavaScript.  They are available in [`packages`](https://github.com/material-motion/material-motion-js/tree/develop/packages/):
-
-- [`core`](https://github.com/material-motion/material-motion-js/tree/develop/packages/core/) houses the core implementation of Material Motion; including [`MotionObservable`](https://github.com/material-motion/material-motion-js/blob/develop/packages/core/src/observables/MotionObservable.ts), and [`MotionProperty`](https://github.com/material-motion/material-motion-js/blob/develop/packages/core/src/observables/MotionProperty.ts).
-
-- [`views-dom`](https://github.com/material-motion/material-motion-js/tree/develop/packages/views-dom/) houses the DOM-specific functions, like [`getPointerEventStreamsFromElement`](https://github.com/material-motion/material-motion-js/blob/develop/packages/views-dom/src/getPointerEventStreamsFromElement.ts) and [`combineStyleStreams`](https://github.com/material-motion/material-motion-js/blob/develop/packages/views-dom/src/combineStyleStreams.ts).
-
-- [`views-react`](https://github.com/material-motion/material-motion-js/tree/develop/packages/views-react/) houses the components that make Motion easy to integrate with React: [`AttachStreams`](https://github.com/material-motion/material-motion-js/blob/develop/packages/views-react/src/components/AttachStreams.tsx) and [`TransformTarget`](https://github.com/material-motion/material-motion-js/blob/develop/packages/views-react/src/components/TransformTarget.tsx).
-
 ## Contributing ##
 
 Want to contribute?  Awesome - thanks for helping!
