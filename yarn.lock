@@ -8215,10 +8215,10 @@ pundle-cli@2.0.0-beta12:
     sb-copy "^1.0.1"
     sb-fs "^1.1.1"
 
-pundle-dev@2.0.0-beta12, pundle-dev@^2.0.0-beta12:
+pundle-dev@^2.0.0-beta12, pundle-dev@material-motion/pundle-dev:
   version "2.0.0-beta12"
-  resolved "https://registry.yarnpkg.com/pundle-dev/-/pundle-dev-2.0.0-beta12.tgz#9adcfcdfbb2c25bcde76f32d978f575c401ecc60"
-  integrity sha1-mtz837ssJbzedvMtl49XXEAezGA=
+  uid "93c3d7d0a7fe13ccd83f1d4714894d26311af953"
+  resolved "https://codeload.github.com/material-motion/pundle-dev/tar.gz/93c3d7d0a7fe13ccd83f1d4714894d26311af953"
   dependencies:
     debug "^2.4.4"
     express "^4.14.0"
@@ -8231,7 +8231,7 @@ pundle-dev@2.0.0-beta12, pundle-dev@^2.0.0-beta12:
     send "^0.14.1"
     ws "^1.1.1"
   optionalDependencies:
-    uws "^0.12.0"
+    uws "^99.0.0"
 
 pundle-fs@2.0.0-beta12, pundle-fs@^2.0.0-beta12:
   version "2.0.0-beta12"
@@ -10593,10 +10593,10 @@ uuid@^3.0.1:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.1.0.tgz#3dd3d3e790abc24d7b0d3a034ffababe28ebbc04"
   integrity sha512-DIWtzUkw04M4k3bf1IcpS2tngXEL26YUD2M0tMDUpnUrz2hgzUBlD55a4FjdLGPvfHxS6uluGWvaVEqgBcVa+g==
 
-uws@10.148.2, uws@^0.12.0:
-  version "10.148.2"
-  resolved "https://registry.yarnpkg.com/uws/-/uws-10.148.2.tgz#f01652a0b4bb941cb18bb7a6248d780fd0150245"
-  integrity sha1-8BZSoLS7lByxi7emJI14D9AVAkU=
+uws@^99.0.0:
+  version "99.0.0"
+  resolved "https://registry.yarnpkg.com/uws/-/uws-99.0.0.tgz#15e83cda6a135f6a7a70bd399e865be9a14f8d9b"
+  integrity sha512-gbzhpHHE37BsiCB1raq5Wzf4ENKTaxyg1gZ7LJ/Z0za9Ic6EEwq5VpfivNh9Or2Tpf3f3jPEWCGLVDle2MukTg==
 
 valid-url@^1:
   version "1.0.9"
