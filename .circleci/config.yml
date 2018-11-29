@@ -58,7 +58,7 @@ jobs:
 
     - run: yarn
     # use the lerna version specified in package.json
-    - run: $( yarn bin )/lerna bootstrap -- --non-interactive --flat
+    - run: $( yarn bin )/lerna bootstrap -- --non-interactive
 
     # Save dependency cache
     - save_cache:
