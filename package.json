@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "1.0.0",
+  "version": "0.0.0",
   "scripts": {
     "build": "lerna run build",
     "lint": "lerna run lint",
@@ -9,7 +9,6 @@
     "posttest": "codecov -f coverage/*.json",
     "ci": "lerna run lint-ci; yarn run build; yarn run test --single-run"
   },
-  "lerna": "2.0.0",
   "workspaces": [
     "packages/*"
   ],
