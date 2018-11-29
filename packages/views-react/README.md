@@ -17,7 +17,7 @@ React components that make it easy to add gestures to a React application with M
 
 Material Motion is an experimental project to bring gestural interaction to the Web.
 
-The React adaptor was originally written to aid in attaching streams to/from a tree of React components.  Since then, we've discovered [JSS](https://github.com/cssinjs/jss/), a framework-agnostic way to attach a stream of styles to a document's style sheet.  Because it interacts directly with the style system, it bypasses React rendering to minimize the amount of work done per-frame.  This makes JSS a more performant than [`material-motion-views-react`](http://npmjs.com/package/material-motion-views-react).
+The React adaptor was originally written to aid in attaching streams to/from a tree of React components.  Since then, we've discovered [JSS](https://github.com/cssinjs/jss/), a framework-agnostic way to attach a stream of styles to a document's style sheet.  Because it interacts directly with the browser's style engine, it bypasses React rendering to minimize the amount of work done per-frame.  That makes JSS a more performant than this package.
 
 The Material Motion team recommends JSS.  This React adaptor is being published for archival purposes, but will not be maintained going forward.
 
