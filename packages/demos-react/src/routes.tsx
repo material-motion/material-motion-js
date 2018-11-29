@@ -101,6 +101,8 @@ function Links() {
   );
 }
 
+window.TossableDemo = TossableDemo;
+
 export default function() {
   return (
     <Router>

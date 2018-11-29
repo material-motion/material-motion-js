@@ -25,19 +25,19 @@ import {
   ThresholdRegion,
   Tossable,
   combineLatest,
+  combineStyleStreams,
   createProperty,
+  getPointerEventStreamsFromElement,
   subscribe,
 } from 'material-motion';
 
 import {
-  combineStyleStreams,
-  getPointerEventStreamsFromElement,
-} from 'material-motion-views-dom';
+  AttachStreams,
+} from './AttachStreams';
 
 import {
-  AttachStreams,
   TransformTarget,
-} from 'material-motion-views-react';
+} from './TransformTarget';
 
 // Stolen from mdc-web's CSS
 const SHADOW = `

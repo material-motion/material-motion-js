@@ -23,25 +23,25 @@ import {
   MotionProperty,
   NumericSpring,
   NumericDict,
+  combineLatest,
+  combineStyleStreams,
+  createProperty,
+  getPointerEventStreamsFromElement,
   ObservableWithMotionOperators,
   Point2DSpring,
+  subscribe,
   ThresholdRegion,
   Tossable,
-  combineLatest,
-  createProperty,
-  subscribe,
+  viewportDimensions$,
 } from 'material-motion';
 
 import {
-  combineStyleStreams,
-  getPointerEventStreamsFromElement,
-  viewportDimensions$,
-} from 'material-motion-views-dom';
+  AttachStreams,
+} from './AttachStreams';
 
 import {
-  AttachStreams,
   TransformTarget,
-} from 'material-motion-views-react';
+} from './TransformTarget';
 
 export class ParallaxDemo extends React.Component<{}, {}> {
   foregroundStyle$ = createProperty({ initialValue: {} });
