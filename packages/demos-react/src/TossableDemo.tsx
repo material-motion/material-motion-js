@@ -16,6 +16,15 @@
 
 import * as React from 'react';
 
+import { create as createJSS, StyleSheet } from 'jss';
+import createDefaultJSSPreset from 'jss-preset-default';
+
+import {
+  Block,
+  Col,
+  Row,
+} from 'jsxstyle';
+
 import {
   Axis,
   Draggable,
@@ -31,13 +40,7 @@ import {
   subscribe,
 } from 'material-motion';
 
-import {
-  AttachStreams,
-} from './AttachStreams';
-
-import {
-  TransformTarget,
-} from './TransformTarget';
+const jss = createJSS(createDefaultJSSPreset());
 
 // Stolen from mdc-web's CSS
 const SHADOW = `
@@ -52,8 +55,20 @@ export class TossableDemo extends React.Component<{}, {}> {
   thresholdIndicatorStyle$ = createProperty({ initialValue: {} });
   springIndicatorStyle$ = createProperty({ initialValue: {} });
 
-  boxElement: HTMLElement
-  thresholdElement: HTMLElement
+  styleSheet = jss.createStyleSheet(
+    {
+      box: this.boxStyle$,
+      icon: this.iconStyle$,
+      thresholdIndicator: this.thresholdIndicatorStyle$,
+      springIndicator: this.springIndicatorStyle$,
+    },
+    {
+      link: true,
+    },
+  ).attach();
+
+  boxElement: HTMLElement;
+  thresholdElement: HTMLElement;
 
   attachInteractions() {
     const boxPointerStreams = getPointerEventStreamsFromElement(this.boxElement);
@@ -144,137 +159,110 @@ export class TossableDemo extends React.Component<{}, {}> {
 
   render() {
     const {
-      boxStyle$,
-      iconStyle$,
-      thresholdIndicatorStyle$,
-      springIndicatorStyle$,
-    } = this;
+      classes,
+    } = this.styleSheet;
 
     return (
-      <div
-        style = {
-          {
-            minWidth: '100vw',
-            minHeight: '100vh',
-            backgroundColor: '#202020',
-          }
-        }
+      <Block
+        minWidth = '100vw'
+        minHeight = '100vh'
+        backgroundColor = '#202020'
       >
-        <div
-          style = {
-            {
-              position: 'relative',
-              top: 52,
-              left: 52,
-            }
-          }
+        <Block
+          position = 'relative'
+          top = { 52 }
+          left = { 52 }
         >
-          <AttachStreams
-            domRef = { this.attachBoxElement }
-            style = { boxStyle$ }
+          <Block
+            className = { classes.box }
+            touchAction = 'none'
+            userSelect = 'none'
+            cursor = 'pointer'
+            position = 'absolute'
+            zIndex = { 1 }
+            props = {
+              {
+                ref: this.attachBoxElement,
+              }
+            }
           >
-            <TransformTarget
-              touchAction = 'none'
-              userSelect = 'none'
-              cursor = 'pointer'
+            <Col
               position = 'absolute'
-              zIndex = { 1 }
+              top = { -36 }
+              left = { -36 }
+              width = { 72 }
+              height = { 72 }
+              borderRadius = { 2 }
+              backgroundColor = '#FD82AB'
+              boxShadow = { SHADOW }
+              justifyContent = 'center'
+              alignItems = 'center'
             >
-              <TransformTarget
-                position = 'absolute'
-                top = { -36 }
-                left = { -36 }
-                width = { 72 }
-                height = { 72 }
-                borderRadius = { 2 }
-                backgroundColor = '#FD82AB'
-                boxShadow = { SHADOW }
-                display = 'flex'
-                justifyContent = 'center'
-                alignItems = 'center'
-              >
-                <AttachStreams
-                  style = { iconStyle$ }
-                >
-                  <img
-                    src = 'https://www.gstatic.com/images/icons/material/system/svg/arrow_upward_48px.svg'
-                   />
-                </AttachStreams>
-              </TransformTarget>
-            </TransformTarget>
-          </AttachStreams>
+              <img
+                className = { classes.icon }
+                src = 'https://www.gstatic.com/images/icons/material/system/svg/arrow_upward_48px.svg'
+               />
+            </Col>
+          </Block>
 
-          <AttachStreams
-            domRef = { this.attachThresholdElement }
-            style = { thresholdIndicatorStyle$ }
+          <Block
+            className = { classes.thresholdIndicator }
+            // This is a hit area.  The child node draws the line.
+            touchAction = 'none'
+            userSelect = 'none'
+            cursor = 'pointer'
+            position = 'absolute'
+            paddingTop = { 28 }
+            paddingBottom = { 28 }
+            top = { -28 }
+            props = {
+              {
+                ref: this.attachThresholdElement,
+              }
+            }
           >
-            <TransformTarget
-              // This is a hit area.  The child node draws the line.
-              touchAction = 'none'
-              userSelect = 'none'
-              cursor = 'pointer'
+            <Block
               position = 'absolute'
-              paddingTop = { 28 }
-              paddingBottom = { 28 }
-              top = { -28 }
+              backgroundColor = '#F01896'
+              width = '200vw'
+              left = '-100vw'
+              height = { 2 }
+            />
+
+            <Col
+              position = 'absolute'
+              bottom = { 10 }
+              left = { 52 }
             >
-              <TransformTarget
-                position = 'absolute'
-                backgroundColor = '#F01896'
-                width = '200vw'
-                left = '-100vw'
-                height = { 2 }
-              />
-
-              <div
-                style = {
-                  {
-                    display: 'flex',
-                    flexDirection: 'column',
-                    position: 'absolute',
-                    bottom: 10,
-                    left: 52,
-                  }
-                }
+              <Row
+                justifyContent = 'space-between'
+                marginBottom = { 16 }
+                width = { 200 }
+                marginLeft = { 18 }
               >
-                <div
-                  style = {
-                    {
-                      display: 'flex',
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      marginBottom: 16,
-                      width: 200,
-                      marginLeft: 18,
-                    }
-                  }
-                >
-                  <Label>
-                    0
-                  </Label>
-                  <Label>
-                    1
-                  </Label>
-                </div>
+                <Label>
+                  0
+                </Label>
+                <Label>
+                  1
+                </Label>
+              </Row>
 
-                <AttachStreams
-                  style = { springIndicatorStyle$ }
-                >
-                  <TransformTarget>
-                    <TransformTarget
-                      backgroundColor = '#00D6D6'
-                      width = { 36 }
-                      height = { 36 }
-                      borderRadius = { 18 }
-                      boxShadow = { SHADOW }
-                    />
-                  </TransformTarget>
-                </AttachStreams>
-              </div>
-            </TransformTarget>
-          </AttachStreams>
-        </div>
-      </div>
+              <Block
+                className = { classes.springIndicator }
+              >
+                <Block
+                  backgroundColor = '#00D6D6'
+                  width = { 36 }
+                  height = { 36 }
+                  borderRadius = { 18 }
+                  boxShadow = { SHADOW }
+                />
+              </Block>
+            </Col>
+          </Block>
+        </Block>
+      </Block>
     );
   }
 }
