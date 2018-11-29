@@ -1397,11 +1397,6 @@ assign-symbols@^1.0.0:
   resolved "https://registry.yarnpkg.com/assign-symbols/-/assign-symbols-1.0.0.tgz#59667f41fadd4f20ccbc2bb96b8d4f7f78ec0367"
   integrity sha1-WWZ/QfrdTyDMvCu5a41Pf3jsA2c=
 
-ast-types@0.9.6:
-  version "0.9.6"
-  resolved "https://registry.yarnpkg.com/ast-types/-/ast-types-0.9.6.tgz#102c9e9e9005d3e7e3829bf0c4fa24ee862ee9b9"
-  integrity sha1-ECyenpAF0+fjgpvwxPok7oYu6bk=
-
 async-each@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/async-each/-/async-each-1.0.1.tgz#19d386a1d9edc6e7c1c85d388aedbcc56d33602d"
@@ -2992,6 +2987,11 @@ csstype@2.5.6:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.5.6.tgz#2ae1db2319642d8b80a668d2d025c6196071e788"
   integrity sha512-tKPyhy0FmfYD2KQYXD5GzkvAYLYj96cMLXr648CKGd3wBe0QqoPipImjGiLze9c8leJK8J3n7ap90tpk3E6HGQ==
 
+csstype@^2.5.7:
+  version "2.5.7"
+  resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.5.7.tgz#bf9235d5872141eccfb2d16d82993c6b149179ff"
+  integrity sha512-Nt5VDyOTIIV4/nRFswoCKps1R5CD1hkiyjBE9/thNaNZILLEviVw9yWQw15+O+CpNjQKB/uvdcxFFOrSflY3Yw==
+
 csv-streamify@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/csv-streamify/-/csv-streamify-3.0.4.tgz#4cb614c57e3f299cca17b63fdcb4ad167777f47a"
@@ -3653,11 +3653,6 @@ esprima@^4.0.0:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-4.0.1.tgz#13b04cdb3e6c5d19df91ab6987a8695619b0aa71"
   integrity sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==
-
-esprima@~3.1.0:
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/esprima/-/esprima-3.1.3.tgz#fdca51cee6133895e3c88d535ce49dbff62a4633"
-  integrity sha1-/cpRzuYTOJXjyI1TXOSdv/YqRjM=
 
 esrecurse@^4.1.0:
   version "4.2.1"
@@ -5996,17 +5991,19 @@ jss@9.2:
     symbol-observable "^1.0.4"
     warning "^3.0.0"
 
-jsxstyle@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/jsxstyle/-/jsxstyle-1.0.2.tgz#10ccc3a229a89f6b04c581200ba7c699f76a3344"
-  integrity sha1-EMzDoimon2sExYEgC6fGmfdqM0Q=
+jsxstyle-utils@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/jsxstyle-utils/-/jsxstyle-utils-2.1.4.tgz#e9f4ef3374f5e45ef5362e8f09f6c4fdcc57a96a"
+  integrity sha512-hlSmPX8tIHTCqfQ++X67adSbD5a1EB/pmhgtHkjLZniE8/x0Aj5R4T+VAlBMJ3ij/p7jDEDKK2Zz7XmvSVkuxQ==
   dependencies:
-    invariant "^2.2.1"
-    loader-utils "^0.2.15"
-    object-assign "^4.1.0"
-    react-css-property-operations "^15.4.1"
-    recast "^0.11.11"
-    style-loader "^0.13.1"
+    csstype "^2.5.7"
+
+jsxstyle@2:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/jsxstyle/-/jsxstyle-2.1.4.tgz#45fc1bfe42b9235cc959193a2d157bb21935e5d8"
+  integrity sha512-Yzw+PxrEvuRj58jM+GMSMzfPg2HLaD2bFOtVpEk4zQ4zmiUm7BnlsrFqWxxpPgHzh+dNKHEooc9mf8MN3yY/6g==
+  dependencies:
+    jsxstyle-utils "^2.1.4"
 
 just-extend@^3.0.0:
   version "3.0.0"
@@ -6314,16 +6311,6 @@ loader-runner@^2.3.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/loader-runner/-/loader-runner-2.3.1.tgz#026f12fe7c3115992896ac02ba022ba92971b979"
   integrity sha512-By6ZFY7ETWOc9RFaAIb23IjJVcM4dvJC/N57nmdz9RSkMXvAXGI7SyVlAw3v8vjtDRlqThgVDVmTnr9fqMlxkw==
-
-loader-utils@^0.2.15:
-  version "0.2.17"
-  resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-0.2.17.tgz#f86e6374d43205a6e6c60e9196f17c0299bfb348"
-  integrity sha1-+G5jdNQyBabmxg6RlvF8Apm/s0g=
-  dependencies:
-    big.js "^3.1.3"
-    emojis-list "^2.0.0"
-    json5 "^0.5.0"
-    object-assign "^4.0.1"
 
 loader-utils@^1.0.2, loader-utils@^1.1.0:
   version "1.1.0"
@@ -8005,11 +7992,6 @@ preserve@^0.2.0:
   resolved "https://registry.yarnpkg.com/preserve/-/preserve-0.2.0.tgz#815ed1f6ebc65926f865b310c0713bcb3315ce4b"
   integrity sha1-gV7R9uvGWSb4ZbMQwHE7yzMVzks=
 
-private@~0.1.5:
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/private/-/private-0.1.7.tgz#68ce5e8a1ef0a23bb570cc28537b5332aba63ef1"
-  integrity sha1-aM5eih7woju1cMwoU3tTMqumPvE=
-
 process-nextick-args@~1.0.6:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-1.0.7.tgz#150e20b756590ad3f91093f25a4f2ad8bff30ba3"
@@ -8217,7 +8199,6 @@ pundle-cli@2.0.0-beta12:
 
 pundle-dev@^2.0.0-beta12, pundle-dev@material-motion/pundle-dev:
   version "2.0.0-beta12"
-  uid "93c3d7d0a7fe13ccd83f1d4714894d26311af953"
   resolved "https://codeload.github.com/material-motion/pundle-dev/tar.gz/93c3d7d0a7fe13ccd83f1d4714894d26311af953"
   dependencies:
     debug "^2.4.4"
@@ -8475,11 +8456,6 @@ react-broadcast@^0.1.2:
   dependencies:
     invariant "^2.2.1"
 
-react-css-property-operations@^15.4.1:
-  version "15.4.1"
-  resolved "https://registry.yarnpkg.com/react-css-property-operations/-/react-css-property-operations-15.4.1.tgz#4c0e305df4cc35f0f5fd2d65a79214c8b012db35"
-  integrity sha1-TA4wXfTMNfD1/S1lp5IUyLAS2zU=
-
 react-dom@15.4.1:
   version "15.4.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.4.1.tgz#d54c913261aaedb17adc20410d029dcc18a1344a"
@@ -8667,16 +8643,6 @@ readline2@^1.0.1:
     code-point-at "^1.0.0"
     is-fullwidth-code-point "^1.0.0"
     mute-stream "0.0.5"
-
-recast@^0.11.11:
-  version "0.11.23"
-  resolved "https://registry.yarnpkg.com/recast/-/recast-0.11.23.tgz#451fd3004ab1e4df9b4e4b66376b2a21912462d3"
-  integrity sha1-RR/TAEqx5N+bTktmN2sqIZEkYtM=
-  dependencies:
-    ast-types "0.9.6"
-    esprima "~3.1.0"
-    private "~0.1.5"
-    source-map "~0.5.0"
 
 redent@^1.0.0:
   version "1.0.0"
@@ -9538,7 +9504,7 @@ source-map@^0.5.0, source-map@^0.5.6:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.6.tgz#75ce38f52bf0733c5a7f0c118d81334a2bb5f412"
   integrity sha1-dc449SvwczxafwwRjYEzSiu19BI=
 
-source-map@^0.5.3, source-map@^0.5.7, source-map@~0.5.0, source-map@~0.5.1:
+source-map@^0.5.3, source-map@^0.5.7, source-map@~0.5.1:
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.7.tgz#8a039d2d1021d22d1ea14c80d8ea468ba2ef3fcc"
   integrity sha1-igOdLRAh0i0eoUyA2OpGi6LvP8w=
@@ -9845,13 +9811,6 @@ stubs@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/stubs/-/stubs-3.0.0.tgz#e8d2ba1fa9c90570303c030b6900f7d5f89abe5b"
   integrity sha1-6NK6H6nJBXAwPAMLaQD31fiavls=
-
-style-loader@^0.13.1:
-  version "0.13.2"
-  resolved "https://registry.yarnpkg.com/style-loader/-/style-loader-0.13.2.tgz#74533384cf698c7104c7951150b49717adc2f3bb"
-  integrity sha1-dFMzhM9pjHEEx5URULSXF63C87s=
-  dependencies:
-    loader-utils "^1.0.2"
 
 superstatic@^6.0.1:
   version "6.0.3"

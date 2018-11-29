@@ -13,7 +13,7 @@
   "dependencies": {
     "jss": "9.2",
     "jss-preset-default": "4.0.1",
-    "jsxstyle": "1.0.2",
+    "jsxstyle": "2",
     "material-motion": "^0.0.0",
     "react": "15.4.1",
     "react-dom": "15.4.1",
