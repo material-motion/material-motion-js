@@ -16,6 +16,14 @@
 
 import * as React from 'react';
 
+import { create as createJSS, StyleSheet } from 'jss';
+import createDefaultJSSPreset from 'jss-preset-default';
+
+import {
+  Block,
+  Row,
+} from 'jsxstyle';
+
 import {
   Axis,
   Direction,
@@ -30,16 +38,11 @@ import {
   combineStyleStreams,
   createProperty,
   getPointerEventStreamsFromElement,
+  subscribe,
   viewportDimensions$,
 } from 'material-motion';
 
-import {
-  AttachStreams,
-} from './AttachStreams';
-
-import {
-  TransformTarget,
-} from './TransformTarget';
+const jss = createJSS(createDefaultJSSPreset());
 
 export function SwipeableDemo() {
   const width$ = viewportDimensions$.pluck('width');
@@ -72,11 +75,21 @@ export default SwipeableDemo;
 
 class SwipeableCard extends React.Component<{}, {}> {
   containerStyle$ = createProperty({ initialValue: {} });
-  translate$ = createProperty({ initialValue: { x: 0, y: 0 }});
-  translateWillChange$ = createProperty({ initialValue: '' });
   iconStyle$ = createProperty({ initialValue: {} });
-  backgroundScale$ = createProperty({ initialValue: 0 });
-  backgroundScaleWillChange$ = createProperty({ initialValue: '' });
+  backgroundStyle$ = createProperty({ initialValue: {} });
+  foregroundStyle$ = createProperty({ initialValue: {} });
+
+  styleSheet = jss.createStyleSheet(
+    {
+      container: this.containerStyle$,
+      icon: this.iconStyle$,
+      background: this.backgroundStyle$,
+      foreground: this.foregroundStyle$,
+    },
+    {
+      link: true,
+    },
+  ).attach();
 
   setupInteractions = (element: HTMLLIElement) => {
     if (element) {
@@ -94,91 +107,94 @@ class SwipeableCard extends React.Component<{}, {}> {
       });
       const swipeable = new Swipeable({ tossable, width$ });
 
-      swipeable.styleStreamsByTargetName.item.translate$.subscribe(this.translate$);
-      swipeable.styleStreamsByTargetName.item.willChange$.subscribe(this.translateWillChange$);
-      swipeable.styleStreamsByTargetName.background.scale$.subscribe(this.backgroundScale$);
-      swipeable.styleStreamsByTargetName.background.willChange$.subscribe(this.backgroundScaleWillChange$);
-
-      combineStyleStreams({
-        display: 'flex',
-        flexDirection: swipeable.direction$.rewrite({
-          mapping: {
-            [Direction.LEFT]: 'row-reverse',
-            [Direction.RIGHT]: 'row',
-          },
+      subscribe({
+        source: combineStyleStreams({
+          display: 'flex',
+          flexDirection: swipeable.direction$.rewrite({
+            mapping: {
+              [Direction.LEFT]: 'row-reverse',
+              [Direction.RIGHT]: 'row',
+            },
+          }),
+          position: 'relative',
+          overflow: 'hidden',
+          userSelect: 'none',
         }),
-        position: 'relative',
-        overflow: 'hidden',
-        userSelect: 'none',
-      }).subscribe(this.containerStyle$);
+        sink: this.containerStyle$
+      });
 
-      combineStyleStreams({
-        filter: 'invert()',
-        scale: swipeable.styleStreamsByTargetName.icon.scale$.startWith(0),
-        willChange: swipeable.styleStreamsByTargetName.icon.willChange$,
-      }).subscribe(this.iconStyle$);
+      subscribe({
+        source: combineStyleStreams({
+          filter: 'invert()',
+          scale: swipeable.styleStreamsByTargetName.icon.scale$,
+          willChange: swipeable.styleStreamsByTargetName.icon.willChange$,
+        }),
+        sink: this.iconStyle$,
+      });
+
+      subscribe({
+        source: combineStyleStreams(swipeable.styleStreamsByTargetName.background),
+        sink: this.backgroundStyle$,
+      });
+
+      subscribe({
+        source: combineStyleStreams({
+          ...swipeable.styleStreamsByTargetName.item,
+          willChange$: 'transform',
+        }),
+        sink: this.foregroundStyle$,
+      });
     }
   }
 
   render() {
+    const {
+      classes,
+    } = this.styleSheet;
+
     return (
-      <AttachStreams
-        style = { this.containerStyle$ }
+      <li
+        className = { classes.container }
       >
-        <li>
-          <div
-            style = {
-              {
-                position: 'absolute',
-                display: 'flex',
-                flexDirection: 'row',
-                width: 48,
-                height: '100%',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }
+        <Row
+          position = 'absolute'
+          width = { 48 }
+          height = '100%'
+          justifyContent = 'center'
+          alignItems = 'center'
+        >
+          <Block
+            className = { classes.background }
+            position = 'absolute'
+            width = '200vw'
+            height = '200vw'
+            borderRadius = '100vw'
+            backgroundColor = '#F44336'
+          />
+
+          <img
+            className = { classes.icon }
+            src = 'https://www.gstatic.com/images/icons/material/system/svg/delete_48px.svg'
+            width = { 24 }
+            height = { 24 }
+          />
+        </Row>
+
+        <Block
+          className = { classes.foreground }
+          width = '100vw'
+          height = { 72 }
+          backgroundColor = '#FFFFFF'
+          border = '.5px solid #E0E0E0'
+          touchAction = 'none'
+          position = 'relative'
+          props = {
+            {
+              ref: this.setupInteractions,
             }
-          >
-            <AttachStreams
-              scale = { this.backgroundScale$ }
-              willChange = { this.backgroundScaleWillChange$ }
-            >
-              <TransformTarget
-                position = 'absolute'
-                width = '200vw'
-                height = '200vw'
-                borderRadius = '100vw'
-                backgroundColor = '#F44336'
-              />
-            </AttachStreams>
-
-            <AttachStreams
-              style = { this.iconStyle$ }
-            >
-              <img
-                src = 'https://www.gstatic.com/images/icons/material/system/svg/delete_48px.svg'
-                width = { 24 }
-                height = { 24 }
-              />
-            </AttachStreams>
-          </div>
-
-          <AttachStreams
-            domRef = { this.setupInteractions }
-            translate = { this.translate$ }
-            willChange = { this.translateWillChange$ }
-          >
-            <TransformTarget
-              width = '100vw'
-              height = { 72 }
-              backgroundColor = '#FFFFFF'
-              border = '.5px solid #E0E0E0'
-              touchAction = 'none'
-              position = 'relative'
-            />
-          </AttachStreams>
-        </li>
-      </AttachStreams>
+          }
+        />
+      </li>
     );
   }
 }
