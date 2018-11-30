@@ -49,6 +49,8 @@ const SHADOW = `
   0px 1px 3px 0px rgba(0, 0, 0, 0.12)
 `;
 
+const SPRING_INDICATOR_AREA_WIDTH = 200;
+
 export class TossableDemo extends React.Component<{}, {}> {
   boxStyle$ = createProperty({ initialValue: {} });
   iconStyle$ = createProperty({ initialValue: {} });
@@ -68,19 +70,27 @@ export class TossableDemo extends React.Component<{}, {}> {
   ).attach();
 
   boxElement: HTMLElement;
-  thresholdElement: HTMLElement;
 
   attachInteractions() {
-    const boxPointerStreams = getPointerEventStreamsFromElement(this.boxElement);
-    const draggable = new Draggable(boxPointerStreams);
+    // This is a visual demonstration of a common pattern: triggering a spring
+    // when a threshold is crossed.  In a real interaction, the spring could
+    // drive the opacity of a preview state, for instance.
+    //
+    // This is not an example of a tossable interaction.  A tossable interaction
+    // should use the velocity of the drag to determine whether or not to cross
+    // the threshold, falling back to position only if the velocity isn't strong
+    // enough to discern user intent.
+
+    const pointerStreams = getPointerEventStreamsFromElement(this.boxElement);
+    const draggable = new Draggable(pointerStreams);
     draggable.axis = Axis.Y;
     const boxSpring = new Point2DSpring();
 
-    const boxTossable = new Tossable({ draggable, spring: boxSpring });
+    const tossable = new Tossable({ draggable, spring: boxSpring });
     const thresholdCrossedSpring = new NumericSpring();
 
     const threshold$ = createProperty({ initialValue: 200 });
-    const isAboveThreshold$ = boxTossable.draggedLocation$.pluck('y').threshold(threshold$).isAnyOf([ ThresholdRegion.ABOVE ]);
+    const isAboveThreshold$ = tossable.draggedLocation$.pluck('y').threshold(threshold$).isAnyOf([ ThresholdRegion.ABOVE ]);
 
     subscribe({
       sink: boxSpring.ySpring.destination$,
@@ -104,7 +114,7 @@ export class TossableDemo extends React.Component<{}, {}> {
 
     subscribe({
       sink: this.boxStyle$,
-      source: combineStyleStreams(boxTossable.styleStreams),
+      source: combineStyleStreams(tossable.styleStreams),
     });
 
     subscribe({
@@ -123,7 +133,7 @@ export class TossableDemo extends React.Component<{}, {}> {
       sink: this.springIndicatorStyle$,
       source: combineStyleStreams({
         translate$: combineLatest({
-          x: thresholdCrossedSpring.value$.multipliedBy(200),
+          x: thresholdCrossedSpring.value$.multipliedBy(SPRING_INDICATOR_AREA_WIDTH),
           y: 0,
         }),
         willChange$: 'transform',
@@ -144,17 +154,7 @@ export class TossableDemo extends React.Component<{}, {}> {
   attachBoxElement = (element: HTMLElement) => {
     this.boxElement = element;
 
-    if (this.thresholdElement) {
-      this.attachInteractions();
-    }
-  }
-
-  attachThresholdElement = (element: HTMLElement) => {
-    this.thresholdElement = element;
-
-    if (this.boxElement) {
-      this.attachInteractions();
-    }
+    this.attachInteractions();
   }
 
   render() {
@@ -207,19 +207,8 @@ export class TossableDemo extends React.Component<{}, {}> {
 
           <Block
             className = { classes.thresholdIndicator }
-            // This is a hit area.  The child node draws the line.
-            touchAction = 'none'
-            userSelect = 'none'
-            cursor = 'pointer'
+            // This is a container.  The child node draws the line.
             position = 'absolute'
-            paddingTop = { 28 }
-            paddingBottom = { 28 }
-            top = { -28 }
-            props = {
-              {
-                ref: this.attachThresholdElement,
-              }
-            }
           >
             <Block
               position = 'absolute'
@@ -230,35 +219,41 @@ export class TossableDemo extends React.Component<{}, {}> {
             />
 
             <Col
-              position = 'absolute'
-              bottom = { 10 }
+              position = 'relative'
               left = { 52 }
             >
               <Row
                 justifyContent = 'space-between'
                 marginBottom = { 16 }
-                width = { 200 }
+                width = { SPRING_INDICATOR_AREA_WIDTH }
                 marginLeft = { 18 }
+                position = 'absolute'
+                bottom = { 10 }
               >
-                <Label>
+                <Label
+                  width = '1em'
+                  left = '-.5em'
+                >
                   0
                 </Label>
-                <Label>
+                <Label
+                  width = '1em'
+                  right = '-.5em'
+                >
                   1
                 </Label>
               </Row>
 
               <Block
                 className = { classes.springIndicator }
-              >
-                <Block
-                  backgroundColor = '#00D6D6'
-                  width = { 36 }
-                  height = { 36 }
-                  borderRadius = { 18 }
-                  boxShadow = { SHADOW }
-                />
-              </Block>
+                backgroundColor = '#00D6D6'
+                position = 'absolute'
+                top = { -18 }
+                width = { 36 }
+                height = { 36 }
+                borderRadius = { 18 }
+                boxShadow = { SHADOW }
+              />
             </Col>
           </Block>
         </Block>
@@ -269,18 +264,17 @@ export class TossableDemo extends React.Component<{}, {}> {
 export default TossableDemo;
 
 
-function Label({ children }) {
+function Label({ children, ...propsPassthrough }) {
   return (
-    <div
-      style = {
-        {
-          fontSize: 16,
-          color: '#FFFFFF',
-          fontFamily: 'Roboto Mono',
-        }
-      }
+    <Block
+      fontSize = { 16 }
+      color = '#FFFFFF'
+      fontFamily = 'Roboto Mono'
+      position = 'relative'
+      textAlign = 'center'
+      { ...propsPassthrough }
     >
       { children }
-    </div>
+    </Block>
   );
 }
