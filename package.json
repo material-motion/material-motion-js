@@ -15,13 +15,25 @@
   "resolutions": {
     "pundle-dev": "material-motion/pundle-dev"
   },
+  "dependencies": {
+    "@types/deep-equal": "0.0.30",
+    "csstype": "2.5.6",
+    "deep-equal": "1.0.1",
+    "indefinite-observable": "1.0.2",
+    "symbol-observable": "1.2.0",
+    "tslib": "^1.2.0",
+    "wobble": "1.5"
+  },
   "devDependencies": {
-    "@bazel/typescript": "^0.2.2",
+    "@bazel/bazel": "^0.20.0",
+    "@bazel/ibazel": "^0.8.0",
+    "@bazel/typescript": "^0.21.0",
     "@types/chai": "^3.4.34",
     "@types/sinon": "^1.16.34",
     "@types/sinon-chai": "^2.7.28",
     "chai": "^4.0.2",
     "codecov": "3",
+    "eslint": "3.1.0",
     "istanbul-instrumenter-loader": "^3.0.1",
     "karma": "3",
     "karma-chrome-launcher": "2.0.0",
@@ -56,7 +68,7 @@
     "tsickle": "^0.24.1",
     "tslint": "4.5.1",
     "tslint-junit-formatter": "5.1.0",
-    "typescript": "2.4",
+    "typescript": "3",
     "webpack": "4"
   }
 }

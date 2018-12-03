@@ -18,7 +18,7 @@ import {
   Connect,
   IndefiniteObservable,
   Observer,
-} from 'indefinite-observable';
+} from '../indefinite-observable';
 
 import {
   Observable,
