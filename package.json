@@ -16,7 +16,8 @@
     "pundle-dev": "material-motion/pundle-dev"
   },
   "devDependencies": {
-    "@bazel/typescript": "^0.2.2",
+    "@bazel/bazel": "^0.20.0",
+    "@bazel/ibazel": "^0.8.0",
     "@types/chai": "^3.4.34",
     "@types/sinon": "^1.16.34",
     "@types/sinon-chai": "^2.7.28",
