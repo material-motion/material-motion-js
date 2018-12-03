@@ -17,7 +17,7 @@
 import {
   ObserverOrNext,
   Subscription,
-} from 'indefinite-observable';
+} from '../indefinite-observable';
 
 import {
   isObserver,

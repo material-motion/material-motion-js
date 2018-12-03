@@ -17,14 +17,14 @@
 import $$observable from 'symbol-observable';
 
 // We re-export everything we import, so dependents don't need to know about
-// indefinite-observable.
+// ./indefinite-observable.
 import {
   Disconnect,
   NextChannel,
   Observable,
   Observer,
   Subscription,
-} from 'indefinite-observable';
+} from './indefinite-observable';
 
 export {
   Connect,
@@ -34,7 +34,7 @@ export {
   Observer,
   ObserverOrNext,
   Subscription,
-} from 'indefinite-observable';
+} from './indefinite-observable';
 
 export {
   MotionAddable,

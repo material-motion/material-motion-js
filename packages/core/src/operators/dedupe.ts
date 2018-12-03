@@ -32,12 +32,18 @@ export interface MotionDeduplicable<T> {
   dedupe(kwargs?: DedupeArgs): ObservableWithMotionOperators<T>;
 }
 
+// Workaround for https://github.com/bazelbuild/rules_nodejs/issues/450
+function checkWithDeepEqual(a: any, b: any): boolean {
+  const check: (a: any, b: any) => boolean = deepEqual;
+  return check(a, b);
+}
+
 export function withDedupe<T, S extends Constructor<ObservableWithFoundationalMotionOperators<T>>>(superclass: S): S & Constructor<MotionDeduplicable<T>> {
   return class extends superclass implements MotionDeduplicable<T> {
     /**
      * Ensures that every emission is different than the previous one.
      */
-    dedupe({ areEqual = deepEqual } = {}): ObservableWithMotionOperators<T> {
+    dedupe({ areEqual = checkWithDeepEqual } = {}): ObservableWithMotionOperators<T> {
       return this._nextOperator({
         operation({ emit }) {
           let emitted = false;

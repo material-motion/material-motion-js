@@ -16,7 +16,7 @@
 
 import $$observable from 'symbol-observable';
 
-import wrapWithObserver from 'indefinite-observable/dist/wrapWithObserver';
+import wrapWithObserver from '../indefinite-observable/wrapWithObserver';
 
 import {
   Observable,

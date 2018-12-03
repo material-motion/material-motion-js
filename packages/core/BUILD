@@ -3,7 +3,19 @@ package(
 )
 
 load("@build_bazel_rules_typescript//:defs.bzl", "ts_library")
-load("@karma//:index.bzl", "karma_test")
+load("@build_bazel_rules_nodejs//:defs.bzl", "rollup_bundle")
+
+# load("@karma//:index.bzl", "karma_test")
+
+# TODO: pull these from the local package.json (@npm_core), rather than the root
+# (@npm).
+deps = [
+  "@npm//fast-deep-equal",
+  "@npm//indefinite-observable",
+  "@npm//symbol-observable",
+  "@npm//wobble",
+]
+
 
 ts_library(
   name = "core",
@@ -14,13 +26,23 @@ ts_library(
     exclude = ["**/__tests__/*"],
   ),
   tsconfig = "//:tsconfig.json",
-)
-
-karma_test(
-  name = "test",
-  deps = glob(["src/__tests__/*"]) + [
-    ":core",
-    # FIXME(alexeagle): doesn't belong here
-    "@karma//internal/karma_concat_js",
+  deps = deps + [
+    "@npm//@types",
+    "@npm//tslib",
   ],
 )
+
+rollup_bundle(
+  name = "bundle",
+  deps = [":core"] + deps,
+  entry_point = "packages/core/src/index",
+)
+
+# karma_test(
+#   name = "test",
+#   deps = glob(["src/__tests__/*"]) + [
+#     ":core",
+#     # FIXME(alexeagle): doesn't belong here
+#     "@karma//internal/karma_concat_js",
+#   ],
+# )
