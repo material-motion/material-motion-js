@@ -8,7 +8,8 @@
       "dom"
     ],
     "importHelpers": true,
-    "module": "commonjs",
+    "newLine": "lf",
+    "module": "es2015",
     "moduleResolution": "node",
     "noImplicitAny": true,
     "noImplicitThis": true,
