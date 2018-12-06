@@ -2,7 +2,7 @@
   "name": "material-motion-testing-utils",
   "version": "0.0.0",
   "description": "Utilities for testing the Material Motion framework",
-  "main": "dist/index.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "typescript:main": "src/index.ts",
   "scripts": {

@@ -70,6 +70,7 @@ module.exports = function(config) {
                 loader: 'istanbul-instrumenter-loader',
                 options: {
                   transpileOnly: true,
+                  esModules: true,
                 },
               },
             ]
