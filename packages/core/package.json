@@ -2,7 +2,8 @@
   "name": "material-motion",
   "version": "0.0.0",
   "description": "Makes it easy to add rich, interactive motion to your application.",
-  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "browser": "dist/material-motion.bundle.js",
   "types": "dist/index.d.ts",
   "typescript:main": "src/index.ts",
   "scripts": {
