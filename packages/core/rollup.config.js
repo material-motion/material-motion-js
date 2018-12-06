@@ -17,6 +17,15 @@ export default {
   plugins: [
     resolve({
       modulesOnly: true,
+
+      // Whitelist imports to assert that we only inline things that we've
+      // injected the licenses for.
+      only: [
+        'indefinite-observable',
+        'wobble',
+        'symbol-observable',
+        'fast-equals',
+       ],
     }),
     typescript(),
     renameSymbolObservable(),
