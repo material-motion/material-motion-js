@@ -14,7 +14,7 @@
  *  under the License.
  */
 
-import * as deepEqual from 'deep-equal';
+import { deepEqual } from 'fast-equals';
 
 import {
   Constructor,
