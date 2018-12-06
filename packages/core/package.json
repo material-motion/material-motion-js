@@ -15,6 +15,7 @@
   "dependencies": {
     "csstype": "2.5.6",
     "deep-equal": "1.0.1",
+    "fast-equals": "^1.6.1",
     "indefinite-observable": "1.0.2",
     "symbol-observable": "1.2.0",
     "tslib": "^1.2.0",
