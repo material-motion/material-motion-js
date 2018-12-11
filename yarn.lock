@@ -2992,10 +2992,10 @@ css-vendor@^0.3.8:
   dependencies:
     is-in-browser "^1.0.2"
 
-csstype@2.5.6:
-  version "2.5.6"
-  resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.5.6.tgz#2ae1db2319642d8b80a668d2d025c6196071e788"
-  integrity sha512-tKPyhy0FmfYD2KQYXD5GzkvAYLYj96cMLXr648CKGd3wBe0QqoPipImjGiLze9c8leJK8J3n7ap90tpk3E6HGQ==
+csstype@2.5.8:
+  version "2.5.8"
+  resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.5.8.tgz#4ce5aa16ea0d562ef9105fa3ae2676f199586a35"
+  integrity sha512-r4DbsyNJ7slwBSKoGesxDubRWJ71ghG8W2+1HcsDlAo12KGca9dDLv0u98tfdFw7ldBdoA7XmCnI6Q8LpAJXaQ==
 
 csstype@^2.5.7:
   version "2.5.7"
@@ -3977,7 +3977,7 @@ fast-deep-equal@^2.0.1:
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-2.0.1.tgz#7b05218ddf9667bf7f370bf7fdb2cb15fdd0aa49"
   integrity sha1-ewUhjd+WZ79/Nwv3/bLLFf3Qqkk=
 
-fast-equals@^1.6.1:
+fast-equals@1.6.1:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/fast-equals/-/fast-equals-1.6.1.tgz#66cc5a0922ea747599f41aedf44a76ec2908adc0"
   integrity sha512-xlmDRa03F8QpqTpfeH1l/exTKMg5zhyDh34bfc3pBR/JLQkaIzayXC7hvsXsyv/Och1At//+ubJp+Jy1nfmMvA==
@@ -5154,10 +5154,10 @@ imurmurhash@^0.1.4:
   resolved "https://registry.yarnpkg.com/imurmurhash/-/imurmurhash-0.1.4.tgz#9218b9b2b928a238b13dc4fb6b6d576f231453ea"
   integrity sha1-khi5srkoojixPcT7a21XbyMUU+o=
 
-indefinite-observable@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/indefinite-observable/-/indefinite-observable-1.0.2.tgz#0a328793ab2385d4b9dca23eaab4afe6936a73f8"
-  integrity sha512-Mps0898zEduHyPhb7UCgNmfzlqNZknVmaFz5qzr0mm04YQ5FGLhAyK/dJ+NaRxGyR6juQXIxh5Ev0xx+qq0nYA==
+indefinite-observable@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/indefinite-observable/-/indefinite-observable-2.0.0.tgz#ba7daed4fa248d8f46ec25fc1fbdb580210cbc0f"
+  integrity sha512-mj7EKTb0sdNmLRxMK9paO85bPuwZ+RUQmJWpS5Dns/bWHM5TXvEpDBpnE7u54JrB8kp0aHGPsgZ2c+PXT7l6tg==
   dependencies:
     symbol-observable "1.2.0"
 
@@ -7071,13 +7071,6 @@ mock-raf@^1.0.0:
   integrity sha1-oogUUXiJPiBAsjDyGC/uIEnxbyU=
   dependencies:
     object-assign "^3.0.0"
-
-mock-timeout@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/mock-timeout/-/mock-timeout-0.0.2.tgz#cd600eb1ebc4a4010557e6b37aa35938e9bd0c05"
-  integrity sha1-zWAOsevEpAEFV+azeqNZOOm9DAU=
-  dependencies:
-    lodash "^2.4.1"
 
 modelo@^4.2.0:
   version "4.2.3"
@@ -10910,10 +10903,10 @@ winston@^1.0.1:
     pkginfo "0.3.x"
     stack-trace "0.0.x"
 
-wobble@1.5:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/wobble/-/wobble-1.5.0.tgz#5192d6681642ca22e4e133408628b99e9a7d1559"
-  integrity sha512-C8rlhj+kowPy1eLFjvzINg05UndB0IPRV8jzLARsOfq3Z8HuYMwdjBwT+fAvURC2cTUJRBskNuvrT6aq/5xamg==
+wobble@1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/wobble/-/wobble-1.5.1.tgz#2f2d50b6a54597eef765a688a9b9c56c87ecd606"
+  integrity sha512-vQD1uu0yXhZWfQJKVf2UVNb3AVnD0qXAbcIqG6Aw02ABLVm77xz6KcLuduWSwOiOMNh8TjZqouZsHTJWTdLwVQ==
 
 wordwrap@0.0.2:
   version "0.0.2"
