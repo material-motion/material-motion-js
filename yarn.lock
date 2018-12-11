@@ -792,11 +792,6 @@
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-3.5.2.tgz#c11cd2817d3a401b7ba0f5a420f35c56139b1c1e"
   integrity sha1-wRzSgX06QBt7oPWkIPNcVhObHB4=
 
-"@types/deep-equal@0.0.30":
-  version "0.0.30"
-  resolved "https://registry.yarnpkg.com/@types/deep-equal/-/deep-equal-0.0.30.tgz#c14df825c9201a1804980e7ebc3ef30e137bb64c"
-  integrity sha1-wU34JckgGhgEmA5+vD7zDhN7tkw=
-
 "@types/estree@0.0.39":
   version "0.0.39"
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.39.tgz#e177e699ee1b8c22d23174caaa7422644389509f"
@@ -2997,10 +2992,10 @@ css-vendor@^0.3.8:
   dependencies:
     is-in-browser "^1.0.2"
 
-csstype@2.5.6:
-  version "2.5.6"
-  resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.5.6.tgz#2ae1db2319642d8b80a668d2d025c6196071e788"
-  integrity sha512-tKPyhy0FmfYD2KQYXD5GzkvAYLYj96cMLXr648CKGd3wBe0QqoPipImjGiLze9c8leJK8J3n7ap90tpk3E6HGQ==
+csstype@2.5.8:
+  version "2.5.8"
+  resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.5.8.tgz#4ce5aa16ea0d562ef9105fa3ae2676f199586a35"
+  integrity sha512-r4DbsyNJ7slwBSKoGesxDubRWJ71ghG8W2+1HcsDlAo12KGca9dDLv0u98tfdFw7ldBdoA7XmCnI6Q8LpAJXaQ==
 
 csstype@^2.5.7:
   version "2.5.7"
@@ -3162,11 +3157,6 @@ deep-eql@^2.0.1:
   integrity sha1-sbrAblbwp2d3aG1Qyf63XC7XZ5o=
   dependencies:
     type-detect "^3.0.0"
-
-deep-equal@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.0.1.tgz#f5d260292b660e084eff4cdbc9f08ad3247448b5"
-  integrity sha1-9dJgKStmDghO/0zbyfCK0yR0SLU=
 
 deep-equal@~0.2.1:
   version "0.2.2"
@@ -3987,7 +3977,7 @@ fast-deep-equal@^2.0.1:
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-2.0.1.tgz#7b05218ddf9667bf7f370bf7fdb2cb15fdd0aa49"
   integrity sha1-ewUhjd+WZ79/Nwv3/bLLFf3Qqkk=
 
-fast-equals@^1.6.1:
+fast-equals@1.6.1:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/fast-equals/-/fast-equals-1.6.1.tgz#66cc5a0922ea747599f41aedf44a76ec2908adc0"
   integrity sha512-xlmDRa03F8QpqTpfeH1l/exTKMg5zhyDh34bfc3pBR/JLQkaIzayXC7hvsXsyv/Och1At//+ubJp+Jy1nfmMvA==
@@ -5159,10 +5149,10 @@ imurmurhash@^0.1.4:
   resolved "https://registry.yarnpkg.com/imurmurhash/-/imurmurhash-0.1.4.tgz#9218b9b2b928a238b13dc4fb6b6d576f231453ea"
   integrity sha1-khi5srkoojixPcT7a21XbyMUU+o=
 
-indefinite-observable@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/indefinite-observable/-/indefinite-observable-1.0.2.tgz#0a328793ab2385d4b9dca23eaab4afe6936a73f8"
-  integrity sha512-Mps0898zEduHyPhb7UCgNmfzlqNZknVmaFz5qzr0mm04YQ5FGLhAyK/dJ+NaRxGyR6juQXIxh5Ev0xx+qq0nYA==
+indefinite-observable@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/indefinite-observable/-/indefinite-observable-2.0.0.tgz#ba7daed4fa248d8f46ec25fc1fbdb580210cbc0f"
+  integrity sha512-mj7EKTb0sdNmLRxMK9paO85bPuwZ+RUQmJWpS5Dns/bWHM5TXvEpDBpnE7u54JrB8kp0aHGPsgZ2c+PXT7l6tg==
   dependencies:
     symbol-observable "1.2.0"
 
@@ -7067,13 +7057,6 @@ mock-raf@^1.0.0:
   integrity sha1-oogUUXiJPiBAsjDyGC/uIEnxbyU=
   dependencies:
     object-assign "^3.0.0"
-
-mock-timeout@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/mock-timeout/-/mock-timeout-0.0.2.tgz#cd600eb1ebc4a4010557e6b37aa35938e9bd0c05"
-  integrity sha1-zWAOsevEpAEFV+azeqNZOOm9DAU=
-  dependencies:
-    lodash "^2.4.1"
 
 modelo@^4.2.0:
   version "4.2.3"
@@ -10633,10 +10616,10 @@ uuid@^3.0.1:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.1.0.tgz#3dd3d3e790abc24d7b0d3a034ffababe28ebbc04"
   integrity sha512-DIWtzUkw04M4k3bf1IcpS2tngXEL26YUD2M0tMDUpnUrz2hgzUBlD55a4FjdLGPvfHxS6uluGWvaVEqgBcVa+g==
 
-uws@10.148.2, uws@^99.0.0:
-  version "10.148.2"
-  resolved "https://registry.yarnpkg.com/uws/-/uws-10.148.2.tgz#f01652a0b4bb941cb18bb7a6248d780fd0150245"
-  integrity sha1-8BZSoLS7lByxi7emJI14D9AVAkU=
+uws@^99.0.0:
+  version "99.0.0"
+  resolved "https://registry.yarnpkg.com/uws/-/uws-99.0.0.tgz#15e83cda6a135f6a7a70bd399e865be9a14f8d9b"
+  integrity sha512-gbzhpHHE37BsiCB1raq5Wzf4ENKTaxyg1gZ7LJ/Z0za9Ic6EEwq5VpfivNh9Or2Tpf3f3jPEWCGLVDle2MukTg==
 
 valid-url@^1:
   version "1.0.9"
@@ -10906,10 +10889,10 @@ winston@^1.0.1:
     pkginfo "0.3.x"
     stack-trace "0.0.x"
 
-wobble@1.5:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/wobble/-/wobble-1.5.0.tgz#5192d6681642ca22e4e133408628b99e9a7d1559"
-  integrity sha512-C8rlhj+kowPy1eLFjvzINg05UndB0IPRV8jzLARsOfq3Z8HuYMwdjBwT+fAvURC2cTUJRBskNuvrT6aq/5xamg==
+wobble@1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/wobble/-/wobble-1.5.1.tgz#2f2d50b6a54597eef765a688a9b9c56c87ecd606"
+  integrity sha512-vQD1uu0yXhZWfQJKVf2UVNb3AVnD0qXAbcIqG6Aw02ABLVm77xz6KcLuduWSwOiOMNh8TjZqouZsHTJWTdLwVQ==
 
 wordwrap@0.0.2:
   version "0.0.2"
