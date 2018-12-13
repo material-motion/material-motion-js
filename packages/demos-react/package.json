@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "material-motion-demos-react",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "scripts": {
     "pundle": "../../node_modules/.bin/pundle",
     "start": "yarn run pundle --dev",
@@ -14,7 +14,7 @@
     "jss": "9.2",
     "jss-preset-default": "4.0.1",
     "jsxstyle": "2",
-    "material-motion": "^0.0.0",
+    "material-motion": "^0.1.0",
     "react": "15.4.1",
     "react-dom": "15.4.1",
     "react-router": "4.0.0-alpha.6",
