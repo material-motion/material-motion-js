@@ -5154,10 +5154,10 @@ imurmurhash@^0.1.4:
   resolved "https://registry.yarnpkg.com/imurmurhash/-/imurmurhash-0.1.4.tgz#9218b9b2b928a238b13dc4fb6b6d576f231453ea"
   integrity sha1-khi5srkoojixPcT7a21XbyMUU+o=
 
-indefinite-observable@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/indefinite-observable/-/indefinite-observable-2.0.0.tgz#ba7daed4fa248d8f46ec25fc1fbdb580210cbc0f"
-  integrity sha512-mj7EKTb0sdNmLRxMK9paO85bPuwZ+RUQmJWpS5Dns/bWHM5TXvEpDBpnE7u54JrB8kp0aHGPsgZ2c+PXT7l6tg==
+indefinite-observable@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/indefinite-observable/-/indefinite-observable-2.0.1.tgz#574af29bfbc17eb5947793797bddc94c9d859400"
+  integrity sha512-G8vgmork+6H9S8lUAg1gtXEj2JxIQTo0g2PbFiYOdjkziSI0F7UYBiVwhZRuixhBCNGczAls34+5HJPyZysvxQ==
   dependencies:
     symbol-observable "1.2.0"
 

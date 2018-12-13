@@ -16,7 +16,7 @@
   "dependencies": {
     "csstype": "2.5.8",
     "fast-equals": "1.6.1",
-    "indefinite-observable": "2.0.0",
+    "indefinite-observable": "2.0.1",
     "symbol-observable": "1.2.0",
     "tslib": "^1.2.0",
     "wobble": "1.5.1"
