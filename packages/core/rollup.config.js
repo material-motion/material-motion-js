@@ -27,7 +27,13 @@ export default {
         'fast-equals',
        ],
     }),
-    typescript(),
+    typescript({
+      tsconfigOverride: {
+        compilerOptions: {
+          declaration: false,
+        },
+      },
+    }),
     renameSymbolObservable(),
     unifyLicenses(),
   ],
