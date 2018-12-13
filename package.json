@@ -2,6 +2,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
+    "clean": "lerna run clean",
     "build": "lerna run build",
     "lint": "lerna run lint",
     "pretest": "rm -rf coverage .nyc_output; mkdir coverage .nyc_output",
