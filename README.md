@@ -1,8 +1,8 @@
 # <img src="https://www.gstatic.com/images/branding/product/2x/motion_48dp.png" width="48" height="48" alt="logo" /> Material Motion for JavaScript #
 
-[![Current version:](https://img.shields.io/badge/v0.0.0:-222222.svg?logo=npm)](https://www.npmjs.com/package/material-motion/v/0.0.0)
-[![Test status](https://img.shields.io/circleci/project/github/material-motion/material-motion-js/stable.svg?logo=circleci&label=Tests)](https://circleci.com/gh/material-motion/material-motion-js/1116)
-[![Code coverage](https://img.shields.io/codecov/c/github/material-motion/material-motion-js/stable.svg?logo=codecov&logoColor=white&label=Coverage)](https://codecov.io/gh/material-motion/material-motion-js/tree/b383c74d7db80417ad79080d28c93042d7f62f3e/packages)<br />
+[![Current version:](https://img.shields.io/badge/v0.1.0:-222222.svg?logo=npm)](https://www.npmjs.com/package/material-motion/v/0.1.0)
+[![Test status](https://img.shields.io/circleci/project/github/material-motion/material-motion-js/stable.svg?logo=circleci&label=Tests)](https://circleci.com/gh/material-motion/material-motion-js/1166)
+[![Code coverage](https://img.shields.io/codecov/c/github/material-motion/material-motion-js/stable.svg?logo=codecov&logoColor=white&label=Coverage)](https://codecov.io/gh/material-motion/material-motion-js/tree/dc52c0f56107625171199008604f4f80f528b9a6/packages)<br />
 [![HEAD:](https://img.shields.io/badge/HEAD:-222222.svg?logo=github&logoColor=white)](https://github.com/material-motion/material-motion-js)
 [![Test status](https://img.shields.io/circleci/project/github/material-motion/material-motion-js/develop.svg?logo=circleci&label=Tests)](https://circleci.com/gh/material-motion/material-motion-js/tree/develop)
 [![Code coverage](https://img.shields.io/codecov/c/github/material-motion/material-motion-js/develop.svg?logo=codecov&logoColor=white&label=Coverage)](https://codecov.io/gh/material-motion/material-motion-js/branch/develop)
