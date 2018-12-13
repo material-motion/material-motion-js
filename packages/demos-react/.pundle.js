@@ -46,7 +46,10 @@ module.exports = {
             compilerOptions: Object.assign(
               {},
               mainTSConfig.compilerOptions,
-              tsConfig.compilerOptions
+              tsConfig.compilerOptions,
+              {
+                module: 'commonjs',
+              }
             )
           }
         }
