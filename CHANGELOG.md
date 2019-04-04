@@ -1,5 +1,9 @@
 # Changelog #
 
+## v0.1.1 (2010-04-03) ##
+### Fixed ###
+- `rename` now works for keys that fail `hasOwnProperty`, like those on `UIEvent`.
+
 ## v0.1.0 (2018-12-12) ##
 ### Changes ###
 - Merged `material-motion-views-dom` into `material-motion`
