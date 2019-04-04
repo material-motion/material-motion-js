@@ -79,7 +79,7 @@ export function withRename<T, S extends Constructor<MotionMappable<T>>>(supercla
 
           Object.entries(mapping).forEach(
             ([oldKey, newKey]) => {
-              if (value.hasOwnProperty(oldKey)) {
+              if (oldKey in value) {
                 (result as any)[newKey] = value[oldKey as K];
               }
             }

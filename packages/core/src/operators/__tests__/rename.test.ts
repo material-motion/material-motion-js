@@ -67,6 +67,29 @@ describe('motionObservable.rename',
       }
     );
 
+    it('should support inherited properties',
+      () => {
+        subject.rename({ mapping: { width: 'x', height: 'y' } }).subscribe(listener);
+
+        const value = Object.create({ width: 3 });
+        value.height = 10;
+        subject.next(value);
+
+        expect(value.hasOwnProperty('width')).to.be.false;
+        expect(listener).to.have.been.calledWith({ x: 3, y: 10 });
+      }
+    );
+
+    it('should not set values for unknown keys',
+      () => {
+        subject.rename({ width: 'x', height: 'y', depth: 'z' }).subscribe(listener);
+
+        subject.next({ width: 3, height: 10 });
+
+        expect(listener).to.have.been.calledWithExactly({ x: 3, y: 10 });
+      }
+    );
+
     // This can be updated to passthrough unmapped names if we ever care.
     it('should ignore unmapped names',
       () => {
