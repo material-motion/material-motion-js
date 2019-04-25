@@ -29,6 +29,11 @@ import {
 } from '../types';
 
 import {
+  _ReactiveMapArgs,
+  _ReactiveMapOptions,
+} from './foundation/_reactiveMap';
+
+import {
   isDefined,
 } from '../typeGuards';
 
@@ -36,7 +41,7 @@ export type ToPolarOrigin<T> = (T & Point2D) | (Observable<T & Point2D>);
 
 export type ToPolarArgs<T> = {
   origin$: ToPolarOrigin<T>,
-};
+} & _ReactiveMapOptions;
 
 export interface MotionPolarizable<T> {
   toPolar(kwargs: ToPolarArgs<T>): ObservableWithMotionOperators<PolarCoords>;
@@ -51,7 +56,7 @@ export function withToPolar<T, S extends Constructor<MotionReactiveMappable<T>>>
      */
     toPolar(kwargs: ToPolarArgs<T>): ObservableWithMotionOperators<PolarCoords>;
     toPolar(origin$: ToPolarOrigin<T>): ObservableWithMotionOperators<PolarCoords>;
-    toPolar({ origin$ }: ToPolarArgs<T> & ToPolarOrigin<T>): ObservableWithMotionOperators<PolarCoords> {
+    toPolar({ origin$, onlyEmitWithUpstream = true }: ToPolarArgs<T> & ToPolarOrigin<T>): ObservableWithMotionOperators<PolarCoords> {
       if (!isDefined(origin$)) {
         origin$ = arguments[0] as ToPolarOrigin<T>;
       }
@@ -72,6 +77,7 @@ export function withToPolar<T, S extends Constructor<MotionReactiveMappable<T>>>
         inputs: {
           origin: origin$,
         },
+        onlyEmitWithUpstream,
       });
     }
   };

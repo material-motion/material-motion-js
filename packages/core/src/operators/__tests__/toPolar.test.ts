@@ -66,5 +66,57 @@ describe('motionObservable.toPolar',
         expect(listener).to.have.been.calledWith(Math.PI / -2);
       }
     );
+
+    it('should only emit with upstream by default when using positional args',
+      () => {
+        const origin$ = new MotionSubject();
+        origin$.next({ x: 10, y: 10 });
+
+        subject.toPolar(origin$).pluck('angle').subscribe(listener);
+
+        subject.next({ x: 10, y: 0 });
+
+        expect(listener).to.have.been.calledWith(Math.PI / -2);
+        expect(listener).to.have.been.calledOnce;
+
+        origin$.next({ x: 0, y: 0 });
+        expect(listener).to.have.been.calledOnce;
+      }
+    );
+
+    it('should only emit with upstream by default when using kwargs',
+      () => {
+        const origin$ = new MotionSubject();
+        origin$.next({ x: 10, y: 10 });
+
+        subject.toPolar({ origin$ }).pluck('angle').subscribe(listener);
+
+        subject.next({ x: 10, y: 0 });
+
+        expect(listener).to.have.been.calledWith(Math.PI / -2);
+        expect(listener).to.have.been.calledOnce;
+
+        origin$.next({ x: 0, y: 0 });
+        expect(listener).to.have.been.calledOnce;
+      }
+    );
+
+    it('should emit when origin changes if requested',
+      () => {
+        const origin$ = new MotionSubject();
+        origin$.next({ x: 10, y: 10 });
+
+        subject.toPolar({ origin$, onlyEmitWithUpstream: false }).pluck('angle').subscribe(listener);
+
+        subject.next({ x: 10, y: 0 });
+
+        expect(listener).to.have.been.calledWith(Math.PI / -2);
+        expect(listener).to.have.been.calledOnce;
+
+        origin$.next({ x: 20, y: 0 });
+        expect(listener).to.have.been.calledTwice;
+        expect(listener).to.have.been.calledWith(Math.PI);
+      }
+    );
   }
 );
