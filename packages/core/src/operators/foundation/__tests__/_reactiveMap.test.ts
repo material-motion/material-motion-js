@@ -34,6 +34,7 @@ import {
 
 import {
   MemorylessMotionSubject,
+  MotionSubject,
   MotionObservable,
 } from '../../../observables/';
 
@@ -77,10 +78,10 @@ describe('motionObservable._reactiveMap',
 
         subject.next(40);
         argSubject.next(2);
-        expect(listener).to.have.been.calledOnce.to.have.been.calledWith(42);
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(42);
 
         argSubject.next(3);
-        expect(listener).to.have.been.calledTwice.to.have.been.calledWith(43);
+        expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(43);
       }
     );
 
@@ -95,13 +96,60 @@ describe('motionObservable._reactiveMap',
 
         subject.next(40);
         argSubject.next(2);
-        expect(listener).to.have.been.calledOnce.to.have.been.calledWith(42);
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(42);
 
         subject.next(10);
-        expect(listener).to.have.been.calledTwice.to.have.been.calledWith(12);
+        expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(12);
 
         argSubject.next(3);
-        expect(listener).to.have.been.calledThrice.to.have.been.calledWith(13);
+        expect(listener).to.have.been.calledThrice.and.to.have.been.calledWith(13);
+      }
+    );
+
+    it('should respect onlyEmitWithUpstream',
+      () => {
+        subject._reactiveMap({
+          transform: ({ upstream, sideloaded }) => upstream + sideloaded,
+          inputs: {
+            sideloaded: argSubject,
+          },
+          onlyEmitWithUpstream: true,
+        }).subscribe(listener);
+
+        subject.next(40);
+        argSubject.next(2);
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(42);
+
+        subject.next(10);
+        expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(12);
+
+        argSubject.next(3);
+        expect(listener).to.have.been.calledTwice;
+      }
+    );
+
+    it('should not loop infinitely when onlyEmitWithUpstream prevents a cycle',
+      () => {
+        const sumSubject = new MotionSubject();
+        sumSubject.next(0);
+
+        const stream = subject._reactiveMap({
+          transform: ({ upstream, sideloaded, sum }) => upstream + sideloaded + sum,
+          inputs: {
+            sideloaded: argSubject,
+            sum: sumSubject,
+          },
+          onlyEmitWithUpstream: true,
+        })._multicast();
+        stream.subscribe(sumSubject);
+        stream.subscribe(listener);
+
+        subject.next(40);
+        argSubject.next(10);
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(50);
+
+        subject.next(5);
+        expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(65);
       }
     );
 
@@ -117,13 +165,13 @@ describe('motionObservable._reactiveMap',
 
         subject.next(40);
         argSubject.next(2);
-        expect(listener).to.have.been.calledOnce.to.have.been.calledWith(142);
+        expect(listener).to.have.been.calledOnce.and.to.have.been.calledWith(142);
 
         subject.next(10);
-        expect(listener).to.have.been.calledTwice.to.have.been.calledWith(112);
+        expect(listener).to.have.been.calledTwice.and.to.have.been.calledWith(112);
 
         argSubject.next(3);
-        expect(listener).to.have.been.calledThrice.to.have.been.calledWith(113);
+        expect(listener).to.have.been.calledThrice.and.to.have.been.calledWith(113);
       }
     );
   }

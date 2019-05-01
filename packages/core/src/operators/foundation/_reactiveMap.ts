@@ -56,9 +56,9 @@ export function withReactiveMap<T, S extends Constructor<MotionReactiveNextOpera
       })._reactiveNextOperator<U, D>({
         operation: ({ emit }) => (values) => {
           if (upstreamChanged || !onlyEmitWithUpstream) {
+            upstreamChanged = false;
             emit(transform(values));
           }
-          upstreamChanged = false;
         },
         inputs
       });
