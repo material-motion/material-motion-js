@@ -110,6 +110,11 @@ export type PolarCoords = {
   distance: number,
 };
 
+export type Shadow = Point2D & {
+  blur: number,
+  spread: number,
+};
+
 export interface Spring<T> {
   readonly destination$: ObservableWithMotionOperators<T>;
   destination: T;
@@ -206,7 +211,7 @@ export type OpacityStyleStreams = WillChangeStyleStreams & {
 };
 
 export type BoxShadowStyleStreams = {
-  readonly boxShadow$: ObservableWithMotionOperators<string>,
+  readonly boxShadow$: ObservableWithMotionOperators<Shadow>,
 };
 
 export type BorderRadiusStyleStreams = {

@@ -27,6 +27,7 @@ import {
   Observable,
   ObservableWithMotionOperators,
   Point2D,
+  Shadow,
   StyleStreams,
 } from '../types';
 
@@ -37,6 +38,7 @@ export type PrimitiveStyleDict = Partial<{
   scale: number,
   transformOrigin: Partial<Point2D>,
   dimensions: Partial<Dimensions>,
+  boxShadow: Partial<Shadow>
 
   // Explicitly pass through the styles that `combineStyleStreams` needs.
   //
@@ -61,6 +63,7 @@ export function combineStyleStreams(styleStreams: Partial<StyleStreams>): Observ
       rotate = 0,
       scale = 1,
       borderRadius = '',
+      boxShadow = '',
       transformOrigin = { x: 0, y: 0 },
       dimensions = {},
       ...passthrough
@@ -70,6 +73,9 @@ export function combineStyleStreams(styleStreams: Partial<StyleStreams>): Observ
         borderRadius: Array.isArray(borderRadius)
           ? borderRadius.map(appendPixels).join(' ' )
           : borderRadius,
+        boxShadow: typeof boxShadow === 'string'
+          ? boxShadow
+          : [boxShadow.x || 0, boxShadow.y || 0, boxShadow.blur || 0, boxShadow.spread || 0].map(appendPixels).join(' ' ),
         opacity: typeof opacity === 'number'
           ? Number(opacity.toFixed(3))
           : opacity,
