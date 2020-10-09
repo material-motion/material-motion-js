@@ -75,7 +75,13 @@ export function combineStyleStreams(styleStreams: Partial<StyleStreams>): Observ
           : borderRadius,
         boxShadow: typeof boxShadow === 'string'
           ? boxShadow
-          : [boxShadow.x || 0, boxShadow.y || 0, boxShadow.blur || 0, boxShadow.spread || 0].map(appendPixels).join(' ' ),
+          : [
+              boxShadow.inset
+                ? 'inset'
+                : '',
+              ...[boxShadow.x || 0, boxShadow.y || 0, boxShadow.blur || 0, boxShadow.spread || 0].map(appendPixels),
+              boxShadow.color || '',
+            ].join(' '),
         opacity: typeof opacity === 'number'
           ? Number(opacity.toFixed(3))
           : opacity,

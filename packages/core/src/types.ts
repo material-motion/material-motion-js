@@ -113,6 +113,8 @@ export type PolarCoords = {
 export type Shadow = Point2D & {
   blur: number,
   spread: number,
+  color: string,
+  inset: boolean,
 };
 
 export interface Spring<T> {
@@ -211,7 +213,7 @@ export type OpacityStyleStreams = WillChangeStyleStreams & {
 };
 
 export type BoxShadowStyleStreams = {
-  readonly boxShadow$: ObservableWithMotionOperators<Shadow>,
+  readonly boxShadow$: ObservableWithMotionOperators<Partial<Shadow>>,
 };
 
 export type BorderRadiusStyleStreams = {
