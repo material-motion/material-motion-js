@@ -15,7 +15,7 @@ This repo houses the JavaScript implementation of Material Motion.  For more inf
 
 - To make gestural interactions as easy to reuse across applications as UI components already are.
 
-- To enable the motions and gestures [described in the Material Spec](https://material.google.com/motion/material-motion.html) to be easily implemented by application authors in the JS ecosystem.
+- To enable the motions and gestures [described in the Material Spec](https://material.io/archive/guidelines/motion/material-motion.html) to be easily implemented by application authors in the JS ecosystem.
 
 - To make prototyping new animated experiences simpler.
 
