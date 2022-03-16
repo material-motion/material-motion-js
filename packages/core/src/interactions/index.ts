@@ -17,8 +17,17 @@
 export * from './Draggable';
 export { default as Draggable } from './Draggable';
 
+export * from './Flingable';
+export { default as Flingable } from './Flingable';
+
+export * from './NumericDecayer';
+export { default as NumericDecayer } from './NumericDecayer';
+
 export * from './NumericSpring';
 export { default as NumericSpring } from './NumericSpring';
+
+export * from './Point2DDecayer';
+export { default as Point2DDecayer } from './Point2DDecayer';
 
 export * from './Point2DSpring';
 export { default as Point2DSpring } from './Point2DSpring';
