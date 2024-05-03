@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@types/react": "^15.0.0",
-    "firebase-tools": "6.1.0"
+    "firebase-tools": "13.6.0"
   },
   "repository": {
     "type": "git",
