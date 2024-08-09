@@ -8806,9 +8806,9 @@ require-resolve@0.0.2:
     x-path "^0.0.2"
 
 requirejs@^2.3.5:
-  version "2.3.5"
-  resolved "https://registry.yarnpkg.com/requirejs/-/requirejs-2.3.5.tgz#617b9acbbcb336540ef4914d790323a8d4b861b0"
-  integrity sha512-svnO+aNcR/an9Dpi44C7KSAy5fFGLtmPbaaCeQaklUz8BQhS64tWWIIlvEA5jrWICzlO/X9KSzSeXFnZdBu8nw==
+  version "2.3.7"
+  resolved "https://registry.yarnpkg.com/requirejs/-/requirejs-2.3.7.tgz#0b22032e51a967900e0ae9f32762c23a87036bd0"
+  integrity sha512-DouTG8T1WanGok6Qjg2SXuCMzszOo0eHeH9hDZ5Y4x8Je+9JB38HdTLT4/VA8OaUhBa0JPVHJ0pyBkM1z+pDsw==
 
 requires-port@1.x.x:
   version "1.0.0"
