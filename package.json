@@ -61,6 +61,6 @@
     "tslint": "4.5.1",
     "tslint-junit-formatter": "5.1.0",
     "typescript": "2.4",
-    "webpack": "4"
+    "webpack": "5"
   }
 }
