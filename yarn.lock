@@ -1670,9 +1670,11 @@ base@^0.11.1:
     pascalcase "^0.1.1"
 
 basic-auth-connect@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/basic-auth-connect/-/basic-auth-connect-1.0.0.tgz#fdb0b43962ca7b40456a7c2bb48fe173da2d2122"
-  integrity sha1-/bC0OWLKe0BFanwrtI/hc9otISI=
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/basic-auth-connect/-/basic-auth-connect-1.1.0.tgz#b44af37d5b3bd7561b56491e58cf26ae1578f0c7"
+  integrity sha512-rKcWjfiRZ3p5WS9e5q6msXa07s6DaFAMXoyowV+mb2xQG+oYdw2QEUyKi0Xp95JvXzShlM+oGy5QuqSK6TfC1Q==
+  dependencies:
+    tsscmp "^1.0.6"
 
 basic-auth@~2.0.0:
   version "2.0.0"
@@ -10260,6 +10262,11 @@ tslint@4.5.1:
     resolve "^1.1.7"
     tsutils "^1.1.0"
     update-notifier "^2.0.0"
+
+tsscmp@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/tsscmp/-/tsscmp-1.0.6.tgz#85b99583ac3589ec4bfef825b5000aa911d605eb"
+  integrity sha512-LxhtAkPDTkVCMQjt2h6eBVY28KCjikZqZfMcC15YBeNjkgUpdCfBu5HoiOTDu86v6smE8yOjyEktJ8hlbANHQA==
 
 tsutils@^1.1.0:
   version "1.9.1"
