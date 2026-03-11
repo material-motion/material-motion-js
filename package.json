@@ -50,7 +50,7 @@
     "pundle-reporter-cli": "2.0.0-beta12",
     "pundle-resolver-default": "2.0.0-beta12",
     "pundle-transformer-typescript": "2.0.0-beta12",
-    "rollup": "^0.67.4",
+    "rollup": "^2.80.0",
     "rollup-plugin-node-resolve": "^3.4.0",
     "rollup-plugin-typescript2": "^0.18.0",
     "rules_karma": "alexeagle/rules_karma",
